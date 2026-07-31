@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#030712">
+  
+  <!-- Primary SEO Meta Tags -->
+  <title>Anurag Sahu — Full-Stack Developer & B.Tech CSE (AI & ML) Sophomore</title>
+  <meta name="title" content="Anurag Sahu — Full-Stack Developer & B.Tech CSE (AI & ML) Sophomore">
+  <meta name="description" content="Portfolio of Anurag Sahu, Computer Science & Engineering (AI & ML) student specializing in Full-Stack Web Development, React, Node.js, Python, and practical Machine Learning applications. Open for Summer 2026 internships.">
+  <meta name="author" content="Anurag Sahu">
+  <meta name="keywords" content="Anurag Sahu, Full-Stack Developer, AI ML Developer, React Developer, Node.js, Python, Computer Science, Portfolio, Software Engineering Intern">
+  <link rel="canonical" href="https://anuragsahu.dev/">
+
+  <!-- PWA & Favicon Link -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/assets/anurag-portrait-sm.webp">
+  <link rel="icon" type="image/webp" href="/assets/anurag-portrait-sm.webp">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://anuragsahu.dev/">
+  <meta property="og:title" content="Anurag Sahu — Full-Stack Developer & B.Tech CSE (AI & ML) Sophomore">
+  <meta property="og:description" content="Explore Anurag Sahu's portfolio featuring full-stack web applications, Machine Learning models, interactive case studies, engineering roadmap, and laboratory.">
+  <meta property="og:image" content="https://anuragsahu.dev/assets/anurag-portrait.webp">
+
+  <!-- Font Preconnect & Optimization -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* Admin Modal Glassmorphism Overlay */
+    #admin-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(3, 7, 18, 0.95);
+      backdrop-filter: blur(20px);
+      overflow-y: auto;
+    }
+    #admin-modal.active {
+      display: flex;
+      flex-direction: column;
+    }
+    .admin-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .admin-kpi-card {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+    }
+  </style>
+
+  <!-- JSON-LD Structured Data Schema for Person & WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://anuragsahu.dev/#person",
+        "name": "Anurag Sahu",
+        "jobTitle": "Full-Stack & AI/ML Developer",
+        "email": "mailto:shivasahu0612@gmail.com",
+        "url": "https://anuragsahu.dev/",
+        "sameAs": [
+          "https://github.com/anuragsahu0",
+          "https://www.linkedin.com/in/anurag-sahu-5a46b9360/"
+        ],
+        "alumniOf": "Maharana Pratap Institute of Professional Studies"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://anuragsahu.dev/#website",
+        "url": "https://anuragsahu.dev/",
+        "name": "Anurag Sahu Portfolio",
+        "author": { "@id": "https://anuragsahu.dev/#person" }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Screen Reader Skip Navigation Link -->
+  <a href="#main-content" style="position: absolute; top: -100px; left: 10px; z-index: 1000; padding: 12px 16px; background: #06b6d4; color: #030712; font-family: monospace; font-weight: 700; border-radius: 8px; transition: top 0.2s;" onfocus="this.style.top='10px'" onblur="this.style.top='-100px'">
+    Skip to main content
+  </a>
+
+  <!-- Background WebGL/Canvas Particle Field -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Persistent Zero-Gravity HUD Header -->
+  <header id="hud-header" class="glass-panel">
+    <a href="#" class="hud-logo" aria-label="Anurag Sahu Homepage">
+      <span class="hud-logo-glyph">⟁</span>
+      <span>ANURAG<span style="color: var(--color-nebula-cyan);">.SAHU</span></span>
+    </a>
+    
+    <nav aria-label="Main Navigation">
+      <ul class="hud-nav">
+        <li><a href="#hero">Overview</a></li>
+        <li><a href="#aboutme">About Me</a></li>
+        <li><a href="#skills">Lab</a></li>
+        <li><a href="#roadmap">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="hud-actions font-mono">
+      <div id="red-typewriter-pill" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px; border-radius: 20px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.5); color: #ef4444; font-size: 0.85rem; font-weight: 800; text-shadow: 0 0 12px rgba(239,68,68,0.9), 0 0 25px rgba(239,68,68,0.5); box-shadow: 0 0 20px rgba(239,68,68,0.3);">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 10px #ef4444; display: inline-block;"></span>
+        <span id="red-typewriter-text" style="letter-spacing: 1px; min-width: 60px; display: inline-block;">Dream</span>
+        <span id="red-typewriter-cursor" style="color: #ef4444; font-weight: 900; font-size: 0.9rem;">|</span>
+      </div>
+    </div>
+  </header>
+
+  <style>
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    #red-typewriter-cursor {
+      animation: cursorBlink 0.8s infinite;
+    }
+  </style>
+
+  <script>
+    (function startTypewriter() {
+      const words = ["Dream", "Grow", "Lead", "Dream | Grow | Lead"];
+      let wordIdx = 0;
+      let charIdx = 0;
+      let isDeleting = false;
+
+      function typeNext() {
+        const textEl = document.getElementById('red-typewriter-text');
+        if (!textEl) {
+          setTimeout(typeNext, 100);
+          return;
+        }
+
+        const currentWord = words[wordIdx];
+
+        if (isDeleting) {
+          charIdx--;
+        } else {
+          charIdx++;
+        }
+
+        textEl.textContent = currentWord.substring(0, charIdx);
+
+        let speed = isDeleting ? 50 : 100;
+
+        if (!isDeleting && charIdx === currentWord.length) {
+          speed = 1800; // Pause when word typing is complete
+          isDeleting = true;
+        } else if (isDeleting && charIdx === 0) {
+          isDeleting = false;
+          wordIdx = (wordIdx + 1) % words.length;
+          speed = 400; // Pause before starting next word
+        }
+
+        setTimeout(typeNext, speed);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', typeNext);
+      } else {
+        typeNext();
+      }
+    })();
+  </script>
+
+  <!-- Main Container -->
+  <main id="main-content" class="container">
+
+    <!-- HERO SECTION -->
+    <section id="hero" aria-label="Hero Section">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center; width: 100%;">
+        
+        <!-- LEFT COLUMN: Authentic Brand Pitch & Actions -->
+        <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 20px;">
+
+          <div class="font-mono" style="font-size: 0.85rem; color: var(--color-muted-text); text-transform: uppercase;">
+            <span style="color: var(--color-starlight-white); font-weight: 700;">Anurag Sahu</span>
+            <span style="color: var(--color-nebula-cyan); font-weight: 700;">•</span>
+            <span>B.Tech CSE (AI & ML) 2nd Year</span>
+          </div>
+
+          <h1 class="hero-title heading-gradient" style="text-align: left; font-size: clamp(2.2rem, 4.5vw, 3.5rem);">
+            Building modern full-stack web applications and practical AI solutions.
+          </h1>
+
+          <p class="hero-subtitle" style="text-align: left; max-width: 580px;">
+            Hi, I'm <strong style="color: var(--color-starlight-white);">Anurag Sahu</strong> — a Computer Science sophomore specializing in AI & ML. I build clean, performant full-stack web applications and explore practical machine learning models.
+          </p>
+
+          <div class="hero-actions" style="justify-content: flex-start;">
+            <a href="#roadmap" class="btn-primary" aria-label="Explore Anurag Sahu's projects roadmap">
+              <span>Explore My Work</span>
+              <i data-lucide="arrow-right" style="width: 18px;" aria-hidden="true"></i>
+            </a>
+            <button onclick="alert('Resume Download Triggered')" class="btn-secondary" aria-label="Download Resume PDF">
+              <i data-lucide="file-text" style="width: 18px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
+              <span>Download Resume</span>
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 4px;" class="font-mono">
+            <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="btn-primary" style="padding: 10px 20px; border-radius: 12px; font-size: 0.8rem; border-color: rgba(6,182,212,0.6); box-shadow: 0 0 20px rgba(6,182,212,0.3); font-weight: 700;" aria-label="GitHub Profile">
+              <i data-lucide="github" style="width: 16px;" aria-hidden="true"></i>
+              <span>GitHub</span>
+            </a>
+            <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 10px 20px; border-radius: 12px; font-size: 0.8rem; border-color: rgba(139,92,246,0.6); color: var(--color-quantum-violet); box-shadow: 0 0 20px rgba(139,92,246,0.3); font-weight: 700;" aria-label="LinkedIn Profile">
+              <i data-lucide="linkedin" style="width: 16px;" aria-hidden="true"></i>
+              <span>LinkedIn</span>
+            </a>
+            <button onclick="copyEmail()" class="btn-secondary" style="padding: 10px 20px; border-radius: 12px; font-size: 0.8rem; border-color: rgba(16,185,129,0.6); color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.3); font-weight: 700;" aria-label="Copy Direct Email Address">
+              <i data-lucide="mail" style="width: 16px;" aria-hidden="true"></i>
+              <span>Email</span>
+            </button>
+          </div>
+
+          <!-- QUICK FACTS COMPACT CARD -->
+          <div class="glass-panel" style="width: 100%; padding: 16px; background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.08); margin-top: 10px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; font-family: var(--font-mono); font-size: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 6px; color: var(--color-muted-text);">
+                <i data-lucide="map-pin" style="width: 14px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
+                <span style="color: var(--color-starlight-white); font-weight: 600;">India</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; color: var(--color-muted-text);">
+                <i data-lucide="graduation-cap" style="width: 14px; color: var(--color-quantum-violet);" aria-hidden="true"></i>
+                <span style="color: var(--color-starlight-white); font-weight: 600;">CSE (AI & ML)</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; color: var(--color-muted-text);">
+                <i data-lucide="code-2" style="width: 14px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
+                <span style="color: var(--color-starlight-white); font-weight: 600;">Full-Stack</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; color: var(--color-quantum-violet);">
+                <i data-lucide="bot" style="width: 14px;" aria-hidden="true"></i>
+                <span style="color: var(--color-starlight-white); font-weight: 600;">AI & ML</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Large Hero Glass Portrait Showcase -->
+        <div>
+          <div class="glass-panel glass-spotlight" style="padding: 20px; border-radius: 28px; border-color: rgba(6,182,212,0.4); box-shadow: 0 0 50px rgba(6,182,212,0.22); position: relative;">
+            
+            <div style="width: 100%; height: 500px; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #030712;">
+              <picture>
+                <source srcSet="assets/anurag-portrait.webp" type="image/webp">
+                <img src="assets/anurag-portrait.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" loading="eager" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
+              </picture>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-family: var(--font-mono); font-size: 0.75rem; margin-top: 12px;">
+              <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 8px 12px; justify-content: center; border-radius: 12px;" aria-label="GitHub Profile">
+                <i data-lucide="github" style="width: 14px; color: var(--color-nebula-cyan);" aria-hidden="true"></i> GitHub
+              </a>
+              <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 8px 12px; justify-content: center; border-radius: 12px;" aria-label="LinkedIn Profile">
+                <i data-lucide="linkedin" style="width: 14px; color: var(--color-quantum-violet);" aria-hidden="true"></i> LinkedIn
+              </a>
+              <button onclick="alert('Resume Download Triggered')" class="btn-primary" style="padding: 8px 12px; justify-content: center; border-radius: 12px;" aria-label="Download Resume PDF">
+                <i data-lucide="file-text" style="width: 14px;" aria-hidden="true"></i> Resume
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ABOUT ME SECTION -->
+    <section id="aboutme" aria-label="About Me Overview">
+      <div class="section-header">
+        <h2 class="section-title heading-gradient">About Me</h2>
+        <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
+          Passionate about building modern web experiences and continuously growing as a software developer.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; align-items: start;">
+        <!-- Left Content -->
+        <div class="glass-panel glass-spotlight" style="padding: 32px;">
+          <div style="color: var(--color-muted-text); font-size: 0.95rem; line-height: 1.7; display: flex; flex-direction: column; gap: 16px;">
+            <p>
+              Hi, I'm <strong style="color: var(--color-starlight-white);">Anurag Sahu</strong>, a B.Tech student in <strong style="color: var(--color-nebula-cyan);">Computer Science & Engineering (AI & ML)</strong> at <strong style="color: var(--color-starlight-white);">Maharana Pratap Institute of Professional Studies</strong>.
+            </p>
+            <p>
+              I am passionate about building modern, scalable web applications and continuously improving my problem-solving skills.
+            </p>
+            <p>
+              My current focus is <strong style="color: var(--color-nebula-cyan);">Full-Stack Development</strong>, where I work with both frontend and backend technologies to create responsive, efficient, and user-centric solutions.
+            </p>
+            <p>
+              I enjoy learning new technologies, taking on challenging projects, and writing clean, maintainable code.
+            </p>
+            <p>
+              I'm actively seeking opportunities to contribute, grow as a developer, and deliver meaningful software that creates real-world impact.
+            </p>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; font-family: var(--font-mono); font-size: 0.75rem;">
+            <span class="tag-mini">🎓 B.Tech CSE (AI & ML)</span>
+            <span class="tag-mini">💻 Full-Stack Developer</span>
+            <span class="tag-mini">⚡ React • Node.js</span>
+            <span class="tag-mini">🗄 MongoDB</span>
+            <span class="tag-mini">🌐 REST APIs</span>
+            <span class="tag-mini" style="background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: #10b981;">🚀 Open to Internship Opportunities</span>
+          </div>
+        </div>
+
+        <!-- Right Summary Card -->
+        <div class="glass-panel glass-spotlight" style="padding: 32px; border-color: rgba(6,182,212,0.4);">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
+            <div style="width: 64px; height: 75px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.4); padding: 2px; overflow: hidden; flex-shrink: 0;">
+              <picture>
+                <source srcSet="assets/anurag-portrait-sm.webp" type="image/webp">
+                <img src="assets/anurag-portrait-sm.jpg" alt="Professional portrait of Anurag Sahu." width="64" height="75" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+              </picture>
+            </div>
+            <div>
+              <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--color-starlight-white);">Anurag Sahu</h3>
+              <p class="font-mono" style="font-size: 0.8rem; color: var(--color-nebula-cyan);">B.Tech CSE (AI & ML)</p>
+            </div>
+          </div>
+
+          <div style="font-family: var(--font-mono); font-size: 0.8rem; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 8px;">
+              <span style="color: var(--color-muted-text);">Education:</span>
+              <span style="color: var(--color-starlight-white); font-weight: 600;">B.Tech CSE (AI & ML)</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 8px;">
+              <span style="color: var(--color-muted-text);">College:</span>
+              <span style="color: var(--color-starlight-white); font-weight: 600; text-align: right; max-width: 180px;">Maharana Pratap Institute</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 8px;">
+              <span style="color: var(--color-muted-text);">Focus:</span>
+              <span style="color: var(--color-nebula-cyan); font-weight: 700;">Full-Stack Development</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS LABORATORY SECTION -->
+    <section id="skills" aria-label="Engineering Laboratory">
+      <div class="section-header">
+        <h2 class="section-title heading-gradient">My Working Lab</h2>
+        <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
+          Explore my technical capabilities, languages, frameworks, AI/ML tools, databases, and continuous learning progression.
+        </p>
+      </div>
+
+      <div class="glass-panel glass-spotlight" style="padding: 32px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+          <div style="padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
+            <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Frontend Web</h4>
+            <p style="font-size: 0.8rem; color: var(--color-nebula-cyan);" class="font-mono">React 18, Tailwind CSS, JS (ES6+)</p>
+          </div>
+
+          <div style="padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
+            <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Backend & APIs</h4>
+            <p style="font-size: 0.8rem; color: var(--color-quantum-violet);" class="font-mono">Node.js, Express, FastAPI, REST</p>
+          </div>
+
+          <div style="padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
+            <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">AI & Machine Learning</h4>
+            <p style="font-size: 0.8rem; color: var(--color-nebula-cyan);" class="font-mono">PyTorch, Python, NumPy, GNNs</p>
+          </div>
+
+          <div style="padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
+            <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Databases & Tools</h4>
+            <p style="font-size: 0.8rem; color: #10b981;" class="font-mono">PostgreSQL, MongoDB, Git, Docker</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS SECTION -->
+    <section id="roadmap" aria-label="Projects Section">
+      <div class="section-header">
+        <h2 class="section-title heading-gradient">Projects</h2>
+        <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
+          Explore the active development status of current builds, planned architecture modules, and upcoming system milestones in my engineering pipeline.
+        </p>
+      </div>
+
+      <!-- Project 01: Portfolio -->
+      <div class="glass-panel glass-spotlight" style="padding: 32px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;" class="font-mono">
+          <div>
+            <span style="color: var(--color-nebula-cyan); font-weight: 700; font-size: 0.8rem;">PROJECT 01 • FULL-STACK WEB</span>
+            <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--color-starlight-white); margin-top: 4px;">
+              Portfolio
+            </h3>
+          </div>
+          <span id="main-project-status-01" style="padding: 4px 12px; border-radius: 20px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #10b981; font-size: 0.75rem; font-weight: 700;">
+            🟢 Status: Completed
+          </span>
+        </div>
+        <p style="color: var(--color-muted-text); font-size: 0.9rem; margin-bottom: 16px;">
+          Building a premium production-ready portfolio with React 18, Node.js, Express backend API, modern glassmorphism design system, and recruiter-focused telemetry experience.
+        </p>
+        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-starlight-white); display: flex; flex-direction: column; gap: 6px;">
+          <div>✓ Contact Form & Nodemailer Email Delivery Engine</div>
+          <div>✓ Telemetry Admin Dashboard & Analytics Tracker</div>
+          <div>✓ Multi-Platform Production Deployment</div>
+        </div>
+      </div>
+
+      <!-- Project 02: Restaurant Management System -->
+      <div class="glass-panel glass-spotlight" style="padding: 32px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;" class="font-mono">
+          <div>
+            <span style="color: #f59e0b; font-weight: 700; font-size: 0.8rem;">PROJECT 02 • ENTERPRISE SYSTEM</span>
+            <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--color-starlight-white); margin-top: 4px;">
+              Restaurant Management System
+            </h3>
+          </div>
+          <span id="main-project-status-02" style="padding: 4px 12px; border-radius: 20px; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #f59e0b; font-size: 0.75rem; font-weight: 700;">
+            🟡 Status: Coming Soon
+          </span>
+        </div>
+        <p style="color: var(--color-muted-text); font-size: 0.9rem; margin-bottom: 16px;">
+          A complete multi-tenant restaurant management platform with authentication, real-time kitchen order display (KDS), inventory control, billing, and analytics.
+        </p>
+        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-muted-text); display: flex; flex-direction: column; gap: 6px;">
+          <div>• JWT Authentication & Multi-Role User Access Control</div>
+          <div>• Real-Time Kitchen Order Display (KDS) via WebSockets</div>
+          <div>• Inventory Stock Tracking & Digital Invoice Billing Generation</div>
+        </div>
+      </div>
+
+      <!-- Project 03: Smart College ERP -->
+      <div class="glass-panel glass-spotlight" style="padding: 32px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;" class="font-mono">
+          <div>
+            <span style="color: #f59e0b; font-weight: 700; font-size: 0.8rem;">PROJECT 03 • ACADEMIC ERP</span>
+            <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--color-starlight-white); margin-top: 4px;">
+              Smart College ERP
+            </h3>
+          </div>
+          <span id="main-project-status-03" style="padding: 4px 12px; border-radius: 20px; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #f59e0b; font-size: 0.75rem; font-weight: 700;">
+            🟡 Status: Coming Soon
+          </span>
+        </div>
+        <p style="color: var(--color-muted-text); font-size: 0.9rem; margin-bottom: 16px;">
+          An end-to-end college management ERP platform featuring student attendance tracking, examination result portal, fee collection gateway, and automated performance analytics.
+        </p>
+        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-muted-text); display: flex; flex-direction: column; gap: 6px;">
+          <div>• Multi-Role Student, Faculty & Admin Portal (RBAC)</div>
+          <div>• Attendance Tracking & Automated Percentage Calculation</div>
+          <div>• Online Examination Result Publishing & Digital Fee Gateway</div>
+        </div>
+      </div>
+
+      <!-- Glowing Announcement Banner -->
+      <div style="text-align: center; margin-top: 24px; margin-bottom: 40px;" class="font-mono">
+        <span style="padding: 8px 24px; border-radius: 20px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.4); color: var(--color-nebula-cyan); font-size: 0.85rem; font-weight: 700; box-shadow: 0 0 20px rgba(6,182,212,0.25);">
+          ✨ and many others will be updated soon...
+        </span>
+      </div>
+    </section>
+
+    <!-- CONTACT MISSION CONTROL SECTION -->
+    <section id="contact" aria-label="Contact Section">
+      <div class="section-header">
+        <h2 class="section-title heading-gradient">Let's Build Something Great Together</h2>
+        <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
+          Open for Summer 2026 Software Engineering & AI/ML Internship opportunities. Fill out the direct form below or reach out via email, LinkedIn, or GitHub.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px;">
+        <!-- Left Candidate Snapshot Card with Sparkling Connect Buttons -->
+        <div class="glass-panel glass-spotlight" style="padding: 32px;">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
+            <div style="width: 64px; height: 75px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.4); padding: 2px; overflow: hidden; flex-shrink: 0;">
+              <picture>
+                <source srcSet="assets/anurag-portrait-sm.webp" type="image/webp">
+                <img src="assets/anurag-portrait-sm.jpg" alt="Professional portrait of Anurag Sahu." width="64" height="75" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+              </picture>
+            </div>
+            <div>
+              <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--color-starlight-white);">Anurag Sahu</h3>
+              <p class="font-mono" style="font-size: 0.8rem; color: var(--color-nebula-cyan);">Full-Stack & AI/ML Developer</p>
+            </div>
+          </div>
+
+          <!-- SPARKLING ACTION BUTTONS: GitHub, LinkedIn, Email -->
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;" class="font-mono">
+            <div style="font-size: 0.75rem; color: var(--color-nebula-cyan); font-weight: 700; display: flex; align-items: center; gap: 6px;">
+              <i data-lucide="sparkles" style="width: 14px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
+              <span>DIRECT SPARKLING CONNECT</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+              <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="btn-primary" style="padding: 10px; justify-content: center; font-size: 0.75rem; border-color: rgba(6,182,212,0.6); box-shadow: 0 0 15px rgba(6,182,212,0.3);" aria-label="GitHub Profile">
+                <i data-lucide="github" style="width: 14px;" aria-hidden="true"></i> GitHub✨
+              </a>
+
+              <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 10px; justify-content: center; font-size: 0.75rem; border-color: rgba(139,92,246,0.6); color: var(--color-quantum-violet); box-shadow: 0 0 15px rgba(139,92,246,0.3);" aria-label="LinkedIn Profile">
+                <i data-lucide="linkedin" style="width: 14px;" aria-hidden="true"></i> LinkedIn✨
+              </a>
+
+              <button onclick="copyEmail()" class="btn-secondary" style="padding: 10px; justify-content: center; font-size: 0.75rem; border-color: rgba(16,185,129,0.6); color: #10b981; box-shadow: 0 0 15px rgba(16,185,129,0.3);" aria-label="Copy Direct Email Address">
+                <i data-lucide="mail" style="width: 14px;" aria-hidden="true"></i> Email✨
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Backend-Ready Contact Form -->
+        <div class="glass-panel glass-spotlight" style="padding: 32px;">
+          <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--color-starlight-white); margin-bottom: 20px;">
+            Send Direct Message
+          </h3>
+
+          <form onsubmit="event.preventDefault(); alert('Message sent! Delivered to shivasahu0612@gmail.com.');" style="display: flex; flex-direction: column; gap: 16px; font-family: var(--font-mono); font-size: 0.8rem;">
+            <div>
+              <label for="contact-fullname" style="color: var(--color-starlight-white); font-weight: 700;">FULL NAME *</label>
+              <input id="contact-fullname" type="text" required placeholder="e.g. Sarah Jenkins" style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--color-starlight-white); font-family: inherit; margin-top: 4px;">
+            </div>
+
+            <div>
+              <label for="contact-email" style="color: var(--color-starlight-white); font-weight: 700;">WORK EMAIL *</label>
+              <input id="contact-email" type="email" required placeholder="e.g. sarah@company.com" style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--color-starlight-white); font-family: inherit; margin-top: 4px;">
+            </div>
+
+            <div>
+              <label for="contact-msg" style="color: var(--color-starlight-white); font-weight: 700;">MESSAGE *</label>
+              <textarea id="contact-msg" rows="4" required placeholder="Hi Anurag, we reviewed your portfolio..." style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--color-starlight-white); font-family: inherit; margin-top: 4px; resize: none;"></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary" style="justify-center: center;" aria-label="Send Direct Message">
+              <span>Send Message</span>
+              <i data-lucide="send" style="width: 16px;" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ANTI GRAVITY CONTROL CENTER ADMIN MODAL -->
+  <div id="admin-modal" role="dialog" aria-label="Anti Gravity Control Center Admin Console">
+    <div style="width: 100%; max-width: 1200px; margin: 20px auto; padding: 24px;" class="glass-panel">
+      
+      <!-- 1. LOGIN SCREEN (Shown if not logged in) -->
+      <div id="admin-login-view" style="max-width: 440px; margin: 30px auto; padding: 36px; background: rgba(3, 7, 18, 0.9); border: 1px solid rgba(6,182,212,0.4); border-radius: 28px; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8), 0 0 30px rgba(6,182,212,0.2);" class="font-mono">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 20px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.4); color: var(--color-nebula-cyan); font-size: 0.75rem; font-weight: 700; margin-bottom: 14px;">
+            <i data-lucide="shield-check" style="width: 14px;" aria-hidden="true"></i>
+            <span>AUTHENTICATED ADMIN PANEL</span>
+          </div>
+          <h2 style="font-family: var(--font-display); font-size: 1.65rem; font-weight: 800; color: var(--color-starlight-white); margin: 0; line-height: 1.2;">
+            Anurag's <span style="color: var(--color-nebula-cyan);">Portfolio Dashboard</span>
+          </h2>
+          <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-top: 6px;">
+            Full Control Panel & Telemetry Console
+          </div>
+        </div>
+
+        <div id="admin-login-error" style="display: none; padding: 10px; margin-bottom: 16px; border-radius: 10px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #f87171; font-size: 0.75rem; text-align: center;"></div>
+
+        <form id="admin-login-form" style="display: flex; flex-direction: column; gap: 16px; font-size: 0.75rem;">
+          <div>
+            <label style="color: var(--color-starlight-white); font-weight: 700; display: block; margin-bottom: 6px;">ADMIN EMAIL</label>
+            <input id="login-input-email" type="text" required value="anurag@admin.com" style="width: 100%; padding: 12px 14px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: var(--color-starlight-white); font-family: inherit; font-size: 0.85rem;">
+          </div>
+
+          <div>
+            <label style="color: var(--color-starlight-white); font-weight: 700; display: block; margin-bottom: 6px;">PASSWORD</label>
+            <input id="login-input-pass" type="password" required value="anurag123" style="width: 100%; padding: 12px 14px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: var(--color-starlight-white); font-family: inherit; font-size: 0.85rem;">
+          </div>
+
+          <button type="submit" class="btn-primary" style="justify-content: center; padding: 14px; margin-top: 6px; font-weight: 800; font-size: 0.85rem; border-radius: 12px; box-shadow: 0 0 20px rgba(6,182,212,0.3);">
+            <i data-lucide="lock" style="width: 16px;" aria-hidden="true"></i>
+            <span>LOGIN TO ADMIN DASHBOARD</span>
+          </button>
+        </form>
+
+        <div style="margin-top: 16px; text-align: center;">
+          <button id="btn-quick-admin-login" type="button" style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.4); color: #10b981; padding: 8px 16px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; width: 100%;">
+            ⚡ 1-Click Fast Admin Login
+          </button>
+        </div>
+
+        <div style="margin-top: 16px; text-align: center;">
+          <button id="admin-login-close-btn" class="btn-secondary" style="padding: 6px 16px; font-size: 0.75rem;">Close</button>
+        </div>
+      </div>
+
+      <!-- 2. DASHBOARD VIEW (Shown when authenticated) -->
+      <div id="admin-dashboard-view" style="display: none;">
+        <!-- Admin Modal Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 20px;" class="font-mono">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="assets/anurag-portrait-sm.jpg" alt="Anurag Sahu Portrait" style="width: 40px; height: 40px; border-radius: 12px; object-fit: cover; border: 1px solid rgba(6,182,212,0.4);">
+            <div>
+              <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--color-starlight-white); margin: 0;">
+                Anurag's <span style="color: var(--color-nebula-cyan);">Portfolio Dashboard</span>
+              </h2>
+              <div style="font-size: 0.75rem; color: var(--color-muted-text);">
+                REAL-TIME ADMIN CONTROL CENTER v3.0 • LATENCY: <span style="color: #10b981; font-weight: 700;">12ms</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button id="btn-export-json" class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem; color: var(--color-nebula-cyan); border-color: rgba(6,182,212,0.4);">
+              ⬇ EXPORT JSON
+            </button>
+            <button id="btn-export-csv" class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem; color: #10b981; border-color: rgba(16,185,129,0.4);">
+              ⬇ EXPORT CSV
+            </button>
+            <button id="admin-logout-btn" class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem; border-color: rgba(239,68,68,0.4); color: #f87171;" aria-label="Log Out Admin">
+              LOGOUT
+            </button>
+            <button id="admin-close-btn" class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" aria-label="Close Admin Modal">
+              ✕ CLOSE
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Navigation Tabs Bar -->
+        <div style="display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; overflow-x: auto;" class="font-mono">
+          <button id="tab-btn-kpi" class="btn-primary" style="padding: 8px 16px; font-size: 0.75rem;">📊 Overview KPIs</button>
+          <button id="tab-btn-live" class="btn-secondary" style="padding: 8px 16px; font-size: 0.75rem;">🌐 Live Visitors</button>
+          <button id="tab-btn-projects" class="btn-secondary" style="padding: 8px 16px; font-size: 0.75rem;">📁 Projects Manager</button>
+          <button id="tab-btn-messages" class="btn-secondary" style="padding: 8px 16px; font-size: 0.75rem;">📬 Recruiter Messages</button>
+          <button id="tab-btn-logs" class="btn-secondary" style="padding: 8px 16px; font-size: 0.75rem;">🛡️ Security Audit Logs</button>
+        </div>
+
+        <!-- TAB CONTENT 1: OVERVIEW KPIS -->
+        <div id="tab-content-kpi">
+          <div class="admin-card-grid" style="margin-bottom: 24px;">
+            <div class="admin-kpi-card font-mono">
+              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">REAL VISITORS</div>
+              <div id="kpi-visitors" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--color-nebula-cyan);">1</div>
+              <div style="font-size: 0.7rem; color: #10b981;">● Live Telemetry</div>
+            </div>
+
+            <div class="admin-kpi-card font-mono">
+              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">RESUME DOWNLOADS</div>
+              <div id="kpi-resume" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: #10b981;">0</div>
+              <div style="font-size: 0.7rem; color: var(--color-muted-text);">ATS PDF Clicks</div>
+            </div>
+
+            <div class="admin-kpi-card font-mono">
+              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">ACTIVE PROJECTS</div>
+              <div id="kpi-projects" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: #f59e0b;">3</div>
+              <div style="font-size: 0.7rem; color: var(--color-muted-text);">Portfolio, RMS, ERP</div>
+            </div>
+
+            <div class="admin-kpi-card font-mono">
+              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">UNREAD MESSAGES</div>
+              <div id="kpi-unread" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--color-quantum-violet);">1</div>
+              <div style="font-size: 0.7rem; color: var(--color-nebula-cyan);">Direct Contact Form</div>
+            </div>
+
+            <div class="admin-kpi-card font-mono">
+              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">GITHUB CLICKS</div>
+              <div id="kpi-github" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--color-nebula-cyan);">0</div>
+              <div style="font-size: 0.7rem; color: var(--color-muted-text);">profile/anuragsahu0</div>
+            </div>
+
+            <div class="admin-kpi-card font-mono">
+              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">LINKEDIN CLICKS</div>
+              <div id="kpi-linkedin" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: #10b981;">0</div>
+              <div style="font-size: 0.7rem; color: var(--color-muted-text);">in/anurag-sahu-5a</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 2: LIVE VISITORS -->
+        <div id="tab-content-live" style="display: none;" class="font-mono">
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px;">
+            <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--color-starlight-white); margin-bottom: 12px;">
+              🌐 Active Real-Time Visitor Sessions
+            </h3>
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
+                <thead>
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--color-muted-text);">
+                    <th style="padding: 10px;">IP ADDRESS</th>
+                    <th style="padding: 10px;">CURRENT ROUTE</th>
+                    <th style="padding: 10px;">BROWSER</th>
+                    <th style="padding: 10px;">OS</th>
+                    <th style="padding: 10px;">DEVICE</th>
+                    <th style="padding: 10px;">STATUS</th>
+                  </tr>
+                </thead>
+                <tbody id="live-visitors-table-body">
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 12px; font-weight: 700; color: var(--color-starlight-white);">127.0.0.1 (Current Session)</td>
+                    <td style="padding: 12px; color: var(--color-nebula-cyan); font-weight: 700;">/#admin</td>
+                    <td style="padding: 12px; color: var(--color-muted-text);">Chrome</td>
+                    <td style="padding: 12px; color: var(--color-muted-text);">macOS</td>
+                    <td style="padding: 12px; color: var(--color-muted-text);">Desktop</td>
+                    <td style="padding: 12px;"><span style="padding: 2px 8px; border-radius: 12px; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.4); color: #10b981; font-weight: 700;">ONLINE NOW</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 3: PROJECTS MANAGER -->
+        <div id="tab-content-projects" style="display: none;" class="font-mono">
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px;">
+            <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--color-starlight-white); margin-bottom: 16px;">
+              📁 Active Portfolio Projects CMS
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(6,182,212,0.3); border-radius: 14px; padding: 16px;">
+                <div style="color: var(--color-nebula-cyan); font-size: 0.7rem; font-weight: 700; margin-bottom: 4px;">PROJECT 01 • FLAGSHIP BUILD</div>
+                <h4 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Portfolio</h4>
+                <p style="color: var(--color-muted-text); font-size: 0.75rem; margin-bottom: 12px;">Production-ready personal platform with telemetry & admin console.</p>
+                <span style="padding: 2px 8px; border-radius: 10px; background: rgba(16,185,129,0.2); color: #10b981; font-size: 0.7rem; font-weight: 700;">🟢 Completed</span>
+              </div>
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(245,158,11,0.3); border-radius: 14px; padding: 16px;">
+                <div style="color: #f59e0b; font-size: 0.7rem; font-weight: 700; margin-bottom: 4px;">PROJECT 02 • ENTERPRISE SYSTEM</div>
+                <h4 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Restaurant Management System</h4>
+                <p style="color: var(--color-muted-text); font-size: 0.75rem; margin-bottom: 12px;">Multi-tenant POS, kitchen order display, and billing engine.</p>
+                <span style="padding: 2px 8px; border-radius: 10px; background: rgba(245,158,11,0.2); color: #f59e0b; font-size: 0.7rem; font-weight: 700;">🟡 Coming Soon</span>
+              </div>
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(245,158,11,0.3); border-radius: 14px; padding: 16px;">
+                <div style="color: #f59e0b; font-size: 0.7rem; font-weight: 700; margin-bottom: 4px;">PROJECT 03 • ACADEMIC ERP</div>
+                <h4 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Smart College ERP</h4>
+                <p style="color: var(--color-muted-text); font-size: 0.75rem; margin-bottom: 12px;">Student attendance, result publishing & fee collection portal.</p>
+                <span style="padding: 2px 8px; border-radius: 10px; background: rgba(245,158,11,0.2); color: #f59e0b; font-size: 0.7rem; font-weight: 700;">🟡 Coming Soon</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 4: RECRUITER MESSAGES -->
+        <div id="tab-content-messages" style="display: none;" class="font-mono">
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px;">
+            <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--color-starlight-white); margin-bottom: 16px;">
+              📬 Recruiter Direct Messages (MongoDB Stored)
+            </h3>
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
+                <thead>
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--color-muted-text);">
+                    <th style="padding: 10px;">SENDER</th>
+                    <th style="padding: 10px;">COMPANY</th>
+                    <th style="padding: 10px;">SUBJECT</th>
+                    <th style="padding: 10px;">STATUS</th>
+                    <th style="padding: 10px; text-align: right;">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-messages-table-body">
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 12px; font-weight: 700; color: var(--color-starlight-white);">Sarah Jenkins<br><span style="font-size:0.7rem; color: var(--color-muted-text);">sarah@stripe.com</span></td>
+                    <td style="padding: 12px; color: var(--color-muted-text);">Stripe</td>
+                    <td style="padding: 12px; color: var(--color-starlight-white);">Summer 2026 SWE Internship Opportunity</td>
+                    <td style="padding: 12px;"><span style="padding: 2px 8px; border-radius: 12px; background: rgba(6,182,212,0.2); border: 1px solid rgba(6,182,212,0.4); color: var(--color-nebula-cyan); font-weight: 700;">UNREAD</span></td>
+                    <td style="padding: 12px; text-align: right;"><a href="mailto:sarah@stripe.com?subject=Re: Internship Inquiry" class="btn-primary" style="padding: 4px 10px; font-size: 0.7rem;">Reply</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 5: SECURITY AUDIT LOGS -->
+        <div id="tab-content-logs" style="display: none;" class="font-mono">
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px;">
+            <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--color-starlight-white); margin-bottom: 16px;">
+              🛡️ Administrative Security & Action Logs
+            </h3>
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
+                <thead>
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--color-muted-text);">
+                    <th style="padding: 10px;">ACTION</th>
+                    <th style="padding: 10px;">TARGET</th>
+                    <th style="padding: 10px;">IP ADDRESS</th>
+                    <th style="padding: 10px;">TIMESTAMP</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-logs-table-body">
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 12px; font-weight: 700; color: var(--color-nebula-cyan);">ADMIN_LOGIN_SUCCESS</td>
+                    <td style="padding: 12px; color: var(--color-muted-text);">User (anurag@admin.com)</td>
+                    <td style="padding: 12px; color: var(--color-muted-text);">127.0.0.1</td>
+                    <td style="padding: 12px; color: var(--color-muted-text);">Live Active Session</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CLI TERMINAL OVERLAY MODAL -->
+  <div id="terminal-modal" role="dialog" aria-label="CLI Command Line Interface">
+    <div class="terminal-window">
+      <div class="terminal-header">
+        <div class="terminal-buttons">
+          <div class="term-btn term-close"></div>
+          <div class="term-btn term-min"></div>
+          <div class="term-btn term-max"></div>
+        </div>
+        <div class="font-mono" style="font-size: 0.75rem; color: var(--color-muted-text);">
+          ANURAG SAHU TELEMETRY CLI v2.4
+        </div>
+        <div style="width: 40px;"></div>
+      </div>
+
+      <div id="terminal-body" class="terminal-body" role="log" aria-live="polite">
+        <div class="terminal-line" style="color: var(--color-starlight-white);">
+          [INITIALIZING ANURAG SAHU TELEMETRY CLI PROTOCOL...]
+        </div>
+        <div class="terminal-line" style="color: var(--color-muted-text);">
+          Type <span style="color: var(--color-nebula-cyan); font-weight: 700;">'help'</span> to list available commands.
+        </div>
+      </div>
+
+      <div style="padding: 12px 20px; border-top: 1px solid var(--color-glass-border); background: rgba(0,0,0,0.4);">
+        <div class="terminal-input-line">
+          <span class="terminal-prompt">anurag@dev:~$</span>
+          <input type="text" id="terminal-input" class="terminal-input" placeholder="type a command..." aria-label="Terminal command input">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" role="status" aria-live="polite">✓ COPIED TO CLIPBOARD</div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-content">
+      <div>
+        <span>&copy; 2026 Anurag Sahu. Built with Full-Stack Precision & Anti-Gravity Physics.</span>
+      </div>
+      <div>
+        <a href="mailto:shivasahu0612@gmail.com" class="font-mono" style="color: var(--color-nebula-cyan); text-decoration: underline;" aria-label="Send direct email to shivasahu0612@gmail.com">shivasahu0612@gmail.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // Direct Admin Modal Trigger Handler
+    const adminBtn = document.getElementById('btn-admin-trigger');
+    const adminModal = document.getElementById('admin-modal');
+    const adminCloseBtn = document.getElementById('admin-close-btn');
+
+    if (adminBtn && adminModal) {
+      adminBtn.addEventListener('click', () => {
+        adminModal.classList.add('active');
+      });
+    }
+    if (adminCloseBtn && adminModal) {
+      adminCloseBtn.addEventListener('click', () => {
+        adminModal.classList.remove('active');
+      });
+    }
+
+    // Auto open if URL has #admin
+    if (window.location.hash === '#admin') {
+      if (adminModal) adminModal.classList.add('active');
+    }
+  </script>
+</body>
+</html>

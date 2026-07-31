@@ -1,0 +1,40 @@
+/* ANTI GRAVITY — Glassmorphism & Visual Utilities */
+
+.glass-panel {
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: var(--shadow-glass);
+}
+
+.glass-panel-hover {
+  transition: border-color var(--duration-normal) var(--ease-smooth),
+              box-shadow var(--duration-normal) var(--ease-smooth),
+              transform var(--duration-normal) var(--ease-smooth);
+}
+
+.glass-panel-hover:hover {
+  border-color: rgba(6, 182, 212, 0.3);
+  box-shadow: 0 12px 40px 0 rgba(6, 182, 212, 0.15);
+  transform: translateY(-2px);
+}
+
+.heading-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--color-starlight-white) 40%, var(--color-nebula-cyan) 80%, var(--color-quantum-violet) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
+}
+
+.focus-ring-cyan {
+  outline: none;
+}
+
+.focus-ring-cyan:focus-visible {
+  outline: 2px solid var(--color-nebula-cyan);
+  outline-offset: 2px;
+}

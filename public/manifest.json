@@ -1,0 +1,18 @@
+{
+  "short_name": "Anurag Sahu",
+  "name": "Anurag Sahu — Anti Gravity Portfolio",
+  "description": "Full-Stack Web & AI/ML Developer Portfolio of Anurag Sahu.",
+  "icons": [
+    {
+      "src": "/assets/anurag-portrait-sm.webp",
+      "type": "image/webp",
+      "sizes": "300x300",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#030712",
+  "theme_color": "#030712",
+  "display": "standalone",
+  "orientation": "portrait"
+}

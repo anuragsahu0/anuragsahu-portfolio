@@ -1,0 +1,52 @@
+{
+  "name": "anti-gravity-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext js,jsx --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,css,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,css,json,md}\"",
+    "preview": "vite preview",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.105.0",
+    "@react-three/fiber": "^8.16.0",
+    "clsx": "^2.1.0",
+    "framer-motion": "^11.0.8",
+    "lucide-react": "^0.354.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
+    "tailwind-merge": "^2.2.1",
+    "three": "^0.162.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.34.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "postcss": "^8.4.35",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.1.6"
+  }
+}

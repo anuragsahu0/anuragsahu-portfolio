@@ -1,0 +1,45 @@
+/* ANTI GRAVITY — Design Tokens & CSS Variables */
+
+:root {
+  /* Color Tokens */
+  --color-space-black: #030712;
+  --color-void-dark: #0B0F19;
+  --color-glass-surface: rgba(17, 24, 39, 0.65);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-starlight-white: #F9FAFB;
+  --color-muted-text: #9CA3AF;
+  --color-dim-text: #6B7280;
+  --color-nebula-cyan: #06B6D4;
+  --color-quantum-violet: #8B5CF6;
+  --color-gravity-amber: #F59E0B;
+  --color-success-green: #10B981;
+
+  /* Font Family Tokens */
+  --font-display: 'Space Grotesk', -apple-system, sans-serif;
+  --font-heading: 'Outfit', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Border Radius Tokens */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 100px;
+
+  /* Shadow & Elevation Tokens */
+  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --shadow-cyan-glow: 0 0 24px 0 rgba(6, 182, 212, 0.35);
+  --shadow-violet-glow: 0 0 24px 0 rgba(139, 92, 246, 0.35);
+
+  /* Spacing Base Unit (8pt Basis) */
+  --space-unit: 8px;
+
+  /* Motion & Easing Tokens */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
