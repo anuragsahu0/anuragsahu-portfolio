@@ -98,29 +98,29 @@
 </head>
 <body>
 
-  <!-- ✨ TRENDY PREMIUM 3-SECOND INTRO SCREEN -->
+  <!-- 🎬 AWWWARDS-LEVEL CINEMATIC SHUTTER PRELOADER -->
   <div id="portfolio-preloader">
-    <div class="preloader-glow-ambient"></div>
+    <div class="preloader-spotlight"></div>
 
-    <div class="preloader-card-trendy font-mono">
-      <div class="preloader-top-tag">
-        <span class="preloader-pulse-dot"></span>
-        <span>ANURAG SAHU • PORTFOLIO ENGINE v3.0</span>
+    <div class="preloader-cinematic-wrap font-mono">
+      <div class="preloader-badge-tag">
+        <span class="preloader-dot-pulse"></span>
+        <span>ANURAG SAHU • PORTFOLIO 2026</span>
       </div>
 
-      <div class="preloader-title-wrap">
-        <h1 class="preloader-big-title">ANURAG SAHU</h1>
-        <p class="preloader-sub-tag">FULL-STACK & AI ARCHITECTURE</p>
+      <div class="preloader-counter-huge">
+        <span id="preloader-counter">00</span><span class="preloader-percent-symbol">%</span>
       </div>
 
-      <div class="preloader-counter-row">
-        <div id="preloader-counter" class="preloader-counter-num">000</div>
-        <div id="preloader-status-text" class="preloader-status">INITIALIZING SYSTEM...</div>
+      <div class="preloader-info-row">
+        <span id="preloader-status-text">INITIALIZING CORE SYSTEMS</span>
+        <span class="preloader-dot-sep">•</span>
+        <span>B.TECH CSE (AI & ML)</span>
       </div>
+    </div>
 
-      <div class="preloader-bar-track">
-        <div id="preloader-bar" class="preloader-bar-progress"></div>
-      </div>
+    <div class="preloader-bottom-laser">
+      <div id="preloader-bar" class="preloader-laser-fill"></div>
     </div>
   </div>
 
@@ -131,127 +131,118 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: #070305;
+      background: #040204;
       z-index: 999999;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease, transform 0.5s ease;
+      transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.5s ease;
     }
-    #portfolio-preloader.fade-out {
-      opacity: 0;
-      filter: blur(12px);
-      transform: scale(1.04);
+    #portfolio-preloader.shutter-up {
+      transform: translateY(-100%);
       pointer-events: none;
     }
-    .preloader-glow-ambient {
+    .preloader-spotlight {
       position: absolute;
-      width: 600px;
-      height: 600px;
+      width: 700px;
+      height: 700px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(239, 68, 68, 0.22) 0%, rgba(239, 68, 68, 0) 70%);
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0) 70%);
       pointer-events: none;
-      animation: pulseAmbient 3s ease-in-out infinite alternate;
+      animation: pulseSpotlight 3s ease-in-out infinite alternate;
     }
-    @keyframes pulseAmbient {
-      0% { transform: scale(0.9); opacity: 0.7; }
-      100% { transform: scale(1.15); opacity: 1; }
+    @keyframes pulseSpotlight {
+      0% { transform: scale(0.85); opacity: 0.6; }
+      100% { transform: scale(1.2); opacity: 1; }
     }
-    .preloader-card-trendy {
+    .preloader-cinematic-wrap {
       position: relative;
       z-index: 10;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 32px;
+      gap: 20px;
       text-align: center;
-      max-width: 520px;
-      width: 88%;
-      padding: 48px 36px;
-      border-radius: 30px;
-      background: rgba(18, 5, 10, 0.82);
-      backdrop-filter: blur(35px);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      box-shadow: 0 0 70px rgba(239, 68, 68, 0.25), inset 0 0 25px rgba(239, 68, 68, 0.1);
+      width: 90%;
+      max-width: 800px;
     }
-    .preloader-top-tag {
+    .preloader-badge-tag {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 5px 16px;
-      border-radius: 20px;
+      padding: 6px 18px;
+      border-radius: 30px;
       background: rgba(239, 68, 68, 0.12);
       border: 1px solid rgba(239, 68, 68, 0.4);
       color: #ef4444;
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-    }
-    .preloader-pulse-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #ef4444;
-      box-shadow: 0 0 10px #ef4444;
-    }
-    .preloader-big-title {
-      font-family: var(--font-display, 'Space Grotesk', sans-serif);
-      font-size: clamp(2.4rem, 6vw, 3.8rem);
-      font-weight: 900;
-      letter-spacing: 4px;
-      color: #ffffff;
-      margin: 0;
-      text-shadow: 0 0 30px rgba(239, 68, 68, 0.7), 0 0 60px rgba(239, 68, 68, 0.3);
-    }
-    .preloader-sub-tag {
-      font-size: 0.8rem;
-      color: #f43f5e;
+      font-size: 0.75rem;
       font-weight: 800;
       letter-spacing: 2px;
-      margin-top: 6px;
     }
-    .preloader-counter-row {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
+    .preloader-dot-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 12px #ef4444;
+      animation: blinkDot 1s infinite alternate;
     }
-    .preloader-counter-num {
-      font-family: var(--font-mono, monospace);
-      font-size: 3.5rem;
+    @keyframes blinkDot {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+    .preloader-counter-huge {
+      font-family: var(--font-display, 'Space Grotesk', sans-serif);
+      font-size: clamp(5.5rem, 15vw, 10rem);
       font-weight: 900;
       color: #ffffff;
-      letter-spacing: -1px;
+      letter-spacing: -4px;
       line-height: 1;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+      text-shadow: 0 0 40px rgba(239, 68, 68, 0.5), 0 0 80px rgba(239, 68, 68, 0.2);
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
     }
-    .preloader-status {
-      font-size: 0.74rem;
+    .preloader-percent-symbol {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: #ef4444;
+      margin-left: 6px;
+      letter-spacing: 0;
+    }
+    .preloader-info-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.8rem;
       color: #9ca3af;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
-    .preloader-bar-track {
+    .preloader-dot-sep {
+      color: #ef4444;
+    }
+    .preloader-bottom-laser {
+      position: absolute;
+      bottom: 0;
+      left: 0;
       width: 100%;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid rgba(239, 68, 68, 0.25);
+      height: 3px;
+      background: rgba(255, 255, 255, 0.05);
     }
-    .preloader-bar-progress {
+    .preloader-laser-fill {
       width: 0%;
       height: 100%;
       background: linear-gradient(90deg, #ef4444, #f43f5e, #06b6d4);
-      border-radius: 10px;
-      transition: width 0.03s linear;
       box-shadow: 0 0 15px rgba(239, 68, 68, 0.9);
+      transition: width 0.04s linear;
     }
   </style>
 
   <script>
-    (function run2SecondPreloader() {
+    (function runCinematicPreloader() {
       let percent = 0;
       const bar = document.getElementById('preloader-bar');
       const counter = document.getElementById('preloader-counter');
@@ -259,20 +250,20 @@
       const container = document.getElementById('portfolio-preloader');
 
       const statuses = [
-        { p: 30, text: 'INITIALIZING ENGINE...' },
-        { p: 70, text: 'COMPILING DESIGN SYSTEM...' },
+        { p: 25, text: 'INITIALIZING CORE SYSTEMS' },
+        { p: 60, text: 'LOADING TELEMETRY CONSOLE' },
+        { p: 90, text: 'READYING ANURAG PORTFOLIO' },
         { p: 100, text: 'WELCOME TO ANURAG PORTFOLIO' }
       ];
 
-      // Ultra-fast 1.6s progress count + 0.4s fade reveal = 2.0s total
+      // Exact 2.7s counter progress + 0.3s shutter transition = 3.0s total
       const interval = setInterval(() => {
-        percent += Math.floor(Math.random() * 5) + 4;
+        percent += Math.floor(Math.random() * 3) + 2;
         if (percent > 100) percent = 100;
 
         if (bar) bar.style.width = percent + '%';
         if (counter) {
-          const valStr = percent < 10 ? '00' + percent : (percent < 100 ? '0' + percent : '100');
-          counter.textContent = valStr;
+          counter.textContent = (percent < 10 ? '0' : '') + percent;
         }
 
         const currentStatus = statuses.find(s => percent <= s.p);
@@ -284,14 +275,14 @@
           clearInterval(interval);
           setTimeout(() => {
             if (container) {
-              container.classList.add('fade-out');
+              container.classList.add('shutter-up');
               setTimeout(() => {
                 container.style.display = 'none';
-              }, 400);
+              }, 700);
             }
-          }, 100);
+          }, 200);
         }
-      }, 36);
+      }, 70);
     })();
   </script>
 
