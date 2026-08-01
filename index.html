@@ -251,7 +251,7 @@
   </style>
 
   <script>
-    (function run3SecondPreloader() {
+    (function run2SecondPreloader() {
       let percent = 0;
       const bar = document.getElementById('preloader-bar');
       const counter = document.getElementById('preloader-counter');
@@ -259,15 +259,14 @@
       const container = document.getElementById('portfolio-preloader');
 
       const statuses = [
-        { p: 25, text: 'INITIALIZING ENGINE...' },
-        { p: 60, text: 'COMPILING DESIGN SYSTEM...' },
-        { p: 90, text: 'READYING PORTFOLIO...' },
+        { p: 30, text: 'INITIALIZING ENGINE...' },
+        { p: 70, text: 'COMPILING DESIGN SYSTEM...' },
         { p: 100, text: 'WELCOME TO ANURAG PORTFOLIO' }
       ];
 
-      // Exact 2.8 second loading progress loop (35 steps * 78ms = 2.73s + 0.37s hold/fade = 3.1s total)
+      // Ultra-fast 1.6s progress count + 0.4s fade reveal = 2.0s total
       const interval = setInterval(() => {
-        percent += Math.floor(Math.random() * 3) + 2;
+        percent += Math.floor(Math.random() * 5) + 4;
         if (percent > 100) percent = 100;
 
         if (bar) bar.style.width = percent + '%';
@@ -288,11 +287,11 @@
               container.classList.add('fade-out');
               setTimeout(() => {
                 container.style.display = 'none';
-              }, 500);
+              }, 400);
             }
-          }, 200);
+          }, 100);
         }
-      }, 78);
+      }, 36);
     })();
   </script>
 
