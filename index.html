@@ -98,27 +98,28 @@
 </head>
 <body>
 
-  <!-- 🚀 BIG BOLD 3D CINEMATIC GLASS PRELOADER -->
+  <!-- ✨ TRENDY PREMIUM 3-SECOND INTRO SCREEN -->
   <div id="portfolio-preloader">
-    <div id="preloader-3d-card" class="preloader-3d-card font-mono">
-      <div class="preloader-monogram-3d">
-        <div class="preloader-glow-aura"></div>
-        <span>AS</span>
+    <div class="preloader-glow-ambient"></div>
+
+    <div class="preloader-card-trendy font-mono">
+      <div class="preloader-top-tag">
+        <span class="preloader-pulse-dot"></span>
+        <span>ANURAG SAHU • PORTFOLIO ENGINE v3.0</span>
       </div>
 
-      <div class="preloader-brand">
-        <h2 class="preloader-title">ANURAG SAHU</h2>
-        <div class="preloader-sub">FULL-STACK & AI ARCHITECTURE • PORTFOLIO ENGINE</div>
+      <div class="preloader-title-wrap">
+        <h1 class="preloader-big-title">ANURAG SAHU</h1>
+        <p class="preloader-sub-tag">FULL-STACK & AI ARCHITECTURE</p>
       </div>
 
-      <div class="preloader-progress-wrap">
-        <div class="preloader-bar-bg">
-          <div id="preloader-bar" class="preloader-bar-fill"></div>
-        </div>
-        <div class="preloader-status-row">
-          <span id="preloader-status-text">INITIALIZING ENGINE...</span>
-          <span id="preloader-counter">00%</span>
-        </div>
+      <div class="preloader-counter-row">
+        <div id="preloader-counter" class="preloader-counter-num">000</div>
+        <div id="preloader-status-text" class="preloader-status">INITIALIZING SYSTEM...</div>
+      </div>
+
+      <div class="preloader-bar-track">
+        <div id="preloader-bar" class="preloader-bar-progress"></div>
       </div>
     </div>
   </div>
@@ -130,152 +131,150 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: radial-gradient(circle at center, #18050c 0%, #030712 100%);
+      background: #070305;
       z-index: 999999;
       display: flex;
       align-items: center;
       justify-content: center;
-      perspective: 1200px;
       overflow: hidden;
-      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease, transform 0.5s ease;
     }
     #portfolio-preloader.fade-out {
       opacity: 0;
-      transform: scale(1.05) rotateX(4deg);
+      filter: blur(12px);
+      transform: scale(1.04);
       pointer-events: none;
     }
-    .preloader-3d-card {
+    .preloader-glow-ambient {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.22) 0%, rgba(239, 68, 68, 0) 70%);
+      pointer-events: none;
+      animation: pulseAmbient 3s ease-in-out infinite alternate;
+    }
+    @keyframes pulseAmbient {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      100% { transform: scale(1.15); opacity: 1; }
+    }
+    .preloader-card-trendy {
+      position: relative;
+      z-index: 10;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 28px;
+      gap: 32px;
       text-align: center;
-      max-width: 580px;
-      width: 90%;
-      padding: 52px 42px;
-      border-radius: 32px;
-      background: rgba(18, 5, 10, 0.88);
+      max-width: 520px;
+      width: 88%;
+      padding: 48px 36px;
+      border-radius: 30px;
+      background: rgba(18, 5, 10, 0.82);
       backdrop-filter: blur(35px);
-      border: 1px solid rgba(239, 68, 68, 0.45);
-      box-shadow: 0 0 80px rgba(239, 68, 68, 0.3), inset 0 0 30px rgba(239, 68, 68, 0.12);
-      transform-style: preserve-3d;
-      transform: perspective(1200px) rotateX(4deg);
-      transition: transform 0.12s ease-out;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      box-shadow: 0 0 70px rgba(239, 68, 68, 0.25), inset 0 0 25px rgba(239, 68, 68, 0.1);
     }
-    .preloader-monogram-3d {
-      position: relative;
-      width: 100px;
-      height: 100px;
-      border-radius: 24px;
-      background: linear-gradient(135deg, #ef4444, #991b1b);
-      display: flex;
+    .preloader-top-tag {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-family: var(--font-display, 'Space Grotesk', sans-serif);
-      font-size: 2.6rem;
-      font-weight: 900;
-      color: #ffffff;
-      box-shadow: 0 0 40px rgba(239, 68, 68, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    .preloader-glow-aura {
-      position: absolute;
-      inset: -10px;
-      border-radius: 28px;
-      border: 2px solid transparent;
-      border-top-color: #ef4444;
-      border-bottom-color: #06b6d4;
-      animation: spin3DAura 2s linear infinite;
-    }
-    @keyframes spin3DAura {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .preloader-title {
-      font-family: var(--font-display, 'Space Grotesk', sans-serif);
-      font-size: clamp(2.2rem, 5vw, 3.4rem);
-      font-weight: 900;
-      background: linear-gradient(135deg, #ffffff 40%, #ef4444 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: 3px;
-      margin: 0;
-      filter: drop-shadow(0 0 25px rgba(239, 68, 68, 0.4));
-    }
-    .preloader-sub {
-      font-size: 0.78rem;
+      gap: 8px;
+      padding: 5px 16px;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.4);
       color: #ef4444;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+    }
+    .preloader-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 10px #ef4444;
+    }
+    .preloader-big-title {
+      font-family: var(--font-display, 'Space Grotesk', sans-serif);
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 900;
+      letter-spacing: 4px;
+      color: #ffffff;
+      margin: 0;
+      text-shadow: 0 0 30px rgba(239, 68, 68, 0.7), 0 0 60px rgba(239, 68, 68, 0.3);
+    }
+    .preloader-sub-tag {
+      font-size: 0.8rem;
+      color: #f43f5e;
       font-weight: 800;
       letter-spacing: 2px;
-      margin-top: 8px;
+      margin-top: 6px;
     }
-    .preloader-progress-wrap {
-      width: 100%;
+    .preloader-counter-row {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-    }
-    .preloader-bar-bg {
-      width: 100%;
-      height: 8px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-    .preloader-bar-fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #ef4444, #06b6d4, #8b5cf6);
-      border-radius: 12px;
-      transition: width 0.04s linear;
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.9);
-    }
-    .preloader-status-row {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 0.78rem;
+      gap: 4px;
+    }
+    .preloader-counter-num {
+      font-family: var(--font-mono, monospace);
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -1px;
+      line-height: 1;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+    .preloader-status {
+      font-size: 0.74rem;
       color: #9ca3af;
       font-weight: 700;
+      letter-spacing: 1px;
     }
-    #preloader-counter {
-      color: #06b6d4;
-      font-size: 1.4rem;
-      font-weight: 900;
-      text-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
+    .preloader-bar-track {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+    .preloader-bar-progress {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #f43f5e, #06b6d4);
+      border-radius: 10px;
+      transition: width 0.03s linear;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.9);
     }
   </style>
 
   <script>
-    (function initBig3DPreloader() {
-      const card = document.getElementById('preloader-3d-card');
-      const container = document.getElementById('portfolio-preloader');
+    (function run3SecondPreloader() {
+      let percent = 0;
       const bar = document.getElementById('preloader-bar');
       const counter = document.getElementById('preloader-counter');
       const statusText = document.getElementById('preloader-status-text');
+      const container = document.getElementById('portfolio-preloader');
 
-      window.addEventListener('mousemove', (e) => {
-        if (!card || !container || container.style.display === 'none') return;
-        const xAxis = (window.innerWidth / 2 - e.clientX) / 22;
-        const yAxis = (window.innerHeight / 2 - e.clientY) / 22;
-        card.style.transform = `perspective(1200px) rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-      });
-
-      let percent = 0;
       const statuses = [
-        { p: 25, text: 'INITIALIZING SYSTEM ARCHITECTURE...' },
-        { p: 55, text: 'COMPILING FULL-STACK ENGINE...' },
-        { p: 85, text: 'LOADING TELEMETRY CONSOLE...' },
+        { p: 25, text: 'INITIALIZING ENGINE...' },
+        { p: 60, text: 'COMPILING DESIGN SYSTEM...' },
+        { p: 90, text: 'READYING PORTFOLIO...' },
         { p: 100, text: 'WELCOME TO ANURAG PORTFOLIO' }
       ];
 
+      // Exact 2.8 second loading progress loop (35 steps * 78ms = 2.73s + 0.37s hold/fade = 3.1s total)
       const interval = setInterval(() => {
-        percent += Math.floor(Math.random() * 5) + 3;
+        percent += Math.floor(Math.random() * 3) + 2;
         if (percent > 100) percent = 100;
 
         if (bar) bar.style.width = percent + '%';
-        if (counter) counter.textContent = (percent < 10 ? '0' : '') + percent + '%';
+        if (counter) {
+          const valStr = percent < 10 ? '00' + percent : (percent < 100 ? '0' + percent : '100');
+          counter.textContent = valStr;
+        }
 
         const currentStatus = statuses.find(s => percent <= s.p);
         if (currentStatus && statusText) {
@@ -289,11 +288,11 @@
               container.classList.add('fade-out');
               setTimeout(() => {
                 container.style.display = 'none';
-              }, 600);
+              }, 500);
             }
           }, 200);
         }
-      }, 30);
+      }, 78);
     })();
   </script>
 
