@@ -95,10 +95,193 @@
 </head>
 <body>
 
-  <!-- Screen Reader Skip Navigation Link -->
-  <a href="#main-content" style="position: absolute; top: -100px; left: 10px; z-index: 1000; padding: 12px 16px; background: #06b6d4; color: #030712; font-family: monospace; font-weight: 700; border-radius: 8px; transition: top 0.2s;" onfocus="this.style.top='10px'" onblur="this.style.top='-100px'">
-    Skip to main content
-  </a>
+  <!-- 🚀 STUNNING ANIMATED PRELOADER INTRO SCREEN -->
+  <div id="portfolio-preloader">
+    <div class="preloader-content font-mono">
+      <div class="preloader-avatar-wrap">
+        <div class="preloader-ring-outer"></div>
+        <div class="preloader-ring-inner"></div>
+        <img src="assets/anurag-portrait-sm.jpg" alt="Anurag Sahu" class="preloader-img">
+      </div>
+      <div class="preloader-brand">
+        <h2 class="preloader-title">ANURAG SAHU</h2>
+        <div class="preloader-sub">DEVELOPER PORTFOLIO ENGINE</div>
+      </div>
+      <div class="preloader-progress-wrap">
+        <div class="preloader-bar-bg">
+          <div id="preloader-bar" class="preloader-bar-fill"></div>
+        </div>
+        <div class="preloader-status-row">
+          <span id="preloader-status-text">INITIALIZING ENGINE...</span>
+          <span id="preloader-counter">00%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    #portfolio-preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #030712;
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #portfolio-preloader.fade-out {
+      opacity: 0;
+      transform: scale(1.04);
+      pointer-events: none;
+    }
+    .preloader-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+      max-width: 340px;
+      width: 90%;
+    }
+    .preloader-avatar-wrap {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .preloader-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+    }
+    .preloader-ring-outer {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top-color: #ef4444;
+      border-bottom-color: #06b6d4;
+      animation: spinRing 1.4s linear infinite;
+    }
+    .preloader-ring-inner {
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-left-color: #8b5cf6;
+      border-right-color: #ef4444;
+      animation: spinRingRev 1s linear infinite;
+    }
+    @keyframes spinRing {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes spinRingRev {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-360deg); }
+    }
+    .preloader-title {
+      font-family: var(--font-display, 'Space Grotesk', sans-serif);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 2px;
+      margin: 0;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+    .preloader-sub {
+      font-size: 0.7rem;
+      color: #ef4444;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin-top: 4px;
+    }
+    .preloader-progress-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .preloader-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    .preloader-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #06b6d4, #8b5cf6);
+      border-radius: 10px;
+      transition: width 0.05s linear;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+    }
+    .preloader-status-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: #9ca3af;
+      font-weight: 600;
+    }
+    #preloader-counter {
+      color: #06b6d4;
+      font-weight: 800;
+    }
+  </style>
+
+  <script>
+    (function runPreloader() {
+      let percent = 0;
+      const bar = document.getElementById('preloader-bar');
+      const counter = document.getElementById('preloader-counter');
+      const statusText = document.getElementById('preloader-status-text');
+      const preloader = document.getElementById('portfolio-preloader');
+
+      const statuses = [
+        { p: 20, text: 'INITIALIZING CORE ENGINE...' },
+        { p: 45, text: 'LOADING TELEMETRY SYSTEMS...' },
+        { p: 75, text: 'COMPILING DESIGN SYSTEM...' },
+        { p: 95, text: 'READYING PORTFOLIO...' },
+        { p: 100, text: 'WELCOME TO ANURAG PORTFOLIO' }
+      ];
+
+      const interval = setInterval(() => {
+        percent += Math.floor(Math.random() * 4) + 2;
+        if (percent > 100) percent = 100;
+
+        if (bar) bar.style.width = percent + '%';
+        if (counter) counter.textContent = (percent < 10 ? '0' : '') + percent + '%';
+
+        const currentStatus = statuses.find(s => percent <= s.p);
+        if (currentStatus && statusText) {
+          statusText.textContent = currentStatus.text;
+        }
+
+        if (percent >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            if (preloader) {
+              preloader.classList.add('fade-out');
+              setTimeout(() => {
+                preloader.style.display = 'none';
+              }, 600);
+            }
+          }, 300);
+        }
+      }, 35);
+    })();
+  </script>
 
   <!-- Background WebGL/Canvas Particle Field -->
   <canvas id="bg-canvas"></canvas>
