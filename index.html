@@ -98,17 +98,17 @@
 </head>
 <body>
 
-  <!-- 🚀 SLEEK APPLE-QUALITY 3D GLASS PRELOADER -->
+  <!-- 🚀 BIG BOLD 3D CINEMATIC GLASS PRELOADER -->
   <div id="portfolio-preloader">
     <div id="preloader-3d-card" class="preloader-3d-card font-mono">
-      <div class="preloader-avatar-wrap">
-        <div class="preloader-glow-ring"></div>
-        <img src="assets/anurag-portrait-sm.jpg" alt="Anurag Sahu" class="preloader-img">
+      <div class="preloader-monogram-3d">
+        <div class="preloader-glow-aura"></div>
+        <span>AS</span>
       </div>
 
       <div class="preloader-brand">
         <h2 class="preloader-title">ANURAG SAHU</h2>
-        <div class="preloader-sub">PORTFOLIO ENGINE v3.0</div>
+        <div class="preloader-sub">FULL-STACK & AI ARCHITECTURE • PORTFOLIO ENGINE</div>
       </div>
 
       <div class="preloader-progress-wrap">
@@ -130,140 +130,157 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: #060204;
+      background: radial-gradient(circle at center, #18050c 0%, #030712 100%);
       z-index: 999999;
       display: flex;
       align-items: center;
       justify-content: center;
-      perspective: 1000px;
+      perspective: 1200px;
       overflow: hidden;
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
     #portfolio-preloader.fade-out {
       opacity: 0;
-      transform: scale(1.03);
+      transform: scale(1.05) rotateX(4deg);
       pointer-events: none;
     }
     .preloader-3d-card {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 22px;
+      gap: 28px;
       text-align: center;
-      max-width: 350px;
-      width: 88%;
-      padding: 38px 28px;
-      border-radius: 26px;
-      background: rgba(18, 5, 10, 0.85);
-      backdrop-filter: blur(30px);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      box-shadow: 0 0 60px rgba(239, 68, 68, 0.25), inset 0 0 20px rgba(239, 68, 68, 0.1);
+      max-width: 580px;
+      width: 90%;
+      padding: 52px 42px;
+      border-radius: 32px;
+      background: rgba(18, 5, 10, 0.88);
+      backdrop-filter: blur(35px);
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      box-shadow: 0 0 80px rgba(239, 68, 68, 0.3), inset 0 0 30px rgba(239, 68, 68, 0.12);
       transform-style: preserve-3d;
-      transition: transform 0.15s ease-out;
+      transform: perspective(1200px) rotateX(4deg);
+      transition: transform 0.12s ease-out;
     }
-    .preloader-avatar-wrap {
+    .preloader-monogram-3d {
       position: relative;
-      width: 84px;
-      height: 84px;
+      width: 100px;
+      height: 100px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #ef4444, #991b1b);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-family: var(--font-display, 'Space Grotesk', sans-serif);
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: #ffffff;
+      box-shadow: 0 0 40px rgba(239, 68, 68, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
-    .preloader-img {
-      width: 74px;
-      height: 74px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
-    }
-    .preloader-glow-ring {
+    .preloader-glow-aura {
       position: absolute;
-      inset: -6px;
-      border-radius: 50%;
+      inset: -10px;
+      border-radius: 28px;
       border: 2px solid transparent;
       border-top-color: #ef4444;
-      border-right-color: #ef4444;
-      animation: spinRing 1.5s linear infinite;
+      border-bottom-color: #06b6d4;
+      animation: spin3DAura 2s linear infinite;
     }
-    @keyframes spinRing {
+    @keyframes spin3DAura {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
     .preloader-title {
       font-family: var(--font-display, 'Space Grotesk', sans-serif);
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #ffffff;
-      letter-spacing: 2px;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, #ffffff 40%, #ef4444 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 3px;
       margin: 0;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      filter: drop-shadow(0 0 25px rgba(239, 68, 68, 0.4));
     }
     .preloader-sub {
-      font-size: 0.72rem;
+      font-size: 0.78rem;
       color: #ef4444;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      margin-top: 4px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-top: 8px;
     }
     .preloader-progress-wrap {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 12px;
     }
     .preloader-bar-bg {
       width: 100%;
-      height: 5px;
+      height: 8px;
       background: rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
+      border-radius: 12px;
       overflow: hidden;
-      border: 1px solid rgba(239, 68, 68, 0.25);
+      border: 1px solid rgba(239, 68, 68, 0.3);
     }
     .preloader-bar-fill {
       width: 0%;
       height: 100%;
-      background: linear-gradient(90deg, #ef4444, #f43f5e);
-      border-radius: 10px;
+      background: linear-gradient(90deg, #ef4444, #06b6d4, #8b5cf6);
+      border-radius: 12px;
       transition: width 0.04s linear;
-      box-shadow: 0 0 12px rgba(239, 68, 68, 0.9);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.9);
     }
     .preloader-status-row {
       display: flex;
       justify-content: space-between;
-      font-size: 0.7rem;
+      align-items: center;
+      font-size: 0.78rem;
       color: #9ca3af;
-      font-weight: 600;
+      font-weight: 700;
     }
     #preloader-counter {
-      color: #ef4444;
-      font-weight: 800;
+      color: #06b6d4;
+      font-size: 1.4rem;
+      font-weight: 900;
+      text-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
     }
   </style>
 
   <script>
-    (function initCleanPreloader() {
+    (function initBig3DPreloader() {
       const card = document.getElementById('preloader-3d-card');
       const container = document.getElementById('portfolio-preloader');
       const bar = document.getElementById('preloader-bar');
       const counter = document.getElementById('preloader-counter');
       const statusText = document.getElementById('preloader-status-text');
 
-      // 3D Card Mouse Tilt Effect
       window.addEventListener('mousemove', (e) => {
         if (!card || !container || container.style.display === 'none') return;
-        const xAxis = (window.innerWidth / 2 - e.clientX) / 25;
-        const yAxis = (window.innerHeight / 2 - e.clientY) / 25;
-        card.style.transform = `perspective(1000px) rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        const xAxis = (window.innerWidth / 2 - e.clientX) / 22;
+        const yAxis = (window.innerHeight / 2 - e.clientY) / 22;
+        card.style.transform = `perspective(1200px) rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
       });
 
       let percent = 0;
+      const statuses = [
+        { p: 25, text: 'INITIALIZING SYSTEM ARCHITECTURE...' },
+        { p: 55, text: 'COMPILING FULL-STACK ENGINE...' },
+        { p: 85, text: 'LOADING TELEMETRY CONSOLE...' },
+        { p: 100, text: 'WELCOME TO ANURAG PORTFOLIO' }
+      ];
+
       const interval = setInterval(() => {
         percent += Math.floor(Math.random() * 5) + 3;
         if (percent > 100) percent = 100;
 
         if (bar) bar.style.width = percent + '%';
         if (counter) counter.textContent = (percent < 10 ? '0' : '') + percent + '%';
+
+        const currentStatus = statuses.find(s => percent <= s.p);
+        if (currentStatus && statusText) {
+          statusText.textContent = currentStatus.text;
+        }
 
         if (percent >= 100) {
           clearInterval(interval);
@@ -272,7 +289,7 @@
               container.classList.add('fade-out');
               setTimeout(() => {
                 container.style.display = 'none';
-              }, 500);
+              }, 600);
             }
           }, 200);
         }
