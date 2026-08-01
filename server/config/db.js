@@ -7,12 +7,12 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/anti_gravity_portfolio';
 
-  // Fail immediately instead of buffering for 10s when DB is unavailable
-  mongoose.set('bufferCommands', false);
-
   try {
     const conn = await mongoose.connect(mongoURI, {
-      serverSelectionTimeoutMS: 3000,
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      family: 4,
     });
     console.log(`🍃 MONGODB CONNECTED: ${conn.connection.host}`);
   } catch (err) {

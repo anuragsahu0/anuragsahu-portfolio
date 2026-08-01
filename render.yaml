@@ -1,0 +1,23 @@
+# ==============================================================================
+# ANTI GRAVITY PORTFOLIO — RENDER / RAILWAY CLOUD INFRASTRUCTURE BLUEPRINT
+# Candidate: Anurag Sahu
+# ==============================================================================
+
+services:
+  - type: web
+    name: anti-gravity-backend
+    env: node
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5001
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
