@@ -703,6 +703,8 @@ footer {
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
+.mobile-only-hero-portrait {
+  display: none;
 }
 
 /* ==============================================================================
@@ -788,58 +790,21 @@ footer {
     display: none !important;
   }
 
-  /* 3. Hero Section Mobile Stack: Headline -> Portrait Photo -> Subtitle -> Actions */
+  /* 3. Hero Section Stack & Mobile Portrait Placement DIRECTLY ABOVE Explore My Work Button */
   #hero {
     padding-top: 85px !important;
     margin-top: 0 !important;
   }
 
-  #hero div[style*="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))"] {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 20px !important;
-    text-align: center !important;
-    width: 100% !important;
-  }
-
-  /* Left column text flex container */
-  #hero div[style*="align-items: flex-start"] {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    width: 100% !important;
-  }
-
-  #hero h1.hero-title {
-    order: 1 !important;
-    font-size: 1.85rem !important;
-    line-height: 1.25 !important;
-    margin-bottom: 14px !important;
-    text-align: center !important;
-    word-break: break-word !important;
-  }
-
-  /* 2. Bio Subtitle Text */
-  #hero p.hero-subtitle {
-    order: 2 !important;
-    font-size: 0.9rem !important;
-    line-height: 1.55 !important;
-    text-align: center !important;
-    margin-bottom: 16px !important;
-  }
-
-  /* 3. Compact Aesthetic Product Showcase Portrait Card DIRECTLY ABOVE Explore My Work Button */
-  #hero div.glass-panel.glass-spotlight,
-  #hero div[style*="padding: 20px; border-radius: 28px"] {
-    order: 3 !important;
+  .mobile-only-hero-portrait {
+    display: block !important;
     width: 100% !important;
     max-width: 240px !important;
-    margin: 8px auto 20px auto !important;
-    padding: 10px !important;
-    border-radius: 20px !important;
-    background: rgba(11, 15, 25, 0.85) !important;
-    border: 1px solid rgba(6, 182, 212, 0.45) !important;
-    box-shadow: 0 12px 35px rgba(6, 182, 212, 0.25) !important;
+    margin: 12px auto 20px auto !important;
+  }
+
+  .desktop-only-hero-portrait {
+    display: none !important;
   }
 
   div[style*="height: 500px"] {
