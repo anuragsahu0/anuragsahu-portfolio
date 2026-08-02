@@ -841,7 +841,11 @@ footer {
     justify-content: center !important;
   }
 
-  /* 5. Mobile Cards & Grid */
+  /* 5. Mobile Cards & Grid - Override Inline Styles */
+  div[style*="grid-template-columns"],
+  div[style*="minmax(320px"],
+  div[style*="minmax(280px"],
+  div[style*="minmax(220px"],
   .projects-grid,
   #projects-container,
   .skills-grid,
@@ -849,6 +853,15 @@ footer {
     display: flex !important;
     flex-direction: column !important;
     gap: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  div[style*="repeat(3, 1fr)"] {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    width: 100% !important;
   }
 
   .glass-card, .project-card, .skill-category, .timeline-card {
@@ -856,6 +869,8 @@ footer {
     border-radius: 14px !important;
     background: rgba(10, 15, 30, 0.8) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .project-metrics {
