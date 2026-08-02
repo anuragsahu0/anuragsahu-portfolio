@@ -706,17 +706,16 @@ footer {
 }
 
 /* ==============================================================================
-   ANTI GRAVITY PORTFOLIO — COMPREHENSIVE MOBILE RESPONSIVE DESIGN SYSTEM
-   Media Query Breakpoints: max-width: 768px & max-width: 480px
-   ============================================================================== */
-
-/* ==============================================================================
-   ANTI GRAVITY PORTFOLIO — PREMIUM AWWWARDS-GRADE MOBILE DESIGN SYSTEM
+   ANTI GRAVITY PORTFOLIO — OPTIMIZED MOBILE DESIGN SYSTEM
    Media Query Breakpoints: max-width: 768px & max-width: 480px
    ============================================================================== */
 
 @media (max-width: 768px) {
-  /* 1. Global Viewport & Container Reset */
+  /* 1. Universal Box Model & Viewport Boundaries */
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+
   html, body {
     overflow-x: hidden !important;
     width: 100% !important;
@@ -726,48 +725,42 @@ footer {
   }
 
   .container {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
     max-width: 100% !important;
+    width: 100% !important;
     box-sizing: border-box !important;
   }
 
   section {
-    padding: 48px 0 !important;
+    padding: 40px 0 !important;
   }
 
-  /* 2. Glassmorphic Sticky Mobile Header */
+  /* 2. Glassmorphic Mobile Header & Nav Bar */
   nav {
     position: sticky !important;
     top: 0 !important;
     z-index: 9999 !important;
-    background: rgba(3, 7, 18, 0.85) !important;
+    background: rgba(3, 7, 18, 0.92) !important;
     backdrop-filter: blur(16px) !important;
     -webkit-backdrop-filter: blur(16px) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-    padding: 14px 0 !important;
+    padding: 10px 0 !important;
   }
 
   nav .container {
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
+    gap: 10px !important;
     align-items: stretch !important;
-  }
-
-  nav .logo-wrapper {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    width: 100% !important;
   }
 
   .nav-links {
     display: flex !important;
     overflow-x: auto !important;
     white-space: nowrap !important;
-    gap: 12px !important;
-    padding: 4px 0 6px 0 !important;
+    gap: 8px !important;
+    padding: 2px 0 4px 0 !important;
     width: 100% !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -778,8 +771,8 @@ footer {
   }
 
   .nav-link {
-    font-size: 0.8rem !important;
-    padding: 6px 14px !important;
+    font-size: 0.78rem !important;
+    padding: 6px 12px !important;
     background: rgba(255, 255, 255, 0.04) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: 20px !important;
@@ -787,13 +780,7 @@ footer {
     flex-shrink: 0 !important;
   }
 
-  .nav-link.active, .nav-link:hover {
-    color: var(--color-nebula-cyan) !important;
-    border-color: rgba(6, 182, 212, 0.4) !important;
-    background: rgba(6, 182, 212, 0.1) !important;
-  }
-
-  /* 3. Hero Section Typography & Portrait Stack */
+  /* 3. Hero Section Stack & Typography */
   .hero-grid,
   .hero-container,
   div[style*="grid-template-columns: 1fr 1fr"],
@@ -801,43 +788,35 @@ footer {
   div[style*="grid-template-columns: 1fr 1.2fr"] {
     display: flex !important;
     flex-direction: column-reverse !important;
-    gap: 36px !important;
+    gap: 24px !important;
     text-align: center !important;
   }
 
-  .hero-text-content, .hero-content {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-  }
-
   h1, .hero-title {
-    font-size: 2.1rem !important;
+    font-size: 1.85rem !important;
     line-height: 1.25 !important;
-    letter-spacing: -0.02em !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 12px !important;
     word-break: break-word !important;
   }
 
   h2 {
-    font-size: 1.6rem !important;
+    font-size: 1.45rem !important;
     line-height: 1.3 !important;
   }
 
   p, .hero-subtitle {
-    font-size: 0.95rem !important;
-    line-height: 1.6 !important;
-    max-width: 100% !important;
+    font-size: 0.9rem !important;
+    line-height: 1.55 !important;
   }
 
   .hero-portrait-wrapper, .portrait-card {
-    width: 220px !important;
-    height: 220px !important;
-    margin: 0 auto 16px auto !important;
+    width: 160px !important;
+    height: 160px !important;
+    margin: 0 auto 12px auto !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    border: 3px solid rgba(6, 182, 212, 0.5) !important;
-    box-shadow: 0 0 35px rgba(6, 182, 212, 0.3) !important;
+    border: 2px solid rgba(6, 182, 212, 0.6) !important;
+    box-shadow: 0 0 25px rgba(6, 182, 212, 0.3) !important;
   }
 
   .hero-portrait-wrapper img, .portrait-card img {
@@ -846,63 +825,65 @@ footer {
     object-fit: cover !important;
   }
 
-  /* 4. Action Buttons Stack */
-  .hero-buttons, .btn-group, div[style*="display: flex; gap:"] {
-    flex-direction: column !important;
-    width: 100% !important;
-    gap: 12px !important;
+  /* 4. Preloader Scaled Overlay */
+  .preloader-counter-huge {
+    font-size: 3.2rem !important;
   }
 
-  .btn, button, a.btn {
-    width: 100% !important;
+  .preloader-badge-tag {
+    font-size: 0.68rem !important;
+    padding: 4px 12px !important;
+  }
+
+  .preloader-info-row {
+    font-size: 0.72rem !important;
+    flex-wrap: wrap !important;
     justify-content: center !important;
-    padding: 14px 20px !important;
-    font-size: 0.9rem !important;
-    border-radius: 12px !important;
-    box-sizing: border-box !important;
   }
 
-  /* 5. Projects & Experience Cards */
+  /* 5. Mobile Cards & Grid */
   .projects-grid,
   #projects-container,
   .skills-grid,
   .contact-grid {
     display: flex !important;
     flex-direction: column !important;
-    gap: 20px !important;
+    gap: 16px !important;
   }
 
   .glass-card, .project-card, .skill-category, .timeline-card {
-    padding: 20px !important;
-    border-radius: 16px !important;
-    background: rgba(10, 15, 30, 0.75) !important;
+    padding: 16px !important;
+    border-radius: 14px !important;
+    background: rgba(10, 15, 30, 0.8) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
   }
 
   .project-metrics {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
-    margin: 16px 0 !important;
+    gap: 8px !important;
   }
 
   .metric-pill {
-    padding: 10px !important;
-    border-radius: 10px !important;
-    text-align: center !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
+    font-size: 0.8rem !important;
   }
 
-  /* 6. Telemetry Interactive Sandbox */
-  .sandbox-container {
-    display: flex !important;
+  /* 6. Buttons & Touch Action Target */
+  .hero-buttons, .btn-group, div[style*="display: flex; gap:"] {
     flex-direction: column !important;
-    padding: 18px !important;
-    gap: 24px !important;
+    width: 100% !important;
+    gap: 10px !important;
   }
 
-  #loss-chart {
-    height: 180px !important;
+  .btn, button, a.btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px 16px !important;
+    font-size: 0.88rem !important;
+    border-radius: 10px !important;
+    box-sizing: border-box !important;
   }
 
   /* 7. Footer Layout */
@@ -910,34 +891,34 @@ footer {
     flex-direction: column !important;
     align-items: center !important;
     text-align: center !important;
-    gap: 16px !important;
+    gap: 12px !important;
   }
 
   /* 8. Touch Active Feedback */
   .btn:active, .glass-card:active, .nav-link:active {
     transform: scale(0.98) !important;
-    transition: transform 0.1s ease !important;
   }
 }
 
 @media (max-width: 480px) {
   h1, .hero-title {
-    font-size: 1.8rem !important;
+    font-size: 1.65rem !important;
   }
 
   h2 {
-    font-size: 1.4rem !important;
+    font-size: 1.3rem !important;
   }
 
   .hero-portrait-wrapper, .portrait-card {
-    width: 180px !important;
-    height: 180px !important;
+    width: 140px !important;
+    height: 140px !important;
   }
 
   .container {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
   }
 }
+
 
 
