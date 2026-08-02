@@ -788,26 +788,44 @@ footer {
     display: none !important;
   }
 
-  /* 3. Hero Section Stack, Spacing & Aesthetic Product Portrait */
+  /* 3. Hero Section Mobile Stack: Headline -> Portrait Photo -> Subtitle -> Actions */
   #hero {
     padding-top: 85px !important;
     margin-top: 0 !important;
   }
 
-  .hero-grid,
-  .hero-container,
-  div[style*="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))"] {
+  #hero div[style*="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))"] {
     display: flex !important;
-    flex-direction: column-reverse !important;
-    gap: 24px !important;
+    flex-direction: column !important;
+    gap: 20px !important;
     text-align: center !important;
+    width: 100% !important;
   }
 
-  /* Compact Ultra-Aesthetic Hardware Product Showcase Portrait Card */
-  div.glass-panel.glass-spotlight,
-  div[style*="padding: 20px; border-radius: 28px"] {
-    max-width: 250px !important;
-    margin: 0 auto !important;
+  /* Left column text flex container */
+  #hero div[style*="align-items: flex-start"] {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  #hero h1.hero-title {
+    order: 1 !important;
+    font-size: 1.85rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 16px !important;
+    text-align: center !important;
+    word-break: break-word !important;
+  }
+
+  /* Compact Aesthetic Product Showcase Portrait Card RIGHT BELOW H1 Headline */
+  #hero div.glass-panel.glass-spotlight,
+  #hero div[style*="padding: 20px; border-radius: 28px"] {
+    order: 2 !important;
+    width: 100% !important;
+    max-width: 240px !important;
+    margin: 8px auto 20px auto !important;
     padding: 10px !important;
     border-radius: 20px !important;
     background: rgba(11, 15, 25, 0.85) !important;
@@ -821,21 +839,32 @@ footer {
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
 
-  h1, .hero-title {
-    font-size: 1.85rem !important;
-    line-height: 1.25 !important;
-    margin-bottom: 12px !important;
-    word-break: break-word !important;
+  #hero p.hero-subtitle {
+    order: 3 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.55 !important;
+    text-align: center !important;
+    margin-bottom: 16px !important;
+  }
+
+  #hero .hero-actions {
+    order: 4 !important;
+    width: 100% !important;
+  }
+
+  #hero div[style*="display: flex; gap: 12px; margin-top: 4px;"] {
+    order: 5 !important;
+    width: 100% !important;
+  }
+
+  #hero div.glass-panel[style*="margin-top: 10px;"] {
+    order: 6 !important;
+    width: 100% !important;
   }
 
   h2 {
     font-size: 1.45rem !important;
     line-height: 1.3 !important;
-  }
-
-  p, .hero-subtitle {
-    font-size: 0.9rem !important;
-    line-height: 1.55 !important;
   }
 
   /* 4. Preloader Scaled Overlay */
@@ -854,7 +883,7 @@ footer {
     justify-content: center !important;
   }
 
-  /* 5. Mobile Cards & Grid - Override Inline Styles */
+  /* 5. Mobile Rectangular Cards - Fit 100% Edge-to-Edge to Phone Screen Width */
   div[style*="grid-template-columns"],
   div[style*="minmax(320px"],
   div[style*="minmax(280px"],
@@ -867,6 +896,7 @@ footer {
     flex-direction: column !important;
     gap: 16px !important;
     width: 100% !important;
+    max-width: 100% !important;
     box-sizing: border-box !important;
   }
 
@@ -877,13 +907,16 @@ footer {
     width: 100% !important;
   }
 
-  .glass-card, .project-card, .skill-category, .timeline-card {
+  .glass-panel, .glass-card, .project-card, .skill-category, .timeline-card {
     padding: 16px !important;
     border-radius: 14px !important;
     background: rgba(10, 15, 30, 0.8) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     width: 100% !important;
+    max-width: 100% !important;
     box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 
   .project-metrics {
