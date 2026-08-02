@@ -12,7 +12,7 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    minify: 'terser',
+    minify: 'esbuild',
     cssCodeSplit: true,
     sourcemap: false,
     chunkSizeWarningLimit: 800,
