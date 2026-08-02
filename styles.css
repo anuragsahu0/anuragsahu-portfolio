@@ -704,3 +704,141 @@ footer {
   flex-wrap: wrap;
   gap: 16px;
 }
+
+/* ==============================================================================
+   ANTI GRAVITY PORTFOLIO — COMPREHENSIVE MOBILE RESPONSIVE DESIGN SYSTEM
+   Media Query Breakpoints: max-width: 768px & max-width: 480px
+   ============================================================================== */
+
+@media (max-width: 768px) {
+  /* 1. Viewport & Universal Box Boundaries */
+  html, body {
+    overflow-x: hidden !important;
+    width: 100vw !important;
+    position: relative;
+  }
+
+  .container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    max-width: 100% !important;
+    overflow: hidden;
+  }
+
+  section {
+    padding: 60px 0 !important;
+  }
+
+  /* 2. Navigation Bar */
+  nav .container {
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+    justify-content: space-between !important;
+  }
+
+  .nav-links {
+    display: flex !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    padding-bottom: 8px !important;
+    width: 100% !important;
+    gap: 16px !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 3. Hero Section & Headlines */
+  .hero-grid,
+  .hero-container,
+  div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+
+  h1, .hero-title {
+    font-size: 2.2rem !important;
+    line-height: 1.2 !important;
+    word-break: break-word;
+  }
+
+  h2 {
+    font-size: 1.75rem !important;
+  }
+
+  /* 4. Preloader Overlay */
+  #portfolio-preloader h1 {
+    font-size: 2.8rem !important;
+  }
+
+  #preloader-percentage {
+    font-size: 3.5rem !important;
+  }
+
+  /* 5. Projects Grid & Cards */
+  .projects-grid,
+  #projects-container {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  .project-card {
+    padding: 20px !important;
+  }
+
+  .project-metrics {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* 6. Skills Grid */
+  .skills-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* 7. Interactive Telemetry Sandbox */
+  .sandbox-container {
+    grid-template-columns: 1fr !important;
+    padding: 20px !important;
+  }
+
+  /* 8. Contact Form & Footer */
+  .contact-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+
+  .footer-content {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+
+  /* 9. Terminal Modal */
+  .terminal-window {
+    width: 95% !important;
+    height: 85vh !important;
+  }
+}
+
+@media (max-width: 480px) {
+  h1, .hero-title {
+    font-size: 1.85rem !important;
+  }
+
+  .btn {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .hero-buttons {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+}
+
