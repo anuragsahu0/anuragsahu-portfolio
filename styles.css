@@ -710,39 +710,65 @@ footer {
    Media Query Breakpoints: max-width: 768px & max-width: 480px
    ============================================================================== */
 
+/* ==============================================================================
+   ANTI GRAVITY PORTFOLIO — PREMIUM AWWWARDS-GRADE MOBILE DESIGN SYSTEM
+   Media Query Breakpoints: max-width: 768px & max-width: 480px
+   ============================================================================== */
+
 @media (max-width: 768px) {
-  /* 1. Viewport & Universal Box Boundaries */
+  /* 1. Global Viewport & Container Reset */
   html, body {
     overflow-x: hidden !important;
-    width: 100vw !important;
+    width: 100% !important;
+    max-width: 100% !important;
     position: relative;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .container {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
     max-width: 100% !important;
-    overflow: hidden;
+    box-sizing: border-box !important;
   }
 
   section {
-    padding: 60px 0 !important;
+    padding: 48px 0 !important;
   }
 
-  /* 2. Navigation Bar */
+  /* 2. Glassmorphic Sticky Mobile Header */
+  nav {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 9999 !important;
+    background: rgba(3, 7, 18, 0.85) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 14px 0 !important;
+  }
+
   nav .container {
-    flex-wrap: wrap !important;
+    display: flex !important;
+    flex-direction: column !important;
     gap: 12px !important;
+    align-items: stretch !important;
+  }
+
+  nav .logo-wrapper {
+    display: flex !important;
     justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
   }
 
   .nav-links {
     display: flex !important;
     overflow-x: auto !important;
     white-space: nowrap !important;
-    padding-bottom: 8px !important;
+    gap: 12px !important;
+    padding: 4px 0 6px 0 !important;
     width: 100% !important;
-    gap: 16px !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
@@ -751,94 +777,167 @@ footer {
     display: none;
   }
 
-  /* 3. Hero Section & Headlines */
+  .nav-link {
+    font-size: 0.8rem !important;
+    padding: 6px 14px !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    color: var(--color-muted-text) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .nav-link.active, .nav-link:hover {
+    color: var(--color-nebula-cyan) !important;
+    border-color: rgba(6, 182, 212, 0.4) !important;
+    background: rgba(6, 182, 212, 0.1) !important;
+  }
+
+  /* 3. Hero Section Typography & Portrait Stack */
   .hero-grid,
   .hero-container,
-  div[style*="grid-template-columns"] {
-    grid-template-columns: 1fr !important;
-    gap: 32px !important;
+  div[style*="grid-template-columns: 1fr 1fr"],
+  div[style*="grid-template-columns: 1.2fr 0.8fr"],
+  div[style*="grid-template-columns: 1fr 1.2fr"] {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    gap: 36px !important;
+    text-align: center !important;
+  }
+
+  .hero-text-content, .hero-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
   }
 
   h1, .hero-title {
-    font-size: 2.2rem !important;
-    line-height: 1.2 !important;
-    word-break: break-word;
+    font-size: 2.1rem !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 16px !important;
+    word-break: break-word !important;
   }
 
   h2 {
-    font-size: 1.75rem !important;
+    font-size: 1.6rem !important;
+    line-height: 1.3 !important;
   }
 
-  /* 4. Preloader Overlay */
-  #portfolio-preloader h1 {
-    font-size: 2.8rem !important;
+  p, .hero-subtitle {
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+    max-width: 100% !important;
   }
 
-  #preloader-percentage {
-    font-size: 3.5rem !important;
+  .hero-portrait-wrapper, .portrait-card {
+    width: 220px !important;
+    height: 220px !important;
+    margin: 0 auto 16px auto !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    border: 3px solid rgba(6, 182, 212, 0.5) !important;
+    box-shadow: 0 0 35px rgba(6, 182, 212, 0.3) !important;
   }
 
-  /* 5. Projects Grid & Cards */
-  .projects-grid,
-  #projects-container {
-    grid-template-columns: 1fr !important;
-    gap: 24px !important;
+  .hero-portrait-wrapper img, .portrait-card img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
   }
 
-  .project-card {
-    padding: 20px !important;
-  }
-
-  .project-metrics {
-    grid-template-columns: 1fr 1fr !important;
+  /* 4. Action Buttons Stack */
+  .hero-buttons, .btn-group, div[style*="display: flex; gap:"] {
+    flex-direction: column !important;
+    width: 100% !important;
     gap: 12px !important;
   }
 
-  /* 6. Skills Grid */
-  .skills-grid {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
+  .btn, button, a.btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 14px 20px !important;
+    font-size: 0.9rem !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
   }
 
-  /* 7. Interactive Telemetry Sandbox */
-  .sandbox-container {
-    grid-template-columns: 1fr !important;
-    padding: 20px !important;
-  }
-
-  /* 8. Contact Form & Footer */
+  /* 5. Projects & Experience Cards */
+  .projects-grid,
+  #projects-container,
+  .skills-grid,
   .contact-grid {
-    grid-template-columns: 1fr !important;
-    gap: 32px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
   }
 
+  .glass-card, .project-card, .skill-category, .timeline-card {
+    padding: 20px !important;
+    border-radius: 16px !important;
+    background: rgba(10, 15, 30, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .project-metrics {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    margin: 16px 0 !important;
+  }
+
+  .metric-pill {
+    padding: 10px !important;
+    border-radius: 10px !important;
+    text-align: center !important;
+  }
+
+  /* 6. Telemetry Interactive Sandbox */
+  .sandbox-container {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 18px !important;
+    gap: 24px !important;
+  }
+
+  #loss-chart {
+    height: 180px !important;
+  }
+
+  /* 7. Footer Layout */
   .footer-content {
     flex-direction: column !important;
-    align-items: flex-start !important;
+    align-items: center !important;
+    text-align: center !important;
     gap: 16px !important;
   }
 
-  /* 9. Terminal Modal */
-  .terminal-window {
-    width: 95% !important;
-    height: 85vh !important;
+  /* 8. Touch Active Feedback */
+  .btn:active, .glass-card:active, .nav-link:active {
+    transform: scale(0.98) !important;
+    transition: transform 0.1s ease !important;
   }
 }
 
 @media (max-width: 480px) {
   h1, .hero-title {
-    font-size: 1.85rem !important;
+    font-size: 1.8rem !important;
   }
 
-  .btn {
-    width: 100% !important;
-    justify-content: center !important;
-    text-align: center !important;
+  h2 {
+    font-size: 1.4rem !important;
   }
 
-  .hero-buttons {
-    flex-direction: column !important;
-    gap: 12px !important;
+  .hero-portrait-wrapper, .portrait-card {
+    width: 180px !important;
+    height: 180px !important;
+  }
+
+  .container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
   }
 }
+
 
