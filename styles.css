@@ -814,15 +814,24 @@ footer {
     order: 1 !important;
     font-size: 1.85rem !important;
     line-height: 1.25 !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 14px !important;
     text-align: center !important;
     word-break: break-word !important;
   }
 
-  /* Compact Aesthetic Product Showcase Portrait Card RIGHT BELOW H1 Headline */
+  /* 2. Bio Subtitle Text */
+  #hero p.hero-subtitle {
+    order: 2 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.55 !important;
+    text-align: center !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* 3. Compact Aesthetic Product Showcase Portrait Card DIRECTLY ABOVE Explore My Work Button */
   #hero div.glass-panel.glass-spotlight,
   #hero div[style*="padding: 20px; border-radius: 28px"] {
-    order: 2 !important;
+    order: 3 !important;
     width: 100% !important;
     max-width: 240px !important;
     margin: 8px auto 20px auto !important;
@@ -839,14 +848,7 @@ footer {
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
 
-  #hero p.hero-subtitle {
-    order: 3 !important;
-    font-size: 0.9rem !important;
-    line-height: 1.55 !important;
-    text-align: center !important;
-    margin-bottom: 16px !important;
-  }
-
+  /* 4. Action Buttons (Explore My Work & Resume) DIRECTLY BELOW Photo Card */
   #hero .hero-actions {
     order: 4 !important;
     width: 100% !important;
