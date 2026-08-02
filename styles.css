@@ -736,48 +736,56 @@ footer {
     padding: 40px 0 !important;
   }
 
-  /* 2. Glassmorphic Mobile Header & Nav Bar */
-  nav {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 9999 !important;
-    background: rgba(3, 7, 18, 0.92) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-    padding: 10px 0 !important;
-  }
-
-  nav .container {
-    display: flex !important;
+  /* 2. Glassmorphic Mobile Header & Nav Bar (#hud-header) */
+  #hud-header {
+    position: fixed !important;
+    top: 8px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 95% !important;
+    padding: 8px 12px !important;
     flex-direction: column !important;
-    gap: 10px !important;
-    align-items: stretch !important;
+    gap: 8px !important;
+    align-items: center !important;
+    border-radius: 16px !important;
+    background: rgba(11, 15, 25, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    z-index: 10000 !important;
   }
 
-  .nav-links {
+  .hud-logo {
+    font-size: 0.95rem !important;
+  }
+
+  nav, .hud-nav {
     display: flex !important;
     overflow-x: auto !important;
     white-space: nowrap !important;
-    gap: 8px !important;
-    padding: 2px 0 4px 0 !important;
+    gap: 6px !important;
+    padding: 2px 0 !important;
     width: 100% !important;
+    justify-content: flex-start !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
 
-  .nav-links::-webkit-scrollbar {
+  .hud-nav::-webkit-scrollbar {
     display: none;
   }
 
-  .nav-link {
-    font-size: 0.78rem !important;
-    padding: 6px 12px !important;
-    background: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 20px !important;
-    color: var(--color-muted-text) !important;
-    flex-shrink: 0 !important;
+  .hud-nav li a {
+    font-size: 0.75rem !important;
+    padding: 5px 12px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+  }
+
+  .hud-actions {
+    display: none !important;
   }
 
   /* 3. Hero Section Stack & Typography */
