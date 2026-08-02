@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "echo 'Static production ready'",
+    "build": "mkdir -p dist && cp -r index.html admin.html mobile.html app.js styles.css assets public dist/ 2>/dev/null || true",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext js,jsx --fix",
     "format": "prettier --write \"src/**/*.{js,jsx,css,json,md}\"",
