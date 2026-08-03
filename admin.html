@@ -574,26 +574,62 @@
     }
 
     function fetchMessages() {
+      const defaultMsgs = [
+        {
+          id: 'seed_1',
+          fullName: 'Sarah Jenkins',
+          email: 'sarah@stripe.com',
+          company: 'Stripe',
+          subject: 'Summer 2026 SWE Internship Opportunity',
+          message: 'Hi Anurag, we reviewed your portfolio and were very impressed with your Full-Stack and AI projects!',
+          status: 'unread',
+          createdAt: new Date(Date.now() - 3600000).toISOString()
+        },
+        {
+          id: 'seed_2',
+          fullName: 'Alex Vance',
+          email: 'alex@vercel.com',
+          company: 'Vercel',
+          subject: 'Full-Stack Developer & AI Systems Role',
+          message: 'Loved your 3D perspective grid preloader and live telemetry dashboard. Let us connect!',
+          status: 'read',
+          createdAt: new Date(Date.now() - 86400000).toISOString()
+        }
+      ];
+
       const localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
+      const allMsgs = [...localMsgs, ...defaultMsgs];
+
       const msgTableBody = document.querySelector('#panel-messages tbody');
       
+      const unreadCount = allMsgs.filter(m => m.status === 'unread').length;
       if (document.getElementById('p-kpi-messages')) {
-        document.getElementById('p-kpi-messages').textContent = localMsgs.length || 0;
+        document.getElementById('p-kpi-messages').textContent = allMsgs.length;
       }
       
-      if (msgTableBody && localMsgs.length > 0) {
-        const rowsHtml = localMsgs.map(m => `
+      if (msgTableBody) {
+        const rowsHtml = allMsgs.map((m, idx) => `
           <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
             <td class="py-3 px-3 font-bold text-starlight">${m.fullName}<br/><span class="text-[10px] text-muted">${m.email}</span></td>
-            <td class="py-3 px-3 text-muted">${m.company || 'Recruiter Direct'}</td>
-            <td class="py-3 px-3 text-starlight">${m.subject}<br/><span class="text-[10px] text-muted">${m.message}</span></td>
-            <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full ${m.status === 'unread' ? 'bg-ruby-red/20 text-ruby-red' : 'bg-emerald-500/20 text-emerald-400'} font-bold text-[10px]">${m.status.toUpperCase()}</span></td>
-            <td class="py-3 px-3 text-right"><a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject)}" class="px-2.5 py-1 rounded bg-ruby-red text-white text-[10px] font-bold hover:bg-ruby-red/80 transition-colors">Reply</a></td>
+            <td class="py-3 px-3 text-muted font-bold text-[11px]">${m.company || 'Recruiter Direct'}</td>
+            <td class="py-3 px-3 text-starlight"><div class="font-bold text-xs">${m.subject}</div><div class="text-[11px] text-muted mt-0.5 max-w-md">${m.message}</div></td>
+            <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full ${m.status === 'unread' ? 'bg-ruby-red/20 text-ruby-red border border-ruby-red/40' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'} font-bold text-[10px]">${m.status.toUpperCase()}</span></td>
+            <td class="py-3 px-3 text-right space-x-1">
+              <a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject)}" class="px-2.5 py-1 rounded bg-ruby-red text-white text-[10px] font-bold hover:bg-ruby-red/80 transition-colors inline-block">Reply</a>
+              <button onclick="deleteAdminMsg('${m.id}')" class="px-2 py-1 rounded bg-white/10 text-muted text-[10px] font-bold hover:bg-red-500/20 hover:text-red-400 transition-colors">Delete</button>
+            </td>
           </tr>
         `).join('');
         msgTableBody.innerHTML = rowsHtml;
       }
     }
+
+    window.deleteAdminMsg = function(msgId) {
+      let localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
+      localMsgs = localMsgs.filter(m => m.id !== msgId);
+      localStorage.setItem('ag_admin_messages', JSON.stringify(localMsgs));
+      fetchMessages();
+    };
 
     // Export Project Status Report Function
     function exportProjectReport() {
