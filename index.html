@@ -620,14 +620,17 @@
           <!-- 3D Flip Card 1: Frontend Web -->
           <div class="flip-card">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(6,182,212,0.4); flex-direction: column; justify-content: center; gap: 8px;">
-                <i data-lucide="layout" style="width: 36px; height: 36px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.1rem; margin: 0;">Frontend Web</h4>
-                <p style="font-size: 0.72rem; color: var(--color-nebula-cyan); margin: 0;" class="font-mono">Hover to flip 🔄</p>
+              <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(6,182,212,0.4); flex-direction: column; justify-content: center; gap: 8px;">
+                <i data-lucide="layout" style="width: 42px; height: 42px; color: var(--color-nebula-cyan); z-index: 2;" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Frontend Web</h4>
+                <span style="font-size: 0.72rem; color: var(--color-nebula-cyan); background: rgba(6,182,212,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.3); z-index: 2;" class="font-mono">React • Tailwind • JS 🔄</span>
+                <!-- Topic Logo Watermark -->
+                <i data-lucide="code-2" class="topic-watermark-icon" aria-hidden="true"></i>
               </div>
-              <div class="flip-card-back glass-panel">
-                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Tech Stack</h4>
-                <p style="font-size: 0.78rem; color: var(--color-starlight-white);" class="font-mono">React 18, Tailwind CSS, JS (ES6+), Modern HTML5/CSS3</p>
+              <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1rem; margin-bottom: 6px; z-index: 2;">Frontend Capabilities</h4>
+                <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">React 18 Architecture, Tailwind CSS Systems, ES6+ JavaScript, Responsive UI/UX</p>
+                <i data-lucide="layout" class="topic-watermark-icon" aria-hidden="true"></i>
               </div>
             </div>
           </div>
@@ -635,14 +638,16 @@
           <!-- 3D Flip Card 2: Backend & APIs -->
           <div class="flip-card">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(139,92,246,0.4); flex-direction: column; justify-content: center; gap: 8px;">
-                <i data-lucide="server" style="width: 36px; height: 36px; color: var(--color-quantum-violet);" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.1rem; margin: 0;">Backend & APIs</h4>
-                <p style="font-size: 0.72rem; color: var(--color-quantum-violet); margin: 0;" class="font-mono">Hover to flip 🔄</p>
+              <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(139,92,246,0.4); flex-direction: column; justify-content: center; gap: 8px;">
+                <i data-lucide="server" style="width: 42px; height: 42px; color: var(--color-quantum-violet); z-index: 2;" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Backend & APIs</h4>
+                <span style="font-size: 0.72rem; color: var(--color-quantum-violet); background: rgba(139,92,246,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(139,92,246,0.3); z-index: 2;" class="font-mono">Node.js • Express • REST 🔄</span>
+                <i data-lucide="terminal" class="topic-watermark-icon" style="color: var(--color-quantum-violet);" aria-hidden="true"></i>
               </div>
-              <div class="flip-card-back glass-panel">
-                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Backend Stack</h4>
-                <p style="font-size: 0.78rem; color: var(--color-starlight-white);" class="font-mono">Node.js, Express, REST APIs, JWT Auth, Microservices</p>
+              <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1rem; margin-bottom: 6px; z-index: 2;">Backend Engine</h4>
+                <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">Node.js Runtimes, Express Server API Routes, JWT Bearer Auth, Rate Limiters</p>
+                <i data-lucide="server" class="topic-watermark-icon" style="color: var(--color-quantum-violet);" aria-hidden="true"></i>
               </div>
             </div>
           </div>
@@ -650,14 +655,16 @@
           <!-- 3D Flip Card 3: AI & Machine Learning -->
           <div class="flip-card">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(6,182,212,0.4); flex-direction: column; justify-content: center; gap: 8px;">
-                <i data-lucide="cpu" style="width: 36px; height: 36px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.1rem; margin: 0;">AI & ML</h4>
-                <p style="font-size: 0.72rem; color: var(--color-nebula-cyan); margin: 0;" class="font-mono">Hover to flip 🔄</p>
+              <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(6,182,212,0.4); flex-direction: column; justify-content: center; gap: 8px;">
+                <i data-lucide="cpu" style="width: 42px; height: 42px; color: var(--color-nebula-cyan); z-index: 2;" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">AI & ML</h4>
+                <span style="font-size: 0.72rem; color: var(--color-nebula-cyan); background: rgba(6,182,212,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.3); z-index: 2;" class="font-mono">PyTorch • Python • GNNs 🔄</span>
+                <i data-lucide="bot" class="topic-watermark-icon" aria-hidden="true"></i>
               </div>
-              <div class="flip-card-back glass-panel">
-                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">AI/ML Stack</h4>
-                <p style="font-size: 0.78rem; color: var(--color-starlight-white);" class="font-mono">PyTorch, Python, NumPy, GNNs, Model Training</p>
+              <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1rem; margin-bottom: 6px; z-index: 2;">AI/ML Pipeline</h4>
+                <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">PyTorch Model Pipelines, Python Data Processing, Graph Neural Networks (GNNs)</p>
+                <i data-lucide="cpu" class="topic-watermark-icon" aria-hidden="true"></i>
               </div>
             </div>
           </div>
@@ -665,14 +672,16 @@
           <!-- 3D Flip Card 4: Databases -->
           <div class="flip-card">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(16,185,129,0.4); flex-direction: column; justify-content: center; gap: 8px;">
-                <i data-lucide="database" style="width: 36px; height: 36px; color: #10b981;" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.1rem; margin: 0;">Databases</h4>
-                <p style="font-size: 0.72rem; color: #10b981; margin: 0;" class="font-mono">Hover to flip 🔄</p>
+              <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(16,185,129,0.4); flex-direction: column; justify-content: center; gap: 8px;">
+                <i data-lucide="database" style="width: 42px; height: 42px; color: #10b981; z-index: 2;" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Databases</h4>
+                <span style="font-size: 0.72rem; color: #10b981; background: rgba(16,185,129,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(16,185,129,0.3); z-index: 2;" class="font-mono">MongoDB • Mongoose • SQL 🔄</span>
+                <i data-lucide="hard-drive" class="topic-watermark-icon" style="color: #10b981;" aria-hidden="true"></i>
               </div>
-              <div class="flip-card-back glass-panel">
-                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Database Systems</h4>
-                <p style="font-size: 0.78rem; color: var(--color-starlight-white);" class="font-mono">MongoDB Atlas, Mongoose, SQL & NoSQL Architecture</p>
+              <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1rem; margin-bottom: 6px; z-index: 2;">Database Architecture</h4>
+                <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">MongoDB Atlas Cloud Clusters, Mongoose ODM Schemas, SQL Data Modeling</p>
+                <i data-lucide="database" class="topic-watermark-icon" style="color: #10b981;" aria-hidden="true"></i>
               </div>
             </div>
           </div>
