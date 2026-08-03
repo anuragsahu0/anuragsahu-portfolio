@@ -1067,7 +1067,19 @@ footer {
     text-align: center !important;
   }
 
-  #hero h1, #hero p, .hero-title, .hero-subtitle, .section-title, .section-header {
+  /* Force override any inline style="text-align: left" or "align-items: flex-start" on mobile */
+  [style*="text-align: left"] {
+    text-align: center !important;
+  }
+  [style*="align-items: flex-start"] {
+    align-items: center !important;
+    text-align: center !important;
+  }
+  [style*="justify-content: flex-start"] {
+    justify-content: center !important;
+  }
+
+  #hero h1, #hero p, .hero-title, .hero-subtitle, .section-title, .section-header, h1, h2, h3 {
     text-align: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
