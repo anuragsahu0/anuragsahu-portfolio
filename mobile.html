@@ -582,7 +582,7 @@
             }).catch(() => {});
         } catch (e) {}
 
-        // 3. Email Delivery via FormSubmit AJAX to shivasahu0612@gmail.com
+        // 3. Email Delivery to shivasahu0612@gmail.com + Team Anurag Sahu Auto-Reply to Visitor
         try {
           fetch('https://formsubmit.co/ajax/shivasahu0612@gmail.com', {
             method: 'POST',
@@ -590,9 +590,10 @@
             body: JSON.stringify({
               name: name,
               email: email,
-              subject: `[PORTFOLIO INQUIRY] Message from ${name}`,
-              message: msg,
-              _autoresponse: `Thank you ${name} for contacting Anurag Sahu!\n\nI have received your message and will reply within 24–48 hours.\n\nGitHub: https://github.com/anuragsahu0`,
+              subject: `📩 NEW PORTFOLIO INQUIRY from ${name}`,
+              message: `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${name}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${msg}"`,
+              _replyto: email,
+              _autoresponse: `Dear ${name},\n\nThank you for reaching out to us!\n\nWe have successfully received your message and our team will get back to you within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`,
               _template: 'table'
             })
           }).catch(() => {});

@@ -725,7 +725,7 @@ function initContactForm() {
         }).catch(() => {});
     } catch (e) {}
 
-    // 3. Dispatch real email directly to shivasahu0612@gmail.com with visitor auto-reply
+    // 3. Email Delivery to shivasahu0612@gmail.com + Team Anurag Sahu Auto-Reply to Visitor
     try {
       fetch('https://formsubmit.co/ajax/shivasahu0612@gmail.com', {
         method: 'POST',
@@ -733,9 +733,10 @@ function initContactForm() {
         body: JSON.stringify({
           name: fullName,
           email: email,
-          subject: `[PORTFOLIO INQUIRY] Contact Inquiry from ${fullName}`,
-          message: message,
-          _autoresponse: `Thank you ${fullName} for contacting Anurag Sahu!\n\nI have received your message regarding "${message.substring(0, 40)}..." and will get back to you within 24–48 hours.\n\nExplore my GitHub: https://github.com/anuragsahu0\nLinkedIn: https://www.linkedin.com/in/anurag-sahu-5a46b9360/`,
+          subject: `📩 NEW PORTFOLIO INQUIRY from ${fullName}`,
+          message: `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${fullName}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${message}"`,
+          _replyto: email,
+          _autoresponse: `Dear ${fullName},\n\nThank you for reaching out to us!\n\nWe have successfully received your message and our team will get back to you within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`,
           _template: 'table'
         })
       }).catch(() => {});
