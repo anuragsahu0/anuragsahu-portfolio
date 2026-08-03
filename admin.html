@@ -569,6 +569,30 @@
       } catch (e) {
         console.warn('Analytics API notice, using memory fallback summary');
       }
+
+      fetchMessages();
+    }
+
+    function fetchMessages() {
+      const localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
+      const msgTableBody = document.querySelector('#panel-messages tbody');
+      
+      if (document.getElementById('p-kpi-messages')) {
+        document.getElementById('p-kpi-messages').textContent = localMsgs.length || 0;
+      }
+      
+      if (msgTableBody && localMsgs.length > 0) {
+        const rowsHtml = localMsgs.map(m => `
+          <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+            <td class="py-3 px-3 font-bold text-starlight">${m.fullName}<br/><span class="text-[10px] text-muted">${m.email}</span></td>
+            <td class="py-3 px-3 text-muted">${m.company || 'Recruiter Direct'}</td>
+            <td class="py-3 px-3 text-starlight">${m.subject}<br/><span class="text-[10px] text-muted">${m.message}</span></td>
+            <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full ${m.status === 'unread' ? 'bg-ruby-red/20 text-ruby-red' : 'bg-emerald-500/20 text-emerald-400'} font-bold text-[10px]">${m.status.toUpperCase()}</span></td>
+            <td class="py-3 px-3 text-right"><a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject)}" class="px-2.5 py-1 rounded bg-ruby-red text-white text-[10px] font-bold hover:bg-ruby-red/80 transition-colors">Reply</a></td>
+          </tr>
+        `).join('');
+        msgTableBody.innerHTML = rowsHtml;
+      }
     }
 
     // Export Project Status Report Function
@@ -607,6 +631,7 @@
     if (exportJsonBtn) exportJsonBtn.onclick = exportProjectReport;
 
     checkAuth();
+    fetchMessages();
     // Live Traffic Heartbeat Refresh every 3 seconds
     setInterval(fetchStats, 3000);
   </script>
