@@ -744,7 +744,7 @@ function initContactForm() {
     } catch (e) {}
 
     showToast('Message sent! Delivered to Anurag Sahu & Admin Dashboard');
-    alert(`Thank you ${fullName}! Your message has been sent successfully and delivered to Anurag Sahu (shivasahu0612@gmail.com). A thank-you auto-confirmation has been dispatched.`);
+    showSuccessModal(fullName, email);
     contactForm.reset();
 
     if (submitBtn) {
@@ -754,3 +754,24 @@ function initContactForm() {
     }
   });
 }
+
+function showSuccessModal(name, email) {
+  const modal = document.getElementById('contact-success-modal');
+  const card = document.getElementById('contact-success-modal-card');
+  const msg = document.getElementById('contact-success-modal-msg');
+  if (msg) {
+    msg.innerHTML = `Thank you <strong style="color:#ffffff;">${name}</strong>!<br/><br/>Your message has been delivered to <strong>Anurag Sahu</strong> & Team Anurag Sahu. You will receive a response at <span style="color:#06b6d4; font-weight:bold;">${email}</span> within 24–48 hours.`;
+  }
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+  }
+}
+
+window.closeSuccessModal = function() {
+  const modal = document.getElementById('contact-success-modal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+  }
+};

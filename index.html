@@ -1219,6 +1219,28 @@
   <!-- TOAST NOTIFICATION -->
   <div id="toast" role="status" aria-live="polite">✓ COPIED TO CLIPBOARD</div>
 
+  <!-- SLEEK GLASSMORPHIC SUCCESS CONFIRMATION MODAL -->
+  <div id="contact-success-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" style="position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);">
+    <div id="contact-success-modal-card" style="background: rgba(11, 15, 25, 0.95); padding: 28px; border-radius: 24px; max-width: 360px; width: 100%; text-align: center; border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(16, 185, 129, 0.2);">
+      <div style="width: 56px; height: 56px; margin: 0 auto 16px auto; border-radius: 50%; background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; display: flex; align-items: center; justify-content: center; color: #10b981; font-size: 24px; font-weight: bold;">
+        ✓
+      </div>
+      
+      <div style="margin-bottom: 12px;">
+        <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; font-weight: 700; color: #ffffff; margin: 0;">Message Delivered!</h3>
+        <span style="font-size: 10px; color: #10b981; font-family: monospace; font-weight: 700;">● Team Anurag Sahu Notification Sent</span>
+      </div>
+
+      <p id="contact-success-modal-msg" style="font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.6; font-family: Inter, sans-serif; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 20px;">
+        Thank you! Your message has been sent to Anurag Sahu. Expect a response within 24–48 hours.
+      </p>
+
+      <button onclick="closeSuccessModal()" style="width: 100%; padding: 12px 0; border-radius: 14px; background: linear-gradient(135deg, #10b981 0%, #0d9488 100%); color: #ffffff; font-weight: 700; font-family: monospace; font-size: 13px; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
+        OK
+      </button>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer>
     <div class="container footer-content">

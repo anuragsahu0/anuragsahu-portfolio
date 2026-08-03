@@ -459,6 +459,28 @@
 
   </main>
 
+  <!-- SLEEK GLASSMORPHIC SUCCESS CONFIRMATION MODAL -->
+  <div id="contact-success-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div id="contact-success-modal-card" class="mobile-glass p-6 rounded-3xl max-w-xs w-full text-center space-y-4 shadow-2xl border border-emerald-500/50 transform transition-all scale-95 opacity-0 duration-300">
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-500/30 text-2xl font-bold">
+        ✓
+      </div>
+      
+      <div class="space-y-1">
+        <h3 class="font-display text-lg font-bold text-white">Message Delivered!</h3>
+        <span class="text-[10px] text-emerald-400 font-mono font-bold">● Team Anurag Sahu Notification Sent</span>
+      </div>
+
+      <p id="contact-success-modal-msg" class="text-xs text-gray-300 leading-relaxed font-sans bg-black/40 p-3 rounded-2xl border border-white/5">
+        Thank you! Your message has been sent to Anurag Sahu. Expect a response within 24–48 hours.
+      </p>
+
+      <button onclick="closeSuccessModal()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold font-mono text-xs shadow-lg shadow-emerald-500/30 active:scale-95 transition-all">
+        OK
+      </button>
+    </div>
+  </div>
+
   <!-- FIXED BOTTOM MOBILE APP NAVBAR -->
   <nav class="fixed bottom-0 left-0 right-0 bg-[#030712]/95 backdrop-blur-xl border-t border-cyan-500/30 px-3 py-2 flex justify-around font-mono text-[10px] z-50 shadow-2xl">
     <button id="mnav-home" onclick="switchMobileTab('home')" class="flex flex-col items-center gap-1 nav-active py-1">
@@ -600,7 +622,7 @@
           }).catch(() => {});
         } catch (e) {}
 
-        alert(`Thank you ${name}! Your message has been sent successfully to Anurag Sahu (shivasahu0612@gmail.com). A thank-you auto-confirmation has been dispatched to your email.`);
+        showSuccessModal(name, email);
         mContactForm.reset();
 
         if (btn) {
@@ -609,6 +631,34 @@
           lucide.createIcons();
         }
       });
+    }
+
+    function showSuccessModal(name, email) {
+      const modal = document.getElementById('contact-success-modal');
+      const card = document.getElementById('contact-success-modal-card');
+      const msg = document.getElementById('contact-success-modal-msg');
+      if (msg) {
+        msg.innerHTML = `Thank you <strong class="text-white">${name}</strong>!<br/><br/>Your message has been sent to <strong>Anurag Sahu</strong> & Team Anurag Sahu. You will receive a response at <span class="text-cyan-400 font-bold">${email}</span> within 24–48 hours.`;
+      }
+      if (modal && card) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+          card.classList.remove('scale-95', 'opacity-0');
+          card.classList.add('scale-100', 'opacity-100');
+        }, 10);
+      }
+    }
+
+    function closeSuccessModal() {
+      const modal = document.getElementById('contact-success-modal');
+      const card = document.getElementById('contact-success-modal-card');
+      if (modal && card) {
+        card.classList.remove('scale-100', 'opacity-100');
+        card.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+        }, 200);
+      }
     }
 
     async function syncMobileProjectBadges() {
