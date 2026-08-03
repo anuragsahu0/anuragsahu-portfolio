@@ -733,7 +733,7 @@ function initContactForm() {
       fd.append('subject', `📩 NEW RECRUITER MESSAGE from ${fullName}`);
       fd.append('message', `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${fullName}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${message}"`);
       fd.append('_replyto', email);
-      fd.append('_autoresponse', `Dear ${fullName},\n\nMessage Delivered!\n\nThank you ${fullName}! Your message has been delivered to Anurag Sahu & Team Anurag Sahu.\n\nYou will receive a response at ${email} within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`);
+      fd.append('_autoresponse', `Dear ${fullName},\n\nMessage Delivered!\n\nThank you ${fullName}! Your message has been delivered to Anurag Sahu & Team Anurag Sahu.\n\nYou will receive a response at ${email} within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)`);
       fd.append('_template', 'table');
       fd.append('_captcha', 'false');
 
@@ -755,7 +755,7 @@ function initContactForm() {
           to: email,
           from_name: 'Team Anurag Sahu',
           subject: 'Message Delivered! — Team Anurag Sahu Confirmation',
-          message: `Dear ${fullName},\n\nMessage Delivered!\n\nThank you ${fullName}! Your message has been delivered to Anurag Sahu & Team Anurag Sahu.\n\nYour Message Summary:\n"${message}"\n\nYou will receive a response at ${email} within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nPortfolio: https://anuragsahu-portfolio.vercel.app\nGitHub: https://github.com/anuragsahu0`
+          message: `Dear ${fullName},\n\nMessage Delivered!\n\nThank you ${fullName}! Your message has been delivered to Anurag Sahu & Team Anurag Sahu.\n\nYour Message Summary:\n"${message}"\n\nYou will receive a response at ${email} within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)`
         })
       }).catch(() => {});
     } catch (e) {}
