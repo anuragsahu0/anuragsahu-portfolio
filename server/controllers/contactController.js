@@ -23,18 +23,26 @@ const handleContactForm = async (req, res, next) => {
     if (!message || !message.trim())
       return res.status(400).json({ success: false, message: 'Message content is required.' });
 
-    // Save to MongoDB
-    const contactDoc = await Contact.create({
-      fullName: fullName.trim(),
-      email: email.trim().toLowerCase(),
-      company: company ? company.trim() : '',
-      subject: subject.trim(),
-      message: message.trim(),
-      status: 'unread',
-      ipAddress: req.ip || '',
-    });
+    // 1. Try Saving to MongoDB (non-blocking fallback)
+    let contactDoc = null;
+    try {
+      contactDoc = await Promise.race([
+        Contact.create({
+          fullName: fullName.trim(),
+          email: email.trim().toLowerCase(),
+          company: company ? company.trim() : '',
+          subject: subject.trim(),
+          message: message.trim(),
+          status: 'unread',
+          ipAddress: req.ip || '',
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('DB Timeout')), 2500))
+      ]);
+    } catch (dbErr) {
+      console.warn('[Contact Controller] Database save skipped/timed out:', dbErr.message);
+    }
 
-    // 1. Send notification email to Anurag Sahu
+    // 2. Send notification email to Anurag Sahu
     try {
       await sendContactEmail({
         fullName: fullName.trim(),
@@ -47,7 +55,7 @@ const handleContactForm = async (req, res, next) => {
       console.error('[Email] Failed to send notification email:', emailErr.message);
     }
 
-    // 2. Send automated auto-reply email to visitor (SLA: 24-48 Hours)
+    // 3. Send automated auto-reply email to visitor (SLA: 24-48 Hours)
     try {
       await sendAutoReplyEmail({
         fullName: fullName.trim(),
