@@ -294,10 +294,11 @@
       }
     });
 
-    window.mobileUpdateStatus = function(num, status) {
+    const GLOBAL_CLOUD_URL = 'https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67';
+
+    window.mobileUpdateStatus = async function(num, status) {
       const key = `ag_proj_status_${num}`;
       localStorage.setItem(key, status);
-
       window.dispatchEvent(new Event('storage'));
 
       const badge = document.getElementById(`mbadge-${num}`);
@@ -315,23 +316,24 @@
         body: JSON.stringify({ key, value: status, description: `Global Project 0${num} status` })
       }).catch(() => {});
 
-      // 2. Direct Global Cloud Sync (Guaranteed Cross-Device & Cross-Visitor Sync)
-      fetch('https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67')
-        .then(res => res.json())
-        .then(data => {
-          const current = (data && data.data) ? data.data : {};
-          current[key] = status;
-          return fetch('https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: 'Anurag Portfolio Global Settings', data: current })
-          });
-        }).catch(() => {});
+      // 2. Direct Cloud Storage Sync
+      try {
+        const cRes = await fetch(GLOBAL_CLOUD_URL);
+        const cData = await cRes.json();
+        const currentData = (cData && cData.data) ? cData.data : {};
+        currentData[key] = status;
+        await fetch(GLOBAL_CLOUD_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: 'Anurag Portfolio Global Settings', data: currentData })
+        });
+      } catch (e) {}
 
-      alert(`✓ Project 0${num} status changed to "${status}" globally for all visitors!`);
+      alert(`✓ Project 0${num} status updated to "${status}" globally across all devices!`);
     };
 
-    function loadMobileSavedStatuses() {
+    async function loadMobileSavedStatuses() {
+      // 1. Load local immediately
       ['01', '02', '03'].forEach(num => {
         const saved = localStorage.getItem(`ag_proj_status_${num}`);
         const select = document.getElementById(`mctrl-${num}`);
@@ -346,6 +348,29 @@
           }
         }
       });
+
+      // 2. Fetch latest global cloud status to sync dropdowns across devices
+      try {
+        const cRes = await fetch(GLOBAL_CLOUD_URL);
+        const cData = await cRes.json();
+        if (cData && cData.data) {
+          ['01', '02', '03'].forEach(num => {
+            const val = cData.data[`ag_proj_status_${num}`];
+            const select = document.getElementById(`mctrl-${num}`);
+            const badge = document.getElementById(`mbadge-${num}`);
+            if (val) {
+              localStorage.setItem(`ag_proj_status_${num}`, val);
+              if (select) select.value = val;
+              if (badge) {
+                badge.textContent = val === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
+                badge.className = val === 'Completed'
+                  ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
+                  : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-status font-bold text-[10px]';
+              }
+            }
+          });
+        }
+      } catch (e) {}
     }
 
     function loadMobileMessages() {

@@ -515,18 +515,13 @@
     });
 
     // Global Manual Project Status Controller Function
-    window.changeProjectStatus = async function(num, status) {
-      localStorage.setItem(`ag_proj_status_${num}`, status);
-      const token = localStorage.getItem('ag_admin_token') || 'admin-token-fast';
-      try {
-        await fetch(`${API_BASE_URL}/admin/roadmap/${num}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ status, number: num }),
-        });
-      } catch (e) {}
+    const GLOBAL_CLOUD_URL = 'https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67';
 
-      // Update local badge UI
+    window.changeProjectStatus = async function(num, status) {
+      const key = `ag_proj_status_${num}`;
+      localStorage.setItem(key, status);
+      window.dispatchEvent(new Event('storage'));
+
       const badge = document.getElementById(`badge-status-${num}`);
       if (badge) {
         badge.textContent = status === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
@@ -534,24 +529,68 @@
           ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
           : 'px-2 py-0.5 rounded bg-gravity-amber/20 text-gravity-amber font-bold text-[10px]';
       }
-      alert(`✓ Project 0${num} status changed to "${status}"! Main website updated.`);
+
+      fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value: status, description: `Global Project 0${num} status` })
+      }).catch(() => {});
+
+      try {
+        const cRes = await fetch(GLOBAL_CLOUD_URL);
+        const cData = await cRes.json();
+        const currentData = (cData && cData.data) ? cData.data : {};
+        currentData[key] = status;
+        await fetch(GLOBAL_CLOUD_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: 'Anurag Portfolio Global Settings', data: currentData })
+        });
+      } catch (e) {}
+
+      alert(`✓ Project 0${num} status changed to "${status}" globally for all visitors!`);
     };
 
-    // Load saved statuses on startup
-    ['01', '02', '03'].forEach(num => {
-      const saved = localStorage.getItem(`ag_proj_status_${num}`);
-      if (saved) {
+    async function loadAdminSavedStatuses() {
+      ['01', '02', '03'].forEach(num => {
+        const saved = localStorage.getItem(`ag_proj_status_${num}`);
         const select = document.getElementById(`ctrl-status-${num}`);
         const badge = document.getElementById(`badge-status-${num}`);
-        if (select) select.value = saved;
-        if (badge) {
-          badge.textContent = saved === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
-          badge.className = saved === 'Completed'
-            ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
-            : 'px-2 py-0.5 rounded bg-gravity-amber/20 text-gravity-amber font-bold text-[10px]';
+        if (saved) {
+          if (select) select.value = saved;
+          if (badge) {
+            badge.textContent = saved === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
+            badge.className = saved === 'Completed'
+              ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
+              : 'px-2 py-0.5 rounded bg-gravity-amber/20 text-gravity-amber font-bold text-[10px]';
+          }
         }
-      }
-    });
+      });
+
+      try {
+        const cRes = await fetch(GLOBAL_CLOUD_URL);
+        const cData = await cRes.json();
+        if (cData && cData.data) {
+          ['01', '02', '03'].forEach(num => {
+            const val = cData.data[`ag_proj_status_${num}`];
+            const select = document.getElementById(`ctrl-status-${num}`);
+            const badge = document.getElementById(`badge-status-${num}`);
+            if (val) {
+              localStorage.setItem(`ag_proj_status_${num}`, val);
+              if (select) select.value = val;
+              if (badge) {
+                badge.textContent = val === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
+                badge.className = val === 'Completed'
+                  ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
+                  : 'px-2 py-0.5 rounded bg-gravity-amber/20 text-gravity-amber font-bold text-[10px]';
+              }
+            }
+          });
+        }
+      } catch (e) {}
+    }
+
+    loadAdminSavedStatuses();
 
     async function fetchStats() {
       const token = localStorage.getItem('ag_admin_token');
