@@ -1,7 +1,10 @@
 const Settings = require('../models/Settings');
 
-// Global fallback store for zero-latency cross-visitor sync
-const globalSettingsMemoryStore = {
+const GLOBAL_CLOUD_ID = 'ff8081819f7e10ae019fc83569456a67';
+const GLOBAL_CLOUD_URL = `https://api.restful-api.dev/objects/${GLOBAL_CLOUD_ID}`;
+
+// Global memory cache
+const globalSettingsCache = {
   'ag_proj_status_01': 'Completed',
   'ag_proj_status_02': 'Coming Soon',
   'ag_proj_status_03': 'Coming Soon',
@@ -9,15 +12,27 @@ const globalSettingsMemoryStore = {
 
 const getAll = async (req, res, next) => {
   try {
-    const settingsMap = { ...globalSettingsMemoryStore };
+    const settingsMap = { ...globalSettingsCache };
+
+    // Fetch from global cloud storage
     try {
-      const settings = await Settings.find();
-      settings.forEach((s) => { settingsMap[s.key] = s.value; });
+      const cloudRes = await fetch(GLOBAL_CLOUD_URL);
+      const cloudData = await cloudRes.json();
+      if (cloudData && cloudData.data) {
+        Object.assign(settingsMap, cloudData.data);
+        Object.assign(globalSettingsCache, cloudData.data);
+      }
+    } catch (cErr) {}
+
+    // Fallback to MongoDB
+    try {
+      const dbSettings = await Settings.find();
+      dbSettings.forEach((s) => { settingsMap[s.key] = s.value; });
     } catch (dbErr) {}
 
     return res.status(200).json({ success: true, settings: settingsMap });
   } catch (err) {
-    return res.status(200).json({ success: true, settings: globalSettingsMemoryStore });
+    return res.status(200).json({ success: true, settings: globalSettingsCache });
   }
 };
 
@@ -28,10 +43,22 @@ const upsert = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'key and value are required.' });
     }
 
-    // Save in memory store immediately
-    globalSettingsMemoryStore[key] = value;
+    // 1. Update memory cache
+    globalSettingsCache[key] = value;
 
-    // Persist to MongoDB if connected
+    // 2. Persist to global cloud storage
+    try {
+      await fetch(GLOBAL_CLOUD_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Anurag Portfolio Global Settings',
+          data: globalSettingsCache
+        })
+      });
+    } catch (cErr) {}
+
+    // 3. Persist to MongoDB
     try {
       await Settings.findOneAndUpdate(
         { key },
@@ -40,7 +67,7 @@ const upsert = async (req, res, next) => {
       );
     } catch (dbErr) {}
 
-    return res.status(200).json({ success: true, key, value });
+    return res.status(200).json({ success: true, key, value, settings: globalSettingsCache });
   } catch (err) {
     next(err);
   }

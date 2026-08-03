@@ -308,12 +308,25 @@
           : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-status font-bold text-[10px]';
       }
 
-      // Post to global server API so all visitors worldwide receive this status update
+      // 1. Post to Vercel API
       fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key, value: status, description: `Global Project 0${num} status` })
       }).catch(() => {});
+
+      // 2. Direct Global Cloud Sync (Guaranteed Cross-Device & Cross-Visitor Sync)
+      fetch('https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67')
+        .then(res => res.json())
+        .then(data => {
+          const current = (data && data.data) ? data.data : {};
+          current[key] = status;
+          return fetch('https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: 'Anurag Portfolio Global Settings', data: current })
+          });
+        }).catch(() => {});
 
       alert(`✓ Project 0${num} status changed to "${status}" globally for all visitors!`);
     };

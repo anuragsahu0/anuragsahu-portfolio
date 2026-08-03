@@ -605,13 +605,13 @@
         }
       });
 
-      // 2. Fetch global settings from API
+      // 2. Fetch global cloud storage for cross-phone sync
       try {
-        const res = await fetch('/api/settings');
+        const res = await fetch('https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67');
         const data = await res.json();
-        if (data.success && data.settings) {
+        if (data && data.data) {
           ['01', '02', '03'].forEach(num => {
-            const globalVal = data.settings[`ag_proj_status_${num}`];
+            const globalVal = data.data[`ag_proj_status_${num}`];
             const badge = document.getElementById(`mp-badge-${num}`);
             if (globalVal) {
               localStorage.setItem(`ag_proj_status_${num}`, globalVal);

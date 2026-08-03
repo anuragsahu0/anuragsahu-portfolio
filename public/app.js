@@ -467,20 +467,34 @@ async function syncProjectStatuses() {
     }
   });
 
-  // 2. Fetch global settings from server for worldwide cross-visitor sync
+  // 2. Fetch global settings from Cloud API for 100% cross-phone sync
   try {
-    const res = await fetch('/api/settings');
+    const res = await fetch('https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67');
     const data = await res.json();
-    if (data.success && data.settings) {
+    if (data && data.data) {
       ['01', '02', '03'].forEach(num => {
-        const globalVal = data.settings[`ag_proj_status_${num}`];
+        const globalVal = data.data[`ag_proj_status_${num}`];
         if (globalVal) {
           localStorage.setItem(`ag_proj_status_${num}`, globalVal);
           applyBadgeUI(num, globalVal);
         }
       });
     }
-  } catch (e) {}
+  } catch (e) {
+    try {
+      const res2 = await fetch('/api/settings');
+      const data2 = await res2.json();
+      if (data2.success && data2.settings) {
+        ['01', '02', '03'].forEach(num => {
+          const globalVal = data2.settings[`ag_proj_status_${num}`];
+          if (globalVal) {
+            localStorage.setItem(`ag_proj_status_${num}`, globalVal);
+            applyBadgeUI(num, globalVal);
+          }
+        });
+      }
+    } catch (e2) {}
+  }
 }
 
 function applyBadgeUI(num, status) {
