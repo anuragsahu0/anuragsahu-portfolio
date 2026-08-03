@@ -294,7 +294,7 @@
       }
     });
 
-    const GLOBAL_CLOUD_URL = 'https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67';
+    const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac';
 
     window.mobileUpdateStatus = async function(num, status) {
       const key = `ag_proj_status_${num}`;
@@ -309,23 +309,18 @@
           : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-status font-bold text-[10px]';
       }
 
-      // 1. Post to Vercel API
-      fetch('/api/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key, value: status, description: `Global Project 0${num} status` })
-      }).catch(() => {});
-
-      // 2. Direct Cloud Storage Sync
+      // Sync to JSONBlob global store
       try {
         const cRes = await fetch(GLOBAL_CLOUD_URL);
         const cData = await cRes.json();
-        const currentData = (cData && cData.data) ? cData.data : {};
-        currentData[key] = status;
+        const store = cData || { messages: [], settings: {} };
+        if (!store.settings) store.settings = {};
+        store.settings[key] = status;
+
         await fetch(GLOBAL_CLOUD_URL, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: 'Anurag Portfolio Global Settings', data: currentData })
+          body: JSON.stringify(store)
         });
       } catch (e) {}
 
@@ -333,7 +328,6 @@
     };
 
     async function loadMobileSavedStatuses() {
-      // 1. Load local immediately
       ['01', '02', '03'].forEach(num => {
         const saved = localStorage.getItem(`ag_proj_status_${num}`);
         const select = document.getElementById(`mctrl-${num}`);
@@ -349,13 +343,12 @@
         }
       });
 
-      // 2. Fetch latest global cloud status to sync dropdowns across devices
       try {
         const cRes = await fetch(GLOBAL_CLOUD_URL);
         const cData = await cRes.json();
-        if (cData && cData.data) {
+        if (cData && cData.settings) {
           ['01', '02', '03'].forEach(num => {
-            const val = cData.data[`ag_proj_status_${num}`];
+            const val = cData.settings[`ag_proj_status_${num}`];
             const select = document.getElementById(`mctrl-${num}`);
             const badge = document.getElementById(`mbadge-${num}`);
             if (val) {
@@ -373,7 +366,7 @@
       } catch (e) {}
     }
 
-    function loadMobileMessages() {
+    async function loadMobileMessages() {
       const defaultMsgs = [
         {
           id: 'mseed_1',
@@ -383,42 +376,57 @@
           subject: 'Summer 2026 SWE Internship Opportunity',
           message: 'Hi Anurag, we reviewed your portfolio and were very impressed!',
           status: 'unread'
-        },
-        {
-          id: 'mseed_2',
-          fullName: 'Alex Vance',
-          email: 'alex@vercel.com',
-          company: 'Vercel',
-          subject: 'Full-Stack Developer & AI Systems Role',
-          message: 'Loved your 3D perspective grid preloader and live telemetry dashboard.',
-          status: 'read'
         }
       ];
 
+      let cloudMsgs = [];
+      try {
+        const cRes = await fetch(GLOBAL_CLOUD_URL);
+        const cData = await cRes.json();
+        if (cData && cData.messages) {
+          cloudMsgs = cData.messages;
+        }
+      } catch (e) {}
+
       const localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
-      const allMsgs = [...localMsgs, ...defaultMsgs];
+      const allMsgs = [...cloudMsgs, ...localMsgs, ...defaultMsgs];
+
+      // Remove duplicate IDs
+      const uniqueMsgs = [];
+      const seenIds = new Set();
+      allMsgs.forEach(m => {
+        if (m && m.id && !seenIds.has(m.id)) {
+          seenIds.add(m.id);
+          uniqueMsgs.push(m);
+        }
+      });
 
       const container = document.getElementById('m-messages-list-container');
       if (document.getElementById('mkpi-unread')) {
-        document.getElementById('mkpi-unread').textContent = allMsgs.length;
+        document.getElementById('mkpi-unread').textContent = uniqueMsgs.length;
       }
 
       if (container) {
-        container.innerHTML = allMsgs.map(m => `
-          <div class="mobile-glass p-4 rounded-2xl space-y-2">
-            <div class="flex justify-between items-start">
-              <span class="font-bold text-white text-xs">${m.fullName}</span>
-              <span class="px-2 py-0.5 rounded ${m.status === 'unread' ? 'bg-ruby-red/20 text-ruby-red border border-ruby-red/40' : 'bg-emerald-500/20 text-emerald-400'} text-[9px] font-bold">${m.status.toUpperCase()}</span>
+        if (uniqueMsgs.length === 0) {
+          container.innerHTML = `<div class="mobile-glass p-5 rounded-2xl text-center text-gray-400">No recruiter messages yet.</div>`;
+        } else {
+          container.innerHTML = uniqueMsgs.map(m => `
+            <div class="mobile-glass p-4 rounded-2xl space-y-2">
+              <div class="flex justify-between items-start">
+                <span class="font-bold text-white text-xs">${m.fullName}</span>
+                <span class="px-2 py-0.5 rounded ${m.status === 'unread' ? 'bg-ruby-red/20 text-ruby-red border border-ruby-red/40' : 'bg-emerald-500/20 text-emerald-400'} text-[9px] font-bold">${(m.status || 'UNREAD').toUpperCase()}</span>
+              </div>
+              <p class="text-rose-200/80 text-[10px] font-bold">${m.company || 'Recruiter Inquiry'} • ${m.email}</p>
+              <p class="text-white text-xs font-bold">${m.subject || 'Portfolio Inquiry'}</p>
+              <p class="text-gray-300 text-[11px] leading-relaxed bg-black/40 p-2.5 rounded-xl border border-white/5">${m.message}</p>
+              <div class="pt-1 flex gap-2">
+                <a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject || 'Portfolio Inquiry')}" class="flex-1 text-center py-2 rounded-xl bg-ruby-red text-white font-bold text-[10px]">
+                  ✉️ REPLY VIA EMAIL
+                </a>
+              </div>
             </div>
-            <p class="text-rose-200/80 text-[10px] font-bold">${m.company || 'Recruiter'} • ${m.email}</p>
-            <p class="text-gray-300 text-[11px]">${m.subject}</p>
-            <div class="pt-1 flex gap-2">
-              <a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject)}" class="flex-1 text-center py-2 rounded-xl bg-ruby-red text-white font-bold text-[10px]">
-                REPLY VIA EMAIL
-              </a>
-            </div>
-          </div>
-        `).join('');
+          `).join('');
+        }
       }
     }
 

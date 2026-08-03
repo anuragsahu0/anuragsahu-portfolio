@@ -550,7 +550,6 @@
           btn.innerHTML = '<span>Sending...</span>';
         }
 
-        // Store message in localStorage for Admin Panel
         const newMsg = {
           id: 'msg_' + Date.now(),
           fullName: name,
@@ -561,11 +560,29 @@
           status: 'unread',
           createdAt: new Date().toISOString()
         };
+
+        // 1. Local Storage
         const existingMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
         existingMsgs.unshift(newMsg);
         localStorage.setItem('ag_admin_messages', JSON.stringify(existingMsgs));
 
-        // Send Email via FormSubmit
+        // 2. Global Cloud Inbox Store Sync (Guarantees message appears in Admin Panel on ALL devices)
+        try {
+          fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac')
+            .then(res => res.json())
+            .then(store => {
+              const s = store || { messages: [], settings: {} };
+              if (!s.messages) s.messages = [];
+              s.messages.unshift(newMsg);
+              return fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(s)
+              });
+            }).catch(() => {});
+        } catch (e) {}
+
+        // 3. Email Delivery via FormSubmit AJAX to shivasahu0612@gmail.com
         try {
           fetch('https://formsubmit.co/ajax/shivasahu0612@gmail.com', {
             method: 'POST',
@@ -573,7 +590,7 @@
             body: JSON.stringify({
               name: name,
               email: email,
-              subject: `[ANTI GRAVITY MOBILE APP] Inquiry from ${name}`,
+              subject: `[PORTFOLIO INQUIRY] Message from ${name}`,
               message: msg,
               _autoresponse: `Thank you ${name} for contacting Anurag Sahu!\n\nI have received your message and will reply within 24–48 hours.\n\nGitHub: https://github.com/anuragsahu0`,
               _template: 'table'

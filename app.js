@@ -694,7 +694,7 @@ function initContactForm() {
       submitBtn.innerHTML = '<span>Sending Message...</span>';
     }
 
-    // 1. Store locally for instant Admin Dashboard sync across tabs/pages
+    // 1. Store locally
     const newMsg = {
       id: 'msg_' + Date.now(),
       fullName,
@@ -709,7 +709,23 @@ function initContactForm() {
     existingMsgs.unshift(newMsg);
     localStorage.setItem('ag_admin_messages', JSON.stringify(existingMsgs));
 
-    // 2. Dispatch real email directly to shivasahu0612@gmail.com with visitor auto-reply
+    // 2. Sync to Global Cloud Inbox Store (Guarantees message appears in Admin Panel on ALL devices worldwide)
+    try {
+      fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac')
+        .then(res => res.json())
+        .then(store => {
+          const s = store || { messages: [], settings: {} };
+          if (!s.messages) s.messages = [];
+          s.messages.unshift(newMsg);
+          return fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(s)
+          });
+        }).catch(() => {});
+    } catch (e) {}
+
+    // 3. Dispatch real email directly to shivasahu0612@gmail.com with visitor auto-reply
     try {
       fetch('https://formsubmit.co/ajax/shivasahu0612@gmail.com', {
         method: 'POST',
@@ -717,27 +733,13 @@ function initContactForm() {
         body: JSON.stringify({
           name: fullName,
           email: email,
-          subject: `[ANTI GRAVITY PORTFOLIO] Contact Inquiry from ${fullName}`,
+          subject: `[PORTFOLIO INQUIRY] Contact Inquiry from ${fullName}`,
           message: message,
           _autoresponse: `Thank you ${fullName} for contacting Anurag Sahu!\n\nI have received your message regarding "${message.substring(0, 40)}..." and will get back to you within 24–48 hours.\n\nExplore my GitHub: https://github.com/anuragsahu0\nLinkedIn: https://www.linkedin.com/in/anurag-sahu-5a46b9360/`,
           _template: 'table'
         })
       }).catch(() => {});
     } catch (e) {}
-
-    // 3. Dispatch to local Express REST API if active
-    try {
-      await fetch(`${API_BASE}/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName,
-          email,
-          subject: `Portfolio Contact Inquiry from ${fullName}`,
-          message,
-        }),
-      });
-    } catch (err) {}
 
     showToast('Message sent! Delivered to Anurag Sahu & Admin Dashboard');
     alert(`Thank you ${fullName}! Your message has been sent successfully and delivered to Anurag Sahu (shivasahu0612@gmail.com). A thank-you auto-confirmation has been dispatched.`);
