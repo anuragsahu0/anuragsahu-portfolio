@@ -961,7 +961,7 @@ footer {
    Media Query Breakpoints: max-width: 768px & max-width: 480px
    ============================================================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   /* 1. Universal Box Model & Viewport Boundaries */
   *, *::before, *::after {
     box-sizing: border-box !important;
@@ -1069,12 +1069,17 @@ footer {
 
   /* 3. Hero Section Stack & Mobile Centered Layout ("Middle Middle") */
   #hero {
-    padding-top: 105px !important;
+    padding-top: 110px !important;
     margin-top: 0 !important;
     text-align: center !important;
     width: 100% !important;
     max-width: 100% !important;
     overflow-x: hidden !important;
+  }
+
+  .hero-left-column {
+    align-items: center !important;
+    text-align: center !important;
   }
 
   /* Force override any inline style="text-align: left" or "align-items: flex-start" on mobile */
@@ -1090,13 +1095,14 @@ footer {
   }
 
   #hero h1, .hero-title, h1 {
-    font-size: clamp(1.5rem, 5vw, 2.1rem) !important;
+    font-size: clamp(1.45rem, 5.2vw, 2.1rem) !important;
     text-align: center !important;
     line-height: 1.3 !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 auto 12px auto !important;
     word-break: break-word !important;
+    hyphens: auto !important;
   }
 
   #hero p, .hero-subtitle, p {
@@ -1113,7 +1119,7 @@ footer {
   .hero-portrait-showcase-container {
     display: block !important;
     width: 100% !important;
-    max-width: 290px !important;
+    max-width: 280px !important;
     margin: 16px auto !important;
   }
 
