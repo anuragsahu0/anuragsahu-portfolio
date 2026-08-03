@@ -383,7 +383,7 @@
         <div class="mproj-item mobile-glass p-5 rounded-3xl space-y-3" data-cat="all">
           <div class="flex justify-between items-center">
             <span class="text-[10px] font-mono text-nebula-cyan font-bold">PROJECT 01 • FLAGSHIP</span>
-            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold text-[10px]">🟢 Completed</span>
+            <span id="mp-badge-01" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold text-[10px]">🟢 Completed</span>
           </div>
           <h4 class="font-display text-base font-bold text-white">Portfolio Platform</h4>
           <p class="text-xs text-gray-300">Production-ready personal portfolio with live telemetry, Nodemailer contact engine & admin console.</p>
@@ -399,7 +399,7 @@
         <div class="mproj-item mobile-glass p-5 rounded-3xl space-y-3" data-cat="enterprise">
           <div class="flex justify-between items-center">
             <span class="text-[10px] font-mono text-amber-400 font-bold">PROJECT 02 • ENTERPRISE SYSTEM</span>
-            <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-mono font-bold text-[10px]">🟡 Coming Soon</span>
+            <span id="mp-badge-02" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-mono font-bold text-[10px]">🟡 Coming Soon</span>
           </div>
           <h4 class="font-display text-base font-bold text-white">Restaurant Management System</h4>
           <p class="text-xs text-gray-300">Multi-tenant POS, kitchen order display, automated billing engine, and inventory tracking.</p>
@@ -415,7 +415,7 @@
         <div class="mproj-item mobile-glass p-5 rounded-3xl space-y-3" data-cat="all">
           <div class="flex justify-between items-center">
             <span class="text-[10px] font-mono text-amber-400 font-bold">PROJECT 03 • ACADEMIC ERP</span>
-            <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-mono font-bold text-[10px]">🟡 Coming Soon</span>
+            <span id="mp-badge-03" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-mono font-bold text-[10px]">🟡 Coming Soon</span>
           </div>
           <h4 class="font-display text-base font-bold text-white">Smart College ERP</h4>
           <p class="text-xs text-gray-300">Student attendance tracking, result publishing portal, and online fee collection gateway.</p>
@@ -591,6 +591,23 @@
         }
       });
     }
+
+    function syncMobileProjectBadges() {
+      ['01', '02', '03'].forEach(num => {
+        const status = localStorage.getItem(`ag_proj_status_${num}`);
+        const badge = document.getElementById(`mp-badge-${num}`);
+        if (badge && status) {
+          badge.textContent = status === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
+          badge.className = status === 'Completed'
+            ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold text-[10px]'
+            : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-mono font-bold text-[10px]';
+        }
+      });
+    }
+
+    syncMobileProjectBadges();
+    setInterval(syncMobileProjectBadges, 1000);
+    window.addEventListener('storage', syncMobileProjectBadges);
   </script>
 </body>
 </html>
