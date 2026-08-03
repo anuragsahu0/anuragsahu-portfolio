@@ -458,14 +458,29 @@ function initAdminModal() {
   }
 }
 
-function syncProjectStatuses() {
-  // Sync from local storage immediately (Admin manual override is source of truth)
+async function syncProjectStatuses() {
+  // 1. Apply local storage immediately
   ['01', '02', '03'].forEach(num => {
     const status = localStorage.getItem(`ag_proj_status_${num}`);
     if (status) {
       applyBadgeUI(num, status);
     }
   });
+
+  // 2. Fetch global settings from server for worldwide cross-visitor sync
+  try {
+    const res = await fetch('/api/settings');
+    const data = await res.json();
+    if (data.success && data.settings) {
+      ['01', '02', '03'].forEach(num => {
+        const globalVal = data.settings[`ag_proj_status_${num}`];
+        if (globalVal) {
+          localStorage.setItem(`ag_proj_status_${num}`, globalVal);
+          applyBadgeUI(num, globalVal);
+        }
+      });
+    }
+  } catch (e) {}
 }
 
 function applyBadgeUI(num, status) {
