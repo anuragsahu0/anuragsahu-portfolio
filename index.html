@@ -101,30 +101,40 @@
   <!-- Top Scroll Reading Progress Bar -->
   <div id="scroll-progress"></div>
 
-  <!-- 🎬 AWWWARDS-LEVEL CINEMATIC SHUTTER PRELOADER -->
+  <!-- 🎬 AWWWARDS-LEVEL SPLIT-SHUTTER 3D PRELOADER -->
   <div id="portfolio-preloader">
+    <!-- Top & Bottom Theater Split Curtain Panels -->
+    <div class="preloader-shutter-panel shutter-top"></div>
+    <div class="preloader-shutter-panel shutter-bottom"></div>
+
+    <!-- 3D Moving Perspective Wireframe Floor Grid -->
     <div class="preloader-grid"></div>
     <div class="preloader-spotlight"></div>
+
+    <!-- Dual Laser Progress Bars -->
+    <div class="preloader-top-laser"><div id="preloader-bar-top" class="preloader-laser-fill"></div></div>
+    <div class="preloader-bottom-laser"><div id="preloader-bar-bottom" class="preloader-laser-fill"></div></div>
 
     <div class="preloader-cinematic-wrap font-mono">
       <div class="preloader-badge-tag">
         <span class="preloader-dot-pulse"></span>
-        <span>ANURAG SAHU • PORTFOLIO 2026</span>
+        <span>CREATIVE FULL-STACK ARCHITECT & AI ENGINEER</span>
       </div>
+
+      <!-- MAIN BRANDING TEXT: ANURAG'S PORTFOLIO -->
+      <h1 class="preloader-brand-title">
+        ANURAG'S <span class="cyan-gradient">PORTFOLIO</span>
+      </h1>
 
       <div class="preloader-counter-huge">
         <span id="preloader-counter">00</span><span class="preloader-percent-symbol">%</span>
       </div>
 
       <div class="preloader-info-row">
-        <span id="preloader-status-text">INITIALIZING CORE SYSTEMS</span>
+        <span id="preloader-status-text">[01/04] INITIALIZING ENGINE...</span>
         <span class="preloader-dot-sep">•</span>
         <span>B.TECH CSE (AI & ML)</span>
       </div>
-    </div>
-
-    <div class="preloader-bottom-laser">
-      <div id="preloader-bar" class="preloader-laser-fill"></div>
     </div>
   </div>
 
@@ -135,86 +145,131 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: #040204;
       z-index: 999999;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.5s ease;
     }
-    #portfolio-preloader.shutter-up {
+
+    .preloader-shutter-panel {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: #040204;
+      z-index: 1;
+      transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .shutter-top { top: 0; }
+    .shutter-bottom { bottom: 0; }
+
+    #portfolio-preloader.shutter-active .shutter-top {
       transform: translateY(-100%);
-      pointer-events: none;
     }
+    #portfolio-preloader.shutter-active .shutter-bottom {
+      transform: translateY(100%);
+    }
+    #portfolio-preloader.shutter-active .preloader-cinematic-wrap,
+    #portfolio-preloader.shutter-active .preloader-grid,
+    #portfolio-preloader.shutter-active .preloader-spotlight,
+    #portfolio-preloader.shutter-active .preloader-top-laser,
+    #portfolio-preloader.shutter-active .preloader-bottom-laser {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .preloader-brand-title {
+      font-family: var(--font-display, 'Space Grotesk', sans-serif);
+      font-size: clamp(2rem, 5.5vw, 4.2rem);
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -1px;
+      margin: 8px 0;
+      text-transform: uppercase;
+      text-shadow: 0 0 30px rgba(6, 182, 212, 0.4), 0 0 60px rgba(139, 92, 246, 0.2);
+    }
+
+    .cyan-gradient {
+      background: linear-gradient(90deg, #06b6d4, #8b5cf6, #ef4444);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     .preloader-spotlight {
       position: absolute;
-      width: 700px;
-      height: 700px;
+      width: 800px;
+      height: 800px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0) 70%);
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.25) 0%, rgba(139, 92, 246, 0.1) 50%, transparent 70%);
       pointer-events: none;
+      z-index: 2;
       animation: pulseSpotlight 3s ease-in-out infinite alternate;
     }
     @keyframes pulseSpotlight {
       0% { transform: scale(0.85); opacity: 0.6; }
-      100% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1.25); opacity: 1; }
     }
+
     .preloader-cinematic-wrap {
       position: relative;
       z-index: 10;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 14px;
       text-align: center;
       width: 90%;
-      max-width: 800px;
+      max-width: 850px;
     }
+
     .preloader-badge-tag {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 6px 18px;
       border-radius: 30px;
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #ef4444;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      color: #06b6d4;
       font-size: 0.75rem;
       font-weight: 800;
       letter-spacing: 2px;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
     }
     .preloader-dot-pulse {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #ef4444;
-      box-shadow: 0 0 12px #ef4444;
+      background: #06b6d4;
+      box-shadow: 0 0 12px #06b6d4;
       animation: blinkDot 1s infinite alternate;
     }
     @keyframes blinkDot {
       0% { opacity: 0.3; }
       100% { opacity: 1; }
     }
+
     .preloader-counter-huge {
       font-family: var(--font-display, 'Space Grotesk', sans-serif);
-      font-size: clamp(5.5rem, 15vw, 10rem);
+      font-size: clamp(5rem, 14vw, 9.5rem);
       font-weight: 900;
       color: #ffffff;
       letter-spacing: -4px;
       line-height: 1;
-      text-shadow: 0 0 40px rgba(239, 68, 68, 0.5), 0 0 80px rgba(239, 68, 68, 0.2);
+      text-shadow: 0 0 40px rgba(6, 182, 212, 0.6), 0 0 80px rgba(139, 92, 246, 0.3);
       display: flex;
       align-items: baseline;
       justify-content: center;
     }
     .preloader-percent-symbol {
       font-size: clamp(2rem, 5vw, 3.5rem);
-      color: #ef4444;
+      color: #06b6d4;
       margin-left: 6px;
       letter-spacing: 0;
     }
+
     .preloader-info-row {
       display: flex;
       align-items: center;
@@ -226,21 +281,25 @@
       text-transform: uppercase;
     }
     .preloader-dot-sep {
-      color: #ef4444;
+      color: #06b6d4;
     }
-    .preloader-bottom-laser {
+
+    .preloader-top-laser, .preloader-bottom-laser {
       position: absolute;
-      bottom: 0;
       left: 0;
       width: 100%;
       height: 3px;
       background: rgba(255, 255, 255, 0.05);
+      z-index: 5;
     }
+    .preloader-top-laser { top: 0; }
+    .preloader-bottom-laser { bottom: 0; }
+
     .preloader-laser-fill {
       width: 0%;
       height: 100%;
-      background: linear-gradient(90deg, #ef4444, #f43f5e, #06b6d4);
-      box-shadow: 0 0 15px rgba(239, 68, 68, 0.9);
+      background: linear-gradient(90deg, #06b6d4, #8b5cf6, #ef4444);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.9);
       transition: width 0.04s linear;
     }
   </style>
@@ -248,24 +307,25 @@
   <script>
     (function runCinematicPreloader() {
       let percent = 0;
-      const bar = document.getElementById('preloader-bar');
+      const barTop = document.getElementById('preloader-bar-top');
+      const barBottom = document.getElementById('preloader-bar-bottom');
       const counter = document.getElementById('preloader-counter');
       const statusText = document.getElementById('preloader-status-text');
       const container = document.getElementById('portfolio-preloader');
 
       const statuses = [
-        { p: 25, text: 'INITIALIZING CORE SYSTEMS' },
-        { p: 60, text: 'LOADING TELEMETRY CONSOLE' },
-        { p: 90, text: 'READYING ANURAG PORTFOLIO' },
-        { p: 100, text: 'WELCOME TO ANURAG PORTFOLIO' }
+        { p: 25, text: '[01/04] INITIALIZING ENGINE...' },
+        { p: 60, text: '[02/04] LOADING THREE.JS SHADERS...' },
+        { p: 90, text: '[03/04] SYNCHRONIZING MONGO DB...' },
+        { p: 100, text: '[04/04] WELCOME TO ANURAG\'S PORTFOLIO' }
       ];
 
-      // Exact 2.7s counter progress + 0.3s shutter transition = 3.0s total
       const interval = setInterval(() => {
         percent += Math.floor(Math.random() * 3) + 2;
         if (percent > 100) percent = 100;
 
-        if (bar) bar.style.width = percent + '%';
+        if (barTop) barTop.style.width = percent + '%';
+        if (barBottom) barBottom.style.width = percent + '%';
         if (counter) {
           counter.textContent = (percent < 10 ? '0' : '') + percent;
         }
@@ -279,14 +339,14 @@
           clearInterval(interval);
           setTimeout(() => {
             if (container) {
-              container.classList.add('shutter-up');
+              container.classList.add('shutter-active');
               setTimeout(() => {
                 container.style.display = 'none';
-              }, 700);
+              }, 850);
             }
           }, 200);
         }
-      }, 70);
+      }, 65);
     })();
   </script>
 
