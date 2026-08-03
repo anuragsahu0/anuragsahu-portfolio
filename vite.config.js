@@ -17,6 +17,12 @@ export default defineConfig({
     sourcemap: false,
     chunkSizeWarningLimit: 800,
     rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        admin: path.resolve(__dirname, 'admin.html'),
+        mobile: path.resolve(__dirname, 'mobile.html'),
+        mobileAdmin: path.resolve(__dirname, 'mobile-admin.html'),
+      },
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
