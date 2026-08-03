@@ -1,5 +1,5 @@
 /**
- * ANURAG SAHU PORTFOLIO — STANDALONE INTERACTIVE ENGINE
+ * ANTI GRAVITY PORTFOLIO — STANDALONE INTERACTIVE ENGINE
  * Candidate: Anurag Sahu
  */
 
@@ -17,8 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initCategoryFilters();
   initScrollReveal();
   initContactForm();
-  initRecruiterMode();
-  initLiveStatsCounter();
 });
 
 /* -------------------------------------------------------------------------- */
@@ -794,133 +792,3 @@ window.closeSuccessModal = function() {
     modal.classList.add('hidden');
   }
 };
-
-/* -------------------------------------------------------------------------- */
-/* Module 5: Recruiter Mode Toggle Engine                                     */
-/* -------------------------------------------------------------------------- */
-window.toggleRecruiterMode = function() {
-  const isRecruiterMode = document.body.classList.toggle('recruiter-mode-active');
-  localStorage.setItem('as_recruiter_mode', isRecruiterMode ? 'true' : 'false');
-  
-  const label = document.getElementById('recruiter-mode-label');
-  const btn = document.getElementById('btn-recruiter-mode');
-
-  if (isRecruiterMode) {
-    if (label) label.textContent = 'Recruiter Mode (ON)';
-    if (btn) {
-      btn.style.background = 'linear-gradient(135deg, rgba(6,182,212,0.3), rgba(16,185,129,0.3))';
-      btn.style.borderColor = '#10b981';
-      btn.style.color = '#ffffff';
-    }
-    showToast('👁️ RECRUITER MODE ENABLED: Core sections highlighted!');
-  } else {
-    if (label) label.textContent = 'Recruiter Mode';
-    if (btn) {
-      btn.style.background = 'rgba(6, 182, 212, 0.12)';
-      btn.style.borderColor = 'rgba(6, 182, 212, 0.4)';
-      btn.style.color = '#06b6d4';
-    }
-    showToast('Recruiter Mode Disabled');
-  }
-};
-
-function initRecruiterMode() {
-  if (localStorage.getItem('as_recruiter_mode') === 'true') {
-    document.body.classList.add('recruiter-mode-active');
-    const label = document.getElementById('recruiter-mode-label');
-    const btn = document.getElementById('btn-recruiter-mode');
-    if (label) label.textContent = 'Recruiter Mode (ON)';
-    if (btn) {
-      btn.style.background = 'linear-gradient(135deg, rgba(6,182,212,0.3), rgba(16,185,129,0.3))';
-      btn.style.borderColor = '#10b981';
-      btn.style.color = '#ffffff';
-    }
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/* Module 8: 60-Second Recruiter Tour Engine                                  */
-/* -------------------------------------------------------------------------- */
-let currentTourStep = 0;
-const tourSteps = [
-  { id: 'hero', title: '1. Executive Overview & Candidate Identity', tag: '🚀 60s RECRUITER TOUR (Step 1/5)' },
-  { id: 'aboutme', title: '2. Education & Tech Profile', tag: '🚀 60s RECRUITER TOUR (Step 2/5)' },
-  { id: 'skills', title: '3. Skill Lab & Technical Stack', tag: '🚀 60s RECRUITER TOUR (Step 3/5)' },
-  { id: 'roadmap', title: '4. Featured Builds & Roadmap', tag: '🚀 60s RECRUITER TOUR (Step 4/5)' },
-  { id: 'contact', title: '5. Direct Contact & Recruiter Inbox', tag: '🚀 60s RECRUITER TOUR (Step 5/5)' }
-];
-
-window.startRecruiterTour = function() {
-  currentTourStep = 0;
-  const banner = document.getElementById('recruiter-tour-banner');
-  if (banner) banner.style.display = 'block';
-  showTourStep(currentTourStep);
-};
-
-function showTourStep(index) {
-  if (index >= tourSteps.length) {
-    window.exitRecruiterTour();
-    showToast('🎉 Tour Complete! Thanks for reviewing Anurag Sahu\'s portfolio.');
-    return;
-  }
-
-  document.querySelectorAll('.tour-highlight-active').forEach(el => el.classList.remove('tour-highlight-active'));
-
-  const step = tourSteps[index];
-  const target = document.getElementById(step.id);
-
-  if (target) {
-    target.classList.add('tour-highlight-active');
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  const tagEl = document.getElementById('tour-step-tag');
-  const titleEl = document.getElementById('tour-step-title');
-
-  if (tagEl) tagEl.textContent = step.tag;
-  if (titleEl) titleEl.textContent = step.title;
-}
-
-window.nextTourStep = function() {
-  currentTourStep++;
-  showTourStep(currentTourStep);
-};
-
-window.exitRecruiterTour = function() {
-  currentTourStep = 0;
-  document.querySelectorAll('.tour-highlight-active').forEach(el => el.classList.remove('tour-highlight-active'));
-  const banner = document.getElementById('recruiter-tour-banner');
-  if (banner) banner.style.display = 'none';
-};
-
-/* -------------------------------------------------------------------------- */
-/* Module 6: Live Engineering Stats Count-Up Counter                         */
-/* -------------------------------------------------------------------------- */
-function initLiveStatsCounter() {
-  const statNumbers = document.querySelectorAll('.stat-number');
-  if (!statNumbers.length) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const target = parseInt(el.getAttribute('data-target') || '0', 10);
-        let current = 0;
-        const duration = 1200;
-        const stepTime = Math.max(Math.floor(duration / target), 40);
-
-        const timer = setInterval(() => {
-          current += 1;
-          el.textContent = current + '+';
-          if (current >= target) {
-            clearInterval(timer);
-          }
-        }, stepTime);
-
-        observer.unobserve(el);
-      }
-    });
-  }, { threshold: 0.5 });
-
-  statNumbers.forEach(el => observer.observe(el));
-}

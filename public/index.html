@@ -112,30 +112,29 @@
   <!-- Top Scroll Reading Progress Bar -->
   <div id="scroll-progress"></div>
 
-  <!-- 🎬 MODULE 1: CINEMATIC PRELOADER EXPERIENCE -->
-  <div id="cinematic-loader" aria-label="Loading Anurag Sahu Portfolio">
+  <!-- 🎬 AWWWARDS-LEVEL SPLIT-SHUTTER 3D PRELOADER -->
+  <div id="portfolio-preloader">
+    <!-- Top & Bottom Theater Split Curtain Panels -->
     <div class="preloader-shutter-panel shutter-top"></div>
     <div class="preloader-shutter-panel shutter-bottom"></div>
 
+    <!-- 3D Moving Perspective Wireframe Floor Grid -->
     <div class="preloader-grid"></div>
     <div class="preloader-spotlight"></div>
 
+    <!-- Dual Laser Progress Bars -->
     <div class="preloader-top-laser"><div id="preloader-bar-top" class="preloader-laser-fill"></div></div>
     <div class="preloader-bottom-laser"><div id="preloader-bar-bottom" class="preloader-laser-fill"></div></div>
 
     <div class="preloader-cinematic-wrap font-mono">
-      <div class="as-emblem-wrapper">
-        <div class="as-emblem-ring"></div>
-        <div class="as-emblem">AS</div>
-      </div>
-
       <div class="preloader-badge-tag">
         <span class="preloader-dot-pulse"></span>
-        <span>FULL-STACK DEVELOPER • B.TECH CSE (AI & ML)</span>
+        <span>CREATIVE FULL-STACK ARCHITECT & AI ENGINEER</span>
       </div>
 
+      <!-- MAIN BRANDING TEXT: ANURAG'S PORTFOLIO -->
       <h1 class="preloader-brand-title">
-        ANURAG <span class="cyan-gradient">SAHU</span>
+        ANURAG'S <span class="cyan-gradient">PORTFOLIO</span>
       </h1>
 
       <div class="preloader-counter-huge">
@@ -143,9 +142,9 @@
       </div>
 
       <div class="preloader-info-row">
-        <span id="preloader-status-text">Initializing Portfolio...</span>
+        <span id="preloader-status-text">[01/04] INITIALIZING ENGINE...</span>
         <span class="preloader-dot-sep">•</span>
-        <span>SOFTWARE ENGINEER</span>
+        <span>B.TECH CSE (AI & ML)</span>
       </div>
     </div>
   </div>
@@ -258,60 +257,43 @@
       box-shadow: 0 0 12px #06b6d4;
       animation: blinkDot 1s infinite alternate;
     }
-      box-shadow: 0 0 10px #06b6d4;
-      animation: dotPulse 1.5s infinite;
-    }
-
-    @keyframes dotPulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.7); }
-    }
-
-    .preloader-brand-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      color: #ffffff;
-      letter-spacing: -1px;
-      margin-bottom: 8px;
-      line-height: 1.1;
-    }
-    .cyan-gradient {
-      background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    @keyframes blinkDot {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
     }
 
     .preloader-counter-huge {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(3.5rem, 8vw, 6rem);
+      font-family: var(--font-display, 'Space Grotesk', sans-serif);
+      font-size: clamp(5rem, 14vw, 9.5rem);
       font-weight: 900;
       color: #ffffff;
       letter-spacing: -4px;
       line-height: 1;
-      text-shadow: 0 0 40px rgba(6, 182, 212, 0.6);
+      text-shadow: 0 0 40px rgba(6, 182, 212, 0.6), 0 0 80px rgba(139, 92, 246, 0.3);
       display: flex;
       align-items: baseline;
       justify-content: center;
     }
     .preloader-percent-symbol {
-      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-size: clamp(2rem, 5vw, 3.5rem);
       color: #06b6d4;
-      margin-left: 4px;
+      margin-left: 6px;
+      letter-spacing: 0;
     }
 
     .preloader-info-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
+      gap: 12px;
       font-size: 0.8rem;
       color: #9ca3af;
       font-weight: 700;
-      letter-spacing: 1.5px;
-      margin-top: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
-    .preloader-dot-sep { color: #06b6d4; }
+    .preloader-dot-sep {
+      color: #06b6d4;
+    }
 
     .preloader-top-laser, .preloader-bottom-laser {
       position: absolute;
@@ -329,43 +311,28 @@
       height: 100%;
       background: linear-gradient(90deg, #06b6d4, #8b5cf6, #ef4444);
       box-shadow: 0 0 20px rgba(6, 182, 212, 0.9);
-      transition: width 0.03s linear;
+      transition: width 0.04s linear;
     }
   </style>
 
   <script>
     (function runCinematicPreloader() {
-      const loader = document.getElementById('cinematic-loader');
-      if (!loader) return;
-
-      // Check session flag for fast bypass on repeat visits
-      const hasLoaded = sessionStorage.getItem('as_portfolio_loaded');
-
-      if (hasLoaded) {
-        // Fast 0.4s fade transition for returning session visits (no white flash, no layout shifts)
-        loader.classList.add('shutter-active');
-        setTimeout(() => {
-          loader.style.display = 'none';
-        }, 400);
-        return;
-      }
-
       let percent = 0;
       const barTop = document.getElementById('preloader-bar-top');
       const barBottom = document.getElementById('preloader-bar-bottom');
       const counter = document.getElementById('preloader-counter');
       const statusText = document.getElementById('preloader-status-text');
+      const container = document.getElementById('portfolio-preloader');
 
       const statuses = [
-        { p: 20, text: 'Initializing Portfolio...' },
-        { p: 45, text: 'Loading Projects...' },
-        { p: 70, text: 'Preparing Experience...' },
-        { p: 90, text: 'Optimizing Performance...' },
-        { p: 100, text: 'Launching Portfolio...' }
+        { p: 25, text: '[01/04] INITIALIZING ENGINE...' },
+        { p: 60, text: '[02/04] LOADING THREE.JS SHADERS...' },
+        { p: 90, text: '[03/04] SYNCHRONIZING MONGO DB...' },
+        { p: 100, text: '[04/04] WELCOME TO ANURAG\'S PORTFOLIO' }
       ];
 
       const interval = setInterval(() => {
-        percent += Math.floor(Math.random() * 4) + 3;
+        percent += Math.floor(Math.random() * 3) + 2;
         if (percent > 100) percent = 100;
 
         if (barTop) barTop.style.width = percent + '%';
@@ -381,15 +348,16 @@
 
         if (percent >= 100) {
           clearInterval(interval);
-          sessionStorage.setItem('as_portfolio_loaded', 'true');
           setTimeout(() => {
-            loader.classList.add('shutter-active');
-            setTimeout(() => {
-              loader.style.display = 'none';
-            }, 850);
+            if (container) {
+              container.classList.add('shutter-active');
+              setTimeout(() => {
+                container.style.display = 'none';
+              }, 850);
+            }
           }, 200);
         }
-      }, 50);
+      }, 65);
     })();
   </script>
 
@@ -413,22 +381,11 @@
       </ul>
     </nav>
 
-    <div class="hud-actions font-mono" style="display: flex; align-items: center; gap: 10px;">
-      <!-- Recruiter Mode Toggle Button -->
-      <button id="btn-recruiter-mode" onclick="toggleRecruiterMode()" style="padding: 6px 14px; border-radius: 20px; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.4); color: #06b6d4; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;" aria-label="Toggle Recruiter Mode">
-        <i data-lucide="eye" style="width: 14px;"></i>
-        <span id="recruiter-mode-label">Recruiter Mode</span>
-      </button>
-
-      <!-- 60-Second Recruiter Tour Button -->
-      <button id="btn-recruiter-tour" onclick="startRecruiterTour()" style="padding: 6px 14px; border-radius: 20px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.2)); border: 1px solid rgba(139, 92, 246, 0.5); color: #a855f7; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;" aria-label="Start 60-Second Guided Recruiter Tour">
-        <span>🚀 60s Tour</span>
-      </button>
-
-      <div id="red-typewriter-pill" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 20px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.5); color: #ef4444; font-size: 0.78rem; font-weight: 800; text-shadow: 0 0 12px rgba(239,68,68,0.9);">
-        <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 10px #ef4444; display: inline-block;"></span>
-        <span id="red-typewriter-text" style="letter-spacing: 1px; min-width: 50px; display: inline-block;">Dream</span>
-        <span id="red-typewriter-cursor" style="color: #ef4444; font-weight: 900;">|</span>
+    <div class="hud-actions font-mono">
+      <div id="red-typewriter-pill" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px; border-radius: 20px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.5); color: #ef4444; font-size: 0.85rem; font-weight: 800; text-shadow: 0 0 12px rgba(239,68,68,0.9), 0 0 25px rgba(239,68,68,0.5); box-shadow: 0 0 20px rgba(239,68,68,0.3);">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 10px #ef4444; display: inline-block;"></span>
+        <span id="red-typewriter-text" style="letter-spacing: 1px; min-width: 60px; display: inline-block;">Dream</span>
+        <span id="red-typewriter-cursor" style="color: #ef4444; font-weight: 900; font-size: 0.9rem;">|</span>
       </div>
     </div>
   </header>
@@ -522,13 +479,9 @@
               <span>Explore My Work</span>
               <i data-lucide="arrow-right" style="width: 18px;" aria-hidden="true"></i>
             </a>
-            <button onclick="startRecruiterTour()" class="btn-secondary font-mono" style="border-color: rgba(139,92,246,0.6); color: #a855f7;" aria-label="Start 60-Second Guided Recruiter Tour">
-              <i data-lucide="compass" style="width: 18px;" aria-hidden="true"></i>
-              <span>🚀 60s Recruiter Tour</span>
-            </button>
             <button onclick="alert('Resume Download Triggered')" class="btn-secondary" aria-label="Download Resume PDF">
               <i data-lucide="file-text" style="width: 18px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
-              <span>Resume</span>
+              <span>Download Resume</span>
             </button>
           </div>
 
@@ -585,112 +538,6 @@
 
       </div>
     </section>
-
-    <!-- 📊 MODULE 6: LIVE ENGINEERING STATS -->
-    <section id="live-stats" aria-label="Live Engineering Stats" style="margin: 40px 0;">
-      <div class="glass-panel" style="padding: 28px; border-radius: 24px; border-color: rgba(6,182,212,0.3); background: rgba(11, 15, 25, 0.7); box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; text-align: center; font-family: var(--font-mono);">
-          <div class="stat-box">
-            <div class="stat-number heading-gradient" data-target="3" style="font-family: var(--font-display); font-size: 2.5rem; font-weight: 800;">0+</div>
-            <div style="font-size: 0.8rem; color: var(--color-muted-text); font-weight: 700; text-transform: uppercase; margin-top: 4px;">Projects Built</div>
-          </div>
-
-          <div class="stat-box">
-            <div class="stat-number heading-gradient" data-target="15" style="font-family: var(--font-display); font-size: 2.5rem; font-weight: 800;">0+</div>
-            <div style="font-size: 0.8rem; color: var(--color-muted-text); font-weight: 700; text-transform: uppercase; margin-top: 4px;">Technologies Mastered</div>
-          </div>
-
-          <div class="stat-box">
-            <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: #06b6d4; margin-top: 6px;">Full-Stack & AI</div>
-            <div style="font-size: 0.8rem; color: var(--color-muted-text); font-weight: 700; text-transform: uppercase; margin-top: 8px;">Engineering Focus</div>
-          </div>
-
-          <div class="stat-box">
-            <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #10b981; font-weight: 800; font-size: 0.85rem; margin-top: 10px;">
-              <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981;"></span>
-              <span>Available</span>
-            </div>
-            <div style="font-size: 0.8rem; color: var(--color-muted-text); font-weight: 700; text-transform: uppercase; margin-top: 8px;">Summer 2026 Internship</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="energy-divider" style="height: 1px; width: 100%; background: linear-gradient(90deg, transparent, #06b6d4, #8b5cf6, transparent); margin: 50px 0; opacity: 0.6;"></div>
-
-    <!-- 🏆 MODULE 7: ENGINEERING ACHIEVEMENT WALL -->
-    <section id="achievements" aria-label="Engineering Achievements Wall" style="margin: 50px 0;">
-      <div class="section-header" style="text-align: center; margin-bottom: 36px;">
-        <h2 class="section-title heading-gradient">Engineering Competencies & Achievements</h2>
-        <p style="color: var(--color-muted-text); max-width: 650px; margin: 8px auto 0 auto; font-size: 0.92rem;">
-          Verified core technical skills, production architecture, and problem-solving benchmarks.
-        </p>
-      </div>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
-        <div class="glass-panel tilt-card" style="padding: 24px; border-radius: 20px; border-color: rgba(6,182,212,0.25);">
-          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
-            <div style="width: 42px; height: 42px; border-radius: 12px; background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.4); display: flex; align-items: center; justify-content: center; color: #06b6d4;">
-              <i data-lucide="layers" style="width: 22px;"></i>
-            </div>
-            <div>
-              <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: #ffffff; margin: 0;">Full-Stack Engineering</h3>
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #06b6d4;">React 18 • Node.js • Express • MongoDB</span>
-            </div>
-          </div>
-          <p style="font-size: 0.85rem; color: var(--color-muted-text); line-height: 1.6;">
-            Architecting responsive frontend interfaces and RESTful backend APIs with JWT auth, rate limiting, and database optimization.
-          </p>
-        </div>
-
-        <div class="glass-panel tilt-card" style="padding: 24px; border-radius: 20px; border-color: rgba(139,92,246,0.25);">
-          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
-            <div style="width: 42px; height: 42px; border-radius: 12px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.4); display: flex; align-items: center; justify-content: center; color: #a855f7;">
-              <i data-lucide="cpu" style="width: 22px;"></i>
-            </div>
-            <div>
-              <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: #ffffff; margin: 0;">AI & ML Engineering</h3>
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #a855f7;">Python • PyTorch • Predictive Models</span>
-            </div>
-          </div>
-          <p style="font-size: 0.85rem; color: var(--color-muted-text); line-height: 1.6;">
-            Building machine learning pipelines, predictive analytics models, and integrating intelligent features into full-stack web products.
-          </p>
-        </div>
-
-        <div class="glass-panel tilt-card" style="padding: 24px; border-radius: 20px; border-color: rgba(16,185,129,0.25);">
-          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
-            <div style="width: 42px; height: 42px; border-radius: 12px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); display: flex; align-items: center; justify-content: center; color: #10b981;">
-              <i data-lucide="code-2" style="width: 22px;"></i>
-            </div>
-            <div>
-              <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: #ffffff; margin: 0;">Problem Solving</h3>
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #10b981;">Data Structures • Algorithmic Rigor</span>
-            </div>
-          </div>
-          <p style="font-size: 0.85rem; color: var(--color-muted-text); line-height: 1.6;">
-            Active problem solver on LeetCode, HackerRank, and GeeksforGeeks with focus on optimal time & space complexity.
-          </p>
-        </div>
-
-        <div class="glass-panel tilt-card" style="padding: 24px; border-radius: 20px; border-color: rgba(239,68,68,0.25);">
-          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
-            <div style="width: 42px; height: 42px; border-radius: 12px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); display: flex; align-items: center; justify-content: center; color: #ef4444;">
-              <i data-lucide="smartphone" style="width: 22px;"></i>
-            </div>
-            <div>
-              <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: #ffffff; margin: 0;">Responsive Systems</h3>
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #ef4444;">Mobile Web Apps • Desktop SRE</span>
-            </div>
-          </div>
-          <p style="font-size: 0.85rem; color: var(--color-muted-text); line-height: 1.6;">
-            Building tailored mobile PWA experiences with auto-device routing, touch navigation, and desktop telemetry control panels.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <div class="energy-divider" style="height: 1px; width: 100%; background: linear-gradient(90deg, transparent, #06b6d4, #8b5cf6, transparent); margin: 50px 0; opacity: 0.6;"></div>
 
     <!-- ABOUT ME SECTION -->
     <section id="aboutme" aria-label="About Me Overview">
@@ -1084,8 +931,8 @@
 
   </main>
 
-  <!-- ANURAG SAHU CONTROL CENTER ADMIN MODAL -->
-  <div id="admin-modal" role="dialog" aria-label="Anurag Sahu Control Center Admin Console">
+  <!-- ANTI GRAVITY CONTROL CENTER ADMIN MODAL -->
+  <div id="admin-modal" role="dialog" aria-label="Anti Gravity Control Center Admin Console">
     <div style="width: 100%; max-width: 1200px; margin: 20px auto; padding: 24px;" class="glass-panel">
       
       <!-- 1. LOGIN SCREEN (Shown if not logged in) -->
@@ -1398,31 +1245,13 @@
   <footer>
     <div class="container footer-content">
       <div>
-        <span>&copy; 2026 Anurag Sahu. Full-Stack Developer & B.Tech CSE (AI & ML).</span>
+        <span>&copy; 2026 Anurag Sahu. Built with Full-Stack Precision & Anti-Gravity Physics.</span>
       </div>
       <div>
         <a href="mailto:shivasahu0612@gmail.com" class="font-mono" style="color: var(--color-nebula-cyan); text-decoration: underline;" aria-label="Send direct email to shivasahu0612@gmail.com">shivasahu0612@gmail.com</a>
       </div>
     </div>
   </footer>
-
-  <!-- 🚀 MODULE 8: RECRUITER QUICK TOUR BANNER -->
-  <div id="recruiter-tour-banner" style="display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 99999; background: rgba(11, 15, 25, 0.95); backdrop-filter: blur(20px); border: 1px solid #8b5cf6; padding: 14px 24px; border-radius: 20px; box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4); font-family: var(--font-mono); font-size: 0.82rem; color: #ffffff; width: 90%; max-width: 520px; text-align: center;">
-    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-      <div style="text-align: left;">
-        <div style="font-weight: 800; color: #a855f7; font-size: 0.75rem;" id="tour-step-tag">🚀 60s RECRUITER TOUR (Step 1/5)</div>
-        <div style="font-weight: 700; color: #ffffff; font-size: 0.88rem;" id="tour-step-title">1. Executive Overview & Identity</div>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <button onclick="nextTourStep()" style="padding: 6px 14px; border-radius: 12px; background: linear-gradient(135deg, #06b6d4, #8b5cf6); border: none; color: #ffffff; font-weight: 800; font-size: 0.78rem; cursor: pointer; box-shadow: 0 0 15px rgba(6,182,212,0.4);">
-          Next Step →
-        </button>
-        <button onclick="exitRecruiterTour()" style="padding: 6px 10px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #9ca3af; font-weight: 700; font-size: 0.75rem; cursor: pointer;">
-          ✕ Exit
-        </button>
-      </div>
-    </div>
-  </div>
 
   <script src="app.js" type="module"></script>
   <script>

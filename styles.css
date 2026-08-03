@@ -1,4 +1,4 @@
-/* ANURAG SAHU — Personal Software Engineer Portfolio Stylesheet */
+/* ANTI GRAVITY — Design System & Stylesheet */
 
 :root {
   --color-space-black: #030712;
@@ -957,7 +957,7 @@ footer {
 }
 
 /* ==============================================================================
-   ANURAG SAHU PORTFOLIO — OPTIMIZED MOBILE DESIGN SYSTEM
+   ANTI GRAVITY PORTFOLIO — OPTIMIZED MOBILE DESIGN SYSTEM
    Media Query Breakpoints: max-width: 768px & max-width: 480px
    ============================================================================== */
 
@@ -1253,68 +1253,6 @@ footer {
   .container {
     padding-left: 14px !important;
     padding-right: 14px !important;
-  }
-}
-
-/* ========================================================================== */
-/* RECRUITER MODE & TOUR HIGHLIGHT SYSTEM                                   */
-/* ========================================================================== */
-
-/* Recruiter Mode Active Styles */
-body.recruiter-mode-active #hero,
-body.recruiter-mode-active #aboutme,
-body.recruiter-mode-active #skills,
-body.recruiter-mode-active #roadmap,
-body.recruiter-mode-active #contact {
-  border: 1px solid rgba(6, 182, 212, 0.4) !important;
-  border-radius: 24px;
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.15);
-  transition: all 0.3s ease;
-}
-
-body.recruiter-mode-active .ambient-orb,
-body.recruiter-mode-active #bg-canvas {
-  opacity: 0.25 !important;
-}
-
-/* Tour Highlight Outline */
-.tour-highlight-active {
-  outline: 3px solid #a855f7 !important;
-  outline-offset: 8px !important;
-  border-radius: 20px !important;
-  box-shadow: 0 0 40px rgba(168, 85, 247, 0.5) !important;
-  transition: all 0.4s ease;
-}
-
-/* Accessibility Visible Focus States */
-a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
-  outline: 2px solid #06b6d4 !important;
-  outline-offset: 4px !important;
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.6) !important;
-}
-
-/* Micro-Interaction Button Scale Feedback */
-button:active, a.btn-primary:active, a.btn-secondary:active {
-  transform: scale(0.96) !important;
-  transition: transform 0.1s ease;
-}
-
-/* Energy Section Divider Glow */
-.energy-divider {
-  height: 1px;
-  width: 100%;
-  background: linear-gradient(90deg, transparent, #06b6d4, #8b5cf6, transparent);
-  margin: 50px 0;
-  opacity: 0.6;
-}
-
-/* Reduced Motion Support */
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }
 
