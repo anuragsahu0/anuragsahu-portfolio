@@ -893,7 +893,7 @@
             Send Direct Message
           </h3>
 
-          <form onsubmit="event.preventDefault(); alert('Message sent! Delivered to shivasahu0612@gmail.com.');" style="display: flex; flex-direction: column; gap: 16px; font-family: var(--font-mono); font-size: 0.8rem;">
+          <form id="contact-form" style="display: flex; flex-direction: column; gap: 16px; font-family: var(--font-mono); font-size: 0.8rem;">
             <div>
               <label for="contact-fullname" style="color: var(--color-starlight-white); font-weight: 700;">FULL NAME *</label>
               <input id="contact-fullname" type="text" required placeholder="e.g. Sarah Jenkins" style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--color-starlight-white); font-family: inherit; margin-top: 4px;">
@@ -909,7 +909,7 @@
               <textarea id="contact-msg" rows="4" required placeholder="Hi Anurag, we reviewed your portfolio..." style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--color-starlight-white); font-family: inherit; margin-top: 4px; resize: none;"></textarea>
             </div>
 
-            <button type="submit" class="btn-primary" style="justify-center: center;" aria-label="Send Direct Message">
+            <button id="contact-submit-btn" type="submit" class="btn-primary" style="justify-content: center;" aria-label="Send Direct Message">
               <span>Send Message</span>
               <i data-lucide="send" style="width: 16px;" aria-hidden="true"></i>
             </button>
