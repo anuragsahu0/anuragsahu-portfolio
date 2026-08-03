@@ -604,7 +604,7 @@
             }).catch(() => {});
         } catch (e) {}
 
-        // 3. Dispatch FormSubmit via FormData (Triggers both Admin Gmail notification AND Visitor _autoresponse Thank You email!)
+        // 3. Instant Email 1: Notification to Anurag Sahu (shivasahu0612@gmail.com)
         try {
           const fd = new FormData();
           fd.append('name', name);
@@ -619,6 +619,23 @@
           fetch('https://formsubmit.co/ajax/shivasahu0612@gmail.com', {
             method: 'POST',
             body: fd
+          }).catch(() => {});
+        } catch (e) {}
+
+        // 4. Instant Email 2: Direct Mail Dispatch to Visitor's Email from "Team Anurag Sahu"
+        try {
+          fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+              access_key: '4c34a942-8822-48df-b593-01824497e793',
+              name: 'Team Anurag Sahu',
+              email: email,
+              to: email,
+              from_name: 'Team Anurag Sahu',
+              subject: 'Thank you for contacting Anurag Sahu — Message Received!',
+              message: `Dear ${name},\n\nThank you for reaching out to us!\n\nWe have successfully received your message regarding your inquiry. Our team will review your message and get back to you within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`
+            })
           }).catch(() => {});
         } catch (e) {}
 
