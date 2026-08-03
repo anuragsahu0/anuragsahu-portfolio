@@ -1,8 +1,10 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.js" },
     { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/mobile-admin", "destination": "/mobile-admin.html" },
     { "source": "/mobile", "destination": "/mobile.html" }
   ]
 }
