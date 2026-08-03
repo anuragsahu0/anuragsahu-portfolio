@@ -725,7 +725,7 @@ function initContactForm() {
         }).catch(() => {});
     } catch (e) {}
 
-    // 3. Email Delivery to shivasahu0612@gmail.com + Team Anurag Sahu Auto-Reply to Visitor
+    // 3. Email 1: Admin Notification to shivasahu0612@gmail.com
     try {
       fetch('https://formsubmit.co/ajax/shivasahu0612@gmail.com', {
         method: 'POST',
@@ -736,8 +736,22 @@ function initContactForm() {
           subject: `📩 NEW PORTFOLIO INQUIRY from ${fullName}`,
           message: `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${fullName}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${message}"`,
           _replyto: email,
-          _autoresponse: `Dear ${fullName},\n\nThank you for reaching out to us!\n\nWe have successfully received your message and our team will get back to you within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`,
           _template: 'table'
+        })
+      }).catch(() => {});
+    } catch (e) {}
+
+    // 4. Email 2: Direct Thank You Email Dispatch to Visitor's Email
+    try {
+      fetch(`https://formsubmit.co/ajax/${encodeURIComponent(email)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          name: 'Team Anurag Sahu',
+          email: 'shivasahu0612@gmail.com',
+          subject: `Thank you for contacting Anurag Sahu — Message Received!`,
+          message: `Dear ${fullName},\n\nThank you for reaching out to us!\n\nWe have successfully received your message regarding your inquiry. Our team will review your message and get back to you within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`,
+          _subject: `Thank you for contacting Anurag Sahu — Message Received!`
         })
       }).catch(() => {});
     } catch (e) {}
