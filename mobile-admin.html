@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Anurag Admin — Mobile App Command Center</title>
+
+  <!-- PWA & Mobile Web App Capabilities for Add to Home Screen -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Anurag Admin">
+  <meta name="theme-color" content="#0c0306">
+  <link rel="apple-touch-icon" href="assets/anurag-portrait-sm.webp">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Mobile Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'ruby-red': '#ef4444',
+            'ruby-dark': '#0c0306',
+            'crimson-card': '#1a070c',
+            'amber-status': '#f59e0b',
+            'emerald-status': '#10b981',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0c0306;
+      color: #fff1f2;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .mobile-glass {
+      background: rgba(26, 7, 12, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+    .active-nav {
+      color: #ef4444;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans text-starlight pb-24">
+
+  <!-- 1. MOBILE ADMIN LOGIN SCREEN (Unauthenticated) -->
+  <div id="m-login-view" class="min-h-screen flex flex-col justify-center px-6 py-8 relative">
+    <div class="mobile-glass p-6 rounded-3xl space-y-6 text-center font-mono shadow-2xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-ruby-red/10 border border-ruby-red/40 text-ruby-red font-bold text-xs">
+        <i data-lucide="shield-check" class="w-4 h-4"></i>
+        <span>AUTHENTICATED MOBILE ACCESS</span>
+      </div>
+
+      <div>
+        <h1 class="font-display text-xl font-bold text-white">Anurag Admin</h1>
+        <p class="text-xs text-rose-300/80 mt-1">Mobile App Command Center</p>
+      </div>
+
+      <div id="m-error-msg" class="hidden p-3 rounded-xl bg-red-500/20 text-red-300 text-xs font-bold border border-red-500/40"></div>
+
+      <form id="m-login-form" class="space-y-4 text-left text-xs">
+        <div>
+          <label class="block font-bold text-white mb-1">ADMIN EMAIL</label>
+          <input id="m-email" type="text" value="" placeholder="Enter Admin Email..." required class="w-full px-4 py-3 bg-black/60 border border-ruby-red/40 rounded-xl text-white focus:outline-none focus:border-ruby-red">
+        </div>
+        <div>
+          <label class="block font-bold text-white mb-1">PASSWORD</label>
+          <input id="m-pass" type="password" value="" placeholder="Enter Security Password..." required class="w-full px-4 py-3 bg-black/60 border border-ruby-red/40 rounded-xl text-white focus:outline-none focus:border-ruby-red">
+        </div>
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-ruby-red to-red-700 text-white font-bold shadow-lg shadow-ruby-red/30">
+          LOGIN TO MOBILE ADMIN APP
+        </button>
+      </form>
+
+      <div class="pt-2 border-t border-white/10 text-[10px] text-gray-400">
+        <a href="admin.html?desktop=true" class="text-rose-300 underline font-mono">💻 Switch to Desktop Admin Panel</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MOBILE ADMIN DASHBOARD VIEW -->
+  <div id="m-dashboard-view" class="hidden flex-1 flex flex-col">
+    <!-- MOBILE TOP HEADER -->
+    <header class="sticky top-0 z-40 bg-ruby-dark/95 backdrop-blur-xl px-5 py-4 border-b border-ruby-red/20 flex items-center justify-between shadow-xl">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-ruby-red/20 border border-ruby-red/40 flex items-center justify-center text-ruby-red font-bold">
+          🛡️
+        </div>
+        <div>
+          <h2 class="font-display font-bold text-sm text-white leading-none">Anurag Admin</h2>
+          <span class="text-[10px] text-emerald-400 font-mono font-bold">● LIVE TELEMETRY</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 font-mono">
+        <a href="admin.html?desktop=true" class="px-2.5 py-1 rounded-xl bg-white/10 text-white text-[10px] font-bold">
+          Desktop
+        </a>
+        <button id="m-logout-btn" class="px-2.5 py-1 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 text-[10px] font-bold">
+          LOGOUT
+        </button>
+      </div>
+    </header>
+
+    <!-- MOBILE DASHBOARD PANELS -->
+    <main class="flex-1 p-5 space-y-6 font-mono text-xs">
+      
+      <!-- PANEL 1: OVERVIEW KPIS -->
+      <div id="mp-home" class="space-y-4">
+        <div class="mobile-glass p-5 rounded-2xl space-y-1">
+          <span class="text-[10px] text-ruby-red font-bold uppercase">MOBILE COMMAND CENTER</span>
+          <h3 class="font-display text-lg font-bold text-white">Anurag's Website Controls</h3>
+          <p class="text-[11px] text-rose-200/70">Real-time status controls for projects and recruiter leads.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="mobile-glass p-4 rounded-2xl">
+            <div class="text-rose-300 text-[10px]">REAL VISITORS</div>
+            <div id="mkpi-visitors" class="font-display text-2xl font-bold text-ruby-red">1</div>
+            <div class="text-emerald-400 text-[9px]">● Live</div>
+          </div>
+          <div class="mobile-glass p-4 rounded-2xl">
+            <div class="text-rose-300 text-[10px]">RESUME PDF</div>
+            <div id="mkpi-resume" class="font-display text-2xl font-bold text-emerald-400">0</div>
+            <div class="text-rose-300 text-[9px]">Downloads</div>
+          </div>
+          <div class="mobile-glass p-4 rounded-2xl">
+            <div class="text-rose-300 text-[10px]">ACTIVE PROJECTS</div>
+            <div class="font-display text-2xl font-bold text-amber-status">3</div>
+            <div class="text-rose-300 text-[9px]">Website Builds</div>
+          </div>
+          <div class="mobile-glass p-4 rounded-2xl">
+            <div class="text-rose-300 text-[10px]">MESSAGES</div>
+            <div id="mkpi-unread" class="font-display text-2xl font-bold text-ruby-red">2</div>
+            <div class="text-rose-300 text-[9px]">Recruiter Leads</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 2: PROJECT STATUS CONTROLLER -->
+      <div id="mp-projects" class="hidden space-y-4">
+        <div class="mobile-glass p-5 rounded-2xl">
+          <h3 class="font-display text-base font-bold text-white">📁 Mobile Project Controls</h3>
+          <p class="text-[11px] text-rose-200/70 mt-1">Tap to toggle project status on the live website instantly.</p>
+        </div>
+
+        <!-- Project 01 -->
+        <div class="mobile-glass p-4 rounded-2xl space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-ruby-red font-bold">PROJECT 01: Portfolio</span>
+            <span id="mbadge-01" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">🟢 Completed</span>
+          </div>
+          <select id="mctrl-01" onchange="mobileUpdateStatus('01', this.value)" class="w-full bg-black/60 border border-ruby-red/40 rounded-xl px-3 py-2 text-white font-bold focus:outline-none">
+            <option value="Completed">🟢 Completed</option>
+            <option value="Coming Soon">🟡 Coming Soon</option>
+          </select>
+        </div>
+
+        <!-- Project 02 -->
+        <div class="mobile-glass p-4 rounded-2xl space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-amber-status font-bold">PROJECT 02: Restaurant MS</span>
+            <span id="mbadge-02" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-status font-bold text-[10px]">🟡 Coming Soon</span>
+          </div>
+          <select id="mctrl-02" onchange="mobileUpdateStatus('02', this.value)" class="w-full bg-black/60 border border-amber-status/40 rounded-xl px-3 py-2 text-white font-bold focus:outline-none">
+            <option value="Coming Soon">🟡 Coming Soon</option>
+            <option value="Completed">🟢 Completed</option>
+          </select>
+        </div>
+
+        <!-- Project 03 -->
+        <div class="mobile-glass p-4 rounded-2xl space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-amber-status font-bold">PROJECT 03: College ERP</span>
+            <span id="mbadge-03" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-status font-bold text-[10px]">🟡 Coming Soon</span>
+          </div>
+          <select id="mctrl-03" onchange="mobileUpdateStatus('03', this.value)" class="w-full bg-black/60 border border-amber-status/40 rounded-xl px-3 py-2 text-white font-bold focus:outline-none">
+            <option value="Coming Soon">🟡 Coming Soon</option>
+            <option value="Completed">🟢 Completed</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- PANEL 3: RECRUITER LEADS -->
+      <div id="mp-messages" class="hidden space-y-4">
+        <div class="mobile-glass p-5 rounded-2xl">
+          <h3 class="font-display text-base font-bold text-white">📬 Mobile Recruiter Inbox</h3>
+          <p class="text-[11px] text-rose-200/70 mt-1">Live messages submitted through website contact form.</p>
+        </div>
+        <div id="m-messages-list-container" class="space-y-3">
+          <!-- Dynamically Injected Messages -->
+        </div>
+      </div>
+    </main>
+
+    <!-- MOBILE BOTTOM NAVBAR (App Tab Bar) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-ruby-dark/95 backdrop-blur-xl border-t border-ruby-red/20 px-4 py-2 flex justify-around font-mono text-[10px] z-50">
+      <button id="mnav-home" class="flex flex-col items-center gap-1 active-nav py-1">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+        <span>Home</span>
+      </button>
+      <button id="mnav-projects" class="flex flex-col items-center gap-1 text-rose-300/70 py-1">
+        <i data-lucide="folder-kanban" class="w-5 h-5"></i>
+        <span>Projects</span>
+      </button>
+      <button id="mnav-messages" class="flex flex-col items-center gap-1 text-rose-300/70 py-1">
+        <i data-lucide="mail" class="w-5 h-5"></i>
+        <span>Inbox</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const mLoginView = document.getElementById('m-login-view');
+    const mDashboardView = document.getElementById('m-dashboard-view');
+    const mLoginForm = document.getElementById('m-login-form');
+    const mLogoutBtn = document.getElementById('m-logout-btn');
+    const mErrorMsg = document.getElementById('m-error-msg');
+
+    function checkMobileAuth() {
+      const token = localStorage.getItem('ag_admin_token');
+      if (token) {
+        mLoginView.classList.add('hidden');
+        mDashboardView.classList.remove('hidden');
+        loadMobileSavedStatuses();
+        loadMobileMessages();
+      } else {
+        mLoginView.classList.remove('hidden');
+        mDashboardView.classList.add('hidden');
+      }
+    }
+
+    mLoginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('m-email').value.trim().toLowerCase();
+      const pass = document.getElementById('m-pass').value;
+
+      const validEmails = ['anurag@admin.com', 'admin@anuragsahu.dev', 'admin@anuragsahu.com', 'admin@admin.com'];
+      const validPasswords = ['anurag123', 'admin123', 'Admin@AntiGravity2026'];
+
+      if (validEmails.includes(email) && validPasswords.includes(pass)) {
+        localStorage.setItem('ag_admin_token', 'mobile-admin-token-' + Date.now());
+        checkMobileAuth();
+      } else {
+        mErrorMsg.textContent = '❌ ACCESS DENIED: Invalid Admin Email or Password.';
+        mErrorMsg.classList.remove('hidden');
+        alert('❌ ACCESS DENIED: Invalid Admin Credentials.');
+      }
+    });
+
+    mLogoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('ag_admin_token');
+      checkMobileAuth();
+    });
+
+    // Bottom Navigation Tabbing
+    const navItems = ['home', 'projects', 'messages'];
+    navItems.forEach(item => {
+      const btn = document.getElementById(`mnav-${item}`);
+      if (btn) {
+        btn.addEventListener('click', () => {
+          navItems.forEach(other => {
+            document.getElementById(`mp-${other}`).classList.add('hidden');
+            document.getElementById(`mnav-${other}`).classList.remove('active-nav');
+            document.getElementById(`mnav-${other}`).classList.add('text-rose-300/70');
+          });
+          document.getElementById(`mp-${item}`).classList.remove('hidden');
+          btn.classList.add('active-nav');
+          btn.classList.remove('text-rose-300/70');
+        });
+      }
+    });
+
+    window.mobileUpdateStatus = function(num, status) {
+      localStorage.setItem(`ag_proj_status_${num}`, status);
+      const badge = document.getElementById(`mbadge-${num}`);
+      if (badge) {
+        badge.textContent = status === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
+        badge.className = status === 'Completed'
+          ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
+          : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-status font-bold text-[10px]';
+      }
+      alert(`✓ Project 0${num} status changed to "${status}"!`);
+    };
+
+    function loadMobileSavedStatuses() {
+      ['01', '02', '03'].forEach(num => {
+        const saved = localStorage.getItem(`ag_proj_status_${num}`);
+        const select = document.getElementById(`mctrl-${num}`);
+        const badge = document.getElementById(`mbadge-${num}`);
+        if (saved) {
+          if (select) select.value = saved;
+          if (badge) {
+            badge.textContent = saved === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
+            badge.className = saved === 'Completed'
+              ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
+              : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-status font-bold text-[10px]';
+          }
+        }
+      });
+    }
+
+    function loadMobileMessages() {
+      const defaultMsgs = [
+        {
+          id: 'mseed_1',
+          fullName: 'Sarah Jenkins',
+          email: 'sarah@stripe.com',
+          company: 'Stripe',
+          subject: 'Summer 2026 SWE Internship Opportunity',
+          message: 'Hi Anurag, we reviewed your portfolio and were very impressed!',
+          status: 'unread'
+        },
+        {
+          id: 'mseed_2',
+          fullName: 'Alex Vance',
+          email: 'alex@vercel.com',
+          company: 'Vercel',
+          subject: 'Full-Stack Developer & AI Systems Role',
+          message: 'Loved your 3D perspective grid preloader and live telemetry dashboard.',
+          status: 'read'
+        }
+      ];
+
+      const localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
+      const allMsgs = [...localMsgs, ...defaultMsgs];
+
+      const container = document.getElementById('m-messages-list-container');
+      if (document.getElementById('mkpi-unread')) {
+        document.getElementById('mkpi-unread').textContent = allMsgs.length;
+      }
+
+      if (container) {
+        container.innerHTML = allMsgs.map(m => `
+          <div class="mobile-glass p-4 rounded-2xl space-y-2">
+            <div class="flex justify-between items-start">
+              <span class="font-bold text-white text-xs">${m.fullName}</span>
+              <span class="px-2 py-0.5 rounded ${m.status === 'unread' ? 'bg-ruby-red/20 text-ruby-red border border-ruby-red/40' : 'bg-emerald-500/20 text-emerald-400'} text-[9px] font-bold">${m.status.toUpperCase()}</span>
+            </div>
+            <p class="text-rose-200/80 text-[10px] font-bold">${m.company || 'Recruiter'} • ${m.email}</p>
+            <p class="text-gray-300 text-[11px]">${m.subject}</p>
+            <div class="pt-1 flex gap-2">
+              <a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject)}" class="flex-1 text-center py-2 rounded-xl bg-ruby-red text-white font-bold text-[10px]">
+                REPLY VIA EMAIL
+              </a>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    checkMobileAuth();
+  </script>
+</body>
+</html>

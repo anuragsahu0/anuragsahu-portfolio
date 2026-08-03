@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Anurag Admin — Mobile App Command Center</title>
 
+  <!-- Smart Mobile Admin Auto-Detection Engine -->
+  <script>
+    (function detectMobileAdmin() {
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+      const params = new URLSearchParams(window.location.search);
+      if (isMobileDevice && !params.has('desktop')) {
+        window.location.replace('mobile-admin.html');
+      }
+    })();
+  </script>
+
   <!-- PWA & Mobile Web App Capabilities for Add to Home Screen -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
