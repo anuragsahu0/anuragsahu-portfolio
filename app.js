@@ -725,34 +725,21 @@ function initContactForm() {
         }).catch(() => {});
     } catch (e) {}
 
-    // 3. Email 1: Admin Notification to shivasahu0612@gmail.com
+    // 3. Dispatch FormSubmit via FormData (Triggers both Admin Gmail notification AND Visitor _autoresponse Thank You email!)
     try {
+      const fd = new FormData();
+      fd.append('name', fullName);
+      fd.append('email', email);
+      fd.append('subject', `📩 NEW RECRUITER MESSAGE from ${fullName}`);
+      fd.append('message', `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${fullName}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${message}"`);
+      fd.append('_replyto', email);
+      fd.append('_autoresponse', `Dear ${fullName},\n\nThank you for reaching out to us!\n\nWe have successfully received your message regarding your inquiry. Our team will review your message and get back to you within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`);
+      fd.append('_template', 'table');
+      fd.append('_captcha', 'false');
+
       fetch('https://formsubmit.co/ajax/shivasahu0612@gmail.com', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          name: fullName,
-          email: email,
-          subject: `📩 NEW PORTFOLIO INQUIRY from ${fullName}`,
-          message: `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${fullName}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${message}"`,
-          _replyto: email,
-          _template: 'table'
-        })
-      }).catch(() => {});
-    } catch (e) {}
-
-    // 4. Email 2: Direct Clean Thank You Email Dispatch to Visitor's Email from "Team Anurag Sahu"
-    try {
-      fetch(`https://formsubmit.co/ajax/${encodeURIComponent(email)}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          name: 'Team Anurag Sahu',
-          _subject: `Thank you for contacting Anurag Sahu — Message Received!`,
-          message: `Dear ${fullName},\n\nThank you for reaching out to us!\n\nWe have successfully received your message regarding your inquiry. Our team will review your message and get back to you within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`,
-          _template: 'box',
-          _captcha: 'false'
-        })
+        body: fd
       }).catch(() => {});
     } catch (e) {}
 
