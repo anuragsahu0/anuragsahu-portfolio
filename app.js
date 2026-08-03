@@ -612,13 +612,7 @@ function initCategoryFilters() {
         if (filterValue === 'all') {
           card.style.display = 'block';
           card.style.opacity = '1';
-        } else if (filterValue === 'fullstack' && text.includes('full-stack')) {
-          card.style.display = 'block';
-          card.style.opacity = '1';
-        } else if (filterValue === 'enterprise' && (text.includes('enterprise') || text.includes('saas') || text.includes('backend'))) {
-          card.style.display = 'block';
-          card.style.opacity = '1';
-        } else if (filterValue === 'ai' && (text.includes('ai') || text.includes('machine learning') || text.includes('gnn'))) {
+        } else if (filterValue === 'enterprise' && (text.includes('enterprise') || text.includes('restaurant') || text.includes('saas') || text.includes('backend') || text.includes('02'))) {
           card.style.display = 'block';
           card.style.opacity = '1';
         } else {

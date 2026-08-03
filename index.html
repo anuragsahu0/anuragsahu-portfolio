@@ -463,18 +463,6 @@
             Hi, I'm <strong style="color: var(--color-starlight-white);">Anurag Sahu</strong> — a Computer Science sophomore specializing in AI & ML. I build clean, performant full-stack web applications and explore practical machine learning models.
           </p>
 
-          <!-- MOBILE-ONLY HERO PORTRAIT CARD (DIRECTLY ABOVE EXPLORE MY WORK BUTTON) -->
-          <div class="mobile-only-hero-portrait">
-            <div class="glass-panel glass-spotlight tilt-card" style="padding: 10px; border-radius: 20px; border-color: rgba(6,182,212,0.45); box-shadow: 0 12px 35px rgba(6,182,212,0.25); position: relative;">
-              <div style="width: 100%; height: 220px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: #030712;">
-                <picture>
-                  <source srcSet="assets/anurag-portrait.webp" type="image/webp">
-                  <img src="assets/anurag-portrait.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" loading="eager" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
-                </picture>
-              </div>
-            </div>
-          </div>
-
           <div class="hero-actions" style="justify-content: flex-start;">
             <a href="#roadmap" class="btn-primary" aria-label="Explore Anurag Sahu's projects roadmap">
               <span>Explore My Work</span>
@@ -483,21 +471,6 @@
             <button onclick="alert('Resume Download Triggered')" class="btn-secondary" aria-label="Download Resume PDF">
               <i data-lucide="file-text" style="width: 18px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
               <span>Download Resume</span>
-            </button>
-          </div>
-
-          <div style="display: flex; gap: 12px; margin-top: 4px;" class="font-mono">
-            <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="btn-primary" style="padding: 10px 20px; border-radius: 12px; font-size: 0.8rem; border-color: rgba(6,182,212,0.6); box-shadow: 0 0 20px rgba(6,182,212,0.3); font-weight: 700;" aria-label="GitHub Profile">
-              <i data-lucide="github" style="width: 16px;" aria-hidden="true"></i>
-              <span>GitHub</span>
-            </a>
-            <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 10px 20px; border-radius: 12px; font-size: 0.8rem; border-color: rgba(139,92,246,0.6); color: var(--color-quantum-violet); box-shadow: 0 0 20px rgba(139,92,246,0.3); font-weight: 700;" aria-label="LinkedIn Profile">
-              <i data-lucide="linkedin" style="width: 16px;" aria-hidden="true"></i>
-              <span>LinkedIn</span>
-            </a>
-            <button onclick="copyEmail()" class="btn-secondary" style="padding: 10px 20px; border-radius: 12px; font-size: 0.8rem; border-color: rgba(16,185,129,0.6); color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.3); font-weight: 700;" aria-label="Copy Direct Email Address">
-              <i data-lucide="mail" style="width: 16px;" aria-hidden="true"></i>
-              <span>Email</span>
             </button>
           </div>
 
@@ -525,33 +498,32 @@
 
         </div>
 
-        <!-- RIGHT COLUMN: Large Hero Glass Portrait Showcase (Desktop Only) -->
-        <div class="desktop-only-hero-portrait">
+        <!-- RIGHT COLUMN: Main Hero Glass Portrait Showcase -->
+        <div class="hero-portrait-showcase-container">
           <div class="glass-panel glass-spotlight tilt-card" style="padding: 20px; border-radius: 28px; border-color: rgba(6,182,212,0.4); box-shadow: 0 0 50px rgba(6,182,212,0.22); position: relative;">
             
             <!-- Ambient Floating Tech Badges -->
             <div class="floating-badge badge-top-right">⚡ React • Node</div>
             <div class="floating-badge badge-bottom-left">🤖 AI / ML Models</div>
 
-            <div style="width: 100%; height: 460px; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #030712;">
+            <div style="width: 100%; height: 440px; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #030712;">
               <picture>
                 <source srcSet="assets/anurag-portrait.webp" type="image/webp">
                 <img src="assets/anurag-portrait.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" loading="eager" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
               </picture>
             </div>
 
-            <!-- Live Sound-Wave Focus Mode Equalizer Widget -->
-            <div class="music-widget">
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <i data-lucide="activity" style="width: 16px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
-                <div>
-                  <div style="font-size: 0.65rem; color: var(--color-muted-text); font-weight: 700; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 1px;">Telemetry Status</div>
-                  <div style="font-size: 0.82rem; color: var(--color-starlight-white); font-weight: 700; font-family: var(--font-mono);">ACTIVE FOCUS MODE</div>
-                </div>
-              </div>
-              <div class="sound-wave">
-                <span></span><span></span><span></span><span></span><span></span>
-              </div>
+            <!-- Direct Contact Buttons Row Below Portrait Image -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-family: var(--font-mono); font-size: 0.78rem; margin-top: 14px;">
+              <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="btn-primary" style="padding: 10px 8px; justify-content: center; border-radius: 12px; font-size: 0.78rem; border-color: rgba(6,182,212,0.6); box-shadow: 0 0 15px rgba(6,182,212,0.25);" aria-label="GitHub Profile">
+                <i data-lucide="github" style="width: 15px;" aria-hidden="true"></i> GitHub
+              </a>
+              <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 10px 8px; justify-content: center; border-radius: 12px; font-size: 0.78rem; border-color: rgba(139,92,246,0.6); color: var(--color-quantum-violet);" aria-label="LinkedIn Profile">
+                <i data-lucide="linkedin" style="width: 15px;" aria-hidden="true"></i> LinkedIn
+              </a>
+              <button onclick="copyEmail()" class="btn-secondary" style="padding: 10px 8px; justify-content: center; border-radius: 12px; font-size: 0.78rem; border-color: rgba(16,185,129,0.6); color: #10b981;" aria-label="Copy Direct Email Address">
+                <i data-lucide="mail" style="width: 15px;" aria-hidden="true"></i> Gmail
+              </button>
             </div>
 
           </div>
@@ -645,13 +617,13 @@
       <div class="glass-panel glass-spotlight" style="padding: 32px;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
           
-          <!-- 3D Flip Card 1 -->
+          <!-- 3D Flip Card 1: Frontend Web -->
           <div class="flip-card">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(6,182,212,0.3);">
-                <i data-lucide="layout" style="width: 28px; color: var(--color-nebula-cyan); margin-bottom: 8px;" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Frontend Web</h4>
-                <p style="font-size: 0.75rem; color: var(--color-nebula-cyan);" class="font-mono">Hover to flip 🔄</p>
+              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(6,182,212,0.4); flex-direction: column; justify-content: center; gap: 8px;">
+                <i data-lucide="layout" style="width: 36px; height: 36px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.1rem; margin: 0;">Frontend Web</h4>
+                <p style="font-size: 0.72rem; color: var(--color-nebula-cyan); margin: 0;" class="font-mono">Hover to flip 🔄</p>
               </div>
               <div class="flip-card-back glass-panel">
                 <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Tech Stack</h4>
@@ -660,13 +632,13 @@
             </div>
           </div>
 
-          <!-- 3D Flip Card 2 -->
+          <!-- 3D Flip Card 2: Backend & APIs -->
           <div class="flip-card">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(139,92,246,0.3);">
-                <i data-lucide="server" style="width: 28px; color: var(--color-quantum-violet); margin-bottom: 8px;" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Backend & APIs</h4>
-                <p style="font-size: 0.75rem; color: var(--color-quantum-violet);" class="font-mono">Hover to flip 🔄</p>
+              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(139,92,246,0.4); flex-direction: column; justify-content: center; gap: 8px;">
+                <i data-lucide="server" style="width: 36px; height: 36px; color: var(--color-quantum-violet);" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.1rem; margin: 0;">Backend & APIs</h4>
+                <p style="font-size: 0.72rem; color: var(--color-quantum-violet); margin: 0;" class="font-mono">Hover to flip 🔄</p>
               </div>
               <div class="flip-card-back glass-panel">
                 <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Backend Stack</h4>
@@ -675,13 +647,13 @@
             </div>
           </div>
 
-          <!-- 3D Flip Card 3 -->
+          <!-- 3D Flip Card 3: AI & Machine Learning -->
           <div class="flip-card">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(6,182,212,0.3);">
-                <i data-lucide="cpu" style="width: 28px; color: var(--color-nebula-cyan); margin-bottom: 8px;" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">AI & Machine Learning</h4>
-                <p style="font-size: 0.75rem; color: var(--color-nebula-cyan);" class="font-mono">Hover to flip 🔄</p>
+              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(6,182,212,0.4); flex-direction: column; justify-content: center; gap: 8px;">
+                <i data-lucide="cpu" style="width: 36px; height: 36px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.1rem; margin: 0;">AI & ML</h4>
+                <p style="font-size: 0.72rem; color: var(--color-nebula-cyan); margin: 0;" class="font-mono">Hover to flip 🔄</p>
               </div>
               <div class="flip-card-back glass-panel">
                 <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">AI/ML Stack</h4>
@@ -690,13 +662,13 @@
             </div>
           </div>
 
-          <!-- 3D Flip Card 4 -->
+          <!-- 3D Flip Card 4: Databases -->
           <div class="flip-card">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(16,185,129,0.3);">
-                <i data-lucide="database" style="width: 28px; color: #10b981; margin-bottom: 8px;" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Databases</h4>
-                <p style="font-size: 0.75rem; color: #10b981;" class="font-mono">Hover to flip 🔄</p>
+              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(16,185,129,0.4); flex-direction: column; justify-content: center; gap: 8px;">
+                <i data-lucide="database" style="width: 36px; height: 36px; color: #10b981;" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.1rem; margin: 0;">Databases</h4>
+                <p style="font-size: 0.72rem; color: #10b981; margin: 0;" class="font-mono">Hover to flip 🔄</p>
               </div>
               <div class="flip-card-back glass-panel">
                 <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Database Systems</h4>
@@ -717,12 +689,10 @@
           Explore the active development status of current builds, planned architecture modules, and upcoming system milestones in my engineering pipeline.
         </p>
 
-        <!-- Project Category Filter Buttons -->
-        <div class="project-filters" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
+        <!-- Simplified Project Category Filter Buttons (All Builds & Enterprise) -->
+        <div class="project-filters" style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
           <button class="filter-btn active" data-filter="all">All Builds</button>
-          <button class="filter-btn" data-filter="fullstack">Full-Stack</button>
           <button class="filter-btn" data-filter="enterprise">Enterprise</button>
-          <button class="filter-btn" data-filter="ai">AI / ML</button>
         </div>
       </div>
 
