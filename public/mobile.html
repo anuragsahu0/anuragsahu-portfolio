@@ -612,7 +612,7 @@
           fd.append('subject', `📩 NEW RECRUITER MESSAGE from ${name}`);
           fd.append('message', `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${name}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${msg}"`);
           fd.append('_replyto', email);
-          fd.append('_autoresponse', `Dear ${name},\n\nThank you for reaching out to us!\n\nWe have successfully received your message regarding your inquiry. Our team will review your message and get back to you within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`);
+          fd.append('_autoresponse', `Dear ${name},\n\nMessage Delivered!\n\nThank you ${name}! Your message has been delivered to Anurag Sahu & Team Anurag Sahu.\n\nYou will receive a response at ${email} within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`);
           fd.append('_template', 'table');
           fd.append('_captcha', 'false');
 
@@ -633,8 +633,8 @@
               email: email,
               to: email,
               from_name: 'Team Anurag Sahu',
-              subject: 'Thank you for contacting Anurag Sahu — Message Received!',
-              message: `Dear ${name},\n\nThank you for reaching out to us!\n\nWe have successfully received your message regarding your inquiry. Our team will review your message and get back to you within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`
+              subject: 'Message Delivered! — Team Anurag Sahu Confirmation',
+              message: `Dear ${name},\n\nMessage Delivered!\n\nThank you ${name}! Your message has been delivered to Anurag Sahu & Team Anurag Sahu.\n\nYour Message Summary:\n"${msg}"\n\nYou will receive a response at ${email} within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nPortfolio: https://anuragsahu-portfolio.vercel.app\nGitHub: https://github.com/anuragsahu0`
             })
           }).catch(() => {});
         } catch (e) {}
