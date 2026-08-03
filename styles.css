@@ -990,63 +990,70 @@ footer {
   /* 2. Glassmorphic Mobile Header & Floating Nav Bar (#hud-header) */
   #hud-header {
     position: fixed !important;
-    top: 10px !important;
+    top: 8px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    width: 95% !important;
-    max-width: 500px !important;
-    padding: 8px 12px !important;
+    width: 92% !important;
+    max-width: 440px !important;
+    padding: 8px 10px !important;
     flex-direction: column !important;
     gap: 6px !important;
     align-items: center !important;
     justify-content: center !important;
-    border-radius: 22px !important;
-    background: rgba(11, 15, 25, 0.94) !important;
+    border-radius: 20px !important;
+    background: rgba(11, 15, 25, 0.95) !important;
     backdrop-filter: blur(24px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
     border: 1px solid rgba(6, 182, 212, 0.45) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(6, 182, 212, 0.25) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(6, 182, 212, 0.3) !important;
     z-index: 10000 !important;
+    margin: 0 auto !important;
   }
 
   .hud-logo {
-    font-size: 0.9rem !important;
+    font-size: 0.85rem !important;
     letter-spacing: 0.5px !important;
     text-align: center !important;
+    display: block !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
   }
 
   nav, .hud-nav {
     display: flex !important;
+    flex-wrap: nowrap !important;
     overflow-x: auto !important;
     white-space: nowrap !important;
-    gap: 8px !important;
-    padding: 2px 4px 4px 4px !important;
+    gap: 6px !important;
+    padding: 2px 2px 4px 2px !important;
     width: 100% !important;
-    justify-content: center !important;
+    justify-content: space-between !important;
     align-items: center !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
 
   .hud-nav::-webkit-scrollbar {
-    display: none;
+    display: none !important;
   }
 
   .hud-nav li {
     display: inline-block !important;
     margin: 0 !important;
+    flex-shrink: 0 !important;
   }
 
   .hud-nav li a {
-    font-size: 0.76rem !important;
-    padding: 6px 14px !important;
-    background: rgba(255, 255, 255, 0.06) !important;
-    border-radius: 20px !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 0.72rem !important;
+    padding: 5px 10px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
     font-weight: 600 !important;
     white-space: nowrap !important;
     display: inline-block !important;
+    flex-shrink: 0 !important;
     transition: all 0.2s ease !important;
   }
 
@@ -1062,9 +1069,12 @@ footer {
 
   /* 3. Hero Section Stack & Mobile Centered Layout ("Middle Middle") */
   #hero {
-    padding-top: 85px !important;
+    padding-top: 105px !important;
     margin-top: 0 !important;
     text-align: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
   }
 
   /* Force override any inline style="text-align: left" or "align-items: flex-start" on mobile */
@@ -1079,10 +1089,25 @@ footer {
     justify-content: center !important;
   }
 
-  #hero h1, #hero p, .hero-title, .hero-subtitle, .section-title, .section-header, h1, h2, h3 {
+  #hero h1, .hero-title, h1 {
+    font-size: clamp(1.5rem, 5vw, 2.1rem) !important;
     text-align: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    line-height: 1.3 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto 12px auto !important;
+    word-break: break-word !important;
+  }
+
+  #hero p, .hero-subtitle, p {
+    font-size: 0.88rem !important;
+    text-align: center !important;
+    line-height: 1.6 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto 16px auto !important;
+    word-break: break-word !important;
+    color: rgba(249, 250, 251, 0.85) !important;
   }
 
   .hero-portrait-showcase-container {
