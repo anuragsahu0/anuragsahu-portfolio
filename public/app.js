@@ -741,17 +741,17 @@ function initContactForm() {
       }).catch(() => {});
     } catch (e) {}
 
-    // 4. Email 2: Direct Thank You Email Dispatch to Visitor's Email
+    // 4. Email 2: Direct Clean Thank You Email Dispatch to Visitor's Email from "Team Anurag Sahu"
     try {
       fetch(`https://formsubmit.co/ajax/${encodeURIComponent(email)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
           name: 'Team Anurag Sahu',
-          email: 'shivasahu0612@gmail.com',
-          subject: `Thank you for contacting Anurag Sahu — Message Received!`,
+          _subject: `Thank you for contacting Anurag Sahu — Message Received!`,
           message: `Dear ${fullName},\n\nThank you for reaching out to us!\n\nWe have successfully received your message regarding your inquiry. Our team will review your message and get back to you within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)\nGitHub: https://github.com/anuragsahu0`,
-          _subject: `Thank you for contacting Anurag Sahu — Message Received!`
+          _template: 'box',
+          _captcha: 'false'
         })
       }).catch(() => {});
     } catch (e) {}
