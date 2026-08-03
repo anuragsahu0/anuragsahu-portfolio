@@ -183,6 +183,238 @@ h1, h2, h3, .font-display {
   100% { transform: scale(0.95); opacity: 1; }
 }
 
+/* ==============================================================================
+   PREMIUM VISUAL EFFECTS & ANIMATIONS SUITE (VAIBHAV-INSPIRED EXCELLENCE)
+   ============================================================================== */
+
+/* 1. Top Scroll Reading Progress Bar */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-nebula-cyan), var(--color-quantum-violet), #ef4444);
+  box-shadow: 0 0 10px var(--color-nebula-cyan);
+  z-index: 999999;
+  transition: width 0.1s ease-out;
+}
+
+/* 2. 3D Moving Perspective Preloader Grid Floor */
+.preloader-grid {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: 
+    linear-gradient(rgba(6, 182, 212, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.15) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform: perspective(600px) rotateX(65deg);
+  animation: gridMove 20s linear infinite;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+@keyframes gridMove {
+  0% { transform: perspective(600px) rotateX(65deg) translateY(0); }
+  100% { transform: perspective(600px) rotateX(65deg) translateY(50px); }
+}
+
+/* 3. Floating Ambient Gradient Orbs */
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+  will-change: transform;
+}
+
+.orb-1 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.4) 0%, rgba(6, 182, 212, 0) 70%);
+  top: -50px;
+  left: -50px;
+  animation: floatOrb 12s ease-in-out infinite alternate;
+}
+
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.35) 0%, rgba(139, 92, 246, 0) 70%);
+  bottom: 0;
+  right: -50px;
+  animation: floatOrb 16s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -40px) scale(1.1); }
+  100% { transform: translate(-20px, 30px) scale(0.95); }
+}
+
+/* 4. Live Sound-Wave Focus Mode Equalizer Widget */
+.music-widget {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: rgba(5, 8, 22, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  margin-top: 10px;
+  width: 100%;
+}
+
+.sound-wave {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 18px;
+}
+
+.sound-wave span {
+  width: 3px;
+  border-radius: 3px;
+  background: var(--color-nebula-cyan);
+}
+
+.sound-wave span:nth-child(1) { height: 14px; animation: soundBounce 0.9s ease-in-out infinite alternate; }
+.sound-wave span:nth-child(2) { height: 18px; animation: soundBounce 1.2s ease-in-out infinite alternate 0.2s; background: var(--color-quantum-violet); }
+.sound-wave span:nth-child(3) { height: 10px; animation: soundBounce 0.8s ease-in-out infinite alternate 0.4s; }
+.sound-wave span:nth-child(4) { height: 16px; animation: soundBounce 1.1s ease-in-out infinite alternate 0.1s; background: var(--color-quantum-violet); }
+.sound-wave span:nth-child(5) { height: 12px; animation: soundBounce 1.0s ease-in-out infinite alternate 0.3s; }
+
+@keyframes soundBounce {
+  0% { height: 4px; }
+  100% { height: 18px; }
+}
+
+/* 5. Floating Tech Badges */
+.floating-badge {
+  position: absolute;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(11, 15, 25, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.25);
+  color: var(--color-starlight-white);
+  z-index: 15;
+  animation: floatBadge 4s ease-in-out infinite alternate;
+}
+
+.badge-top-right {
+  top: -10px;
+  right: -10px;
+}
+
+.badge-bottom-left {
+  bottom: 20px;
+  left: -15px;
+  animation-delay: -2s;
+}
+
+@keyframes floatBadge {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+/* 6. GPU-Accelerated 3D Tilt Card Behavior */
+.tilt-card {
+  transition: transform 0.15s cubic-bezier(0.03, 0.98, 0.52, 0.99), box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.tilt-card:hover {
+  box-shadow: 0 20px 40px -10px rgba(6, 182, 212, 0.35);
+}
+
+/* 7. 3D Card Flip Mechanism */
+.flip-card {
+  background-color: transparent;
+  perspective: 1000px;
+  height: 180px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+  background: rgba(139, 92, 246, 0.15) !important;
+  border-color: rgba(139, 92, 246, 0.5) !important;
+}
+
+/* 8. Project Category Filter Buttons */
+.filter-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-muted-text);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.filter-btn:hover, .filter-btn.active {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: var(--color-nebula-cyan);
+  color: var(--color-nebula-cyan);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+}
+
+/* 9. Intersection Observer Scroll Reveal */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 #hud-header {
   position: fixed;
   top: 20px;

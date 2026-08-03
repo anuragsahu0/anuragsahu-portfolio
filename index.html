@@ -98,8 +98,12 @@
 </head>
 <body>
 
+  <!-- Top Scroll Reading Progress Bar -->
+  <div id="scroll-progress"></div>
+
   <!-- 🎬 AWWWARDS-LEVEL CINEMATIC SHUTTER PRELOADER -->
   <div id="portfolio-preloader">
+    <div class="preloader-grid"></div>
     <div class="preloader-spotlight"></div>
 
     <div class="preloader-cinematic-wrap font-mono">
@@ -375,8 +379,12 @@
   <main id="main-content" class="container">
 
     <!-- HERO SECTION -->
-    <section id="hero" aria-label="Hero Section">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center; width: 100%;">
+    <section id="hero" aria-label="Hero Section" style="position: relative; overflow: hidden;">
+      <!-- Animated Ambient Glowing Orbs -->
+      <div class="ambient-orb orb-1"></div>
+      <div class="ambient-orb orb-2"></div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center; width: 100%; position: relative; z-index: 2;">
         
         <!-- LEFT COLUMN: Authentic Brand Pitch & Actions -->
         <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 20px;">
@@ -397,7 +405,7 @@
 
           <!-- MOBILE-ONLY HERO PORTRAIT CARD (DIRECTLY ABOVE EXPLORE MY WORK BUTTON) -->
           <div class="mobile-only-hero-portrait">
-            <div class="glass-panel glass-spotlight" style="padding: 10px; border-radius: 20px; border-color: rgba(6,182,212,0.45); box-shadow: 0 12px 35px rgba(6,182,212,0.25);">
+            <div class="glass-panel glass-spotlight tilt-card" style="padding: 10px; border-radius: 20px; border-color: rgba(6,182,212,0.45); box-shadow: 0 12px 35px rgba(6,182,212,0.25); position: relative;">
               <div style="width: 100%; height: 220px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: #030712;">
                 <picture>
                   <source srcSet="assets/anurag-portrait.webp" type="image/webp">
@@ -434,7 +442,7 @@
           </div>
 
           <!-- QUICK FACTS COMPACT CARD -->
-          <div class="glass-panel" style="width: 100%; padding: 16px; background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.08); margin-top: 10px;">
+          <div class="glass-panel tilt-card" style="width: 100%; padding: 16px; background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.08); margin-top: 10px;">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; font-family: var(--font-mono); font-size: 0.75rem;">
               <div style="display: flex; align-items: center; gap: 6px; color: var(--color-muted-text);">
                 <i data-lucide="map-pin" style="width: 14px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
@@ -459,13 +467,31 @@
 
         <!-- RIGHT COLUMN: Large Hero Glass Portrait Showcase (Desktop Only) -->
         <div class="desktop-only-hero-portrait">
-          <div class="glass-panel glass-spotlight" style="padding: 20px; border-radius: 28px; border-color: rgba(6,182,212,0.4); box-shadow: 0 0 50px rgba(6,182,212,0.22); position: relative;">
+          <div class="glass-panel glass-spotlight tilt-card" style="padding: 20px; border-radius: 28px; border-color: rgba(6,182,212,0.4); box-shadow: 0 0 50px rgba(6,182,212,0.22); position: relative;">
             
-            <div style="width: 100%; height: 500px; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #030712;">
+            <!-- Ambient Floating Tech Badges -->
+            <div class="floating-badge badge-top-right">⚡ React • Node</div>
+            <div class="floating-badge badge-bottom-left">🤖 AI / ML Models</div>
+
+            <div style="width: 100%; height: 460px; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #030712;">
               <picture>
                 <source srcSet="assets/anurag-portrait.webp" type="image/webp">
                 <img src="assets/anurag-portrait.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" loading="eager" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
               </picture>
+            </div>
+
+            <!-- Live Sound-Wave Focus Mode Equalizer Widget -->
+            <div class="music-widget">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="activity" style="width: 16px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
+                <div>
+                  <div style="font-size: 0.65rem; color: var(--color-muted-text); font-weight: 700; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 1px;">Telemetry Status</div>
+                  <div style="font-size: 0.82rem; color: var(--color-starlight-white); font-weight: 700; font-family: var(--font-mono);">ACTIVE FOCUS MODE</div>
+                </div>
+              </div>
+              <div class="sound-wave">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
             </div>
 
           </div>
@@ -558,25 +584,67 @@
 
       <div class="glass-panel glass-spotlight" style="padding: 32px;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-          <div style="padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
-            <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Frontend Web</h4>
-            <p style="font-size: 0.8rem; color: var(--color-nebula-cyan);" class="font-mono">React 18, Tailwind CSS, JS (ES6+)</p>
+          
+          <!-- 3D Flip Card 1 -->
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(6,182,212,0.3);">
+                <i data-lucide="layout" style="width: 28px; color: var(--color-nebula-cyan); margin-bottom: 8px;" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Frontend Web</h4>
+                <p style="font-size: 0.75rem; color: var(--color-nebula-cyan);" class="font-mono">Hover to flip 🔄</p>
+              </div>
+              <div class="flip-card-back glass-panel">
+                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Tech Stack</h4>
+                <p style="font-size: 0.78rem; color: var(--color-starlight-white);" class="font-mono">React 18, Tailwind CSS, JS (ES6+), Modern HTML5/CSS3</p>
+              </div>
+            </div>
           </div>
 
-          <div style="padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
-            <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Backend & APIs</h4>
-            <p style="font-size: 0.8rem; color: var(--color-quantum-violet);" class="font-mono">Node.js, Express, FastAPI, REST</p>
+          <!-- 3D Flip Card 2 -->
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(139,92,246,0.3);">
+                <i data-lucide="server" style="width: 28px; color: var(--color-quantum-violet); margin-bottom: 8px;" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Backend & APIs</h4>
+                <p style="font-size: 0.75rem; color: var(--color-quantum-violet);" class="font-mono">Hover to flip 🔄</p>
+              </div>
+              <div class="flip-card-back glass-panel">
+                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Backend Stack</h4>
+                <p style="font-size: 0.78rem; color: var(--color-starlight-white);" class="font-mono">Node.js, Express, REST APIs, JWT Auth, Microservices</p>
+              </div>
+            </div>
           </div>
 
-          <div style="padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
-            <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">AI & Machine Learning</h4>
-            <p style="font-size: 0.8rem; color: var(--color-nebula-cyan);" class="font-mono">PyTorch, Python, NumPy, GNNs</p>
+          <!-- 3D Flip Card 3 -->
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(6,182,212,0.3);">
+                <i data-lucide="cpu" style="width: 28px; color: var(--color-nebula-cyan); margin-bottom: 8px;" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">AI & Machine Learning</h4>
+                <p style="font-size: 0.75rem; color: var(--color-nebula-cyan);" class="font-mono">Hover to flip 🔄</p>
+              </div>
+              <div class="flip-card-back glass-panel">
+                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">AI/ML Stack</h4>
+                <p style="font-size: 0.78rem; color: var(--color-starlight-white);" class="font-mono">PyTorch, Python, NumPy, GNNs, Model Training</p>
+              </div>
+            </div>
           </div>
 
-          <div style="padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
-            <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Databases & Tools</h4>
-            <p style="font-size: 0.8rem; color: #10b981;" class="font-mono">PostgreSQL, MongoDB, Git, Docker</p>
+          <!-- 3D Flip Card 4 -->
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-card-front glass-panel" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(16,185,129,0.3);">
+                <i data-lucide="database" style="width: 28px; color: #10b981; margin-bottom: 8px;" aria-hidden="true"></i>
+                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Databases</h4>
+                <p style="font-size: 0.75rem; color: #10b981;" class="font-mono">Hover to flip 🔄</p>
+              </div>
+              <div class="flip-card-back glass-panel">
+                <h4 style="color: var(--color-starlight-white); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Database Systems</h4>
+                <p style="font-size: 0.78rem; color: var(--color-starlight-white);" class="font-mono">MongoDB Atlas, Mongoose, SQL & NoSQL Architecture</p>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -588,6 +656,14 @@
         <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
           Explore the active development status of current builds, planned architecture modules, and upcoming system milestones in my engineering pipeline.
         </p>
+
+        <!-- Project Category Filter Buttons -->
+        <div class="project-filters" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
+          <button class="filter-btn active" data-filter="all">All Builds</button>
+          <button class="filter-btn" data-filter="fullstack">Full-Stack</button>
+          <button class="filter-btn" data-filter="enterprise">Enterprise</button>
+          <button class="filter-btn" data-filter="ai">AI / ML</button>
+        </div>
       </div>
 
       <!-- Project 01: Portfolio -->

@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initParticleBackground();
   initCLI();
   initLiveTelemetryTracking();
+  initScrollProgress();
+  init3DTiltCards();
+  initCategoryFilters();
+  initScrollReveal();
 });
 
 /* -------------------------------------------------------------------------- */
@@ -545,3 +549,105 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(syncProjectStatuses, 2000);
   initRedTypewriter();
 });
+
+/* -------------------------------------------------------------------------- */
+/* 5. Scroll Reading Progress Bar Engine                                     */
+/* -------------------------------------------------------------------------- */
+function initScrollProgress() {
+  const progressBar = document.getElementById('scroll-progress');
+  if (!progressBar) return;
+
+  window.addEventListener('scroll', () => {
+    const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    if (windowHeight <= 0) return;
+    const scrolledPercent = (window.scrollY / windowHeight) * 100;
+    progressBar.style.width = `${Math.min(100, Math.max(0, scrolledPercent))}%`;
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/* 6. GPU-Accelerated 3D Tilt Card Interaction Handler                       */
+/* -------------------------------------------------------------------------- */
+function init3DTiltCards() {
+  const tiltCards = document.querySelectorAll('.tilt-card, .glass-card, .project-card');
+
+  tiltCards.forEach((card) => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = ((y - centerY) / centerY) * -10; // Max 10 deg tilt
+      const rotateY = ((x - centerX) / centerX) * 10;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+    });
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/* 7. Interactive Project Category Filtering Engine                           */
+/* -------------------------------------------------------------------------- */
+function initCategoryFilters() {
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projectCards = document.querySelectorAll('#roadmap .glass-panel');
+
+  if (!filterBtns.length) return;
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filterValue = btn.getAttribute('data-filter');
+
+      projectCards.forEach((card) => {
+        const text = (card.textContent || '').toLowerCase();
+        if (filterValue === 'all') {
+          card.style.display = 'block';
+          card.style.opacity = '1';
+        } else if (filterValue === 'fullstack' && text.includes('full-stack')) {
+          card.style.display = 'block';
+          card.style.opacity = '1';
+        } else if (filterValue === 'enterprise' && (text.includes('enterprise') || text.includes('saas') || text.includes('backend'))) {
+          card.style.display = 'block';
+          card.style.opacity = '1';
+        } else if (filterValue === 'ai' && (text.includes('ai') || text.includes('machine learning') || text.includes('gnn'))) {
+          card.style.display = 'block';
+          card.style.opacity = '1';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/* 8. Intersection Observer Scroll Reveal Engine                              */
+/* -------------------------------------------------------------------------- */
+function initScrollReveal() {
+  const revealElements = document.querySelectorAll('section, .glass-panel, .section-header');
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal-on-scroll', 'is-visible');
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  revealElements.forEach((el) => {
+    el.classList.add('reveal-on-scroll');
+    observer.observe(el);
+  });
+}
