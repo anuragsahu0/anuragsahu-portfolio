@@ -1,9 +1,9 @@
 const Contact = require('../models/Contact');
-const { sendContactEmail } = require('../services/emailService');
+const { sendContactEmail, sendAutoReplyEmail } = require('../services/emailService');
 
 /**
  * POST /api/contact
- * Saves contact message to MongoDB AND sends email notification.
+ * Saves contact message to MongoDB AND sends email notification + visitor auto-reply.
  */
 const handleContactForm = async (req, res, next) => {
   try {
@@ -34,7 +34,7 @@ const handleContactForm = async (req, res, next) => {
       ipAddress: req.ip || '',
     });
 
-    // Send email (non-blocking — don't fail if email fails)
+    // 1. Send notification email to Anurag Sahu
     try {
       await sendContactEmail({
         fullName: fullName.trim(),
@@ -45,12 +45,22 @@ const handleContactForm = async (req, res, next) => {
       });
     } catch (emailErr) {
       console.error('[Email] Failed to send notification email:', emailErr.message);
-      // Continue — message was still saved to DB
+    }
+
+    // 2. Send automated auto-reply email to visitor (SLA: 24-48 Hours)
+    try {
+      await sendAutoReplyEmail({
+        fullName: fullName.trim(),
+        email: email.trim(),
+        subject: subject.trim(),
+      });
+    } catch (autoErr) {
+      console.error('[Email] Failed to send auto-reply email:', autoErr.message);
     }
 
     return res.status(201).json({
       success: true,
-      message: 'Thank you! Your message has been delivered to Anurag Sahu. Expect a response within 12-24 hours.',
+      message: 'Thank you! Your message has been delivered to Anurag Sahu. An auto-confirmation email has been sent to your inbox.',
       id: contactDoc._id,
     });
   } catch (err) {

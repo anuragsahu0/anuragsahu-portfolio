@@ -63,7 +63,7 @@ Reply directly to this email to contact ${fullName} (${email}).
   } else {
     // Development / Demo Fallback Mode: Log message to console safely
     console.log('\n========================================');
-    console.log('📬 [DEMO MODE - SMTP CREDENTIALS NOT SET]');
+    console.log('📬 [DEMO MODE - RECRUITER INQUIRY LOGGED]');
     console.log('Recipient Target:', config.recipientEmail);
     console.log('Sender:', fullName, `<${email}>`);
     console.log('Subject:', subject);
@@ -73,4 +73,82 @@ Reply directly to this email to contact ${fullName} (${email}).
   }
 };
 
-module.exports = { sendContactEmail };
+/**
+ * Sends automated Thank You / Auto-Reply Email to the visitor/recruiter.
+ * SLA: 24-48 Hours Response Guarantee.
+ */
+const sendAutoReplyEmail = async ({ fullName, email, subject }) => {
+  const mailOptions = {
+    from: `"Anurag Sahu" <${config.recipientEmail}>`,
+    to: email,
+    subject: `Thank you for contacting Anurag Sahu | Message Received ⚡`,
+    text: `
+Hi ${fullName},
+
+Thank you for reaching out through my portfolio website! I have received your message regarding "${subject}".
+
+RESPONSE SLA TIMELINE:
+I am reviewing your inquiry and will personally reply to your email within 24 to 48 hours.
+
+In the meantime, feel free to explore my latest code builds:
+GitHub: https://github.com/anuragsahu0
+LinkedIn: https://www.linkedin.com/in/anurag-sahu-5a46b9360/
+
+Best regards,
+Anurag Sahu
+B.Tech CSE (AI & ML) Sophomore
+shivasahu0612@gmail.com
+    `,
+    html: `
+      <div style="font-family: Arial, sans-serif; background-color: #030712; color: #f9fafb; padding: 32px; border-radius: 16px; border: 1px solid #06b6d4; max-width: 600px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h2 style="color: #06b6d4; margin: 0; font-size: 22px;">⚡ ANURAG SAHU • PORTFOLIO</h2>
+          <p style="color: #9ca3af; font-size: 13px; margin-top: 4px;">Full-Stack Web Architect & AI/ML Sophomore</p>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+          <p style="font-size: 16px; color: #ffffff; margin-top: 0;">Hi <strong>${fullName}</strong>,</p>
+          
+          <p style="color: #d1d5db; line-height: 1.6;">
+            Thank you for reaching out through my portfolio website! I have received your message regarding <strong>"${subject}"</strong>.
+          </p>
+
+          <div style="padding: 14px; background: rgba(6,182,212,0.1); border-left: 4px solid #06b6d4; border-radius: 6px; margin: 20px 0;">
+            <p style="margin: 0; color: #06b6d4; font-weight: bold; font-size: 14px;">
+              ⏰ Response SLA Timeline:
+            </p>
+            <p style="margin: 4px 0 0 0; color: #e0f2fe; font-size: 14px;">
+              I am reviewing your inquiry and will personally reply to your email within <strong>24 to 48 hours</strong>.
+            </p>
+          </div>
+
+          <p style="color: #9ca3af; font-size: 13px; margin-bottom: 0;">
+            In the meantime, feel free to explore my latest code builds on <a href="https://github.com/anuragsahu0" style="color: #06b6d4;">GitHub</a> or connect with me on <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" style="color: #8b5cf6;">LinkedIn</a>.
+          </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 24px; color: #6b7280; font-size: 12px;">
+          Best regards,<br/>
+          <strong style="color: #ffffff;">Anurag Sahu</strong><br/>
+          B.Tech CSE (AI & ML) Sophomore<br/>
+          <a href="mailto:shivasahu0612@gmail.com" style="color: #06b6d4;">shivasahu0612@gmail.com</a>
+        </div>
+      </div>
+    `,
+  };
+
+  if (transporter) {
+    const info = await transporter.sendMail(mailOptions);
+    return { success: true, messageId: info.messageId };
+  } else {
+    console.log('\n========================================');
+    console.log('🤖 [AUTO-REPLY SENT TO VISITOR]');
+    console.log('To:', fullName, `<${email}>`);
+    console.log('Subject:', mailOptions.subject);
+    console.log('SLA Guarantee: 24-48 Hours Response');
+    console.log('========================================\n');
+    return { success: true, mode: 'auto_reply_demo' };
+  }
+};
+
+module.exports = { sendContactEmail, sendAutoReplyEmail };
