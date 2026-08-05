@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://anuragsahu.dev/sitemap.xml
+Sitemap: https://anuragsahu.com/sitemap.xml
