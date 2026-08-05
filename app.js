@@ -40,6 +40,8 @@ function initLiveTelemetryTracking() {
   });
 }
 
+const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fd2bf-379e-7458-abf4-7925e0c71f58';
+
 function startVisitorHeartbeat() {
   let sessId = sessionStorage.getItem('as_visitor_sess');
   if (!sessId) {
@@ -49,21 +51,27 @@ function startVisitorHeartbeat() {
 
   function ping() {
     try {
-      fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac')
+      fetch(GLOBAL_CLOUD_URL)
         .then(r => r.json())
         .then(data => {
-          if (!data) data = {};
+          if (!data || typeof data !== 'object') data = {};
           if (!data.activeSessions) data.activeSessions = {};
-          data.activeSessions[sessId] = Date.now();
+          data.activeSessions[sessId] = {
+            lastSeen: Date.now(),
+            path: window.location.pathname,
+            ua: (navigator.userAgent || '').slice(0, 30)
+          };
 
           const now = Date.now();
           Object.keys(data.activeSessions).forEach(k => {
-            if (now - data.activeSessions[k] > 25000) {
+            const item = data.activeSessions[k];
+            const time = typeof item === 'object' ? item.lastSeen : item;
+            if (now - time > 30000) {
               delete data.activeSessions[k];
             }
           });
 
-          fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac', {
+          fetch(GLOBAL_CLOUD_URL, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -73,25 +81,35 @@ function startVisitorHeartbeat() {
   }
 
   ping();
-  setInterval(ping, 8000);
+  setInterval(ping, 5000);
 }
 
 function sendTelemetry(type, metadata = {}) {
-  if (type === 'page_view') {
-    try {
-      fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac')
-        .then(r => r.json())
-        .then(data => {
-          if (!data) data = {};
-          data.totalVisitors = (data.totalVisitors || 0) + 1;
-          fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          }).catch(() => {});
+  try {
+    fetch(GLOBAL_CLOUD_URL)
+      .then(r => r.json())
+      .then(data => {
+        if (!data || typeof data !== 'object') data = {};
+        if (type === 'page_view') {
+          if (!sessionStorage.getItem('as_page_counted')) {
+            data.totalVisitors = (parseInt(data.totalVisitors, 10) || 0) + 1;
+            sessionStorage.setItem('as_page_counted', 'true');
+          }
+        } else if (type === 'resume_download') {
+          data.resumeDownloads = (parseInt(data.resumeDownloads, 10) || 0) + 1;
+        } else if (type === 'github_click') {
+          data.githubClicks = (parseInt(data.githubClicks, 10) || 0) + 1;
+        } else if (type === 'linkedin_click') {
+          data.linkedinClicks = (parseInt(data.linkedinClicks, 10) || 0) + 1;
+        }
+
+        fetch(GLOBAL_CLOUD_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
         }).catch(() => {});
-    } catch(e) {}
-  }
+      }).catch(() => {});
+  } catch(e) {}
 
   fetch(`${API_BASE}/analytics/track`, {
     method: 'POST',

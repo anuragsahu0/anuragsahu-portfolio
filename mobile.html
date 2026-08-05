@@ -590,13 +590,13 @@
 
         // 2. Global Cloud Inbox Store Sync (Guarantees message appears in Admin Panel on ALL devices)
         try {
-          fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac')
+          fetch('https://jsonblob.com/api/jsonBlob/019fd2bf-379e-7458-abf4-7925e0c71f58')
             .then(res => res.json())
             .then(store => {
               const s = store || { messages: [], settings: {} };
               if (!s.messages) s.messages = [];
               s.messages.unshift(newMsg);
-              return fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac', {
+              return fetch('https://jsonblob.com/api/jsonBlob/019fd2bf-379e-7458-abf4-7925e0c71f58', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(s)
