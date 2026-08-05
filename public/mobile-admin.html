@@ -140,9 +140,14 @@
             <h3 class="font-display text-lg font-bold text-white">Anurag's Website Controls</h3>
             <p class="text-[11px] text-rose-200/70 mt-0.5">Real-time status controls for visitors, projects, and recruiter leads.</p>
           </div>
-          <button onclick="installPwaApp()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
-            <span>📲 Install Mobile App to Phone</span>
-          </button>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="assets/AS_Admin_App.apk" download="AS_Admin_App.apk" class="py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-lg shadow-emerald-500/20 text-center">
+              <span>📲 Download APK</span>
+            </a>
+            <button onclick="installPwaApp()" class="py-2.5 rounded-xl bg-white/10 border border-white/20 text-white font-bold text-xs flex items-center justify-center gap-1 text-center">
+              <span>📲 Install Web App</span>
+            </button>
+          </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
