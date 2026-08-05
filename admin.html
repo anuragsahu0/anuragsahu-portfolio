@@ -209,13 +209,19 @@
       <main class="flex-1 overflow-y-auto p-8 space-y-8 font-mono text-xs">
         <!-- 1. HOME PANEL -->
         <div id="panel-home" class="space-y-6">
-          <div class="glass-panel p-6 rounded-3xl border-ruby-red/30 flex items-center justify-between">
+          <div class="glass-panel p-6 rounded-3xl border-ruby-red/30 flex flex-wrap items-center justify-between gap-4">
             <div>
-              <span class="px-3 py-1 rounded-full bg-ruby-red/15 border border-ruby-red/40 text-ruby-red text-xs font-bold">
-                ⚡ CRIMSON REAL-TIME TELEMETRY SYSTEM
-              </span>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="px-3 py-1 rounded-full bg-ruby-red/15 border border-ruby-red/40 text-ruby-red text-xs font-bold">
+                  ⚡ CRIMSON REAL-TIME TELEMETRY SYSTEM
+                </span>
+                <span class="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-bold flex items-center gap-1.5 font-mono">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  🔄 Auto-Refreshing every 15s
+                </span>
+              </div>
               <h2 class="font-display text-2xl font-bold mt-2">Welcome Back, Anurag Sahu</h2>
-              <p class="text-muted/80 text-xs mt-1">Live monitoring for active sessions, projects, and recruiter conversions.</p>
+              <p class="text-muted/80 text-xs mt-1">Live monitoring for active sessions, total visitors, projects, and recruiter conversions.</p>
             </div>
             <a href="index.html" class="px-4 py-2.5 rounded-xl bg-ruby-red text-white font-bold text-xs hover:brightness-110 transition-all shadow-lg shadow-ruby-red/30">
               VIEW LIVE WEBSITE ↗
@@ -594,38 +600,52 @@
 
     async function fetchStats() {
       const token = localStorage.getItem('ag_admin_token');
-      if (!token) return;
 
+      // Fetch live total visitors count from global store
       try {
-        const res = await fetch(`${API_BASE_URL}/analytics/summary`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (data.success && data.summary) {
-          const s = data.summary;
-          if (document.getElementById('p-kpi-visitors')) document.getElementById('p-kpi-visitors').textContent = s.totalVisitors || 1;
-          if (document.getElementById('p-kpi-resume')) document.getElementById('p-kpi-resume').textContent = s.resumeDownloads || 0;
-          if (document.getElementById('p-kpi-messages')) document.getElementById('p-kpi-messages').textContent = s.contactSubmissions || 0;
-          if (document.getElementById('p-kpi-github')) document.getElementById('p-kpi-github').textContent = s.githubClicks || 0;
-          if (document.getElementById('p-kpi-linkedin')) document.getElementById('p-kpi-linkedin').textContent = s.linkedinClicks || 0;
-
-          // Render Live Traffic Sessions Table
-          const tableBody = document.querySelector('#panel-live tbody');
-          if (tableBody && data.recentEvents) {
-            const rowsHtml = data.recentEvents.slice(0, 10).map((evt, idx) => `
-              <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
-                <td class="py-3 px-3 font-bold text-starlight">${evt.ipAddress || '127.0.0.1'} ${idx === 0 ? '<span class="text-[9px] text-emerald-400 font-bold ml-1">(Active)</span>' : ''}</td>
-                <td class="py-3 px-3 text-ruby-red font-bold">${evt.path || '/'}</td>
-                <td class="py-3 px-3 text-muted">${evt.browser || 'Chrome'}</td>
-                <td class="py-3 px-3 text-muted">${evt.os || 'macOS'}</td>
-                <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">ONLINE NOW</span></td>
-              </tr>
-            `).join('');
-            tableBody.innerHTML = rowsHtml;
+        const cRes = await fetch(GLOBAL_CLOUD_URL);
+        const cData = await cRes.json();
+        if (cData && cData.totalVisitors) {
+          if (document.getElementById('p-kpi-visitors')) {
+            document.getElementById('p-kpi-visitors').textContent = cData.totalVisitors;
           }
         }
-      } catch (e) {
-        console.warn('Analytics API notice, using memory fallback summary');
+      } catch (e) {}
+
+      if (token) {
+        try {
+          const res = await fetch(`${API_BASE_URL}/analytics/summary`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const data = await res.json();
+          if (data.success && data.summary) {
+            const s = data.summary;
+            if (document.getElementById('p-kpi-visitors') && !document.getElementById('p-kpi-visitors').textContent) {
+              document.getElementById('p-kpi-visitors').textContent = s.totalVisitors || 1;
+            }
+            if (document.getElementById('p-kpi-resume')) document.getElementById('p-kpi-resume').textContent = s.resumeDownloads || 0;
+            if (document.getElementById('p-kpi-messages')) document.getElementById('p-kpi-messages').textContent = s.contactSubmissions || 0;
+            if (document.getElementById('p-kpi-github')) document.getElementById('p-kpi-github').textContent = s.githubClicks || 0;
+            if (document.getElementById('p-kpi-linkedin')) document.getElementById('p-kpi-linkedin').textContent = s.linkedinClicks || 0;
+
+            // Render Live Traffic Sessions Table
+            const tableBody = document.querySelector('#panel-live tbody');
+            if (tableBody && data.recentEvents) {
+              const rowsHtml = data.recentEvents.slice(0, 10).map((evt, idx) => `
+                <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                  <td class="py-3 px-3 font-bold text-starlight">${evt.ipAddress || '127.0.0.1'} ${idx === 0 ? '<span class="text-[9px] text-emerald-400 font-bold ml-1">(Active)</span>' : ''}</td>
+                  <td class="py-3 px-3 text-ruby-red font-bold">${evt.path || '/'}</td>
+                  <td class="py-3 px-3 text-muted">${evt.browser || 'Chrome'}</td>
+                  <td class="py-3 px-3 text-muted">${evt.os || 'macOS'}</td>
+                  <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">ONLINE NOW</span></td>
+                </tr>
+              `).join('');
+              tableBody.innerHTML = rowsHtml;
+            }
+          }
+        } catch (e) {
+          console.warn('Analytics API notice, using memory fallback summary');
+        }
       }
 
       fetchMessages();
@@ -734,8 +754,8 @@
 
     checkAuth();
     fetchMessages();
-    // Live Traffic Heartbeat Refresh every 3 seconds
-    setInterval(fetchStats, 3000);
+    // Live Telemetry & Messages Auto-Refresh every 15 seconds
+    setInterval(fetchStats, 15000);
   </script>
 </body>
 </html>

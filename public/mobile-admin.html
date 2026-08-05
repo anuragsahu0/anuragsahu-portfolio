@@ -130,9 +130,14 @@
       <!-- PANEL 1: OVERVIEW KPIS -->
       <div id="mp-home" class="space-y-4">
         <div class="mobile-glass p-5 rounded-2xl space-y-1">
-          <span class="text-[10px] text-ruby-red font-bold uppercase">MOBILE COMMAND CENTER</span>
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] text-ruby-red font-bold uppercase">MOBILE COMMAND CENTER</span>
+            <span class="text-[9px] text-emerald-400 font-bold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 15s Auto-Refresh
+            </span>
+          </div>
           <h3 class="font-display text-lg font-bold text-white">Anurag's Website Controls</h3>
-          <p class="text-[11px] text-rose-200/70">Real-time status controls for projects and recruiter leads.</p>
+          <p class="text-[11px] text-rose-200/70">Real-time status controls for visitors, projects, and recruiter leads.</p>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -428,10 +433,24 @@
             </div>
           `).join('');
         }
-      }
+      // Fetch Live Total Visitors count
+      try {
+        fetch(GLOBAL_CLOUD_URL)
+          .then(r => r.json())
+          .then(cData => {
+            if (cData && cData.totalVisitors) {
+              if (document.getElementById('mkpi-visitors')) {
+                document.getElementById('mkpi-visitors').textContent = cData.totalVisitors;
+              }
+            }
+          }).catch(() => {});
+      } catch (e) {}
     }
 
     checkMobileAuth();
+
+    // Auto-Refresh mobile admin data every 15 seconds
+    setInterval(fetchMobileMessages, 15000);
   </script>
 </body>
 </html>
