@@ -129,15 +129,20 @@
       
       <!-- PANEL 1: OVERVIEW KPIS -->
       <div id="mp-home" class="space-y-4">
-        <div class="mobile-glass p-5 rounded-2xl space-y-1">
+        <div class="mobile-glass p-5 rounded-2xl space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-[10px] text-ruby-red font-bold uppercase">MOBILE COMMAND CENTER</span>
             <span class="text-[9px] text-emerald-400 font-bold flex items-center gap-1">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> 3s Live Sync
             </span>
           </div>
-          <h3 class="font-display text-lg font-bold text-white">Anurag's Website Controls</h3>
-          <p class="text-[11px] text-rose-200/70">Real-time status controls for visitors, projects, and recruiter leads.</p>
+          <div>
+            <h3 class="font-display text-lg font-bold text-white">Anurag's Website Controls</h3>
+            <p class="text-[11px] text-rose-200/70 mt-0.5">Real-time status controls for visitors, projects, and recruiter leads.</p>
+          </div>
+          <button onclick="installPwaApp()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+            <span>📲 Install Mobile App to Phone</span>
+          </button>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -463,6 +468,30 @@
 
     // Auto-Refresh mobile admin data every 3 seconds for 100% real-time live sync
     setInterval(fetchMobileMessages, 3000);
+
+    // Service Worker & PWA Native Installation Engine
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(() => {
+        console.log('✓ AS Admin PWA Service Worker Registered');
+      }).catch(() => {});
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBanner = document.getElementById('pwa-install-banner');
+      if (installBanner) installBanner.classList.remove('hidden');
+    });
+
+    window.installPwaApp = function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+      } else {
+        alert('📲 To install app on iOS / iPhone:\nTap Share button (⬆) -> select "Add to Home Screen"');
+      }
+    };
   </script>
 </body>
 </html>
