@@ -133,7 +133,7 @@
           <div class="flex items-center justify-between">
             <span class="text-[10px] text-ruby-red font-bold uppercase">MOBILE COMMAND CENTER</span>
             <span class="text-[9px] text-emerald-400 font-bold flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 15s Auto-Refresh
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> 3s Live Sync
             </span>
           </div>
           <h3 class="font-display text-lg font-bold text-white">Anurag's Website Controls</h3>
@@ -141,10 +141,17 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3">
+          <div class="mobile-glass p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5">
+            <div class="text-emerald-400 text-[10px] font-bold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> ONLINE NOW
+            </div>
+            <div id="mkpi-online" class="font-display text-2xl font-bold text-emerald-400">1</div>
+            <div class="text-emerald-400 text-[9px] font-bold">🟢 Active Realtime</div>
+          </div>
           <div class="mobile-glass p-4 rounded-2xl">
-            <div class="text-rose-300 text-[10px]">REAL VISITORS</div>
+            <div class="text-rose-300 text-[10px]">TOTAL VISITORS</div>
             <div id="mkpi-visitors" class="font-display text-2xl font-bold text-ruby-red">1</div>
-            <div class="text-emerald-400 text-[9px]">● Live</div>
+            <div class="text-rose-300 text-[9px]">Page Views</div>
           </div>
           <div class="mobile-glass p-4 rounded-2xl">
             <div class="text-rose-300 text-[10px]">RESUME PDF</div>
@@ -152,14 +159,9 @@
             <div class="text-rose-300 text-[9px]">Downloads</div>
           </div>
           <div class="mobile-glass p-4 rounded-2xl">
-            <div class="text-rose-300 text-[10px]">ACTIVE PROJECTS</div>
-            <div class="font-display text-2xl font-bold text-amber-status">3</div>
-            <div class="text-rose-300 text-[9px]">Website Builds</div>
-          </div>
-          <div class="mobile-glass p-4 rounded-2xl">
             <div class="text-rose-300 text-[10px]">MESSAGES</div>
-            <div id="mkpi-unread" class="font-display text-2xl font-bold text-ruby-red">2</div>
-            <div class="text-rose-300 text-[9px]">Recruiter Leads</div>
+            <div id="mkpi-unread" class="font-display text-2xl font-bold text-ruby-red">0</div>
+            <div class="text-rose-300 text-[9px]">Direct Inbox</div>
           </div>
         </div>
       </div>
@@ -433,14 +435,24 @@
             </div>
           `).join('');
         }
-      // Fetch Live Total Visitors count
+      // Fetch Live Total & Active Online Visitors count
       try {
         fetch(GLOBAL_CLOUD_URL)
           .then(r => r.json())
           .then(cData => {
-            if (cData && cData.totalVisitors) {
-              if (document.getElementById('mkpi-visitors')) {
+            if (cData) {
+              if (cData.totalVisitors && document.getElementById('mkpi-visitors')) {
                 document.getElementById('mkpi-visitors').textContent = cData.totalVisitors;
+              }
+              if (cData.activeSessions) {
+                const now = Date.now();
+                let activeCount = 0;
+                Object.keys(cData.activeSessions).forEach(k => {
+                  if (now - cData.activeSessions[k] <= 30000) activeCount++;
+                });
+                if (document.getElementById('mkpi-online')) {
+                  document.getElementById('mkpi-online').textContent = Math.max(activeCount, 1);
+                }
               }
             }
           }).catch(() => {});
@@ -449,8 +461,8 @@
 
     checkMobileAuth();
 
-    // Auto-Refresh mobile admin data every 15 seconds
-    setInterval(fetchMobileMessages, 15000);
+    // Auto-Refresh mobile admin data every 3 seconds for 100% real-time live sync
+    setInterval(fetchMobileMessages, 3000);
   </script>
 </body>
 </html>

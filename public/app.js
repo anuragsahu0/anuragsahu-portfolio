@@ -23,10 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 /* Real-Time Live Telemetry Tracking Engine                                  */
 /* -------------------------------------------------------------------------- */
 function initLiveTelemetryTracking() {
-  // 1. Automatic Page View Telemetry Ping
   sendTelemetry('page_view', { path: window.location.pathname });
+  startVisitorHeartbeat();
 
-  // 2. Track Resume Downloads
   document.querySelectorAll('button, a').forEach((el) => {
     const text = (el.textContent || '').toLowerCase();
     const href = (el.getAttribute('href') || '').toLowerCase();
@@ -41,7 +40,59 @@ function initLiveTelemetryTracking() {
   });
 }
 
+function startVisitorHeartbeat() {
+  let sessId = sessionStorage.getItem('as_visitor_sess');
+  if (!sessId) {
+    sessId = 'sess_' + Math.random().toString(36).substr(2, 9);
+    sessionStorage.setItem('as_visitor_sess', sessId);
+  }
+
+  function ping() {
+    try {
+      fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac')
+        .then(r => r.json())
+        .then(data => {
+          if (!data) data = {};
+          if (!data.activeSessions) data.activeSessions = {};
+          data.activeSessions[sessId] = Date.now();
+
+          const now = Date.now();
+          Object.keys(data.activeSessions).forEach(k => {
+            if (now - data.activeSessions[k] > 25000) {
+              delete data.activeSessions[k];
+            }
+          });
+
+          fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          }).catch(() => {});
+        }).catch(() => {});
+    } catch (e) {}
+  }
+
+  ping();
+  setInterval(ping, 8000);
+}
+
 function sendTelemetry(type, metadata = {}) {
+  if (type === 'page_view') {
+    try {
+      fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac')
+        .then(r => r.json())
+        .then(data => {
+          if (!data) data = {};
+          data.totalVisitors = (data.totalVisitors || 0) + 1;
+          fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          }).catch(() => {});
+        }).catch(() => {});
+    } catch(e) {}
+  }
+
   fetch(`${API_BASE}/analytics/track`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

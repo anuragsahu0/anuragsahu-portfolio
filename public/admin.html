@@ -217,11 +217,11 @@
                 </span>
                 <span class="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-bold flex items-center gap-1.5 font-mono">
                   <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  🔄 Auto-Refreshing every 15s
+                  🟢 LIVE REAL-TIME SYNC (3s Refresh)
                 </span>
               </div>
               <h2 class="font-display text-2xl font-bold mt-2">Welcome Back, Anurag Sahu</h2>
-              <p class="text-muted/80 text-xs mt-1">Live monitoring for active sessions, total visitors, projects, and recruiter conversions.</p>
+              <p class="text-muted/80 text-xs mt-1">Live monitoring for active realtime visitors, total page views, projects, and recruiter conversions.</p>
             </div>
             <a href="index.html" class="px-4 py-2.5 rounded-xl bg-ruby-red text-white font-bold text-xs hover:brightness-110 transition-all shadow-lg shadow-ruby-red/30">
               VIEW LIVE WEBSITE ↗
@@ -229,35 +229,48 @@
           </div>
 
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
-              <div class="text-muted mb-1">REAL VISITORS</div>
-              <div id="p-kpi-visitors" class="font-display text-2.5xl font-extrabold text-ruby-red">1</div>
-              <div class="text-emerald-400 text-[10px]">● Live Telemetry</div>
+            <!-- ACTIVE REALTIME VISITORS -->
+            <div class="glass-panel p-4 rounded-2xl border-emerald-500/30 bg-emerald-500/5">
+              <div class="text-emerald-400 font-bold mb-1 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> ONLINE NOW
+              </div>
+              <div id="p-kpi-online" class="font-display text-2.5xl font-extrabold text-emerald-400">1</div>
+              <div class="text-emerald-400 text-[10px] font-bold">🟢 Active Realtime</div>
             </div>
+
+            <!-- TOTAL VISITORS -->
+            <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
+              <div class="text-muted mb-1">TOTAL VISITORS</div>
+              <div id="p-kpi-visitors" class="font-display text-2.5xl font-extrabold text-ruby-red">1</div>
+              <div class="text-muted text-[10px]">Total Page Views</div>
+            </div>
+
+            <!-- RESUME DOWNLOADS -->
             <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
               <div class="text-muted mb-1">RESUME DOWNLOADS</div>
               <div id="p-kpi-resume" class="font-display text-2.5xl font-extrabold text-emerald-400">0</div>
               <div class="text-muted text-[10px]">ATS PDF Clicks</div>
             </div>
+
+            <!-- UNREAD MESSAGES -->
+            <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
+              <div class="text-muted mb-1">UNREAD MESSAGES</div>
+              <div id="p-kpi-messages" class="font-display text-2.5xl font-extrabold text-ruby-red">0</div>
+              <div class="text-ruby-red text-[10px]">Direct Inbox</div>
+            </div>
+
+            <!-- ACTIVE PROJECTS -->
             <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
               <div class="text-muted mb-1">ACTIVE PROJECTS</div>
               <div id="p-kpi-projects" class="font-display text-2.5xl font-extrabold text-gravity-amber">3</div>
               <div class="text-muted text-[10px]">Portfolio, RMS, ERP</div>
             </div>
-            <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
-              <div class="text-muted mb-1">UNREAD MESSAGES</div>
-              <div id="p-kpi-messages" class="font-display text-2.5xl font-extrabold text-ruby-red">1</div>
-              <div class="text-ruby-red text-[10px]">Direct Form</div>
-            </div>
+
+            <!-- GITHUB CLICKS -->
             <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
               <div class="text-muted mb-1">GITHUB CLICKS</div>
               <div id="p-kpi-github" class="font-display text-2.5xl font-extrabold text-ruby-red">0</div>
               <div class="text-muted text-[10px]">profile/anuragsahu0</div>
-            </div>
-            <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
-              <div class="text-muted mb-1">LINKEDIN CLICKS</div>
-              <div id="p-kpi-linkedin" class="font-display text-2.5xl font-extrabold text-emerald-400">0</div>
-              <div class="text-muted text-[10px]">in/anurag-sahu-5a</div>
             </div>
           </div>
         </div>
@@ -601,13 +614,23 @@
     async function fetchStats() {
       const token = localStorage.getItem('ag_admin_token');
 
-      // Fetch live total visitors count from global store
+      // Fetch live total & active online visitors count from global cloud store
       try {
         const cRes = await fetch(GLOBAL_CLOUD_URL);
         const cData = await cRes.json();
-        if (cData && cData.totalVisitors) {
-          if (document.getElementById('p-kpi-visitors')) {
+        if (cData) {
+          if (cData.totalVisitors && document.getElementById('p-kpi-visitors')) {
             document.getElementById('p-kpi-visitors').textContent = cData.totalVisitors;
+          }
+          if (cData.activeSessions) {
+            const now = Date.now();
+            let activeCount = 0;
+            Object.keys(cData.activeSessions).forEach(k => {
+              if (now - cData.activeSessions[k] <= 30000) activeCount++;
+            });
+            if (document.getElementById('p-kpi-online')) {
+              document.getElementById('p-kpi-online').textContent = Math.max(activeCount, 1);
+            }
           }
         }
       } catch (e) {}
@@ -620,9 +643,6 @@
           const data = await res.json();
           if (data.success && data.summary) {
             const s = data.summary;
-            if (document.getElementById('p-kpi-visitors') && !document.getElementById('p-kpi-visitors').textContent) {
-              document.getElementById('p-kpi-visitors').textContent = s.totalVisitors || 1;
-            }
             if (document.getElementById('p-kpi-resume')) document.getElementById('p-kpi-resume').textContent = s.resumeDownloads || 0;
             if (document.getElementById('p-kpi-messages')) document.getElementById('p-kpi-messages').textContent = s.contactSubmissions || 0;
             if (document.getElementById('p-kpi-github')) document.getElementById('p-kpi-github').textContent = s.githubClicks || 0;
@@ -643,9 +663,7 @@
               tableBody.innerHTML = rowsHtml;
             }
           }
-        } catch (e) {
-          console.warn('Analytics API notice, using memory fallback summary');
-        }
+        } catch (e) {}
       }
 
       fetchMessages();
@@ -754,8 +772,8 @@
 
     checkAuth();
     fetchMessages();
-    // Live Telemetry & Messages Auto-Refresh every 15 seconds
-    setInterval(fetchStats, 15000);
+    // Live Real-Time Telemetry & Messages Auto-Refresh every 3 seconds
+    setInterval(fetchStats, 3000);
   </script>
 </body>
 </html>
