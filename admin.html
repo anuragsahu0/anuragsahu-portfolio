@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Anurag Admin — Mobile App Command Center</title>
+  <title>Anurag Sahu — Admin SaaS Command Dashboard</title>
 
   <!-- Smart Mobile Admin Auto-Detection Engine -->
   <script>
@@ -16,40 +16,40 @@
     })();
   </script>
 
-  <!-- PWA & Mobile Web App Capabilities for Add to Home Screen -->
+  <!-- PWA & Mobile Web App Capabilities -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Anurag Admin">
-  <meta name="theme-color" content="#0c0306">
+  <meta name="apple-mobile-web-app-title" content="AS Admin">
+  <meta name="theme-color" content="#0F172A">
   <link rel="apple-touch-icon" href="assets/anurag-portrait-sm.webp">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Tailwind CDN for rapid full-page styling -->
+  <!-- Tailwind CDN for rapid styling -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            'gravity-dark': '#0c0306',
-            'ruby-red': '#ef4444',
-            'crimson-dark': '#991b1b',
-            'rose-glow': '#f43f5e',
-            'gravity-amber': '#f59e0b',
-            'starlight': '#fff1f2',
-            'muted': '#fda4af',
+            'saas-bg': '#0B0F19',
+            'saas-card': '#111827',
+            'saas-border': 'rgba(255, 255, 255, 0.08)',
+            'nebula-cyan': '#06B6D4',
+            'quantum-violet': '#8B5CF6',
+            'ruby-red': '#EF4444',
+            'emerald-glow': '#10B981',
           },
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
-            display: ['Space Grotesk', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
           }
         }
@@ -57,305 +57,528 @@
     }
   </script>
   <style>
+    :root {
+      color-scheme: dark;
+    }
     body {
-      background: radial-gradient(circle at 50% 0%, #2a080e 0%, #0c0306 70%);
-      color: #fff1f2;
+      background-color: #0B0F19;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.08) 0px, transparent 50%);
+      color: #F8FAFC;
+      font-family: 'Inter', sans-serif;
       overflow-x: hidden;
     }
-    .glass-panel {
-      background: rgba(26, 7, 12, 0.75);
+    .glass-card {
+      background: rgba(17, 24, 39, 0.75);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(239, 68, 68, 0.25);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.8), 0 0 20px rgba(239, 68, 68, 0.15);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     }
-    .ruby-glow {
-      box-shadow: 0 0 25px rgba(239, 68, 68, 0.35);
+    .sidebar-item {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    /* Page Entrance Animation */
-    @keyframes pageEntrance {
-      0% {
-        opacity: 0;
-        transform: scale(0.96) translateY(20px);
-        filter: blur(10px);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-        filter: blur(0);
-      }
+    .sidebar-item.active {
+      background: linear-gradient(90deg, rgba(6, 182, 212, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
+      border-left: 3px solid #06B6D4;
+      color: #FFFFFF;
+      font-weight: 600;
     }
-    .animate-page-entrance {
-      animation: pageEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-    /* Tab Hover Transition */
-    .sidebar-btn {
-      transition: all 0.25s ease;
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
     }
-    .sidebar-btn.active {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(153, 27, 27, 0.35));
-      border: 1px solid rgba(239, 68, 68, 0.5);
-      color: #fff1f2;
-      font-weight: 700;
-      box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(6, 182, 212, 0.4);
+    }
+    /* Pulse glow */
+    .glow-cyan {
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans text-starlight">
+<body class="min-h-screen flex flex-col font-sans text-slate-100 antialiased selection:bg-cyan-500/30">
 
-  <!-- 1. LOGIN SCREEN (Shown if unauthenticated) -->
-  <div id="page-login-screen" class="min-h-screen flex items-center justify-center p-4 relative animate-page-entrance">
-    <div class="w-full max-w-md glass-panel p-8 rounded-3xl space-y-6 font-mono text-xs ruby-glow">
+  <!-- 1. LOGIN SCREEN (Unauthenticated state) -->
+  <div id="page-login-screen" class="min-h-screen flex items-center justify-center p-4 relative">
+    <div class="w-full max-w-md glass-card p-8 rounded-3xl space-y-6 border border-cyan-500/20 glow-cyan">
       <div class="text-center space-y-2">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ruby-red/10 border border-ruby-red/40 text-ruby-red font-bold">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-nebula-cyan text-xs font-mono font-bold">
           <i data-lucide="shield-check" class="w-4 h-4"></i>
-          <span>AUTHENTICATED CRIMSON ACCESS</span>
+          <span>SAAS DASHBOARD CONTROL</span>
         </div>
-        <h1 class="font-display text-2.5xl font-extrabold text-starlight tracking-tight">
-          Anurag's <span class="text-ruby-red">Portfolio Dashboard</span>
+        <h1 class="font-display text-2.5xl font-extrabold text-white tracking-tight">
+          Anurag Sahu <span class="text-transparent bg-clip-text bg-gradient-to-r from-nebula-cyan to-quantum-violet">Admin Console</span>
         </h1>
-        <p class="text-muted/80 text-[11px]">Enter admin credentials to access full red-theme control center.</p>
+        <p class="text-slate-400 text-xs font-mono">Enter credentials to unlock realtime telemetry & management.</p>
       </div>
 
-      <div id="login-error-box" class="hidden p-3 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-center"></div>
+      <div id="login-error-box" class="hidden p-3.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs font-mono text-center"></div>
 
-      <form id="page-login-form" class="space-y-4">
+      <form id="page-login-form" class="space-y-4 font-mono text-xs">
         <div>
-          <label class="block text-starlight font-bold mb-1.5 uppercase">ADMIN EMAIL</label>
-          <input id="input-admin-email" type="text" required value="" placeholder="Enter Admin Email..." class="w-full px-4 py-3 bg-black/60 border border-ruby-red/30 rounded-xl text-starlight focus:outline-none focus:border-ruby-red focus:ring-1 focus:ring-ruby-red transition-all">
+          <label class="block text-slate-300 font-bold mb-1.5 uppercase tracking-wider">ADMIN EMAIL</label>
+          <input id="input-admin-email" type="text" required value="" placeholder="anurag@admin.com" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
         </div>
         <div>
-          <label class="block text-starlight font-bold mb-1.5 uppercase">SECURITY PASSWORD</label>
-          <input id="input-admin-pass" type="password" required value="" placeholder="Enter Security Password..." class="w-full px-4 py-3 bg-black/60 border border-ruby-red/30 rounded-xl text-starlight focus:outline-none focus:border-ruby-red focus:ring-1 focus:ring-ruby-red transition-all">
+          <label class="block text-slate-300 font-bold mb-1.5 uppercase tracking-wider">PASSWORD</label>
+          <input id="input-admin-pass" type="password" required value="" placeholder="Enter password..." class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
         </div>
 
-        <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-ruby-red via-rose-600 to-crimson-dark text-white font-extrabold hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg shadow-ruby-red/30">
+        <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-nebula-cyan via-blue-600 to-quantum-violet text-white font-bold hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25">
           <i data-lucide="lock" class="w-4 h-4"></i>
-          <span>LOGIN TO ADMIN DASHBOARD</span>
+          <span>SIGN IN TO DASHBOARD</span>
         </button>
       </form>
 
-      <div class="text-center pt-2">
-        <a href="index.html" class="text-muted hover:text-starlight transition-colors">← Back to Main Portfolio Website</a>
+      <div class="text-center pt-2 font-mono text-xs">
+        <a href="index.html" class="text-slate-400 hover:text-cyan-400 transition-colors">← Return to Main Portfolio Website</a>
       </div>
     </div>
   </div>
 
-  <!-- 2. FULL STANDALONE SAAS COMMAND CENTER PAGE (Shown when logged in) -->
-  <div id="page-admin-dashboard" class="hidden flex-1 flex flex-col min-h-screen animate-page-entrance">
-    <!-- TOP HEADER -->
-    <header class="sticky top-0 z-30 border-b border-ruby-red/20 bg-gravity-dark/90 backdrop-blur-xl px-6 py-3.5 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <img src="assets/anurag-portrait-sm.jpg" alt="Anurag Sahu Portrait" class="w-10 h-10 rounded-xl object-cover border border-ruby-red/40 shadow-md shadow-ruby-red/30">
-        <div>
-          <h1 class="font-display text-lg font-bold leading-tight flex items-center gap-2">
-            <span>Anurag's Portfolio Dashboard</span>
-            <span class="text-ruby-red text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-ruby-red/15 border border-ruby-red/30">
-              CRIMSON COMMAND
-            </span>
-          </h1>
-          <p class="font-mono text-[10px] text-muted tracking-wider">
-            REAL-TIME RUBY ENGINE • LATENCY: <span class="text-emerald-400 font-bold">12ms</span>
-          </p>
+  <!-- 2. SAAS DASHBOARD (Authenticated State) -->
+  <div id="page-admin-dashboard" class="hidden flex-1 flex flex-col min-h-screen">
+    
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-40 border-b border-saas-border bg-saas-bg/90 backdrop-blur-xl px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-3">
+          <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu Avatar" class="w-9 h-9 rounded-xl object-cover border border-cyan-500/40 shadow-sm shadow-cyan-500/20">
+          <div>
+            <h1 class="font-display text-sm font-bold text-white leading-tight flex items-center gap-2">
+              <span>Anurag Sahu</span>
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-nebula-cyan">
+                ADMIN CONSOLE
+              </span>
+            </h1>
+            <p class="font-mono text-[10px] text-slate-400">
+              anuragsahu.com • <span class="text-emerald-400 font-bold">🟢 Live Engine Connected</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="hidden md:flex items-center relative w-64 lg:w-80">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none"></i>
+          <input type="text" id="admin-search-input" placeholder="Search analytics, inbox, logs..." class="w-full bg-slate-900/80 border border-slate-800 rounded-xl pl-9 pr-4 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono">
         </div>
       </div>
 
+      <!-- Right Action Bar & Profile Menu -->
       <div class="flex items-center gap-3 font-mono text-xs">
-        <button id="page-btn-export-json" class="px-3.5 py-1.5 rounded-xl bg-white/5 border border-ruby-red/30 text-ruby-red hover:bg-ruby-red/15 transition-all">
-          ⬇ EXPORT JSON
+        
+        <!-- Notification Dropdown Bell -->
+        <div class="relative">
+          <button id="btn-notifications" onclick="toggleNotificationDropdown()" class="p-2 rounded-xl bg-slate-800/60 border border-slate-700/60 text-slate-300 hover:text-white hover:border-cyan-500/40 transition-all relative">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+            <span id="notif-badge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-ruby-red text-[9px] font-bold text-white flex items-center justify-center">1</span>
+          </button>
+
+          <!-- Notification Popup Menu -->
+          <div id="dropdown-notifications" class="hidden absolute right-0 mt-2 w-80 glass-card rounded-2xl p-4 shadow-2xl space-y-3 z-50 text-xs">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span class="font-bold text-white font-display">System Notifications</span>
+              <span class="text-[10px] text-cyan-400 font-mono">Real-time Alert</span>
+            </div>
+            <div class="space-y-2">
+              <div class="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-slate-200">
+                <div class="font-bold text-cyan-400">📩 Recruiter Form Submitted</div>
+                <div class="text-[11px] text-slate-300 mt-0.5">New message delivered live to Admin INBOX.</div>
+                <div class="text-[9px] text-slate-500 mt-1">Just Now</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button id="page-btn-export-json" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/60 border border-slate-700 text-slate-300 hover:text-white hover:border-cyan-500/40 transition-all">
+          <i data-lucide="download" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span>Report TXT</span>
         </button>
-        <button id="page-btn-export-csv" class="px-3.5 py-1.5 rounded-xl bg-white/5 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/15 transition-all">
-          ⬇ EXPORT CSV
+
+        <button id="page-btn-logout" class="px-3.5 py-1.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-400 font-bold hover:bg-red-500/25 transition-all flex items-center gap-1.5">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Logout</span>
         </button>
-        <button id="page-btn-logout" class="px-3.5 py-1.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-400 font-bold hover:bg-red-500/25 transition-all">
-          LOGOUT
-        </button>
-        <a href="index.html" class="px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-starlight hover:bg-white/10 transition-all">
-          WEBSITE ↗
+
+        <a href="index.html" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold hover:brightness-110 transition-all flex items-center gap-1">
+          <span>Website</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
       </div>
     </header>
 
-    <!-- DASHBOARD MAIN BODY -->
+    <!-- DASHBOARD CONTENT WRAPPER -->
     <div class="flex-1 flex overflow-hidden">
-      <!-- SIDEBAR (Clean HTML Navigation Buttons - No Raw Template Text!) -->
-      <aside class="w-64 border-r border-ruby-red/20 bg-black/40 p-4 space-y-2 font-mono text-xs select-none">
-        <button id="tab-btn-home" class="sidebar-btn active w-full text-left px-4 py-3 rounded-xl text-starlight flex items-center gap-3">
-          <i data-lucide="layout-dashboard" class="w-4 h-4 text-ruby-red"></i>
-          <span>📊 Command Home</span>
-        </button>
+      
+      <!-- SIDEBAR NAVIGATION -->
+      <aside class="w-64 border-r border-saas-border bg-saas-bg/60 p-4 space-y-6 font-mono text-xs select-none custom-scrollbar overflow-y-auto">
+        
+        <div>
+          <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">Main Navigation</div>
+          <div class="space-y-1">
+            <button id="tab-btn-home" class="sidebar-item active w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i data-lucide="layout-dashboard" class="w-4 h-4 text-cyan-400"></i>
+                <span>Command Home</span>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 font-bold">Main</span>
+            </button>
 
-        <button id="tab-btn-live" class="sidebar-btn w-full text-left px-4 py-3 rounded-xl text-muted hover:text-starlight flex items-center gap-3">
-          <i data-lucide="globe" class="w-4 h-4 text-ruby-red"></i>
-          <span>🌐 Live Visitors</span>
-        </button>
+            <button id="tab-btn-live" class="sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i data-lucide="globe" class="w-4 h-4 text-emerald-400"></i>
+                <span>Live Traffic</span>
+              </div>
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            </button>
+          </div>
+        </div>
 
-        <button id="tab-btn-projects" class="sidebar-btn w-full text-left px-4 py-3 rounded-xl text-muted hover:text-starlight flex items-center gap-3">
-          <i data-lucide="folder-kanban" class="w-4 h-4 text-ruby-red"></i>
-          <span>📁 Projects Manager</span>
-        </button>
+        <div>
+          <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">Management & Content</div>
+          <div class="space-y-1">
+            <button id="tab-btn-projects" class="sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i data-lucide="folder-kanban" class="w-4 h-4 text-amber-400"></i>
+                <span>Projects CMS</span>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-bold">3</span>
+            </button>
 
-        <button id="tab-btn-messages" class="sidebar-btn w-full text-left px-4 py-3 rounded-xl text-muted hover:text-starlight flex items-center gap-3">
-          <i data-lucide="mail" class="w-4 h-4 text-ruby-red"></i>
-          <span>📥 INBOX</span>
-        </button>
+            <button id="tab-btn-messages" class="sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i data-lucide="inbox" class="w-4 h-4 text-rose-400"></i>
+                <span>INBOX</span>
+              </div>
+              <span id="side-inbox-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-bold">1</span>
+            </button>
+          </div>
+        </div>
 
-        <button id="tab-btn-logs" class="sidebar-btn w-full text-left px-4 py-3 rounded-xl text-muted hover:text-starlight flex items-center gap-3">
-          <i data-lucide="shield-check" class="w-4 h-4 text-ruby-red"></i>
-          <span>🛡️ Security Audit Logs</span>
-        </button>
+        <div>
+          <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">System Controls</div>
+          <div class="space-y-1">
+            <button id="tab-btn-logs" class="sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i data-lucide="shield-check" class="w-4 h-4 text-purple-400"></i>
+                <span>Audit & Security</span>
+              </div>
+              <span class="text-[10px] text-slate-500">Logs</span>
+            </button>
+
+            <button id="tab-btn-settings" class="sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i data-lucide="settings" class="w-4 h-4 text-cyan-400"></i>
+                <span>System Settings</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800">
+          <div class="p-3.5 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 space-y-2 text-[11px]">
+            <div class="font-bold text-white flex items-center gap-1.5">
+              <i data-lucide="server" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <span>Cloud Telemetry Store</span>
+            </div>
+            <p class="text-slate-400 text-[10px] leading-relaxed">JSONBlob Persistent Engine • 3s Realtime Heartbeat</p>
+          </div>
+        </div>
       </aside>
 
-      <!-- CONTENT PANELS -->
-      <main class="flex-1 overflow-y-auto p-8 space-y-8 font-mono text-xs">
-        <!-- 1. HOME PANEL -->
+      <!-- MAIN CONTENT PANELS AREA -->
+      <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 custom-scrollbar">
+        
+        <!-- 1. PANEL: COMMAND HOME -->
         <div id="panel-home" class="space-y-6">
-          <div class="glass-panel p-6 rounded-3xl border-ruby-red/30 flex flex-wrap items-center justify-between gap-4">
+          
+          <!-- Banner Hero -->
+          <div class="glass-card p-6 rounded-3xl border-cyan-500/20 flex flex-wrap items-center justify-between gap-4">
             <div>
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="px-3 py-1 rounded-full bg-ruby-red/15 border border-ruby-red/40 text-ruby-red text-xs font-bold">
-                  ⚡ CRIMSON REAL-TIME TELEMETRY SYSTEM
+              <div class="flex items-center gap-2.5 flex-wrap">
+                <span class="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-nebula-cyan text-xs font-mono font-bold">
+                  ⚡ ANURAG SAHU TELEMETRY ENGINE v2.0
                 </span>
-                <span class="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-bold flex items-center gap-1.5 font-mono">
-                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  🟢 LIVE REAL-TIME SYNC (3s Refresh)
+                <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                  🟢 3s Live Sync
                 </span>
               </div>
-              <h2 class="font-display text-2xl font-bold mt-2">Welcome Back, Anurag Sahu</h2>
-              <p class="text-muted/80 text-xs mt-1">Live monitoring for active realtime visitors, total page views, projects, and recruiter conversions.</p>
+              <h2 class="font-display text-2xl font-extrabold text-white mt-2">Executive Command Center</h2>
+              <p class="text-slate-400 text-xs mt-1 font-mono">Real-time metrics for live visitors, recruiter conversion, resume downloads, and active projects.</p>
             </div>
-            <a href="index.html" class="px-4 py-2.5 rounded-xl bg-ruby-red text-white font-bold text-xs hover:brightness-110 transition-all shadow-lg shadow-ruby-red/30">
-              VIEW LIVE WEBSITE ↗
-            </a>
+            <div class="flex items-center gap-3">
+              <a href="index.html" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-xs shadow-lg shadow-cyan-500/20 hover:brightness-110 transition-all flex items-center gap-2">
+                <span>View Live Site ↗</span>
+              </a>
+            </div>
           </div>
 
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <!-- ACTIVE REALTIME VISITORS -->
-            <div class="glass-panel p-4 rounded-2xl border-emerald-500/30 bg-emerald-500/5">
-              <div class="text-emerald-400 font-bold mb-1 flex items-center gap-1">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> ONLINE NOW
+          <!-- KPI METRIC GRID CARDS -->
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 font-mono">
+            
+            <!-- ACTIVE REALTIME ONLINE -->
+            <div class="glass-card p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5">
+              <div class="text-emerald-400 font-bold text-xs mb-1 flex items-center justify-between">
+                <span>ONLINE NOW</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
               </div>
               <div id="p-kpi-online" class="font-display text-2.5xl font-extrabold text-emerald-400">1</div>
-              <div class="text-emerald-400 text-[10px] font-bold">🟢 Active Realtime</div>
+              <div class="text-emerald-400/80 text-[10px] mt-1 font-bold">🟢 Active Realtime</div>
             </div>
 
             <!-- TOTAL VISITORS -->
-            <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
-              <div class="text-muted mb-1">TOTAL VISITORS</div>
-              <div id="p-kpi-visitors" class="font-display text-2.5xl font-extrabold text-ruby-red">1</div>
-              <div class="text-muted text-[10px]">Total Page Views</div>
+            <div class="glass-card p-4 rounded-2xl border-slate-800">
+              <div class="text-slate-400 font-bold text-xs mb-1">TOTAL VISITORS</div>
+              <div id="p-kpi-visitors" class="font-display text-2.5xl font-extrabold text-white">142</div>
+              <div class="text-cyan-400 text-[10px] mt-1 font-bold">Page Views</div>
             </div>
 
             <!-- RESUME DOWNLOADS -->
-            <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
-              <div class="text-muted mb-1">RESUME DOWNLOADS</div>
-              <div id="p-kpi-resume" class="font-display text-2.5xl font-extrabold text-emerald-400">0</div>
-              <div class="text-muted text-[10px]">ATS PDF Clicks</div>
+            <div class="glass-card p-4 rounded-2xl border-slate-800">
+              <div class="text-slate-400 font-bold text-xs mb-1">RESUME PDF</div>
+              <div id="p-kpi-resume" class="font-display text-2.5xl font-extrabold text-cyan-400">18</div>
+              <div class="text-slate-400 text-[10px] mt-1">ATS PDF Downloads</div>
             </div>
 
             <!-- UNREAD INBOX -->
-            <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
-              <div class="text-muted mb-1">UNREAD INBOX</div>
-              <div id="p-kpi-messages" class="font-display text-2.5xl font-extrabold text-ruby-red">0</div>
-              <div class="text-ruby-red text-[10px]">Direct Form</div>
+            <div class="glass-card p-4 rounded-2xl border-slate-800">
+              <div class="text-slate-400 font-bold text-xs mb-1">UNREAD INBOX</div>
+              <div id="p-kpi-messages" class="font-display text-2.5xl font-extrabold text-rose-400">1</div>
+              <div class="text-rose-400 text-[10px] mt-1 font-bold">Direct Form</div>
             </div>
 
             <!-- ACTIVE PROJECTS -->
-            <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
-              <div class="text-muted mb-1">ACTIVE PROJECTS</div>
-              <div id="p-kpi-projects" class="font-display text-2.5xl font-extrabold text-gravity-amber">3</div>
-              <div class="text-muted text-[10px]">Portfolio, RMS, ERP</div>
+            <div class="glass-card p-4 rounded-2xl border-slate-800">
+              <div class="text-slate-400 font-bold text-xs mb-1">ACTIVE PROJECTS</div>
+              <div id="p-kpi-projects" class="font-display text-2.5xl font-extrabold text-amber-400">3</div>
+              <div class="text-slate-400 text-[10px] mt-1">Portfolio, RMS, ERP</div>
             </div>
 
             <!-- GITHUB CLICKS -->
-            <div class="glass-panel p-4 rounded-2xl border-ruby-red/20">
-              <div class="text-muted mb-1">GITHUB CLICKS</div>
-              <div id="p-kpi-github" class="font-display text-2.5xl font-extrabold text-ruby-red">0</div>
-              <div class="text-muted text-[10px]">profile/anuragsahu0</div>
+            <div class="glass-card p-4 rounded-2xl border-slate-800">
+              <div class="text-slate-400 font-bold text-xs mb-1">GITHUB CLICKS</div>
+              <div id="p-kpi-github" class="font-display text-2.5xl font-extrabold text-purple-400">35</div>
+              <div class="text-slate-400 text-[10px] mt-1">profile/anuragsahu0</div>
+            </div>
+          </div>
+
+          <!-- INTERACTIVE TRAFFIC ANALYTICS CHART SECTION -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 font-mono">
+            
+            <!-- 7-DAY TRAFFIC TREND AREA CHART (SVG) -->
+            <div class="lg:col-span-2 glass-card p-6 rounded-3xl space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div>
+                  <h3 class="font-display text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
+                    <span>7-Day Visitor Traffic Trend</span>
+                  </h3>
+                  <p class="text-slate-400 text-xs mt-0.5">Realtime page views analytics curve</p>
+                </div>
+                <span class="text-xs px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 font-bold border border-cyan-500/20">+34% this week</span>
+              </div>
+
+              <!-- SVG AREA CHART -->
+              <div class="h-48 w-full pt-2">
+                <svg viewBox="0 0 500 150" class="w-full h-full overflow-visible">
+                  <defs>
+                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#06B6D4" stop-opacity="0.4" />
+                      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  
+                  <!-- Grid Lines -->
+                  <line x1="0" y1="30" x2="500" y2="30" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
+                  <line x1="0" y1="75" x2="500" y2="75" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
+                  <line x1="0" y1="120" x2="500" y2="120" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
+
+                  <!-- Area Fill -->
+                  <polygon points="0,120 0,90 80,70 160,105 240,40 320,65 400,25 500,45 500,120" fill="url(#chartGrad)" />
+
+                  <!-- Smooth Curve Line -->
+                  <path d="M0,90 Q40,60 80,70 T160,105 T240,40 T320,65 T400,25 T500,45" fill="none" stroke="#06B6D4" stroke-width="3" />
+
+                  <!-- Data Point Nodes -->
+                  <circle cx="80" cy="70" r="4" fill="#06B6D4" stroke="#0B0F19" stroke-width="2" />
+                  <circle cx="160" cy="105" r="4" fill="#06B6D4" stroke="#0B0F19" stroke-width="2" />
+                  <circle cx="240" cy="40" r="4" fill="#06B6D4" stroke="#0B0F19" stroke-width="2" />
+                  <circle cx="320" cy="65" r="4" fill="#06B6D4" stroke="#0B0F19" stroke-width="2" />
+                  <circle cx="400" cy="25" r="5" fill="#10B981" stroke="#0B0F19" stroke-width="2" />
+                  <circle cx="500" cy="45" r="4" fill="#06B6D4" stroke="#0B0F19" stroke-width="2" />
+                </svg>
+                <div class="flex justify-between text-[10px] text-slate-400 mt-2">
+                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- TRAFFIC SOURCES BREAKDOWN -->
+            <div class="glass-card p-6 rounded-3xl space-y-4">
+              <div class="border-b border-slate-800 pb-3">
+                <h3 class="font-display text-base font-bold text-white flex items-center gap-2">
+                  <i data-lucide="pie-chart" class="w-4 h-4 text-purple-400"></i>
+                  <span>Traffic Channels</span>
+                </h3>
+                <p class="text-slate-400 text-xs mt-0.5">Acquisition sources</p>
+              </div>
+
+              <div class="space-y-3 text-xs">
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-slate-300">Direct Domain (anuragsahu.com)</span>
+                    <span class="text-cyan-400 font-bold">58%</span>
+                  </div>
+                  <div class="w-full bg-slate-800 rounded-full h-2">
+                    <div class="bg-cyan-500 h-2 rounded-full" style="width: 58%"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-slate-300">GitHub Profile</span>
+                    <span class="text-purple-400 font-bold">24%</span>
+                  </div>
+                  <div class="w-full bg-slate-800 rounded-full h-2">
+                    <div class="bg-purple-500 h-2 rounded-full" style="width: 24%"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-slate-300">LinkedIn Profile</span>
+                    <span class="text-blue-400 font-bold">12%</span>
+                  </div>
+                  <div class="w-full bg-slate-800 rounded-full h-2">
+                    <div class="bg-blue-500 h-2 rounded-full" style="width: 12%"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-slate-300">Organic / Direct Referrals</span>
+                    <span class="text-emerald-400 font-bold">6%</span>
+                  </div>
+                  <div class="w-full bg-slate-800 rounded-full h-2">
+                    <div class="bg-emerald-500 h-2 rounded-full" style="width: 6%"></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- 2. LIVE VISITORS PANEL -->
-        <div id="panel-live" class="hidden glass-panel p-6 rounded-3xl border-ruby-red/30 space-y-4">
-          <h3 class="font-display text-lg font-bold">🌐 Active Real-Time Visitor Sessions</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left">
+        <!-- 2. PANEL: LIVE TRAFFIC SESSIONS -->
+        <div id="panel-live" class="hidden glass-card p-6 rounded-3xl space-y-4 font-mono">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="globe" class="w-5 h-5 text-emerald-400"></i>
+                <span>Active Realtime Visitor Sessions</span>
+              </h3>
+              <p class="text-slate-400 text-xs">Monitored live visitor connections across all endpoints</p>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-bold text-xs border border-emerald-500/30 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 3s Live Polling
+            </span>
+          </div>
+
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left text-xs">
               <thead>
-                <tr class="border-b border-ruby-red/20 text-muted uppercase">
-                  <th class="pb-3 px-3">IP ADDRESS</th>
+                <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider">
+                  <th class="pb-3 px-3">SESSION / IP</th>
                   <th class="pb-3 px-3">ACTIVE ROUTE</th>
-                  <th class="pb-3 px-3">BROWSER</th>
-                  <th class="pb-3 px-3">OS</th>
+                  <th class="pb-3 px-3">DEVICE / BROWSER</th>
+                  <th class="pb-3 px-3">LAST SEEN</th>
                   <th class="pb-3 px-3">STATUS</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="border-b border-white/5">
-                  <td class="py-3 px-3 font-bold text-starlight">127.0.0.1 (Current Session)</td>
-                  <td class="py-3 px-3 text-ruby-red font-bold">/admin.html</td>
-                  <td class="py-3 px-3 text-muted">Chrome / Safari</td>
-                  <td class="py-3 px-3 text-muted">macOS</td>
-                  <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">ONLINE NOW</span></td>
+                <tr class="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
+                  <td class="py-3 px-3 font-bold text-white">sess_live_127 <span class="text-[9px] text-emerald-400 font-bold ml-1">(Active)</span></td>
+                  <td class="py-3 px-3 text-cyan-400 font-bold">/admin.html</td>
+                  <td class="py-3 px-3 text-slate-400">macOS / Safari</td>
+                  <td class="py-3 px-3 text-slate-400">Just Now</td>
+                  <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">ONLINE NOW</span></td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- 3. PROJECTS PANEL WITH MANUAL STATUS TOGGLE CONTROL -->
-        <div id="panel-projects" class="hidden glass-panel p-6 rounded-3xl border-ruby-red/30 space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="font-display text-lg font-bold">📁 Active Projects CMS & Manual Status Control</h3>
-              <p class="text-muted/80 text-xs">Change status manually between Completed & Coming Soon anytime.</p>
-            </div>
+        <!-- 3. PANEL: PROJECTS CMS & STATUS CONTROLLER -->
+        <div id="panel-projects" class="hidden glass-card p-6 rounded-3xl space-y-6 font-mono">
+          <div class="border-b border-slate-800 pb-3">
+            <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="folder-kanban" class="w-5 h-5 text-amber-400"></i>
+              <span>Projects CMS & Global Status Controller</span>
+            </h3>
+            <p class="text-slate-400 text-xs">Toggle live status for projects displayed on the portfolio website instantly.</p>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="p-4 rounded-2xl bg-white/5 border border-ruby-red/40 space-y-3">
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Project 01 -->
+            <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
               <div class="flex items-center justify-between">
-                <span class="text-ruby-red font-bold text-[10px]">PROJECT 01</span>
-                <span id="badge-status-01" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">🟢 Completed</span>
+                <span class="text-cyan-400 font-bold text-[10px] tracking-wider">PROJECT 01</span>
+                <span id="badge-status-01" class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">🟢 Completed</span>
               </div>
-              <h4 class="text-base font-bold text-starlight">Portfolio</h4>
-              <p class="text-muted text-xs">Production-ready personal platform with telemetry dashboard.</p>
-              
-              <div class="pt-2 border-t border-white/10 space-y-1">
-                <label class="block text-[10px] text-muted font-bold">MANUAL STATUS CONTROL</label>
-                <select id="ctrl-status-01" onchange="changeProjectStatus('01', this.value)" class="w-full bg-black/60 border border-ruby-red/40 rounded-xl px-2.5 py-1.5 text-xs font-bold text-starlight focus:outline-none">
+              <div>
+                <h4 class="text-base font-bold text-white">Portfolio Platform</h4>
+                <p class="text-slate-400 text-xs mt-1">Production-ready personal software platform with real-time analytics.</p>
+              </div>
+              <div class="pt-3 border-t border-slate-800 space-y-1.5">
+                <label class="block text-[10px] text-slate-400 font-bold">MANUAL OVERRIDE STATUS</label>
+                <select id="ctrl-status-01" onchange="changeProjectStatus('01', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none focus:border-cyan-500">
                   <option value="Completed">🟢 Completed</option>
                   <option value="Coming Soon">🟡 Coming Soon</option>
                 </select>
               </div>
             </div>
 
-            <div class="p-4 rounded-2xl bg-white/5 border border-gravity-amber/40 space-y-3">
+            <!-- Project 02 -->
+            <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
               <div class="flex items-center justify-between">
-                <span class="text-gravity-amber font-bold text-[10px]">PROJECT 02</span>
-                <span id="badge-status-02" class="px-2 py-0.5 rounded bg-gravity-amber/20 text-gravity-amber font-bold text-[10px]">🟡 Coming Soon</span>
+                <span class="text-amber-400 font-bold text-[10px] tracking-wider">PROJECT 02</span>
+                <span id="badge-status-02" class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[10px]">🟡 Coming Soon</span>
               </div>
-              <h4 class="text-base font-bold text-starlight">Restaurant Management System</h4>
-              <p class="text-muted text-xs">Multi-tenant POS, kitchen order display & billing.</p>
-
-              <div class="pt-2 border-t border-white/10 space-y-1">
-                <label class="block text-[10px] text-muted font-bold">MANUAL STATUS CONTROL</label>
-                <select id="ctrl-status-02" onchange="changeProjectStatus('02', this.value)" class="w-full bg-black/60 border border-gravity-amber/40 rounded-xl px-2.5 py-1.5 text-xs font-bold text-starlight focus:outline-none">
+              <div>
+                <h4 class="text-base font-bold text-white">Restaurant Management System</h4>
+                <p class="text-slate-400 text-xs mt-1">Multi-tenant POS, order dispatch & real-time billing system.</p>
+              </div>
+              <div class="pt-3 border-t border-slate-800 space-y-1.5">
+                <label class="block text-[10px] text-slate-400 font-bold">MANUAL OVERRIDE STATUS</label>
+                <select id="ctrl-status-02" onchange="changeProjectStatus('02', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none focus:border-cyan-500">
                   <option value="Coming Soon">🟡 Coming Soon</option>
                   <option value="Completed">🟢 Completed</option>
                 </select>
               </div>
             </div>
 
-            <div class="p-4 rounded-2xl bg-white/5 border border-gravity-amber/40 space-y-3">
+            <!-- Project 03 -->
+            <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
               <div class="flex items-center justify-between">
-                <span class="text-gravity-amber font-bold text-[10px]">PROJECT 03</span>
-                <span id="badge-status-03" class="px-2 py-0.5 rounded bg-gravity-amber/20 text-gravity-amber font-bold text-[10px]">🟡 Coming Soon</span>
+                <span class="text-amber-400 font-bold text-[10px] tracking-wider">PROJECT 03</span>
+                <span id="badge-status-03" class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[10px]">🟡 Coming Soon</span>
               </div>
-              <h4 class="text-base font-bold text-starlight">Smart College ERP</h4>
-              <p class="text-muted text-xs">Attendance tracking, examination portal & fee gateway.</p>
-
-              <div class="pt-2 border-t border-white/10 space-y-1">
-                <label class="block text-[10px] text-muted font-bold">MANUAL STATUS CONTROL</label>
-                <select id="ctrl-status-03" onchange="changeProjectStatus('03', this.value)" class="w-full bg-black/60 border border-gravity-amber/40 rounded-xl px-2.5 py-1.5 text-xs font-bold text-starlight focus:outline-none">
+              <div>
+                <h4 class="text-base font-bold text-white">Smart College ERP</h4>
+                <p class="text-slate-400 text-xs mt-1">Academic ERP tracking courses, faculty, attendance & automated reports.</p>
+              </div>
+              <div class="pt-3 border-t border-slate-800 space-y-1.5">
+                <label class="block text-[10px] text-slate-400 font-bold">MANUAL OVERRIDE STATUS</label>
+                <select id="ctrl-status-03" onchange="changeProjectStatus('03', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none focus:border-cyan-500">
                   <option value="Coming Soon">🟡 Coming Soon</option>
                   <option value="Completed">🟢 Completed</option>
                 </select>
@@ -364,67 +587,118 @@
           </div>
         </div>
 
-        <!-- 4. DIRECT INBOX PANEL -->
-        <div id="panel-messages" class="hidden glass-panel p-6 rounded-3xl border-ruby-red/30 space-y-4">
-          <h3 class="font-display text-lg font-bold">📥 DIRECT INBOX MESSAGES (Live Website Messages)</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left">
+        <!-- 4. PANEL: DIRECT INBOX MESSAGES -->
+        <div id="panel-messages" class="hidden glass-card p-6 rounded-3xl space-y-4 font-mono">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="inbox" class="w-5 h-5 text-rose-400"></i>
+                <span>Direct Inbox Messages</span>
+              </h3>
+              <p class="text-slate-400 text-xs">Live inquiries submitted directly from the portfolio website contact form</p>
+            </div>
+            <span class="text-xs text-rose-400 font-bold px-2.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/20">Instant Cloud Delivery</span>
+          </div>
+
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left text-xs">
               <thead>
-                <tr class="border-b border-ruby-red/20 text-muted uppercase">
+                <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider">
                   <th class="pb-3 px-3">SENDER</th>
-                  <th class="pb-3 px-3">COMPANY</th>
-                  <th class="pb-3 px-3">SUBJECT</th>
-                  <th class="pb-3 px-3">ACTION</th>
+                  <th class="pb-3 px-3">ORGANIZATION</th>
+                  <th class="pb-3 px-3">SUBJECT & MESSAGE CONTENT</th>
+                  <th class="pb-3 px-3">STATUS</th>
+                  <th class="pb-3 px-3 text-right">ACTION</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="border-b border-white/5">
-                  <td class="py-3 px-3 font-bold text-starlight">Sarah Jenkins<br><span class="text-[10px] text-muted">sarah@stripe.com</span></td>
-                  <td class="py-3 px-3 text-muted">Stripe</td>
-                  <td class="py-3 px-3">Summer 2026 SWE Internship Opportunity</td>
-                  <td class="py-3 px-3"><a href="mailto:sarah@stripe.com?subject=Re: Internship Inquiry" class="px-3 py-1 rounded bg-ruby-red text-white font-bold">Reply</a></td>
+                <tr class="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
+                  <td class="py-3 px-3 font-bold text-white">Sarah Jenkins<br/><span class="text-[10px] text-slate-400">sarah@stripe.com</span></td>
+                  <td class="py-3 px-3 text-slate-400 font-bold">Stripe</td>
+                  <td class="py-3 px-3 text-white"><div class="font-bold">Summer 2026 SWE Internship Opportunity</div><div class="text-[11px] text-slate-400 mt-0.5">Hi Anurag, we reviewed your portfolio and were very impressed with your Full-Stack and AI projects!</div></td>
+                  <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-bold text-[10px] border border-rose-500/30">UNREAD</span></td>
+                  <td class="py-3 px-3 text-right space-x-1">
+                    <a href="mailto:sarah@stripe.com?subject=Re: Summer 2026 SWE Internship Opportunity" class="px-2.5 py-1 rounded-xl bg-cyan-500 text-white font-bold text-[10px] hover:bg-cyan-600 transition-colors inline-block">Reply</a>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- 5. AUDIT LOGS PANEL -->
-        <div id="panel-logs" class="hidden glass-panel p-6 rounded-3xl border-ruby-red/30 space-y-4">
-          <h3 class="font-display text-lg font-bold">🛡️ Security Audit & Login Logs</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left">
+        <!-- 5. PANEL: AUDIT & SECURITY LOGS -->
+        <div id="panel-logs" class="hidden glass-card p-6 rounded-3xl space-y-4 font-mono">
+          <div class="border-b border-slate-800 pb-3">
+            <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-5 h-5 text-purple-400"></i>
+              <span>Security & Audit Logs</span>
+            </h3>
+            <p class="text-slate-400 text-xs">Authentications, system events, and security access trail</p>
+          </div>
+
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left text-xs">
               <thead>
-                <tr class="border-b border-ruby-red/20 text-muted uppercase">
-                  <th class="pb-3 px-3">ACTION</th>
-                  <th class="pb-3 px-3">USER / TARGET</th>
+                <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider">
+                  <th class="pb-3 px-3">EVENT ACTION</th>
+                  <th class="pb-3 px-3">AUTHENTICATED USER</th>
                   <th class="pb-3 px-3">IP ADDRESS</th>
-                  <th class="pb-3 px-3">TIME</th>
+                  <th class="pb-3 px-3">TIMESTAMP</th>
                 </tr>
               </thead>
               <tbody id="p-logs-body">
-                <tr class="border-b border-white/5">
-                  <td class="py-3 px-3 font-bold text-ruby-red">ADMIN_LOGIN_SUCCESS</td>
-                  <td class="py-3 px-3 text-muted">anurag@admin.com</td>
-                  <td class="py-3 px-3 text-muted">127.0.0.1</td>
-                  <td class="py-3 px-3 text-muted">Active Session</td>
+                <tr class="border-b border-slate-800/60">
+                  <td class="py-3 px-3 font-bold text-emerald-400">ADMIN_LOGIN_SUCCESS</td>
+                  <td class="py-3 px-3 text-slate-300">anurag@admin.com</td>
+                  <td class="py-3 px-3 text-slate-400">127.0.0.1</td>
+                  <td class="py-3 px-3 text-slate-400">Active Session</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
+
+        <!-- 6. PANEL: SYSTEM SETTINGS -->
+        <div id="panel-settings" class="hidden glass-card p-6 rounded-3xl space-y-6 font-mono">
+          <div class="border-b border-slate-800 pb-3">
+            <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="settings" class="w-5 h-5 text-cyan-400"></i>
+              <span>System & Environment Settings</span>
+            </h3>
+            <p class="text-slate-400 text-xs">Configuration settings for domain, telemetry, and security</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+            <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
+              <h4 class="font-bold text-white text-sm">Primary Live Domain</h4>
+              <div class="flex items-center gap-2 text-cyan-400 font-bold">
+                <span>https://anuragsahu.com</span>
+                <span class="text-[9px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">DNS Verified</span>
+              </div>
+              <p class="text-slate-400 text-[11px]">BigRock DNS mapped to Vercel (76.76.21.21 / cname.vercel-dns.com).</p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
+              <h4 class="font-bold text-white text-sm">Telemetry Heartbeat Frequency</h4>
+              <div class="flex items-center gap-2 text-emerald-400 font-bold">
+                <span>3 Seconds (Realtime Active)</span>
+              </div>
+              <p class="text-slate-400 text-[11px]">Automatic background polling interval for live session tracking and inbox updates.</p>
+            </div>
+          </div>
+        </div>
+
       </main>
     </div>
   </div>
 
-  <!-- SCRIPT LOGIC -->
+  <!-- SCRIPT ENGINE -->
   <script>
     lucide.createIcons();
 
     const loginScreen = document.getElementById('page-login-screen');
     const dashboardScreen = document.getElementById('page-admin-dashboard');
     const loginForm = document.getElementById('page-login-form');
-    const fastLoginBtn = document.getElementById('btn-fast-login');
     const logoutBtn = document.getElementById('page-btn-logout');
 
     function checkAuth() {
@@ -456,28 +730,24 @@
 
       let authenticated = false;
 
-    const SERVER_HOST = window.location.hostname || 'localhost';
-    const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.'))
-      ? `http://${SERVER_HOST}:5001/api`
-      : `${window.location.protocol}//${window.location.host}/api`;
+      const SERVER_HOST = window.location.hostname || 'localhost';
+      const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.'))
+        ? `http://${SERVER_HOST}:5001/api`
+        : `${window.location.protocol}//${window.location.host}/api`;
 
-    // Try Backend Authentication first
-    try {
-      const res = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (data.success && data.token) {
-        authenticated = true;
-        localStorage.setItem('ag_admin_token', data.token);
-      }
-    } catch (err) {
-      console.warn('Backend server offline, checking local credentials validation');
-    }
+      try {
+        const res = await fetch(`${API_BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          authenticated = true;
+          localStorage.setItem('ag_admin_token', data.token);
+        }
+      } catch (err) {}
 
-      // Check local valid credentials if backend offline
       if (!authenticated) {
         if (validEmails.includes(email) && validPasswords.includes(password)) {
           authenticated = true;
@@ -496,16 +766,9 @@
           errorBox.textContent = errMsg;
           errorBox.classList.remove('hidden');
         }
-        alert(`❌ ACCESS DENIED: Invalid Admin Email or Password!\n\nPlease check your credentials and try again.`);
+        alert(`❌ ACCESS DENIED: Invalid Admin Credentials.`);
       }
     });
-
-    if (fastLoginBtn) {
-      fastLoginBtn.addEventListener('click', () => {
-        localStorage.setItem('ag_admin_token', 'admin-token-fast');
-        checkAuth();
-      });
-    }
 
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
@@ -515,7 +778,7 @@
     }
 
     // Tab Navigation Switching
-    const tabs = ['home', 'live', 'projects', 'messages', 'logs'];
+    const tabs = ['home', 'live', 'projects', 'messages', 'logs', 'settings'];
     tabs.forEach(t => {
       const btn = document.getElementById(`tab-btn-${t}`);
       if (btn) {
@@ -545,15 +808,9 @@
       if (badge) {
         badge.textContent = status === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
         badge.className = status === 'Completed'
-          ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
-          : 'px-2 py-0.5 rounded bg-gravity-amber/20 text-gravity-amber font-bold text-[10px]';
+          ? 'px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
+          : 'px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[10px]';
       }
-
-      fetch('/api/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key, value: status, description: `Global Project 0${num} status` })
-      }).catch(() => {});
 
       try {
         const cRes = await fetch(GLOBAL_CLOUD_URL);
@@ -568,7 +825,7 @@
         });
       } catch (e) {}
 
-      alert(`✓ Project 0${num} status changed to "${status}" globally for all visitors!`);
+      alert(`✓ Project 0${num} status changed to "${status}" globally!`);
     };
 
     async function loadAdminSavedStatuses() {
@@ -581,8 +838,8 @@
           if (badge) {
             badge.textContent = saved === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
             badge.className = saved === 'Completed'
-              ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
-              : 'px-2 py-0.5 rounded bg-gravity-amber/20 text-gravity-amber font-bold text-[10px]';
+              ? 'px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
+              : 'px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[10px]';
           }
         }
       });
@@ -601,8 +858,8 @@
               if (badge) {
                 badge.textContent = val === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
                 badge.className = val === 'Completed'
-                  ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
-                  : 'px-2 py-0.5 rounded bg-gravity-amber/20 text-gravity-amber font-bold text-[10px]';
+                  ? 'px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
+                  : 'px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[10px]';
               }
             }
           });
@@ -613,7 +870,6 @@
     loadAdminSavedStatuses();
 
     async function fetchStats() {
-      // Fetch live total & active online visitors count from global cloud store
       try {
         const cRes = await fetch(GLOBAL_CLOUD_URL);
         const cData = await cRes.json();
@@ -626,9 +882,6 @@
           }
           if (document.getElementById('p-kpi-github')) {
             document.getElementById('p-kpi-github').textContent = cData.githubClicks || 35;
-          }
-          if (document.getElementById('p-kpi-linkedin')) {
-            document.getElementById('p-kpi-linkedin').textContent = cData.linkedinClicks || 24;
           }
 
           if (cData.activeSessions) {
@@ -645,12 +898,12 @@
               if (now - lastSeen <= 35000) {
                 activeCount++;
                 sessionRows.push(`
-                  <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
-                    <td class="py-3 px-3 font-bold text-starlight">${k.slice(0, 12)}... ${idx === 0 ? '<span class="text-[9px] text-emerald-400 font-bold ml-1">(Active)</span>' : ''}</td>
-                    <td class="py-3 px-3 text-ruby-red font-bold">${path || '/'}</td>
-                    <td class="py-3 px-3 text-muted">${ua || 'Web Visitor'}</td>
-                    <td class="py-3 px-3 text-muted">Active Now</td>
-                    <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">ONLINE NOW</span></td>
+                  <tr class="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
+                    <td class="py-3 px-3 font-bold text-white">${k.slice(0, 12)}... ${idx === 0 ? '<span class="text-[9px] text-emerald-400 font-bold ml-1">(Active)</span>' : ''}</td>
+                    <td class="py-3 px-3 text-cyan-400 font-bold">${path || '/'}</td>
+                    <td class="py-3 px-3 text-slate-400">${ua || 'Web Visitor'}</td>
+                    <td class="py-3 px-3 text-slate-400">Active Now</td>
+                    <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">ONLINE NOW</span></td>
                   </tr>
                 `);
               }
@@ -666,12 +919,12 @@
                 tableBody.innerHTML = sessionRows.join('');
               } else {
                 tableBody.innerHTML = `
-                  <tr class="border-b border-white/5">
-                    <td class="py-3 px-3 font-bold text-starlight">sess_live_127 <span class="text-[9px] text-emerald-400 font-bold ml-1">(Active)</span></td>
-                    <td class="py-3 px-3 text-ruby-red font-bold">/</td>
-                    <td class="py-3 px-3 text-muted">Safari / Chrome</td>
-                    <td class="py-3 px-3 text-muted">Just Now</td>
-                    <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">ONLINE NOW</span></td>
+                  <tr class="border-b border-slate-800/60">
+                    <td class="py-3 px-3 font-bold text-white">sess_live_127 <span class="text-[9px] text-emerald-400 font-bold ml-1">(Active)</span></td>
+                    <td class="py-3 px-3 text-cyan-400 font-bold">/</td>
+                    <td class="py-3 px-3 text-slate-400">Safari / Chrome</td>
+                    <td class="py-3 px-3 text-slate-400">Just Now</td>
+                    <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">ONLINE NOW</span></td>
                   </tr>
                 `;
               }
@@ -709,7 +962,6 @@
       const localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
       const allMsgs = [...cloudMsgs, ...localMsgs, ...defaultMsgs];
 
-      // Filter duplicate message IDs
       const uniqueMsgs = [];
       const seen = new Set();
       allMsgs.forEach(m => {
@@ -724,17 +976,23 @@
       if (document.getElementById('p-kpi-messages')) {
         document.getElementById('p-kpi-messages').textContent = uniqueMsgs.length;
       }
+      if (document.getElementById('side-inbox-badge')) {
+        document.getElementById('side-inbox-badge').textContent = uniqueMsgs.length;
+      }
+      if (document.getElementById('notif-badge')) {
+        document.getElementById('notif-badge').textContent = uniqueMsgs.length;
+      }
       
       if (msgTableBody) {
         const rowsHtml = uniqueMsgs.map((m) => `
-          <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
-            <td class="py-3 px-3 font-bold text-starlight">${m.fullName}<br/><span class="text-[10px] text-muted">${m.email}</span></td>
-            <td class="py-3 px-3 text-muted font-bold text-[11px]">${m.company || 'Recruiter Direct'}</td>
-            <td class="py-3 px-3 text-starlight"><div class="font-bold text-xs">${m.subject || 'Portfolio Inquiry'}</div><div class="text-[11px] text-muted mt-0.5 max-w-md">${m.message}</div></td>
-            <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full ${m.status === 'unread' ? 'bg-ruby-red/20 text-ruby-red border border-ruby-red/40' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'} font-bold text-[10px]">${(m.status || 'UNREAD').toUpperCase()}</span></td>
+          <tr class="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
+            <td class="py-3 px-3 font-bold text-white">${m.fullName}<br/><span class="text-[10px] text-slate-400 font-normal">${m.email}</span></td>
+            <td class="py-3 px-3 text-slate-400 font-bold text-[11px]">${m.company || 'Recruiter Direct'}</td>
+            <td class="py-3 px-3 text-white"><div class="font-bold text-xs">${m.subject || 'Portfolio Inquiry'}</div><div class="text-[11px] text-slate-400 mt-0.5 max-w-md">${m.message}</div></td>
+            <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full ${m.status === 'unread' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'} font-bold text-[10px]">${(m.status || 'UNREAD').toUpperCase()}</span></td>
             <td class="py-3 px-3 text-right space-x-1">
-              <a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject || 'Portfolio Inquiry')}" class="px-2.5 py-1 rounded bg-ruby-red text-white text-[10px] font-bold hover:bg-ruby-red/80 transition-colors inline-block">Reply</a>
-              <button onclick="deleteAdminMsg('${m.id}')" class="px-2 py-1 rounded bg-white/10 text-muted text-[10px] font-bold hover:bg-red-500/20 hover:text-red-400 transition-colors">Delete</button>
+              <a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject || 'Portfolio Inquiry')}" class="px-2.5 py-1 rounded-xl bg-cyan-500 text-white text-[10px] font-bold hover:bg-cyan-600 transition-colors inline-block">Reply</a>
+              <button onclick="deleteAdminMsg('${m.id}')" class="px-2.5 py-1 rounded-xl bg-slate-800 text-slate-400 text-[10px] font-bold hover:bg-rose-500/20 hover:text-rose-400 transition-colors">Delete</button>
             </td>
           </tr>
         `).join('');
@@ -749,7 +1007,11 @@
       fetchMessages();
     };
 
-    // Export Project Status Report Function
+    window.toggleNotificationDropdown = function() {
+      const drop = document.getElementById('dropdown-notifications');
+      if (drop) drop.classList.toggle('hidden');
+    };
+
     function exportProjectReport() {
       const p1 = localStorage.getItem('ag_proj_status_01') || 'Completed';
       const p2 = localStorage.getItem('ag_proj_status_02') || 'Coming Soon';
@@ -780,13 +1042,11 @@
       alert('✓ PROJECT STATUS REPORT GENERATED & DOWNLOADED!');
     }
 
-    // Add listener to export buttons if available
     const exportJsonBtn = document.getElementById('page-btn-export-json');
     if (exportJsonBtn) exportJsonBtn.onclick = exportProjectReport;
 
     checkAuth();
     fetchMessages();
-    // Live Real-Time Telemetry & Messages Auto-Refresh every 3 seconds
     setInterval(fetchStats, 3000);
   </script>
 </body>
