@@ -778,15 +778,15 @@ function initContactForm() {
     existingMsgs.unshift(newMsg);
     localStorage.setItem('ag_admin_messages', JSON.stringify(existingMsgs));
 
-    // 2. Sync to Global Cloud Inbox Store (Guarantees message appears in Admin Panel on ALL devices worldwide)
+    // 2. Sync to Global Cloud Inbox Store (Guarantees message appears in Admin Panel INBOX on ALL devices worldwide INSTANTLY)
     try {
-      fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac')
+      fetch(GLOBAL_CLOUD_URL)
         .then(res => res.json())
         .then(store => {
           const s = store || { messages: [], settings: {} };
           if (!s.messages) s.messages = [];
           s.messages.unshift(newMsg);
-          return fetch('https://jsonblob.com/api/jsonBlob/019fc83c-0eac-7295-8fe0-3ee77103e5ac', {
+          return fetch(GLOBAL_CLOUD_URL, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(s)
