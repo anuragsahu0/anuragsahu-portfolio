@@ -806,15 +806,30 @@ function initContactForm() {
         }).catch(() => {});
     } catch (e) {}
 
-    // 3. Instant Email 1: Notification to Anurag Sahu (shivasahu0612@gmail.com)
+    // 3. Primary Express Backend Dispatch (/api/contact)
+    try {
+      fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName,
+          email,
+          company: 'Portfolio Direct Contact',
+          subject: `📩 Portfolio Inquiry from ${fullName}`,
+          message
+        })
+      }).catch(() => {});
+    } catch (e) {}
+
+    // 4. Instant Admin Email Delivery to shivasahu0612@gmail.com & Visitor Auto-Reply
     try {
       const fd = new FormData();
       fd.append('name', fullName);
       fd.append('email', email);
-      fd.append('subject', `📩 NEW RECRUITER MESSAGE from ${fullName}`);
-      fd.append('message', `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${fullName}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${message}"`);
+      fd.append('subject', `📩 NEW DIRECT MESSAGE from ${fullName}`);
+      fd.append('message', `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${fullName}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${message}"\n\nTimestamp: ${new Date().toLocaleString()}`);
       fd.append('_replyto', email);
-      fd.append('_autoresponse', `Dear ${fullName},\n\nMessage Delivered!\n\nThank you ${fullName}! Your message has been delivered to Anurag Sahu & Team Anurag Sahu.\n\nYou will receive a response at ${email} within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)`);
+      fd.append('_autoresponse', `Dear ${fullName},\n\nThank you for contacting us!\n\nYour message has been successfully received by Team Anurag Sahu.\n\nTeam Anurag Sahu will contact you within 24-48 hours at ${email}.\n\nBest regards,\nTeam Anurag Sahu\nhttps://anuragsahu.com`);
       fd.append('_template', 'table');
       fd.append('_captcha', 'false');
 
@@ -824,7 +839,7 @@ function initContactForm() {
       }).catch(() => {});
     } catch (e) {}
 
-    // 4. Instant Email 2: Direct Mail Dispatch to Visitor's Email from "Team Anurag Sahu"
+    // 5. Instant 2-Second Web3Forms Auto-Reply directly to Visitor's Inbox
     try {
       fetch('https://api.web3forms.com/submit', {
         method: 'POST',
@@ -835,13 +850,13 @@ function initContactForm() {
           email: email,
           to: email,
           from_name: 'Team Anurag Sahu',
-          subject: 'Message Delivered! — Team Anurag Sahu Confirmation',
-          message: `Dear ${fullName},\n\nMessage Delivered!\n\nThank you ${fullName}! Your message has been delivered to Anurag Sahu & Team Anurag Sahu.\n\nYour Message Summary:\n"${message}"\n\nYou will receive a response at ${email} within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)`
+          subject: 'Thank you for contacting Anurag Sahu!',
+          message: `Dear ${fullName},\n\nThank you for contacting us!\n\nYour message has been delivered to Anurag Sahu (shivasahu0612@gmail.com).\n\nTeam Anurag Sahu will contact you within 24-48 hours.\n\nYour Submitted Message:\n"${message}"\n\nBest regards,\nTeam Anurag Sahu\nhttps://anuragsahu.com`
         })
       }).catch(() => {});
     } catch (e) {}
 
-    showToast('Message sent! Delivered to Anurag Sahu & Admin Dashboard');
+    showToast('✓ Message Delivered! Check your email inbox for confirmation.');
     showSuccessModal(fullName, email);
     contactForm.reset();
 
@@ -858,18 +873,51 @@ function showSuccessModal(name, email) {
   const card = document.getElementById('contact-success-modal-card');
   const msg = document.getElementById('contact-success-modal-msg');
   if (msg) {
-    msg.innerHTML = `Thank you <strong style="color:#ffffff;">${name}</strong>!<br/><br/>Your message has been delivered to <strong>Anurag Sahu</strong> & Team Anurag Sahu. You will receive a response at <span style="color:#06b6d4; font-weight:bold;">${email}</span> within 24–48 hours.`;
+    msg.innerHTML = `<div style="text-align: center; space-y: 6px;">
+      <span style="display:inline-block; padding: 4px 12px; border-radius: 999px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #10b981; font-size: 11px; font-weight: bold; margin-bottom: 8px;">
+        ✓ Message Dispatched to shivasahu0612@gmail.com
+      </span>
+      <div style="font-size: 13px; color: #ffffff; font-weight: 700;">
+        Thank you <strong style="color:#06b6d4;">${name}</strong>!
+      </div>
+      <div style="font-size: 12px; color: #cbd5e1; margin-top: 8px; line-height: 1.6;">
+        Your message has been delivered directly to <strong>Anurag Sahu</strong>.
+        <br/><br/>
+        An auto-confirmation email has been sent to <strong style="color:#ffffff;">${email}</strong>:
+        <br/>
+        <em style="color:#10b981; font-style: normal; font-weight: bold; display: inline-block; margin-top: 4px;">"Thank you for contacting us! Team Anurag Sahu will contact you in 24-48 hours."</em>
+      </div>
+    </div>`;
   }
   if (modal) {
     modal.style.display = 'flex';
     modal.classList.remove('hidden');
+    if (card) {
+      card.style.transform = 'scale(0.85)';
+      card.style.opacity = '0';
+      card.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+      setTimeout(() => {
+        card.style.transform = 'scale(1)';
+        card.style.opacity = '1';
+      }, 10);
+    }
   }
 }
 
 window.closeSuccessModal = function() {
   const modal = document.getElementById('contact-success-modal');
-  if (modal) {
-    modal.style.display = 'none';
-    modal.classList.add('hidden');
+  const card = document.getElementById('contact-success-modal-card');
+  const contactForm = document.getElementById('contact-form') || document.getElementById('m-contact-form');
+  
+  if (card) {
+    card.style.transform = 'scale(0.85)';
+    card.style.opacity = '0';
   }
+  setTimeout(() => {
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.add('hidden');
+    }
+    if (contactForm) contactForm.reset();
+  }, 150);
 };

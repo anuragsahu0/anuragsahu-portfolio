@@ -587,15 +587,30 @@
             }).catch(() => {});
         } catch (e) {}
 
-        // 3. Instant Email 1: Notification to Anurag Sahu (shivasahu0612@gmail.com)
+        // 3. Primary Express Backend Dispatch (/api/contact)
+        try {
+          fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fullName: name,
+              email: email,
+              company: 'Mobile Direct Contact',
+              subject: `📩 Mobile Inquiry from ${name}`,
+              message: msg
+            })
+          }).catch(() => {});
+        } catch (e) {}
+
+        // 4. Instant Admin Email Delivery to shivasahu0612@gmail.com & Visitor Auto-Reply
         try {
           const fd = new FormData();
           fd.append('name', name);
           fd.append('email', email);
-          fd.append('subject', `📩 NEW RECRUITER MESSAGE from ${name}`);
-          fd.append('message', `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${name}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${msg}"`);
+          fd.append('subject', `📩 NEW DIRECT MESSAGE from ${name}`);
+          fd.append('message', `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${name}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${msg}"\n\nTimestamp: ${new Date().toLocaleString()}`);
           fd.append('_replyto', email);
-          fd.append('_autoresponse', `Dear ${name},\n\nMessage Delivered!\n\nThank you ${name}! Your message has been delivered to Anurag Sahu & Team Anurag Sahu.\n\nYou will receive a response at ${email} within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)`);
+          fd.append('_autoresponse', `Dear ${name},\n\nThank you for contacting us!\n\nYour message has been successfully received by Team Anurag Sahu.\n\nTeam Anurag Sahu will contact you within 24-48 hours at ${email}.\n\nBest regards,\nTeam Anurag Sahu\nhttps://anuragsahu.com`);
           fd.append('_template', 'table');
           fd.append('_captcha', 'false');
 
@@ -605,7 +620,7 @@
           }).catch(() => {});
         } catch (e) {}
 
-        // 4. Instant Email 2: Direct Mail Dispatch to Visitor's Email from "Team Anurag Sahu"
+        // 5. Instant 2-Second Web3Forms Auto-Reply directly to Visitor's Inbox
         try {
           fetch('https://api.web3forms.com/submit', {
             method: 'POST',
@@ -616,8 +631,8 @@
               email: email,
               to: email,
               from_name: 'Team Anurag Sahu',
-              subject: 'Message Delivered! — Team Anurag Sahu Confirmation',
-              message: `Dear ${name},\n\nMessage Delivered!\n\nThank you ${name}! Your message has been delivered to Anurag Sahu & Team Anurag Sahu.\n\nYour Message Summary:\n"${msg}"\n\nYou will receive a response at ${email} within 24–48 hours.\n\nBest regards,\nTeam Anurag Sahu\nComputer Science & Engineering (AI & ML)`
+              subject: 'Thank you for contacting Anurag Sahu!',
+              message: `Dear ${name},\n\nThank you for contacting us!\n\nYour message has been delivered to Anurag Sahu (shivasahu0612@gmail.com).\n\nTeam Anurag Sahu will contact you within 24-48 hours.\n\nYour Submitted Message:\n"${msg}"\n\nBest regards,\nTeam Anurag Sahu\nhttps://anuragsahu.com`
             })
           }).catch(() => {});
         } catch (e) {}
@@ -638,7 +653,21 @@
       const card = document.getElementById('contact-success-modal-card');
       const msg = document.getElementById('contact-success-modal-msg');
       if (msg) {
-        msg.innerHTML = `Thank you <strong class="text-white">${name}</strong>!<br/><br/>Your message has been sent to <strong>Anurag Sahu</strong> & Team Anurag Sahu. You will receive a response at <span class="text-cyan-400 font-bold">${email}</span> within 24–48 hours.`;
+        msg.innerHTML = `<div class="text-center space-y-2">
+          <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-bold">
+            ✓ Message Dispatched to shivasahu0612@gmail.com
+          </span>
+          <div class="text-xs text-white font-bold">
+            Thank you <strong class="text-cyan-400">${name}</strong>!
+          </div>
+          <div class="text-[11px] text-slate-300 leading-relaxed">
+            Your message has been delivered directly to <strong>Anurag Sahu</strong>.
+            <br/><br/>
+            An auto-confirmation email has been sent to <strong class="text-white">${email}</strong>:
+            <br/>
+            <em class="text-emerald-400 not-italic font-bold block mt-1">"Thank you for contacting us! Team Anurag Sahu will contact you in 24-48 hours."</em>
+          </div>
+        </div>`;
       }
       if (modal && card) {
         modal.classList.remove('hidden');
@@ -652,12 +681,14 @@
     function closeSuccessModal() {
       const modal = document.getElementById('contact-success-modal');
       const card = document.getElementById('contact-success-modal-card');
+      const mContactForm = document.getElementById('m-contact-form');
       if (modal && card) {
         card.classList.remove('scale-100', 'opacity-100');
         card.classList.add('scale-95', 'opacity-0');
         setTimeout(() => {
           modal.classList.add('hidden');
-        }, 200);
+          if (mContactForm) mContactForm.reset();
+        }, 150);
       }
     }
 
