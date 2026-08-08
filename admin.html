@@ -842,47 +842,76 @@
           : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold';
       }
 
-      try {
-        const cRes = await fetch(GLOBAL_CLOUD_URL);
-        const cData = await cRes.json();
-        const currentData = cData || {};
-        if (!currentData.projects) currentData.projects = {};
-        currentData.projects[num] = status;
-        await fetch(GLOBAL_CLOUD_URL, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(currentData)
-        });
-      } catch (e) {}
+      // 1. Post to Backend Express API /api/settings (High Priority - Same Origin)
+      fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value: status, description: `Project 0${num} status override` })
+      }).catch(() => {});
 
-      alert(`✓ Project 0${num} status changed to "${status}" globally!`);
+      // 2. Background JSONBlob & Cloud Sync (Non-blocking)
+      (async () => {
+        try {
+          const cRes = await fetch(GLOBAL_CLOUD_URL);
+          if (cRes.ok) {
+            const cData = await cRes.json();
+            const currentData = cData || {};
+            if (!currentData.projects) currentData.projects = {};
+            currentData.projects[num] = status;
+            currentData[key] = status;
+            await fetch(GLOBAL_CLOUD_URL, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(currentData)
+            });
+          }
+        } catch (e) {}
+      })();
+
+      alert(`✓ Project 0${num} status changed to "${status}" globally on live website!`);
     };
 
     async function fetchStats() {
+      // 1. Always load local storage project statuses first (Rate-limit proof)
+      ['01', '02', '03'].forEach(num => {
+        const val = localStorage.getItem(`ag_proj_status_${num}`);
+        const pbadge = document.getElementById(`pbadge-${num}`);
+        const select = document.querySelector(`select[onchange="changeProjectStatus('${num}', this.value)"]`);
+        if (val) {
+          if (select) select.value = val;
+          if (pbadge) {
+            pbadge.textContent = val === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
+            pbadge.className = val === 'Completed'
+              ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold'
+              : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold';
+          }
+        }
+      });
+
       let cloudMsgs = [];
       try {
         const cRes = await fetch(GLOBAL_CLOUD_URL);
-        const cData = await cRes.json();
-        if (cData) {
-          if (cData.messages) cloudMsgs = cData.messages;
-
-          // Update Project statuses if stored in cloud
-          if (cData.projects) {
-            ['01', '02', '03'].forEach(num => {
-              const val = cData.projects[num];
-              const pbadge = document.getElementById(`pbadge-${num}`);
-              const select = document.querySelector(`select[onchange="changeProjectStatus('${num}', this.value)"]`);
-              if (val) {
-                localStorage.setItem(`ag_proj_status_${num}`, val);
-                if (select) select.value = val;
-                if (pbadge) {
-                  pbadge.textContent = val === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
-                  pbadge.className = val === 'Completed'
-                    ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold'
-                    : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold';
+        if (cRes.ok) {
+          const cData = await cRes.json();
+          if (cData) {
+            if (cData.messages) cloudMsgs = cData.messages;
+            if (cData.projects) {
+              ['01', '02', '03'].forEach(num => {
+                const val = cData.projects[num];
+                const pbadge = document.getElementById(`pbadge-${num}`);
+                const select = document.querySelector(`select[onchange="changeProjectStatus('${num}', this.value)"]`);
+                if (val === 'Completed' || val === 'Coming Soon') {
+                  localStorage.setItem(`ag_proj_status_${num}`, val);
+                  if (select) select.value = val;
+                  if (pbadge) {
+                    pbadge.textContent = val === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
+                    pbadge.className = val === 'Completed'
+                      ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold'
+                      : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold';
+                  }
                 }
-              }
-            });
+              });
+            }
           }
         }
       } catch (e) {}

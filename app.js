@@ -528,7 +528,7 @@ function initAdminModal() {
 }
 
 async function syncProjectStatuses() {
-  // 1. Apply local storage immediately
+  // 1. Apply local storage immediately (High Priority - Rate-limit proof)
   ['01', '02', '03'].forEach(num => {
     const status = localStorage.getItem(`ag_proj_status_${num}`);
     if (status) {
@@ -536,18 +536,38 @@ async function syncProjectStatuses() {
     }
   });
 
-  // 2. Fetch global settings from persistent Cloud Store (019fe1ec-02f6-78f8-a2ea-698a3b504261)
+  // 2. Fetch from backend API /api/settings first (Same Origin - No 429 Rate Limit!)
+  try {
+    const res = await fetch('/api/settings');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.settings) {
+        ['01', '02', '03'].forEach(num => {
+          const val = data.settings[`ag_proj_status_${num}`];
+          if (val === 'Completed' || val === 'Coming Soon') {
+            localStorage.setItem(`ag_proj_status_${num}`, val);
+            applyBadgeUI(num, val);
+          }
+        });
+        return; // Success! No need to hit rate-limited third party APIs
+      }
+    }
+  } catch (e) {}
+
+  // 3. Fallback to Cloud JSONBlob if backend API unavailable
   try {
     const res = await fetch('https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261');
-    const data = await res.json();
-    if (data && data.projects) {
-      ['01', '02', '03'].forEach(num => {
-        const globalVal = data.projects[num];
-        if (globalVal) {
-          localStorage.setItem(`ag_proj_status_${num}`, globalVal);
-          applyBadgeUI(num, globalVal);
-        }
-      });
+    if (res.ok) {
+      const data = await res.json();
+      if (data) {
+        ['01', '02', '03'].forEach(num => {
+          const globalVal = (data.projects && data.projects[num]) || data[`ag_proj_status_${num}`];
+          if (globalVal === 'Completed' || globalVal === 'Coming Soon') {
+            localStorage.setItem(`ag_proj_status_${num}`, globalVal);
+            applyBadgeUI(num, globalVal);
+          }
+        });
+      }
     }
   } catch (e) {}
 }
