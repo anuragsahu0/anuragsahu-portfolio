@@ -37,12 +37,16 @@ html {
   background-color: var(--color-space-black);
   color: var(--color-starlight-white);
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   min-height: 100vh;
   line-height: 1.6;
   position: relative;
+  contain: layout style;
 }
 
 /* Vibrant Glowing Headings & Section Titles */
