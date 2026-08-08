@@ -4,9 +4,9 @@
  */
 
 const SERVER_HOST = window.location.hostname || 'localhost';
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.'))
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? `http://${SERVER_HOST}:5001/api`
-  : `${window.location.protocol}//${window.location.host}/api`;
+  : `/api`;
 
 document.addEventListener('DOMContentLoaded', () => {
   initParticleBackground();
@@ -386,7 +386,7 @@ function initAdminModal() {
       let authenticated = false;
 
       try {
-        const res = await fetch('http://localhost:5001/api/auth/login', {
+        const res = await fetch(`${API_BASE}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
@@ -497,7 +497,7 @@ function initAdminModal() {
     if (!token) return;
 
     try {
-      const res = await fetch('http://localhost:5001/api/admin/dashboard', {
+      const res = await fetch(`${API_BASE}/admin/dashboard`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();

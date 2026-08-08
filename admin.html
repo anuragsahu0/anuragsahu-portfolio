@@ -234,8 +234,8 @@
               AS
             </div>
             <div>
-              <h2 class="font-display font-bold text-sm text-white leading-none">Portfolio CMS</h2>
-              <span class="text-[9px] text-cyan-400 font-bold">DATABASE MANAGEMENT</span>
+              <h2 class="font-display font-bold text-sm text-white leading-none">Anurag Sahu</h2>
+              <span class="text-[9px] text-cyan-400 font-bold">CONTROL CENTER</span>
             </div>
           </div>
 
@@ -899,12 +899,26 @@
       }
     }
 
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('input-admin-email').value.trim().toLowerCase();
       const pass = document.getElementById('input-admin-pass').value;
 
-      const validEmails = ['anurag@admin.com', 'admin@anuragsahu.dev', 'admin@anuragsahu.com', 'admin@admin.com'];
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password: pass })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          localStorage.setItem('ag_admin_token', data.token);
+          checkAuth();
+          return;
+        }
+      } catch (err) {}
+
+      const validEmails = ['anurag@admin.com', 'admin@anuragsahu.dev', 'admin@anuragsahu.com', 'admin@admin.com', 'shivasahu0612@gmail.com'];
       const validPasswords = ['anurag123', 'admin123', 'Admin@AntiGravity2026'];
 
       if (validEmails.includes(email) && validPasswords.includes(pass)) {
@@ -1004,12 +1018,41 @@
       });
 
       let cloudMsgs = [];
+      const token = localStorage.getItem('ag_admin_token');
+
+      // 2. Query production backend Express API /api/admin/dashboard
+      try {
+        const apiRes = await fetch('/api/admin/dashboard', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        if (apiRes.ok) {
+          const apiData = await apiRes.json();
+          if (apiData.success && apiData.stats) {
+            const s = apiData.stats;
+            const kpiProjects = document.getElementById('kpi-projects');
+            const kpiVisitors = document.getElementById('kpi-visitors');
+            const kpiResume = document.getElementById('kpi-resume');
+            const kpiUnread = document.getElementById('kpi-unread');
+            
+            if (kpiProjects) kpiProjects.textContent = `${s.totalProjects || 3} PROJECTS`;
+            if (kpiVisitors) kpiVisitors.textContent = s.totalVisitors || 1;
+            if (kpiResume) kpiResume.textContent = s.resumeDownloads || 0;
+            if (kpiUnread) kpiUnread.textContent = `${s.unreadContacts || 0} MESSAGES`;
+            
+            if (apiData.recentContacts && apiData.recentContacts.length > 0) {
+              cloudMsgs = apiData.recentContacts;
+            }
+          }
+        }
+      } catch (aErr) {}
+
+      // 3. Fallback Cloud Storage query
       try {
         const cRes = await fetch(GLOBAL_CLOUD_URL);
         if (cRes.ok) {
           const cData = await cRes.json();
           if (cData) {
-            if (cData.messages) cloudMsgs = cData.messages;
+            if (cData.messages && cloudMsgs.length === 0) cloudMsgs = cData.messages;
             if (cData.projects) {
               ['01', '02', '03'].forEach(num => {
                 const val = cData.projects[num];

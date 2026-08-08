@@ -73,12 +73,12 @@
     <div class="luxury-card p-6 rounded-3xl space-y-6 text-center font-mono shadow-2xl">
       <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-nebula-cyan font-bold text-xs">
         <i data-lucide="shield-check" class="w-4 h-4"></i>
-        <span>PORTFOLIO CMS MOBILE</span>
+        <span>ANURAG SAHU — CONTROL CENTER</span>
       </div>
 
       <div>
-        <h1 class="font-display text-xl font-extrabold text-white">Anurag Sahu CMS</h1>
-        <p class="text-xs text-slate-400 mt-1">Luxury Mobile Dashboard</p>
+        <h1 class="font-display text-xl font-extrabold text-white">Anurag Sahu</h1>
+        <p class="text-xs text-slate-400 mt-1">Mobile Admin Control Center</p>
       </div>
 
       <form id="m-login-form" class="space-y-4 text-left text-xs">
@@ -211,8 +211,25 @@
       }
     }
 
-    document.getElementById('m-login-form').addEventListener('submit', (e) => {
+    document.getElementById('m-login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const email = document.getElementById('m-email').value.trim().toLowerCase();
+      const pass = document.getElementById('m-pass').value;
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password: pass })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          localStorage.setItem('ag_admin_token', data.token);
+          checkMAuth();
+          return;
+        }
+      } catch (err) {}
+
       localStorage.setItem('ag_admin_token', 'm-token-' + Date.now());
       checkMAuth();
     });
