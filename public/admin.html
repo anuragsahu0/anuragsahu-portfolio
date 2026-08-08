@@ -626,45 +626,146 @@
 
         <!-- 5. INDEX TAB: PROJECTS -->
         <div id="panel-projects" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-4">
-            <h3 class="font-display text-lg font-bold text-white">💼 Projects Management & Status Override</h3>
+          <div class="luxury-card p-6 rounded-3xl space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+              <div>
+                <h3 class="font-display text-lg font-bold text-white">💼 Projects CMS & Live Status Manager</h3>
+                <p class="text-slate-400 text-xs">Edit project details, repository links, video demos, and status overrides live on main website.</p>
+              </div>
+              <button onclick="toggleAddProjectModal(true)" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>Add Project</span>
+              </button>
+            </div>
+
+            <!-- PROJECTS EDIT GRID -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
               <!-- Project 1 -->
-              <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                <div class="flex justify-between">
+              <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3">
+                <div class="flex justify-between items-center">
                   <span class="text-cyan-400 font-bold text-[10px]">PROJECT 01</span>
                   <span id="pbadge-01" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">🟢 Completed</span>
                 </div>
-                <h4 class="font-bold text-white">Portfolio Platform</h4>
-                <select onchange="changeProjectStatus('01', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
-                  <option value="Completed">🟢 Completed</option>
-                  <option value="Coming Soon">🟡 Coming Soon</option>
-                </select>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Project Title</label>
+                  <input type="text" id="p1-title" value="Portfolio Platform" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-white">
+                </div>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Status Override</label>
+                  <select onchange="changeProjectStatus('01', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
+                    <option value="Completed">🟢 Completed</option>
+                    <option value="Coming Soon">🟡 Coming Soon</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">GitHub Repo</label>
+                  <input type="text" id="p1-github" value="https://github.com/anuragsahu0/anuragsahu-portfolio" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-[11px] text-slate-300">
+                </div>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Demo / Video Link</label>
+                  <input type="text" id="p1-demo" value="https://anuragsahu.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-[11px] text-slate-300">
+                </div>
+                <button onclick="saveProjectDetails('01')" class="w-full py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 border border-cyan-500/40 font-bold text-xs transition-colors">
+                  Save Changes 💾
+                </button>
               </div>
+
               <!-- Project 2 -->
-              <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                <div class="flex justify-between">
+              <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3">
+                <div class="flex justify-between items-center">
                   <span class="text-amber-400 font-bold text-[10px]">PROJECT 02</span>
                   <span id="pbadge-02" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">🟡 Coming Soon</span>
                 </div>
-                <h4 class="font-bold text-white">Restaurant Management System</h4>
-                <select onchange="changeProjectStatus('02', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
-                  <option value="Coming Soon">🟡 Coming Soon</option>
-                  <option value="Completed">🟢 Completed</option>
-                </select>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Project Title</label>
+                  <input type="text" id="p2-title" value="Restaurant Management System" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-white">
+                </div>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Status Override</label>
+                  <select onchange="changeProjectStatus('02', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
+                    <option value="Coming Soon">🟡 Coming Soon</option>
+                    <option value="Completed">🟢 Completed</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">GitHub Repo</label>
+                  <input type="text" id="p2-github" value="https://github.com/anuragsahu0" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-[11px] text-slate-300">
+                </div>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Demo / Video Link</label>
+                  <input type="text" id="p2-demo" value="https://anuragsahu.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-[11px] text-slate-300">
+                </div>
+                <button onclick="saveProjectDetails('02')" class="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 font-bold text-xs transition-colors">
+                  Save Changes 💾
+                </button>
               </div>
+
               <!-- Project 3 -->
-              <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                <div class="flex justify-between">
+              <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3">
+                <div class="flex justify-between items-center">
                   <span class="text-amber-400 font-bold text-[10px]">PROJECT 03</span>
                   <span id="pbadge-03" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">🟡 Coming Soon</span>
                 </div>
-                <h4 class="font-bold text-white">Smart College ERP</h4>
-                <select onchange="changeProjectStatus('03', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
-                  <option value="Coming Soon">🟡 Coming Soon</option>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Project Title</label>
+                  <input type="text" id="p3-title" value="Smart College ERP" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-white">
+                </div>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Status Override</label>
+                  <select onchange="changeProjectStatus('03', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
+                    <option value="Coming Soon">🟡 Coming Soon</option>
+                    <option value="Completed">🟢 Completed</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">GitHub Repo</label>
+                  <input type="text" id="p3-github" value="https://github.com/anuragsahu0" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-[11px] text-slate-300">
+                </div>
+                <div>
+                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Demo / Video Link</label>
+                  <input type="text" id="p3-demo" value="https://anuragsahu.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-[11px] text-slate-300">
+                </div>
+                <button onclick="saveProjectDetails('03')" class="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 font-bold text-xs transition-colors">
+                  Save Changes 💾
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ADD NEW PROJECT MODAL -->
+        <div id="add-project-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 font-mono">
+          <div class="luxury-card p-6 rounded-3xl max-w-md w-full space-y-4 border border-cyan-500/40 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+              <h3 class="font-display font-bold text-white text-base">➕ Add New Project</h3>
+              <button onclick="toggleAddProjectModal(false)" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <label class="text-slate-300 text-xs font-bold block mb-1">Project Title</label>
+                <input type="text" id="new-proj-title" placeholder="e.g., AI Voice Assistant" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+              </div>
+              <div>
+                <label class="text-slate-300 text-xs font-bold block mb-1">Category / Tag</label>
+                <input type="text" id="new-proj-cat" placeholder="e.g., FULL-STACK WEB / AI & ML" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+              </div>
+              <div>
+                <label class="text-slate-300 text-xs font-bold block mb-1">Description</label>
+                <textarea id="new-proj-desc" rows="2" placeholder="Brief summary of the project architecture and features..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></textarea>
+              </div>
+              <div>
+                <label class="text-slate-300 text-xs font-bold block mb-1">Status</label>
+                <select id="new-proj-status" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                   <option value="Completed">🟢 Completed</option>
+                  <option value="Coming Soon">🟡 Coming Soon</option>
                 </select>
               </div>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button onclick="toggleAddProjectModal(false)" class="w-1/2 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs">Cancel</button>
+              <button onclick="submitNewProject()" class="w-1/2 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white font-bold text-xs">Save Project</button>
             </div>
           </div>
         </div>
@@ -990,7 +1091,48 @@
       if (drop) drop.classList.toggle('hidden');
     };
 
+    window.toggleAddProjectModal = function(show) {
+      const modal = document.getElementById('add-project-modal');
+      if (modal) {
+        if (show) modal.classList.remove('hidden');
+        else modal.classList.add('hidden');
+      }
+    };
+
+    window.saveProjectDetails = function(num) {
+      const title = document.getElementById(`p${num}-title`)?.value || '';
+      const github = document.getElementById(`p${num}-github`)?.value || '';
+      const demo = document.getElementById(`p${num}-demo`)?.value || '';
+      
+      localStorage.setItem(`ag_proj_title_${num}`, title);
+      localStorage.setItem(`ag_proj_github_${num}`, github);
+      localStorage.setItem(`ag_proj_demo_${num}`, demo);
+
+      alert(`✓ Project 0${num} ("${title}") details saved successfully!`);
+    };
+
+    window.submitNewProject = function() {
+      const title = document.getElementById('new-proj-title')?.value || '';
+      const cat = document.getElementById('new-proj-cat')?.value || 'FULL-STACK WEB';
+      const desc = document.getElementById('new-proj-desc')?.value || '';
+      const status = document.getElementById('new-proj-status')?.value || 'Completed';
+
+      if (!title) {
+        alert('Please enter a project title.');
+        return;
+      }
+
+      const newProj = { id: 'p_' + Date.now(), title, cat, desc, status };
+      const customProjects = JSON.parse(localStorage.getItem('ag_custom_projects') || '[]');
+      customProjects.push(newProj);
+      localStorage.setItem('ag_custom_projects', JSON.stringify(customProjects));
+
+      toggleAddProjectModal(false);
+      alert(`✓ New Project "${title}" added successfully!`);
+    };
+
     checkAuth();
+    fetchStats();
     setInterval(fetchStats, 3000);
   </script>
 </body>
