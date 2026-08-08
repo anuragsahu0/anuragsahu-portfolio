@@ -880,6 +880,44 @@
 
   <!-- SCRIPT LOGIC -->
   <script>
+    // Global Tab Switcher (Defined first for 100% instant execution)
+    const indexTabs = ['dashboard', 'analytics', 'personal', 'media', 'projects', 'skills', 'experience', 'education', 'certificates', 'messages', 'profile', 'settings'];
+
+    window.switchTab = function(tabName) {
+      if (!tabName) tabName = 'dashboard';
+      
+      // Hide all panels
+      indexTabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const panel = document.getElementById(`panel-${t}`);
+        if (btn) btn.classList.remove('active');
+        if (panel) panel.classList.add('hidden');
+      });
+
+      // Show target panel
+      const targetBtn = document.getElementById(`tab-btn-${tabName}`);
+      const targetPanel = document.getElementById(`panel-${tabName}`);
+
+      if (targetBtn) targetBtn.classList.add('active');
+      if (targetPanel) {
+        targetPanel.classList.remove('hidden');
+      } else {
+        // Fallback search by ID if target panel missing
+        const fallbackPanel = document.querySelector(`[id*="${tabName}"]`);
+        if (fallbackPanel) fallbackPanel.classList.remove('hidden');
+      }
+
+      const mainViewport = document.querySelector('main');
+      if (mainViewport) mainViewport.scrollTop = 0;
+
+      const breadcrumb = document.getElementById('breadcrumb-current-tab');
+      if (breadcrumb) breadcrumb.textContent = tabName.toUpperCase();
+
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        try { window.lucide.createIcons(); } catch(e) {}
+      }
+    };
+
     lucide.createIcons();
 
     const loginScreen = document.getElementById('page-login-screen');
@@ -898,36 +936,36 @@
         dashboardScreen.classList.add('hidden');
       }
     }
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('input-admin-email').value.trim().toLowerCase();
+        const pass = document.getElementById('input-admin-pass').value;
 
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('input-admin-email').value.trim().toLowerCase();
-      const pass = document.getElementById('input-admin-pass').value;
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password: pass })
+          });
+          const data = await res.json();
+          if (data.success && data.token) {
+            localStorage.setItem('ag_admin_token', data.token);
+            checkAuth();
+            return;
+          }
+        } catch (err) {}
 
-      try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password: pass })
-        });
-        const data = await res.json();
-        if (data.success && data.token) {
-          localStorage.setItem('ag_admin_token', data.token);
+        const validEmails = ['anurag@admin.com', 'admin@anuragsahu.dev', 'admin@anuragsahu.com', 'admin@admin.com', 'shivasahu0612@gmail.com'];
+        const validPasswords = ['anurag123', 'admin123', 'Admin@AntiGravity2026'];
+
+        if (validEmails.includes(email) && validPasswords.includes(pass)) {
+          localStorage.setItem('ag_admin_token', 'cms-admin-token-' + Date.now());
           checkAuth();
-          return;
+        } else {
+          alert('❌ ACCESS DENIED: Invalid Admin Credentials.');
         }
-      } catch (err) {}
-
-      const validEmails = ['anurag@admin.com', 'admin@anuragsahu.dev', 'admin@anuragsahu.com', 'admin@admin.com', 'shivasahu0612@gmail.com'];
-      const validPasswords = ['anurag123', 'admin123', 'Admin@AntiGravity2026'];
-
-      if (validEmails.includes(email) && validPasswords.includes(pass)) {
-        localStorage.setItem('ag_admin_token', 'cms-admin-token-' + Date.now());
-        checkAuth();
-      } else {
-        alert('❌ ACCESS DENIED: Invalid Admin Credentials.');
-      }
-    });
+      });
+    }
 
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
@@ -935,26 +973,6 @@
         checkAuth();
       });
     }
-
-    // Interactive Tab Switcher for all 12 Index Menu items
-    const indexTabs = ['dashboard', 'analytics', 'personal', 'media', 'projects', 'skills', 'experience', 'education', 'certificates', 'messages', 'profile', 'settings'];
-
-    window.switchTab = function(tabName) {
-      indexTabs.forEach(t => {
-        const btn = document.getElementById(`tab-btn-${t}`);
-        const panel = document.getElementById(`panel-${t}`);
-        if (btn) btn.classList.remove('active');
-        if (panel) panel.classList.add('hidden');
-      });
-
-      const targetBtn = document.getElementById(`tab-btn-${tabName}`);
-      const targetPanel = document.getElementById(`panel-${tabName}`);
-      if (targetBtn) targetBtn.classList.add('active');
-      if (targetPanel) targetPanel.classList.remove('hidden');
-
-      const breadcrumb = document.getElementById('breadcrumb-current-tab');
-      if (breadcrumb) breadcrumb.textContent = tabName.toUpperCase();
-    };
 
     const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261';
 
