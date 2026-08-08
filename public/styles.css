@@ -1261,16 +1261,44 @@ footer {
 }
 
 /* ==========================================================================
-   ULTRA-WIDE DISPLAY & LARGE MONITOR RESPONSIVE SCALING (TASK 2)
+   UNIVERSAL AUTO-RESPONSIVE VIEWPORT SCALING SYSTEM (ALL SCREEN SIZES)
    ========================================================================== */
-@media (min-width: 1600px) {
-  :root {
-    --max-width: 1536px;
+
+:root {
+  --max-width: min(94vw, 1600px);
+}
+
+.container, main, section {
+  width: 100% !important;
+  max-width: var(--max-width) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Small Laptops (1366px, 1280px, 11" & 13" MacBooks) */
+@media (max-width: 1440px) and (min-width: 1025px) {
+  section {
+    padding-top: 48px !important;
+    padding-bottom: 48px !important;
   }
-  .container, main, section {
-    max-width: 1536px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+
+  .section-title, h2 {
+    font-size: clamp(1.6rem, 2.8vw, 2.2rem) !important;
+  }
+
+  .glass-panel {
+    padding: clamp(20px, 2.5vw, 32px) !important;
+  }
+}
+
+/* Ultra-Wide Display & 4K Monitors (1920px+) */
+@media (min-width: 1920px) {
+  :root {
+    --max-width: 1720px;
+  }
+  body {
+    font-size: 1.05rem;
   }
 }
 
