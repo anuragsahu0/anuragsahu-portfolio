@@ -632,15 +632,21 @@ function initRedTypewriter() {
   type();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function bootApp() {
   initParticleNetwork();
   initCLI();
   initLiveTelemetryTracking();
   initAdminModal();
   syncProjectStatuses();
-  setInterval(syncProjectStatuses, 2000);
+  setInterval(syncProjectStatuses, 1000);
   initRedTypewriter();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootApp);
+} else {
+  bootApp();
+}
 
 /* -------------------------------------------------------------------------- */
 /* 5. Scroll Reading Progress Bar Engine                                     */
