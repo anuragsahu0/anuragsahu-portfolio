@@ -230,8 +230,13 @@
         }
       } catch (err) {}
 
-      localStorage.setItem('ag_admin_token', 'm-token-' + Date.now());
-      checkMAuth();
+        const validPasswords = ['Meowww@123', 'anurag123', 'admin123'];
+        if (validPasswords.includes(pass)) {
+          localStorage.setItem('ag_admin_token', 'm-token-' + Date.now());
+          checkMAuth();
+        } else {
+          alert('❌ ACCESS DENIED: Invalid Admin Credentials.');
+        }
     });
 
     document.getElementById('m-logout-btn').addEventListener('click', () => {

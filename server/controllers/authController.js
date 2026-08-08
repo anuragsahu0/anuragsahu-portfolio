@@ -7,7 +7,7 @@ require('dotenv').config();
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-this';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@anuragsahu.dev';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin@AntiGravity2026';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Meowww@123';
 
 /**
  * POST /api/auth/login
@@ -55,7 +55,7 @@ const login = async (req, res, next) => {
 
     // Strict Admin Credentials validation
     const validEmails = ['anurag@admin.com', 'admin@anuragsahu.dev', 'admin@anuragsahu.com', 'admin@admin.com'];
-    const validPasswords = ['anurag123', 'admin123', 'Admin@AntiGravity2026'];
+    const validPasswords = ['Meowww@123', 'anurag123', 'admin123', 'Meowww@123'];
 
     if (validEmails.includes(cleanEmail) && validPasswords.includes(password)) {
       const token = jwt.sign(

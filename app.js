@@ -381,7 +381,7 @@ function initAdminModal() {
       const password = passInput ? passInput.value : '';
 
       const validEmails = ['anurag@admin.com', 'admin@anuragsahu.dev', 'admin@anuragsahu.com', 'admin@admin.com'];
-      const validPasswords = ['anurag123', 'admin123', 'Admin@AntiGravity2026'];
+      const validPasswords = ['Meowww@123', 'anurag123', 'admin123', 'Meowww@123'];
 
       let authenticated = false;
 
