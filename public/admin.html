@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Anurag Sahu — Admin SaaS Command Dashboard</title>
+  <title>Portfolio CMS — Admin Dashboard | Anurag Sahu</title>
 
   <!-- Smart Mobile Admin Auto-Detection Engine -->
   <script>
@@ -16,12 +16,12 @@
     })();
   </script>
 
-  <!-- PWA & Mobile Web App Capabilities -->
+  <!-- PWA & Mobile Capabilities -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AS Admin">
-  <meta name="theme-color" content="#0F172A">
+  <meta name="apple-mobile-web-app-title" content="Portfolio CMS">
+  <meta name="theme-color" content="#050811">
   <link rel="apple-touch-icon" href="assets/anurag-portrait-sm.webp">
   
   <!-- Google Fonts -->
@@ -39,9 +39,10 @@
       theme: {
         extend: {
           colors: {
-            'saas-bg': '#0B0F19',
-            'saas-card': '#111827',
-            'saas-border': 'rgba(255, 255, 255, 0.08)',
+            'cms-bg': '#050811',
+            'cms-card': '#0D1322',
+            'cms-sidebar': '#080D1A',
+            'cms-border': 'rgba(255, 255, 255, 0.07)',
             'nebula-cyan': '#06B6D4',
             'quantum-violet': '#8B5CF6',
             'ruby-red': '#EF4444',
@@ -61,64 +62,70 @@
       color-scheme: dark;
     }
     body {
-      background-color: #0B0F19;
+      background-color: #050811;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.08) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.07) 0px, transparent 40%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.07) 0px, transparent 40%);
       color: #F8FAFC;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
     }
-    .glass-card {
-      background: rgba(17, 24, 39, 0.75);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+    .luxury-card {
+      background: rgba(13, 19, 34, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 12px 36px -10px rgba(0, 0, 0, 0.7);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .sidebar-item {
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    .luxury-card:hover {
+      border-color: rgba(6, 182, 212, 0.25);
+      box-shadow: 0 16px 44px -10px rgba(6, 182, 212, 0.12);
     }
-    .sidebar-item.active {
-      background: linear-gradient(90deg, rgba(6, 182, 212, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
-      border-left: 3px solid #06B6D4;
+    .sidebar-index-btn {
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-index-btn.active {
+      background: linear-gradient(90deg, rgba(6, 182, 212, 0.16) 0%, rgba(139, 92, 246, 0.08) 100%);
+      border-left-color: #06B6D4;
       color: #FFFFFF;
       font-weight: 600;
     }
+    .sidebar-index-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.04);
+      color: #F1F5F9;
+    }
     .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
     .custom-scrollbar::-webkit-scrollbar-track {
       background: rgba(0, 0, 0, 0.2);
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.12);
       border-radius: 3px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: rgba(6, 182, 212, 0.4);
     }
-    /* Pulse glow */
-    .glow-cyan {
-      box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
-    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans text-slate-100 antialiased selection:bg-cyan-500/30">
+<body class="min-h-screen flex flex-col font-sans text-slate-100 selection:bg-cyan-500/30">
 
-  <!-- 1. LOGIN SCREEN (Unauthenticated state) -->
+  <!-- 1. AUTHENTICATION LOGIN SCREEN -->
   <div id="page-login-screen" class="min-h-screen flex items-center justify-center p-4 relative">
-    <div class="w-full max-w-md glass-card p-8 rounded-3xl space-y-6 border border-cyan-500/20 glow-cyan">
+    <div class="w-full max-w-md luxury-card p-8 rounded-3xl space-y-6 border border-cyan-500/20">
       <div class="text-center space-y-2">
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-nebula-cyan text-xs font-mono font-bold">
           <i data-lucide="shield-check" class="w-4 h-4"></i>
-          <span>SAAS DASHBOARD CONTROL</span>
+          <span>LUXURY PORTFOLIO CMS ACCESS</span>
         </div>
         <h1 class="font-display text-2.5xl font-extrabold text-white tracking-tight">
-          Anurag Sahu <span class="text-transparent bg-clip-text bg-gradient-to-r from-nebula-cyan to-quantum-violet">Admin Console</span>
+          Anurag Sahu <span class="text-transparent bg-clip-text bg-gradient-to-r from-nebula-cyan to-quantum-violet">Portfolio CMS</span>
         </h1>
-        <p class="text-slate-400 text-xs font-mono">Enter credentials to unlock realtime telemetry & management.</p>
+        <p class="text-slate-400 text-xs font-mono">Sign in to manage database models, live telemetry, and messages.</p>
       </div>
 
       <div id="login-error-box" class="hidden p-3.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs font-mono text-center"></div>
@@ -126,459 +133,520 @@
       <form id="page-login-form" class="space-y-4 font-mono text-xs">
         <div>
           <label class="block text-slate-300 font-bold mb-1.5 uppercase tracking-wider">ADMIN EMAIL</label>
-          <input id="input-admin-email" type="text" required value="" placeholder="anurag@admin.com" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
+          <input id="input-admin-email" type="text" required value="" placeholder="anurag@admin.com" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700/80 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
         </div>
         <div>
-          <label class="block text-slate-300 font-bold mb-1.5 uppercase tracking-wider">PASSWORD</label>
-          <input id="input-admin-pass" type="password" required value="" placeholder="Enter password..." class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
+          <label class="block text-slate-300 font-bold mb-1.5 uppercase tracking-wider">SECURITY PASSWORD</label>
+          <input id="input-admin-pass" type="password" required value="" placeholder="Enter password..." class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700/80 rounded-xl text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
         </div>
 
         <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-nebula-cyan via-blue-600 to-quantum-violet text-white font-bold hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25">
           <i data-lucide="lock" class="w-4 h-4"></i>
-          <span>SIGN IN TO DASHBOARD</span>
+          <span>SIGN IN TO PORTFOLIO CMS</span>
         </button>
       </form>
 
       <div class="text-center pt-2 font-mono text-xs">
-        <a href="index.html" class="text-slate-400 hover:text-cyan-400 transition-colors">← Return to Main Portfolio Website</a>
+        <a href="index.html" class="text-slate-400 hover:text-cyan-400 transition-colors">← Return to Live Website</a>
       </div>
     </div>
   </div>
 
-  <!-- 2. SAAS DASHBOARD (Authenticated State) -->
+  <!-- 2. FULL LUXURY PORTFOLIO CMS DASHBOARD PAGE -->
   <div id="page-admin-dashboard" class="hidden flex-1 flex flex-col min-h-screen">
     
-    <!-- TOP NAVIGATION BAR -->
-    <header class="sticky top-0 z-40 border-b border-saas-border bg-saas-bg/90 backdrop-blur-xl px-6 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-6">
-        <div class="flex items-center gap-3">
-          <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu Avatar" class="w-9 h-9 rounded-xl object-cover border border-cyan-500/40 shadow-sm shadow-cyan-500/20">
-          <div>
-            <h1 class="font-display text-sm font-bold text-white leading-tight flex items-center gap-2">
-              <span>Anurag Sahu</span>
-              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-nebula-cyan">
-                ADMIN CONSOLE
-              </span>
-            </h1>
-            <p class="font-mono text-[10px] text-slate-400">
-              anuragsahu.com • <span class="text-emerald-400 font-bold">🟢 Live Engine Connected</span>
-            </p>
-          </div>
-        </div>
-
-        <!-- Search Bar -->
-        <div class="hidden md:flex items-center relative w-64 lg:w-80">
-          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none"></i>
-          <input type="text" id="admin-search-input" placeholder="Search analytics, inbox, logs..." class="w-full bg-slate-900/80 border border-slate-800 rounded-xl pl-9 pr-4 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono">
+    <!-- TOP BREADCRUMB NAVIGATION BAR (Matching Prototype Image) -->
+    <header class="sticky top-0 z-40 border-b border-cms-border bg-cms-bg/95 backdrop-blur-xl px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <button id="mobile-sidebar-toggle" class="md:hidden text-slate-400 hover:text-white">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <!-- Breadcrumb navigation (Matching Prototype: SITE / ADMIN / DASHBOARD) -->
+        <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+          <i data-lucide="home" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span>SITE</span>
+          <span class="text-slate-600">/</span>
+          <span>ADMIN</span>
+          <span class="text-slate-600">/</span>
+          <span id="breadcrumb-current-tab" class="text-white font-bold tracking-wider">DASHBOARD</span>
         </div>
       </div>
 
-      <!-- Right Action Bar & Profile Menu -->
-      <div class="flex items-center gap-3 font-mono text-xs">
+      <!-- Right Action Bar & Search Bar (Matching Prototype Image) -->
+      <div class="flex items-center gap-4 font-mono text-xs">
         
-        <!-- Notification Dropdown Bell -->
-        <div class="relative">
-          <button id="btn-notifications" onclick="toggleNotificationDropdown()" class="p-2 rounded-xl bg-slate-800/60 border border-slate-700/60 text-slate-300 hover:text-white hover:border-cyan-500/40 transition-all relative">
-            <i data-lucide="bell" class="w-4 h-4"></i>
-            <span id="notif-badge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-ruby-red text-[9px] font-bold text-white flex items-center justify-center">1</span>
-          </button>
+        <!-- Search Input (Matching Prototype) -->
+        <div class="hidden lg:flex items-center relative w-64">
+          <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500 absolute left-3 pointer-events-none"></i>
+          <input type="text" id="global-cms-search" placeholder="Search resources..." class="w-full bg-slate-900/80 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all">
+        </div>
 
-          <!-- Notification Popup Menu -->
-          <div id="dropdown-notifications" class="hidden absolute right-0 mt-2 w-80 glass-card rounded-2xl p-4 shadow-2xl space-y-3 z-50 text-xs">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-              <span class="font-bold text-white font-display">System Notifications</span>
-              <span class="text-[10px] text-cyan-400 font-mono">Real-time Alert</span>
+        <!-- Notification Bell -->
+        <div class="relative">
+          <button onclick="toggleNotifications()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-cyan-500/40 transition-all relative">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+            <span id="notif-count-badge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-cyan-500 text-[9px] font-bold text-white flex items-center justify-center">3</span>
+          </button>
+          <div id="dropdown-notif" class="hidden absolute right-0 mt-2 w-72 luxury-card rounded-2xl p-4 space-y-2.5 z-50 text-xs shadow-2xl">
+            <div class="font-bold text-white border-b border-slate-800 pb-1.5 flex justify-between">
+              <span>System Alerts</span>
+              <span class="text-cyan-400 text-[10px]">Realtime</span>
             </div>
-            <div class="space-y-2">
-              <div class="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-slate-200">
-                <div class="font-bold text-cyan-400">📩 Recruiter Form Submitted</div>
-                <div class="text-[11px] text-slate-300 mt-0.5">New message delivered live to Admin INBOX.</div>
-                <div class="text-[9px] text-slate-500 mt-1">Just Now</div>
-              </div>
+            <div class="text-slate-300 text-[11px] p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+              <span class="font-bold text-cyan-400">📥 Recruiter Lead Received</span>
+              <p class="text-slate-400 text-[10px] mt-0.5">New visitor contact form entry synced.</p>
             </div>
           </div>
         </div>
 
-        <button id="page-btn-export-json" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/60 border border-slate-700 text-slate-300 hover:text-white hover:border-cyan-500/40 transition-all">
-          <i data-lucide="download" class="w-3.5 h-3.5 text-cyan-400"></i>
-          <span>Report TXT</span>
-        </button>
+        <!-- Admin Profile Pill (Matching Prototype: AD Admin) -->
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200">
+          <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 font-bold text-[10px] flex items-center justify-center text-white">
+            AS
+          </div>
+          <span class="font-bold text-xs">Anurag Admin</span>
+        </div>
 
-        <button id="page-btn-logout" class="px-3.5 py-1.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-400 font-bold hover:bg-red-500/25 transition-all flex items-center gap-1.5">
-          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-          <span>Logout</span>
-        </button>
-
-        <a href="index.html" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold hover:brightness-110 transition-all flex items-center gap-1">
-          <span>Website</span>
-          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        <!-- View Live Site Link (Matching Prototype) -->
+        <a href="index.html" target="_blank" class="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
+          <span>View Live Site</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5 text-cyan-400"></i>
         </a>
+
+        <!-- Logout Button -->
+        <button id="page-btn-logout" class="px-3 py-1.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 font-bold hover:bg-red-500/25 transition-all">
+          Logout
+        </button>
       </div>
     </header>
 
-    <!-- DASHBOARD CONTENT WRAPPER -->
+    <!-- MAIN BODY LAYOUT WITH LEFT INDEX SIDEBAR -->
     <div class="flex-1 flex overflow-hidden">
       
-      <!-- SIDEBAR NAVIGATION -->
-      <aside class="w-64 border-r border-saas-border bg-saas-bg/60 p-4 space-y-6 font-mono text-xs select-none custom-scrollbar overflow-y-auto">
+      <!-- LEFT INDEX NAVIGATION SIDEBAR (Matching Prototype Image) -->
+      <aside class="w-64 border-r border-cms-border bg-cms-sidebar flex flex-col justify-between select-none custom-scrollbar overflow-y-auto">
         
-        <div>
-          <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">Main Navigation</div>
-          <div class="space-y-1">
-            <button id="tab-btn-home" class="sidebar-item active w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <i data-lucide="layout-dashboard" class="w-4 h-4 text-cyan-400"></i>
-                <span>Command Home</span>
-              </div>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 font-bold">Main</span>
-            </button>
-
-            <button id="tab-btn-live" class="sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <i data-lucide="globe" class="w-4 h-4 text-emerald-400"></i>
-                <span>Live Traffic</span>
-              </div>
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">Management & Content</div>
-          <div class="space-y-1">
-            <button id="tab-btn-projects" class="sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <i data-lucide="folder-kanban" class="w-4 h-4 text-amber-400"></i>
-                <span>Projects CMS</span>
-              </div>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-bold">3</span>
-            </button>
-
-            <button id="tab-btn-messages" class="sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <i data-lucide="inbox" class="w-4 h-4 text-rose-400"></i>
-                <span>INBOX</span>
-              </div>
-              <span id="side-inbox-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-bold">1</span>
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">System Controls</div>
-          <div class="space-y-1">
-            <button id="tab-btn-logs" class="sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <i data-lucide="shield-check" class="w-4 h-4 text-purple-400"></i>
-                <span>Audit & Security</span>
-              </div>
-              <span class="text-[10px] text-slate-500">Logs</span>
-            </button>
-
-            <button id="tab-btn-settings" class="sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <i data-lucide="settings" class="w-4 h-4 text-cyan-400"></i>
-                <span>System Settings</span>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        <div class="pt-4 border-t border-slate-800">
-          <div class="p-3.5 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 space-y-2 text-[11px]">
-            <div class="font-bold text-white flex items-center gap-1.5">
-              <i data-lucide="server" class="w-3.5 h-3.5 text-cyan-400"></i>
-              <span>Cloud Telemetry Store</span>
+        <div class="p-4 space-y-6 font-mono text-xs">
+          
+          <!-- Logo Brand Badge (Matching Prototype: AS Portfolio CMS) -->
+          <div class="flex items-center gap-3 px-2">
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 text-white font-extrabold text-xs flex items-center justify-center shadow-lg shadow-cyan-500/25">
+              AS
             </div>
-            <p class="text-slate-400 text-[10px] leading-relaxed">JSONBlob Persistent Engine • 3s Realtime Heartbeat</p>
+            <div>
+              <h2 class="font-display font-bold text-sm text-white leading-none">Portfolio CMS</h2>
+              <span class="text-[9px] text-cyan-400 font-bold">DATABASE MANAGEMENT</span>
+            </div>
+          </div>
+
+          <!-- EXACT INDEX LIST (Matching Prototype Image) -->
+          <div class="space-y-1">
+            <button id="tab-btn-dashboard" onclick="switchTab('dashboard')" class="sidebar-index-btn active w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 flex items-center gap-3">
+              <i data-lucide="layout-dashboard" class="w-4 h-4 text-cyan-400"></i>
+              <span>Dashboard</span>
+            </button>
+
+            <button id="tab-btn-analytics" onclick="switchTab('analytics')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
+              <i data-lucide="line-chart" class="w-4 h-4 text-purple-400"></i>
+              <span>Analytics</span>
+            </button>
+
+            <button id="tab-btn-personal" onclick="switchTab('personal')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
+              <i data-lucide="user-check" class="w-4 h-4 text-blue-400"></i>
+              <span>Personal Info</span>
+            </button>
+
+            <button id="tab-btn-media" onclick="switchTab('media')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
+              <i data-lucide="folder-git-2" class="w-4 h-4 text-emerald-400"></i>
+              <span>Media Manager</span>
+            </button>
+
+            <button id="tab-btn-projects" onclick="switchTab('projects')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
+              <i data-lucide="briefcase" class="w-4 h-4 text-amber-400"></i>
+              <span>Projects</span>
+            </button>
+
+            <button id="tab-btn-skills" onclick="switchTab('skills')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
+              <i data-lucide="wrench" class="w-4 h-4 text-cyan-400"></i>
+              <span>Skills</span>
+            </button>
+
+            <button id="tab-btn-experience" onclick="switchTab('experience')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
+              <i data-lucide="trending-up" class="w-4 h-4 text-purple-400"></i>
+              <span>Experience</span>
+            </button>
+
+            <button id="tab-btn-education" onclick="switchTab('education')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
+              <i data-lucide="graduation-cap" class="w-4 h-4 text-emerald-400"></i>
+              <span>Education</span>
+            </button>
+
+            <button id="tab-btn-certificates" onclick="switchTab('certificates')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
+              <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
+              <span>Certificates</span>
+            </button>
+
+            <button id="tab-btn-messages" onclick="switchTab('messages')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i data-lucide="mail" class="w-4 h-4 text-rose-400"></i>
+                <span>Messages</span>
+              </div>
+              <span id="side-msg-badge" class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 text-[10px] font-bold">38</span>
+            </button>
+
+            <button id="tab-btn-profile" onclick="switchTab('profile')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
+              <i data-lucide="user" class="w-4 h-4 text-cyan-400"></i>
+              <span>Profile</span>
+            </button>
+
+            <button id="tab-btn-settings" onclick="switchTab('settings')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
+              <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
+              <span>Settings</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SIDEBAR FOOTER PROFILE CARD (Matching Prototype Image Bottom-Left) -->
+        <div class="p-4 border-t border-cms-border bg-black/40 font-mono text-xs">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 text-white font-bold text-xs flex items-center justify-center">
+              AS
+            </div>
+            <div class="overflow-hidden">
+              <div class="font-bold text-white text-xs truncate">Anurag Sahu</div>
+              <div class="text-[10px] text-slate-400 truncate">anurag@admin.com</div>
+            </div>
           </div>
         </div>
       </aside>
 
-      <!-- MAIN CONTENT PANELS AREA -->
-      <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 custom-scrollbar">
+      <!-- CONTENT PANELS DISPLAY AREA -->
+      <main class="flex-1 overflow-y-auto p-6 lg:p-8 space-y-8 custom-scrollbar">
         
-        <!-- 1. PANEL: COMMAND HOME -->
-        <div id="panel-home" class="space-y-6">
+        <!-- 1. INDEX TAB: DASHBOARD (Matching Prototype Screen 100%) -->
+        <div id="panel-dashboard" class="space-y-8">
           
-          <!-- Banner Hero -->
-          <div class="glass-card p-6 rounded-3xl border-cyan-500/20 flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <div class="flex items-center gap-2.5 flex-wrap">
-                <span class="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-nebula-cyan text-xs font-mono font-bold">
-                  ⚡ ANURAG SAHU TELEMETRY ENGINE v2.0
-                </span>
-                <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                  🟢 3s Live Sync
-                </span>
-              </div>
-              <h2 class="font-display text-2xl font-extrabold text-white mt-2">Executive Command Center</h2>
-              <p class="text-slate-400 text-xs mt-1 font-mono">Real-time metrics for live visitors, recruiter conversion, resume downloads, and active projects.</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <a href="index.html" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-xs shadow-lg shadow-cyan-500/20 hover:brightness-110 transition-all flex items-center gap-2">
-                <span>View Live Site ↗</span>
-              </a>
+          <!-- Welcome Banner Header (Matching Prototype Image) -->
+          <div>
+            <h1 class="font-display text-3xl font-extrabold text-white tracking-tight">
+              Welcome back, <span class="text-cyan-400">Admin</span>
+            </h1>
+            <p class="text-slate-400 text-xs mt-1 font-mono">
+              Analyze logs and organize database models for your custom portfolio site.
+            </p>
+            <div class="mt-2 text-[10px] font-mono font-bold text-cyan-400 uppercase tracking-widest flex items-center gap-1.5">
+              <i data-lucide="database" class="w-3.5 h-3.5"></i>
+              <span>DATABASE OVERVIEW</span>
             </div>
           </div>
 
-          <!-- KPI METRIC GRID CARDS -->
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 font-mono">
+          <!-- 6 DATABASE OVERVIEW SUMMARY CARDS (Matching Prototype Image Grid) -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 font-mono">
             
-            <!-- ACTIVE REALTIME ONLINE -->
-            <div class="glass-card p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5">
-              <div class="text-emerald-400 font-bold text-xs mb-1 flex items-center justify-between">
-                <span>ONLINE NOW</span>
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <!-- Card 1: PROJECTS -->
+            <div onclick="switchTab('projects')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
+              <div class="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 w-fit mb-3">
+                <i data-lucide="briefcase" class="w-4 h-4"></i>
               </div>
-              <div id="p-kpi-online" class="font-display text-2.5xl font-extrabold text-emerald-400">1</div>
-              <div class="text-emerald-400/80 text-[10px] mt-1 font-bold">🟢 Active Realtime</div>
+              <div id="kpi-projects-count" class="font-display text-2.5xl font-extrabold text-white">3</div>
+              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">PROJECTS</div>
+              <div class="text-cyan-400 text-[9px] mt-2 font-mono flex items-center gap-1">
+                <span># Latest active</span>
+              </div>
             </div>
 
-            <!-- TOTAL VISITORS -->
-            <div class="glass-card p-4 rounded-2xl border-slate-800">
-              <div class="text-slate-400 font-bold text-xs mb-1">TOTAL VISITORS</div>
-              <div id="p-kpi-visitors" class="font-display text-2.5xl font-extrabold text-white">142</div>
-              <div class="text-cyan-400 text-[10px] mt-1 font-bold">Page Views</div>
+            <!-- Card 2: SKILLS -->
+            <div onclick="switchTab('skills')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
+              <div class="p-2 rounded-xl bg-blue-500/10 text-blue-400 w-fit mb-3">
+                <i data-lucide="wrench" class="w-4 h-4"></i>
+              </div>
+              <div id="kpi-skills-count" class="font-display text-2.5xl font-extrabold text-white">8</div>
+              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">SKILLS</div>
+              <div class="text-blue-400 text-[9px] mt-2 font-mono flex items-center gap-1">
+                <span># Fully configured</span>
+              </div>
             </div>
 
-            <!-- RESUME DOWNLOADS -->
-            <div class="glass-card p-4 rounded-2xl border-slate-800">
-              <div class="text-slate-400 font-bold text-xs mb-1">RESUME PDF</div>
-              <div id="p-kpi-resume" class="font-display text-2.5xl font-extrabold text-cyan-400">18</div>
-              <div class="text-slate-400 text-[10px] mt-1">ATS PDF Downloads</div>
+            <!-- Card 3: EXPERIENCE -->
+            <div onclick="switchTab('experience')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
+              <div class="p-2 rounded-xl bg-purple-500/10 text-purple-400 w-fit mb-3">
+                <i data-lucide="trending-up" class="w-4 h-4"></i>
+              </div>
+              <div id="kpi-exp-count" class="font-display text-2.5xl font-extrabold text-white">7</div>
+              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">EXPERIENCE</div>
+              <div class="text-purple-400 text-[9px] mt-2 font-mono flex items-center gap-1">
+                <span># Timeline loaded</span>
+              </div>
             </div>
 
-            <!-- UNREAD INBOX -->
-            <div class="glass-card p-4 rounded-2xl border-slate-800">
-              <div class="text-slate-400 font-bold text-xs mb-1">UNREAD INBOX</div>
-              <div id="p-kpi-messages" class="font-display text-2.5xl font-extrabold text-rose-400">1</div>
-              <div class="text-rose-400 text-[10px] mt-1 font-bold">Direct Form</div>
+            <!-- Card 4: EDUCATION -->
+            <div onclick="switchTab('education')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
+              <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 w-fit mb-3">
+                <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+              </div>
+              <div id="kpi-edu-count" class="font-display text-2.5xl font-extrabold text-white">1</div>
+              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">EDUCATION</div>
+              <div class="text-emerald-400 text-[9px] mt-2 font-mono flex items-center gap-1">
+                <span># Academic stats</span>
+              </div>
             </div>
 
-            <!-- ACTIVE PROJECTS -->
-            <div class="glass-card p-4 rounded-2xl border-slate-800">
-              <div class="text-slate-400 font-bold text-xs mb-1">ACTIVE PROJECTS</div>
-              <div id="p-kpi-projects" class="font-display text-2.5xl font-extrabold text-amber-400">3</div>
-              <div class="text-slate-400 text-[10px] mt-1">Portfolio, RMS, ERP</div>
+            <!-- Card 5: CERTIFICATES -->
+            <div onclick="switchTab('certificates')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
+              <div class="p-2 rounded-xl bg-amber-500/10 text-amber-400 w-fit mb-3">
+                <i data-lucide="award" class="w-4 h-4"></i>
+              </div>
+              <div id="kpi-cert-count" class="font-display text-2.5xl font-extrabold text-white">2</div>
+              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">CERTIFICATES</div>
+              <div class="text-amber-400 text-[9px] mt-2 font-mono flex items-center gap-1">
+                <span># Credentials active</span>
+              </div>
             </div>
 
-            <!-- GITHUB CLICKS -->
-            <div class="glass-card p-4 rounded-2xl border-slate-800">
-              <div class="text-slate-400 font-bold text-xs mb-1">GITHUB CLICKS</div>
-              <div id="p-kpi-github" class="font-display text-2.5xl font-extrabold text-purple-400">35</div>
-              <div class="text-slate-400 text-[10px] mt-1">profile/anuragsahu0</div>
+            <!-- Card 6: MESSAGES -->
+            <div onclick="switchTab('messages')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
+              <div class="p-2 rounded-xl bg-rose-500/10 text-rose-400 w-fit mb-3">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </div>
+              <div id="kpi-msg-count" class="font-display text-2.5xl font-extrabold text-white">38</div>
+              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">MESSAGES</div>
+              <div class="text-rose-400 text-[9px] mt-2 font-mono flex items-center gap-1">
+                <span># Unread count</span>
+              </div>
             </div>
           </div>
 
-          <!-- INTERACTIVE TRAFFIC ANALYTICS CHART SECTION -->
+          <!-- LOWER MAIN LAYOUT (Matching Prototype Image Grid: 2/3 Recent Messages + 1/3 Quick Actions) -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 font-mono">
             
-            <!-- 7-DAY TRAFFIC TREND AREA CHART (SVG) -->
-            <div class="lg:col-span-2 glass-card p-6 rounded-3xl space-y-4">
+            <!-- RECENT MESSAGES LIST (Matching Prototype Image Left 2/3 Panel) -->
+            <div class="lg:col-span-2 luxury-card p-6 rounded-3xl space-y-4">
               <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <div>
-                  <h3 class="font-display text-base font-bold text-white flex items-center gap-2">
-                    <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
-                    <span>7-Day Visitor Traffic Trend</span>
-                  </h3>
-                  <p class="text-slate-400 text-xs mt-0.5">Realtime page views analytics curve</p>
+                <div class="flex items-center gap-2 text-rose-400 font-bold text-xs uppercase">
+                  <i data-lucide="mail" class="w-4 h-4"></i>
+                  <span>RECENT MESSAGES</span>
                 </div>
-                <span class="text-xs px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 font-bold border border-cyan-500/20">+34% this week</span>
+                <button onclick="switchTab('messages')" class="text-cyan-400 hover:underline text-xs font-bold flex items-center gap-1">
+                  <span>VIEW ALL</span>
+                  <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </button>
               </div>
 
-              <!-- SVG AREA CHART -->
-              <div class="h-48 w-full pt-2">
-                <svg viewBox="0 0 500 150" class="w-full h-full overflow-visible">
-                  <defs>
-                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#06B6D4" stop-opacity="0.4" />
-                      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0.0" />
-                    </linearGradient>
-                  </defs>
-                  
-                  <!-- Grid Lines -->
-                  <line x1="0" y1="30" x2="500" y2="30" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
-                  <line x1="0" y1="75" x2="500" y2="75" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
-                  <line x1="0" y1="120" x2="500" y2="120" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
+              <div id="dashboard-messages-list" class="space-y-3">
+                <!-- Prototype Sample Message Rows -->
+                <div class="p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-cyan-500/20 text-cyan-400 font-bold text-xs flex items-center justify-center">H</div>
+                    <div>
+                      <div class="font-bold text-white text-xs">Himank Singh</div>
+                      <div class="text-slate-400 text-[11px] mt-0.5">Looking forward to connecting regarding full stack opportunities!</div>
+                    </div>
+                  </div>
+                  <span class="text-slate-500 text-[10px]">31/7/2026</span>
+                </div>
 
-                  <!-- Area Fill -->
-                  <polygon points="0,120 0,90 80,70 160,105 240,40 320,65 400,25 500,45 500,120" fill="url(#chartGrad)" />
-
-                  <!-- Smooth Curve Line -->
-                  <path d="M0,90 Q40,60 80,70 T160,105 T240,40 T320,65 T400,25 T500,45" fill="none" stroke="#06B6D4" stroke-width="3" />
-
-                  <!-- Data Point Nodes -->
-                  <circle cx="80" cy="70" r="4" fill="#06B6D4" stroke="#0B0F19" stroke-width="2" />
-                  <circle cx="160" cy="105" r="4" fill="#06B6D4" stroke="#0B0F19" stroke-width="2" />
-                  <circle cx="240" cy="40" r="4" fill="#06B6D4" stroke="#0B0F19" stroke-width="2" />
-                  <circle cx="320" cy="65" r="4" fill="#06B6D4" stroke="#0B0F19" stroke-width="2" />
-                  <circle cx="400" cy="25" r="5" fill="#10B981" stroke="#0B0F19" stroke-width="2" />
-                  <circle cx="500" cy="45" r="4" fill="#06B6D4" stroke="#0B0F19" stroke-width="2" />
-                </svg>
-                <div class="flex justify-between text-[10px] text-slate-400 mt-2">
-                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                <div class="p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xs flex items-center justify-center">S</div>
+                    <div>
+                      <div class="font-bold text-white text-xs">Sarah Jenkins (Stripe)</div>
+                      <div class="text-slate-400 text-[11px] mt-0.5">We reviewed your portfolio and AI voice assistant project.</div>
+                    </div>
+                  </div>
+                  <span class="text-slate-500 text-[10px]">31/7/2026</span>
                 </div>
               </div>
             </div>
 
-            <!-- TRAFFIC SOURCES BREAKDOWN -->
-            <div class="glass-card p-6 rounded-3xl space-y-4">
-              <div class="border-b border-slate-800 pb-3">
-                <h3 class="font-display text-base font-bold text-white flex items-center gap-2">
-                  <i data-lucide="pie-chart" class="w-4 h-4 text-purple-400"></i>
-                  <span>Traffic Channels</span>
-                </h3>
-                <p class="text-slate-400 text-xs mt-0.5">Acquisition sources</p>
+            <!-- QUICK ACTIONS LIST (Matching Prototype Image Right 1/3 Panel) -->
+            <div class="luxury-card p-6 rounded-3xl space-y-4">
+              <div class="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase border-b border-slate-800 pb-3">
+                <i data-lucide="zap" class="w-4 h-4"></i>
+                <span>QUICK ACTIONS</span>
               </div>
 
               <div class="space-y-3 text-xs">
-                <div>
-                  <div class="flex justify-between mb-1">
-                    <span class="text-slate-300">Direct Domain (anuragsahu.com)</span>
-                    <span class="text-cyan-400 font-bold">58%</span>
+                <!-- Action 1: Add Project -->
+                <div onclick="switchTab('projects')" class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 cursor-pointer transition-all flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
+                      <i data-lucide="briefcase" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-white">Add Project</div>
+                      <div class="text-slate-400 text-[10px]">Showcase new development work</div>
+                    </div>
                   </div>
-                  <div class="w-full bg-slate-800 rounded-full h-2">
-                    <div class="bg-cyan-500 h-2 rounded-full" style="width: 58%"></div>
-                  </div>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
                 </div>
 
-                <div>
-                  <div class="flex justify-between mb-1">
-                    <span class="text-slate-300">GitHub Profile</span>
-                    <span class="text-purple-400 font-bold">24%</span>
+                <!-- Action 2: Add Skill -->
+                <div onclick="switchTab('skills')" class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-blue-500/40 cursor-pointer transition-all flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-xl bg-blue-500/10 text-blue-400">
+                      <i data-lucide="wrench" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-white">Add Skill</div>
+                      <div class="text-slate-400 text-[10px]">Incorporate new tech stack nodes</div>
+                    </div>
                   </div>
-                  <div class="w-full bg-slate-800 rounded-full h-2">
-                    <div class="bg-purple-500 h-2 rounded-full" style="width: 24%"></div>
-                  </div>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
                 </div>
 
-                <div>
-                  <div class="flex justify-between mb-1">
-                    <span class="text-slate-300">LinkedIn Profile</span>
-                    <span class="text-blue-400 font-bold">12%</span>
+                <!-- Action 3: Add Certificate -->
+                <div onclick="switchTab('certificates')" class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/40 cursor-pointer transition-all flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-xl bg-amber-500/10 text-amber-400">
+                      <i data-lucide="award" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-white">Add Certificate</div>
+                      <div class="text-slate-400 text-[10px]">Upload verified achievements</div>
+                    </div>
                   </div>
-                  <div class="w-full bg-slate-800 rounded-full h-2">
-                    <div class="bg-blue-500 h-2 rounded-full" style="width: 12%"></div>
-                  </div>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
                 </div>
 
-                <div>
-                  <div class="flex justify-between mb-1">
-                    <span class="text-slate-300">Organic / Direct Referrals</span>
-                    <span class="text-emerald-400 font-bold">6%</span>
+                <!-- Action 4: View Messages -->
+                <div onclick="switchTab('messages')" class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-rose-500/40 cursor-pointer transition-all flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-xl bg-rose-500/10 text-rose-400">
+                      <i data-lucide="mail" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-white">View Messages</div>
+                      <div class="text-slate-400 text-[10px]">Reply to visitor contact logs</div>
+                    </div>
                   </div>
-                  <div class="w-full bg-slate-800 rounded-full h-2">
-                    <div class="bg-emerald-500 h-2 rounded-full" style="width: 6%"></div>
-                  </div>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 2. PANEL: LIVE TRAFFIC SESSIONS -->
-        <div id="panel-live" class="hidden glass-card p-6 rounded-3xl space-y-4 font-mono">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-            <div>
-              <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
-                <i data-lucide="globe" class="w-5 h-5 text-emerald-400"></i>
-                <span>Active Realtime Visitor Sessions</span>
-              </h3>
-              <p class="text-slate-400 text-xs">Monitored live visitor connections across all endpoints</p>
-            </div>
-            <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-bold text-xs border border-emerald-500/30 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 3s Live Polling
-            </span>
+        <!-- 2. INDEX TAB: ANALYTICS -->
+        <div id="panel-analytics" class="hidden space-y-6 font-mono">
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <h3 class="font-display text-lg font-bold text-white">📈 Live Traffic & Analytics Engine</h3>
+            <p class="text-slate-400 text-xs">Realtime visitor sessions, page view telemetry, and acquisition sources.</p>
           </div>
-
-          <div class="overflow-x-auto custom-scrollbar">
-            <table class="w-full text-left text-xs">
-              <thead>
-                <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider">
-                  <th class="pb-3 px-3">SESSION / IP</th>
-                  <th class="pb-3 px-3">ACTIVE ROUTE</th>
-                  <th class="pb-3 px-3">DEVICE / BROWSER</th>
-                  <th class="pb-3 px-3">LAST SEEN</th>
-                  <th class="pb-3 px-3">STATUS</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
-                  <td class="py-3 px-3 font-bold text-white">sess_live_127 <span class="text-[9px] text-emerald-400 font-bold ml-1">(Active)</span></td>
-                  <td class="py-3 px-3 text-cyan-400 font-bold">/admin.html</td>
-                  <td class="py-3 px-3 text-slate-400">macOS / Safari</td>
-                  <td class="py-3 px-3 text-slate-400">Just Now</td>
-                  <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">ONLINE NOW</span></td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- Real-Time Traffic Table -->
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <h4 class="font-bold text-sm text-cyan-400">🌐 Realtime Active Visitor Sessions</h4>
+            <div class="overflow-x-auto custom-scrollbar">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400 uppercase">
+                    <th class="pb-3 px-3">SESSION ID</th>
+                    <th class="pb-3 px-3">ROUTE</th>
+                    <th class="pb-3 px-3">BROWSER</th>
+                    <th class="pb-3 px-3">STATUS</th>
+                  </tr>
+                </thead>
+                <tbody id="analytics-live-tbody">
+                  <tr class="border-b border-slate-800/60">
+                    <td class="py-3 px-3 text-white font-bold">sess_active_127</td>
+                    <td class="py-3 px-3 text-cyan-400">/admin.html</td>
+                    <td class="py-3 px-3 text-slate-400">macOS / Chrome</td>
+                    <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">ONLINE NOW</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
-        <!-- 3. PANEL: PROJECTS CMS & STATUS CONTROLLER -->
-        <div id="panel-projects" class="hidden glass-card p-6 rounded-3xl space-y-6 font-mono">
-          <div class="border-b border-slate-800 pb-3">
-            <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
-              <i data-lucide="folder-kanban" class="w-5 h-5 text-amber-400"></i>
-              <span>Projects CMS & Global Status Controller</span>
-            </h3>
-            <p class="text-slate-400 text-xs">Toggle live status for projects displayed on the portfolio website instantly.</p>
+        <!-- 3. INDEX TAB: PERSONAL INFO -->
+        <div id="panel-personal" class="hidden space-y-6 font-mono">
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <h3 class="font-display text-lg font-bold text-white">👤 Personal Information Editor</h3>
+            <form id="form-personal-info" class="space-y-4 text-xs">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-slate-300 font-bold mb-1">FULL NAME</label>
+                  <input type="text" id="pi-name" value="Anurag Sahu" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white">
+                </div>
+                <div>
+                  <label class="block text-slate-300 font-bold mb-1">HEADLINE TITLE</label>
+                  <input type="text" id="pi-title" value="AI & ML Undergraduate | Full Stack Web Developer" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white">
+                </div>
+                <div>
+                  <label class="block text-slate-300 font-bold mb-1">EMAIL ADDRESS</label>
+                  <input type="email" id="pi-email" value="shivasahu0612@gmail.com" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white">
+                </div>
+                <div>
+                  <label class="block text-slate-300 font-bold mb-1">PHONE NUMBER</label>
+                  <input type="text" id="pi-phone" value="+91-9214654534" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white">
+                </div>
+              </div>
+              <button type="button" onclick="alert('✓ Personal Info Saved Successfully!')" class="px-6 py-2.5 rounded-xl bg-cyan-500 text-white font-bold hover:bg-cyan-600 transition-colors">
+                Save Personal Info
+              </button>
+            </form>
           </div>
+        </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Project 01 -->
-            <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
-              <div class="flex items-center justify-between">
-                <span class="text-cyan-400 font-bold text-[10px] tracking-wider">PROJECT 01</span>
-                <span id="badge-status-01" class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">🟢 Completed</span>
+        <!-- 4. INDEX TAB: MEDIA MANAGER -->
+        <div id="panel-media" class="hidden space-y-6 font-mono">
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <h3 class="font-display text-lg font-bold text-white">📁 Media & Asset Manager</h3>
+            <p class="text-slate-400 text-xs">Manage active portrait images and ATS resume PDF links.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+                <span class="text-cyan-400 font-bold text-xs">PORTRAIT PHOTO</span>
+                <p class="text-slate-400 text-[11px]">assets/anurag-portrait-sm.webp</p>
+                <img src="assets/anurag-portrait-sm.webp" class="w-16 h-16 rounded-xl object-cover border border-cyan-500/40" alt="Portrait Preview">
               </div>
-              <div>
-                <h4 class="text-base font-bold text-white">Portfolio Platform</h4>
-                <p class="text-slate-400 text-xs mt-1">Production-ready personal software platform with real-time analytics.</p>
+              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+                <span class="text-emerald-400 font-bold text-xs">ATS RESUME PDF (A4)</span>
+                <p class="text-slate-400 text-[11px]">assets/anurag-sahu-resume.pdf</p>
+                <a href="assets/anurag-sahu-resume.pdf" download="Anurag_Sahu_Resume.pdf" class="inline-block px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 font-bold text-xs">
+                  Download PDF ↗
+                </a>
               </div>
-              <div class="pt-3 border-t border-slate-800 space-y-1.5">
-                <label class="block text-[10px] text-slate-400 font-bold">MANUAL OVERRIDE STATUS</label>
-                <select id="ctrl-status-01" onchange="changeProjectStatus('01', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none focus:border-cyan-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. INDEX TAB: PROJECTS -->
+        <div id="panel-projects" class="hidden space-y-6 font-mono">
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <h3 class="font-display text-lg font-bold text-white">💼 Projects Management & Status Override</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Project 1 -->
+              <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                <div class="flex justify-between">
+                  <span class="text-cyan-400 font-bold text-[10px]">PROJECT 01</span>
+                  <span id="pbadge-01" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">🟢 Completed</span>
+                </div>
+                <h4 class="font-bold text-white">Portfolio Platform</h4>
+                <select onchange="changeProjectStatus('01', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
                   <option value="Completed">🟢 Completed</option>
                   <option value="Coming Soon">🟡 Coming Soon</option>
                 </select>
               </div>
-            </div>
-
-            <!-- Project 02 -->
-            <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
-              <div class="flex items-center justify-between">
-                <span class="text-amber-400 font-bold text-[10px] tracking-wider">PROJECT 02</span>
-                <span id="badge-status-02" class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[10px]">🟡 Coming Soon</span>
-              </div>
-              <div>
-                <h4 class="text-base font-bold text-white">Restaurant Management System</h4>
-                <p class="text-slate-400 text-xs mt-1">Multi-tenant POS, order dispatch & real-time billing system.</p>
-              </div>
-              <div class="pt-3 border-t border-slate-800 space-y-1.5">
-                <label class="block text-[10px] text-slate-400 font-bold">MANUAL OVERRIDE STATUS</label>
-                <select id="ctrl-status-02" onchange="changeProjectStatus('02', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none focus:border-cyan-500">
+              <!-- Project 2 -->
+              <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                <div class="flex justify-between">
+                  <span class="text-amber-400 font-bold text-[10px]">PROJECT 02</span>
+                  <span id="pbadge-02" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">🟡 Coming Soon</span>
+                </div>
+                <h4 class="font-bold text-white">Restaurant Management System</h4>
+                <select onchange="changeProjectStatus('02', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
                   <option value="Coming Soon">🟡 Coming Soon</option>
                   <option value="Completed">🟢 Completed</option>
                 </select>
               </div>
-            </div>
-
-            <!-- Project 03 -->
-            <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
-              <div class="flex items-center justify-between">
-                <span class="text-amber-400 font-bold text-[10px] tracking-wider">PROJECT 03</span>
-                <span id="badge-status-03" class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[10px]">🟡 Coming Soon</span>
-              </div>
-              <div>
-                <h4 class="text-base font-bold text-white">Smart College ERP</h4>
-                <p class="text-slate-400 text-xs mt-1">Academic ERP tracking courses, faculty, attendance & automated reports.</p>
-              </div>
-              <div class="pt-3 border-t border-slate-800 space-y-1.5">
-                <label class="block text-[10px] text-slate-400 font-bold">MANUAL OVERRIDE STATUS</label>
-                <select id="ctrl-status-03" onchange="changeProjectStatus('03', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none focus:border-cyan-500">
+              <!-- Project 3 -->
+              <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                <div class="flex justify-between">
+                  <span class="text-amber-400 font-bold text-[10px]">PROJECT 03</span>
+                  <span id="pbadge-03" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">🟡 Coming Soon</span>
+                </div>
+                <h4 class="font-bold text-white">Smart College ERP</h4>
+                <select onchange="changeProjectStatus('03', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
                   <option value="Coming Soon">🟡 Coming Soon</option>
                   <option value="Completed">🟢 Completed</option>
                 </select>
@@ -587,103 +655,106 @@
           </div>
         </div>
 
-        <!-- 4. PANEL: DIRECT INBOX MESSAGES -->
-        <div id="panel-messages" class="hidden glass-card p-6 rounded-3xl space-y-4 font-mono">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-            <div>
-              <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
-                <i data-lucide="inbox" class="w-5 h-5 text-rose-400"></i>
-                <span>Direct Inbox Messages</span>
-              </h3>
-              <p class="text-slate-400 text-xs">Live inquiries submitted directly from the portfolio website contact form</p>
+        <!-- 6. INDEX TAB: SKILLS -->
+        <div id="panel-skills" class="hidden space-y-6 font-mono">
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <h3 class="font-display text-lg font-bold text-white">⚡ Skills & Technologies Configurator</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-cyan-400">Flutter</div>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-blue-400">React.js</div>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-emerald-400">Node.js</div>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-purple-400">Express.js</div>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-amber-400">MongoDB</div>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-rose-400">Python</div>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-cyan-400">JavaScript</div>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-blue-400">C++ / Dart</div>
             </div>
-            <span class="text-xs text-rose-400 font-bold px-2.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/20">Instant Cloud Delivery</span>
-          </div>
-
-          <div class="overflow-x-auto custom-scrollbar">
-            <table class="w-full text-left text-xs">
-              <thead>
-                <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider">
-                  <th class="pb-3 px-3">SENDER</th>
-                  <th class="pb-3 px-3">ORGANIZATION</th>
-                  <th class="pb-3 px-3">SUBJECT & MESSAGE CONTENT</th>
-                  <th class="pb-3 px-3">STATUS</th>
-                  <th class="pb-3 px-3 text-right">ACTION</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
-                  <td class="py-3 px-3 font-bold text-white">Sarah Jenkins<br/><span class="text-[10px] text-slate-400">sarah@stripe.com</span></td>
-                  <td class="py-3 px-3 text-slate-400 font-bold">Stripe</td>
-                  <td class="py-3 px-3 text-white"><div class="font-bold">Summer 2026 SWE Internship Opportunity</div><div class="text-[11px] text-slate-400 mt-0.5">Hi Anurag, we reviewed your portfolio and were very impressed with your Full-Stack and AI projects!</div></td>
-                  <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-bold text-[10px] border border-rose-500/30">UNREAD</span></td>
-                  <td class="py-3 px-3 text-right space-x-1">
-                    <a href="mailto:sarah@stripe.com?subject=Re: Summer 2026 SWE Internship Opportunity" class="px-2.5 py-1 rounded-xl bg-cyan-500 text-white font-bold text-[10px] hover:bg-cyan-600 transition-colors inline-block">Reply</a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
 
-        <!-- 5. PANEL: AUDIT & SECURITY LOGS -->
-        <div id="panel-logs" class="hidden glass-card p-6 rounded-3xl space-y-4 font-mono">
-          <div class="border-b border-slate-800 pb-3">
-            <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
-              <i data-lucide="shield-check" class="w-5 h-5 text-purple-400"></i>
-              <span>Security & Audit Logs</span>
-            </h3>
-            <p class="text-slate-400 text-xs">Authentications, system events, and security access trail</p>
-          </div>
-
-          <div class="overflow-x-auto custom-scrollbar">
-            <table class="w-full text-left text-xs">
-              <thead>
-                <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider">
-                  <th class="pb-3 px-3">EVENT ACTION</th>
-                  <th class="pb-3 px-3">AUTHENTICATED USER</th>
-                  <th class="pb-3 px-3">IP ADDRESS</th>
-                  <th class="pb-3 px-3">TIMESTAMP</th>
-                </tr>
-              </thead>
-              <tbody id="p-logs-body">
-                <tr class="border-b border-slate-800/60">
-                  <td class="py-3 px-3 font-bold text-emerald-400">ADMIN_LOGIN_SUCCESS</td>
-                  <td class="py-3 px-3 text-slate-300">anurag@admin.com</td>
-                  <td class="py-3 px-3 text-slate-400">127.0.0.1</td>
-                  <td class="py-3 px-3 text-slate-400">Active Session</td>
-                </tr>
-              </tbody>
-            </table>
+        <!-- 7. INDEX TAB: EXPERIENCE -->
+        <div id="panel-experience" class="hidden space-y-6 font-mono">
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <h3 class="font-display text-lg font-bold text-white">🏢 Experience Timeline Manager</h3>
+            <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+              <div class="flex justify-between">
+                <span class="font-bold text-white">Independent Full Stack Developer</span>
+                <span class="text-slate-400 text-xs">2024 – Present</span>
+              </div>
+              <p class="text-slate-400 text-xs">Developed 15+ responsive websites, integrated REST APIs, and achieved 95+ Lighthouse scores.</p>
+            </div>
           </div>
         </div>
 
-        <!-- 6. PANEL: SYSTEM SETTINGS -->
-        <div id="panel-settings" class="hidden glass-card p-6 rounded-3xl space-y-6 font-mono">
-          <div class="border-b border-slate-800 pb-3">
-            <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
-              <i data-lucide="settings" class="w-5 h-5 text-cyan-400"></i>
-              <span>System & Environment Settings</span>
-            </h3>
-            <p class="text-slate-400 text-xs">Configuration settings for domain, telemetry, and security</p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-            <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
-              <h4 class="font-bold text-white text-sm">Primary Live Domain</h4>
-              <div class="flex items-center gap-2 text-cyan-400 font-bold">
-                <span>https://anuragsahu.com</span>
-                <span class="text-[9px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">DNS Verified</span>
-              </div>
-              <p class="text-slate-400 text-[11px]">BigRock DNS mapped to Vercel (76.76.21.21 / cname.vercel-dns.com).</p>
+        <!-- 8. INDEX TAB: EDUCATION -->
+        <div id="panel-education" class="hidden space-y-6 font-mono">
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <h3 class="font-display text-lg font-bold text-white">🎓 Education Details</h3>
+            <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+              <span class="font-bold text-white">Maharana Institute Of Professional Studies (AKTU)</span>
+              <p class="text-cyan-400 text-xs">B.Tech in Artificial Intelligence &amp; Machine Learning (CGPA: 7.7 / 10)</p>
             </div>
+          </div>
+        </div>
 
-            <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
-              <h4 class="font-bold text-white text-sm">Telemetry Heartbeat Frequency</h4>
-              <div class="flex items-center gap-2 text-emerald-400 font-bold">
-                <span>3 Seconds (Realtime Active)</span>
+        <!-- 9. INDEX TAB: CERTIFICATES -->
+        <div id="panel-certificates" class="hidden space-y-6 font-mono">
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <h3 class="font-display text-lg font-bold text-white">🏅 Verified Certifications</h3>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-white">• NPTEL Soft Skills Certification</div>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-bold text-white">• Python Programming Certification</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10. INDEX TAB: MESSAGES (INBOX) -->
+        <div id="panel-messages" class="hidden space-y-6 font-mono">
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+              <h3 class="font-display text-lg font-bold text-white">✉️ Recruiter Messages (Direct Inbox)</h3>
+              <span class="text-xs px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 font-bold">Instant Cloud Sync</span>
+            </div>
+            <div class="overflow-x-auto custom-scrollbar">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400">
+                    <th class="pb-3 px-3">SENDER</th>
+                    <th class="pb-3 px-3">COMPANY</th>
+                    <th class="pb-3 px-3">SUBJECT &amp; MESSAGE</th>
+                    <th class="pb-3 px-3 text-right">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody id="messages-table-body">
+                  <!-- Dynamic Inbox Rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11. INDEX TAB: PROFILE -->
+        <div id="panel-profile" class="hidden space-y-6 font-mono">
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <h3 class="font-display text-lg font-bold text-white">👤 Admin Credentials &amp; Profile</h3>
+            <div class="space-y-3 text-xs">
+              <div><span class="text-slate-400">Admin Email:</span> <strong class="text-white">anurag@admin.com</strong></div>
+              <div><span class="text-slate-400">Security Token:</span> <strong class="text-emerald-400">ACTIVE SESSION</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12. INDEX TAB: SETTINGS -->
+        <div id="panel-settings" class="hidden space-y-6 font-mono">
+          <div class="luxury-card p-6 rounded-3xl space-y-4">
+            <h3 class="font-display text-lg font-bold text-white">⚙️ System &amp; Domain Settings</h3>
+            <div class="space-y-3 text-xs">
+              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+                <span class="font-bold text-white">Live Domain:</span> <span class="text-cyan-400 font-bold">https://anuragsahu.com</span>
               </div>
-              <p class="text-slate-400 text-[11px]">Automatic background polling interval for live session tracking and inbox updates.</p>
+              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+                <span class="font-bold text-white">Telemetry Sync:</span> <span class="text-emerald-400 font-bold">3 Seconds Polling Active</span>
+              </div>
             </div>
           </div>
         </div>
@@ -692,7 +763,7 @@
     </div>
   </div>
 
-  <!-- SCRIPT ENGINE -->
+  <!-- SCRIPT LOGIC -->
   <script>
     lucide.createIcons();
 
@@ -713,60 +784,19 @@
       }
     }
 
-    let failedAttempts = 0;
-    const errorBox = document.getElementById('login-error-box');
-
-    loginForm.addEventListener('submit', async (e) => {
+    loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (errorBox) errorBox.classList.add('hidden');
-
-      const emailInput = document.getElementById('input-admin-email');
-      const passInput = document.getElementById('input-admin-pass');
-      const email = emailInput ? emailInput.value.trim().toLowerCase() : '';
-      const password = passInput ? passInput.value : '';
+      const email = document.getElementById('input-admin-email').value.trim().toLowerCase();
+      const pass = document.getElementById('input-admin-pass').value;
 
       const validEmails = ['anurag@admin.com', 'admin@anuragsahu.dev', 'admin@anuragsahu.com', 'admin@admin.com'];
       const validPasswords = ['anurag123', 'admin123', 'Admin@AntiGravity2026'];
 
-      let authenticated = false;
-
-      const SERVER_HOST = window.location.hostname || 'localhost';
-      const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.'))
-        ? `http://${SERVER_HOST}:5001/api`
-        : `${window.location.protocol}//${window.location.host}/api`;
-
-      try {
-        const res = await fetch(`${API_BASE_URL}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
-        const data = await res.json();
-        if (data.success && data.token) {
-          authenticated = true;
-          localStorage.setItem('ag_admin_token', data.token);
-        }
-      } catch (err) {}
-
-      if (!authenticated) {
-        if (validEmails.includes(email) && validPasswords.includes(password)) {
-          authenticated = true;
-          localStorage.setItem('ag_admin_token', 'secure-admin-token-' + Date.now());
-        }
-      }
-
-      if (authenticated) {
-        failedAttempts = 0;
-        if (errorBox) errorBox.classList.add('hidden');
+      if (validEmails.includes(email) && validPasswords.includes(pass)) {
+        localStorage.setItem('ag_admin_token', 'cms-admin-token-' + Date.now());
         checkAuth();
       } else {
-        failedAttempts++;
-        const errMsg = `❌ SECURITY ALERT: Incorrect Email or Password! (Attempt ${failedAttempts})`;
-        if (errorBox) {
-          errorBox.textContent = errMsg;
-          errorBox.classList.remove('hidden');
-        }
-        alert(`❌ ACCESS DENIED: Invalid Admin Credentials.`);
+        alert('❌ ACCESS DENIED: Invalid Admin Credentials.');
       }
     });
 
@@ -777,26 +807,26 @@
       });
     }
 
-    // Tab Navigation Switching
-    const tabs = ['home', 'live', 'projects', 'messages', 'logs', 'settings'];
-    tabs.forEach(t => {
-      const btn = document.getElementById(`tab-btn-${t}`);
-      if (btn) {
-        btn.addEventListener('click', () => {
-          tabs.forEach(other => {
-            const ob = document.getElementById(`tab-btn-${other}`);
-            const op = document.getElementById(`panel-${other}`);
-            if (ob) ob.classList.remove('active');
-            if (op) op.classList.add('hidden');
-          });
-          btn.classList.add('active');
-          const targetPanel = document.getElementById(`panel-${t}`);
-          if (targetPanel) targetPanel.classList.remove('hidden');
-        });
-      }
-    });
+    // Interactive Tab Switcher for all 12 Index Menu items
+    const indexTabs = ['dashboard', 'analytics', 'personal', 'media', 'projects', 'skills', 'experience', 'education', 'certificates', 'messages', 'profile', 'settings'];
 
-    // Global Real-Time Cloud Telemetry Store Endpoint
+    window.switchTab = function(tabName) {
+      indexTabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const panel = document.getElementById(`panel-${t}`);
+        if (btn) btn.classList.remove('active');
+        if (panel) panel.classList.add('hidden');
+      });
+
+      const targetBtn = document.getElementById(`tab-btn-${tabName}`);
+      const targetPanel = document.getElementById(`panel-${tabName}`);
+      if (targetBtn) targetBtn.classList.add('active');
+      if (targetPanel) targetPanel.classList.remove('hidden');
+
+      const breadcrumb = document.getElementById('breadcrumb-current-tab');
+      if (breadcrumb) breadcrumb.textContent = tabName.toUpperCase();
+    };
+
     const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fd2bf-379e-7458-abf4-7925e0c71f58';
 
     window.changeProjectStatus = async function(num, status) {
@@ -804,12 +834,12 @@
       localStorage.setItem(key, status);
       window.dispatchEvent(new Event('storage'));
 
-      const badge = document.getElementById(`badge-status-${num}`);
-      if (badge) {
-        badge.textContent = status === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
-        badge.className = status === 'Completed'
-          ? 'px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
-          : 'px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[10px]';
+      const pbadge = document.getElementById(`pbadge-${num}`);
+      if (pbadge) {
+        pbadge.textContent = status === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
+        pbadge.className = status === 'Completed'
+          ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold'
+          : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold';
       }
 
       try {
@@ -828,136 +858,35 @@
       alert(`✓ Project 0${num} status changed to "${status}" globally!`);
     };
 
-    async function loadAdminSavedStatuses() {
-      ['01', '02', '03'].forEach(num => {
-        const saved = localStorage.getItem(`ag_proj_status_${num}`);
-        const select = document.getElementById(`ctrl-status-${num}`);
-        const badge = document.getElementById(`badge-status-${num}`);
-        if (saved) {
-          if (select) select.value = saved;
-          if (badge) {
-            badge.textContent = saved === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
-            badge.className = saved === 'Completed'
-              ? 'px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
-              : 'px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[10px]';
-          }
-        }
-      });
-
-      try {
-        const cRes = await fetch(GLOBAL_CLOUD_URL);
-        const cData = await cRes.json();
-        if (cData && cData.projects) {
-          ['01', '02', '03'].forEach(num => {
-            const val = cData.projects[num];
-            const select = document.getElementById(`ctrl-status-${num}`);
-            const badge = document.getElementById(`badge-status-${num}`);
-            if (val) {
-              localStorage.setItem(`ag_proj_status_${num}`, val);
-              if (select) select.value = val;
-              if (badge) {
-                badge.textContent = val === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
-                badge.className = val === 'Completed'
-                  ? 'px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]'
-                  : 'px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[10px]';
-              }
-            }
-          });
-        }
-      } catch (e) {}
-    }
-
-    loadAdminSavedStatuses();
-
     async function fetchStats() {
-      try {
-        const cRes = await fetch(GLOBAL_CLOUD_URL);
-        const cData = await cRes.json();
-        if (cData) {
-          if (document.getElementById('p-kpi-visitors')) {
-            document.getElementById('p-kpi-visitors').textContent = cData.totalVisitors || 142;
-          }
-          if (document.getElementById('p-kpi-resume')) {
-            document.getElementById('p-kpi-resume').textContent = cData.resumeDownloads || 18;
-          }
-          if (document.getElementById('p-kpi-github')) {
-            document.getElementById('p-kpi-github').textContent = cData.githubClicks || 35;
-          }
-
-          if (cData.activeSessions) {
-            const now = Date.now();
-            let activeCount = 0;
-            const sessionRows = [];
-
-            Object.keys(cData.activeSessions).forEach((k, idx) => {
-              const item = cData.activeSessions[k];
-              const lastSeen = typeof item === 'object' ? item.lastSeen : item;
-              const path = typeof item === 'object' ? item.path : '/';
-              const ua = typeof item === 'object' ? item.ua : 'Browser Session';
-
-              if (now - lastSeen <= 35000) {
-                activeCount++;
-                sessionRows.push(`
-                  <tr class="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
-                    <td class="py-3 px-3 font-bold text-white">${k.slice(0, 12)}... ${idx === 0 ? '<span class="text-[9px] text-emerald-400 font-bold ml-1">(Active)</span>' : ''}</td>
-                    <td class="py-3 px-3 text-cyan-400 font-bold">${path || '/'}</td>
-                    <td class="py-3 px-3 text-slate-400">${ua || 'Web Visitor'}</td>
-                    <td class="py-3 px-3 text-slate-400">Active Now</td>
-                    <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">ONLINE NOW</span></td>
-                  </tr>
-                `);
-              }
-            });
-
-            if (document.getElementById('p-kpi-online')) {
-              document.getElementById('p-kpi-online').textContent = Math.max(activeCount, 1);
-            }
-
-            const tableBody = document.querySelector('#panel-live tbody');
-            if (tableBody) {
-              if (sessionRows.length > 0) {
-                tableBody.innerHTML = sessionRows.join('');
-              } else {
-                tableBody.innerHTML = `
-                  <tr class="border-b border-slate-800/60">
-                    <td class="py-3 px-3 font-bold text-white">sess_live_127 <span class="text-[9px] text-emerald-400 font-bold ml-1">(Active)</span></td>
-                    <td class="py-3 px-3 text-cyan-400 font-bold">/</td>
-                    <td class="py-3 px-3 text-slate-400">Safari / Chrome</td>
-                    <td class="py-3 px-3 text-slate-400">Just Now</td>
-                    <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">ONLINE NOW</span></td>
-                  </tr>
-                `;
-              }
-            }
-          }
-        }
-      } catch (e) {}
-
-      fetchMessages();
-    }
-
-    async function fetchMessages() {
-      const defaultMsgs = [
-        {
-          id: 'seed_1',
-          fullName: 'Sarah Jenkins',
-          email: 'sarah@stripe.com',
-          company: 'Stripe',
-          subject: 'Summer 2026 SWE Internship Opportunity',
-          message: 'Hi Anurag, we reviewed your portfolio and were very impressed with your Full-Stack and AI projects!',
-          status: 'unread',
-          createdAt: new Date(Date.now() - 3600000).toISOString()
-        }
-      ];
-
       let cloudMsgs = [];
       try {
         const cRes = await fetch(GLOBAL_CLOUD_URL);
         const cData = await cRes.json();
-        if (cData && cData.messages) {
-          cloudMsgs = cData.messages;
+        if (cData) {
+          if (cData.messages) cloudMsgs = cData.messages;
+
+          // Update Project statuses if stored in cloud
+          if (cData.projects) {
+            ['01', '02', '03'].forEach(num => {
+              const val = cData.projects[num];
+              const pbadge = document.getElementById(`pbadge-${num}`);
+              if (val && pbadge) {
+                pbadge.textContent = val === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
+                pbadge.className = val === 'Completed'
+                  ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold'
+                  : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold';
+              }
+            });
+          }
         }
       } catch (e) {}
+
+      const defaultMsgs = [
+        { id: 'm1', fullName: 'Himank Singh', email: 'himank@tech.com', message: 'Looking forward to connecting regarding full stack opportunities!', createdAt: '31/7/2026' },
+        { id: 'm2', fullName: 'Sarah Jenkins', email: 'sarah@stripe.com', message: 'We reviewed your portfolio and AI voice assistant project.', createdAt: '31/7/2026' },
+        { id: 'm3', fullName: 'Aditya Sahu', email: 'aditya@dev.com', message: 'Kaam kar raha h website ekdum mast.', createdAt: '31/7/2026' }
+      ];
 
       const localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
       const allMsgs = [...cloudMsgs, ...localMsgs, ...defaultMsgs];
@@ -971,82 +900,49 @@
         }
       });
 
-      const msgTableBody = document.querySelector('#panel-messages tbody');
-      
-      if (document.getElementById('p-kpi-messages')) {
-        document.getElementById('p-kpi-messages').textContent = uniqueMsgs.length;
+      // Update KPI count badges
+      if (document.getElementById('kpi-msg-count')) document.getElementById('kpi-msg-count').textContent = uniqueMsgs.length;
+      if (document.getElementById('side-msg-badge')) document.getElementById('side-msg-badge').textContent = uniqueMsgs.length;
+
+      // Update Dashboard Recent Messages list
+      const dashList = document.getElementById('dashboard-messages-list');
+      if (dashList && uniqueMsgs.length > 0) {
+        dashList.innerHTML = uniqueMsgs.slice(0, 5).map(m => `
+          <div class="p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-cyan-500/20 text-cyan-400 font-bold text-xs flex items-center justify-center">${(m.fullName || 'A')[0]}</div>
+              <div>
+                <div class="font-bold text-white text-xs">${m.fullName || 'Recruiter Visitor'}</div>
+                <div class="text-slate-400 text-[11px] mt-0.5 max-w-sm truncate">${m.message || ''}</div>
+              </div>
+            </div>
+            <span class="text-slate-500 text-[10px]">${m.createdAt ? m.createdAt.slice(0, 10) : '31/7/2026'}</span>
+          </div>
+        `).join('');
       }
-      if (document.getElementById('side-inbox-badge')) {
-        document.getElementById('side-inbox-badge').textContent = uniqueMsgs.length;
-      }
-      if (document.getElementById('notif-badge')) {
-        document.getElementById('notif-badge').textContent = uniqueMsgs.length;
-      }
-      
-      if (msgTableBody) {
-        const rowsHtml = uniqueMsgs.map((m) => `
+
+      // Update Messages Index Panel table
+      const msgTbody = document.getElementById('messages-table-body');
+      if (msgTbody) {
+        msgTbody.innerHTML = uniqueMsgs.map(m => `
           <tr class="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
             <td class="py-3 px-3 font-bold text-white">${m.fullName}<br/><span class="text-[10px] text-slate-400 font-normal">${m.email}</span></td>
-            <td class="py-3 px-3 text-slate-400 font-bold text-[11px]">${m.company || 'Recruiter Direct'}</td>
-            <td class="py-3 px-3 text-white"><div class="font-bold text-xs">${m.subject || 'Portfolio Inquiry'}</div><div class="text-[11px] text-slate-400 mt-0.5 max-w-md">${m.message}</div></td>
-            <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full ${m.status === 'unread' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'} font-bold text-[10px]">${(m.status || 'UNREAD').toUpperCase()}</span></td>
-            <td class="py-3 px-3 text-right space-x-1">
-              <a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject || 'Portfolio Inquiry')}" class="px-2.5 py-1 rounded-xl bg-cyan-500 text-white text-[10px] font-bold hover:bg-cyan-600 transition-colors inline-block">Reply</a>
-              <button onclick="deleteAdminMsg('${m.id}')" class="px-2.5 py-1 rounded-xl bg-slate-800 text-slate-400 text-[10px] font-bold hover:bg-rose-500/20 hover:text-rose-400 transition-colors">Delete</button>
+            <td class="py-3 px-3 text-cyan-400 font-bold text-[11px]">${m.company || 'Recruiter Direct'}</td>
+            <td class="py-3 px-3 text-white"><div class="font-bold text-xs">${m.subject || 'Portfolio Inquiry'}</div><div class="text-[11px] text-slate-400 mt-0.5">${m.message}</div></td>
+            <td class="py-3 px-3 text-right">
+              <a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject || 'Portfolio Inquiry')}" class="px-3 py-1 rounded-xl bg-cyan-500 text-white font-bold text-[10px] inline-block">Reply</a>
             </td>
           </tr>
         `).join('');
-        msgTableBody.innerHTML = rowsHtml;
       }
     }
 
-    window.deleteAdminMsg = function(msgId) {
-      let localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
-      localMsgs = localMsgs.filter(m => m.id !== msgId);
-      localStorage.setItem('ag_admin_messages', JSON.stringify(localMsgs));
-      fetchMessages();
-    };
-
-    window.toggleNotificationDropdown = function() {
-      const drop = document.getElementById('dropdown-notifications');
+    window.toggleNotifications = function() {
+      const drop = document.getElementById('dropdown-notif');
       if (drop) drop.classList.toggle('hidden');
     };
 
-    function exportProjectReport() {
-      const p1 = localStorage.getItem('ag_proj_status_01') || 'Completed';
-      const p2 = localStorage.getItem('ag_proj_status_02') || 'Coming Soon';
-      const p3 = localStorage.getItem('ag_proj_status_03') || 'Coming Soon';
-
-      const reportText = `====================================================\n` +
-        `       ANURAG SAHU PORTFOLIO — PROJECT STATUS REPORT \n` +
-        `====================================================\n` +
-        `Generated: ${new Date().toLocaleString()}\n\n` +
-        `[PROJECT 01] Portfolio Platform\n` +
-        `Status: ${p1}\n` +
-        `Tech Stack: React 18, Node.js, Express, MongoDB, Tailwind\n\n` +
-        `[PROJECT 02] Restaurant Management System\n` +
-        `Status: ${p2}\n` +
-        `Tech Stack: Node.js, Express, React, PostgreSQL, Redis, WebSockets\n\n` +
-        `[PROJECT 03] Smart College ERP\n` +
-        `Status: ${p3}\n` +
-        `Tech Stack: Node.js, Express, React, MongoDB, Tailwind\n` +
-        `====================================================\n`;
-
-      const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `project_status_report_${Date.now()}.txt`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      alert('✓ PROJECT STATUS REPORT GENERATED & DOWNLOADED!');
-    }
-
-    const exportJsonBtn = document.getElementById('page-btn-export-json');
-    if (exportJsonBtn) exportJsonBtn.onclick = exportProjectReport;
-
     checkAuth();
-    fetchMessages();
     setInterval(fetchStats, 3000);
   </script>
 </body>

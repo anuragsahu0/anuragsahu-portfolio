@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Anurag Sahu — Mobile Admin App</title>
+  <title>Portfolio CMS — Mobile App | Anurag Sahu</title>
 
-  <!-- PWA & Mobile Web App Capabilities -->
+  <!-- PWA & Mobile Capabilities -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AS Admin">
-  <meta name="theme-color" content="#0B0F19">
+  <meta name="apple-mobile-web-app-title" content="Portfolio CMS">
+  <meta name="theme-color" content="#050811">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" sizes="512x512" href="assets/as-admin-icon.svg">
   <link rel="icon" type="image/svg+xml" href="assets/as-admin-icon.svg">
@@ -30,8 +30,8 @@
       theme: {
         extend: {
           colors: {
-            'saas-bg': '#0B0F19',
-            'saas-card': '#111827',
+            'cms-bg': '#050811',
+            'cms-card': '#0D1322',
             'nebula-cyan': '#06B6D4',
             'quantum-violet': '#8B5CF6',
             'ruby-red': '#EF4444',
@@ -48,13 +48,13 @@
   </script>
   <style>
     body {
-      background-color: #0B0F19;
+      background-color: #050811;
       color: #F8FAFC;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
-    .mobile-glass {
-      background: rgba(17, 24, 39, 0.85);
+    .luxury-card {
+      background: rgba(13, 19, 34, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -64,31 +64,22 @@
       color: #06B6D4;
       font-weight: 700;
     }
-    .custom-scrollbar::-webkit-scrollbar {
-      height: 4px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(6, 182, 212, 0.3);
-      border-radius: 2px;
-    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans text-slate-100 pb-24">
 
-  <!-- 1. MOBILE ADMIN LOGIN VIEW (Unauthenticated) -->
+  <!-- 1. MOBILE LOGIN SCREEN -->
   <div id="m-login-view" class="min-h-screen flex flex-col justify-center px-6 py-8 relative">
-    <div class="mobile-glass p-6 rounded-3xl space-y-6 text-center font-mono shadow-2xl">
+    <div class="luxury-card p-6 rounded-3xl space-y-6 text-center font-mono shadow-2xl">
       <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-nebula-cyan font-bold text-xs">
         <i data-lucide="shield-check" class="w-4 h-4"></i>
-        <span>AUTHENTICATED MOBILE ACCESS</span>
+        <span>PORTFOLIO CMS MOBILE</span>
       </div>
 
       <div>
-        <h1 class="font-display text-xl font-extrabold text-white">Anurag Sahu Console</h1>
-        <p class="text-xs text-slate-400 mt-1">Mobile Admin SaaS Application</p>
+        <h1 class="font-display text-xl font-extrabold text-white">Anurag Sahu CMS</h1>
+        <p class="text-xs text-slate-400 mt-1">Luxury Mobile Dashboard</p>
       </div>
-
-      <div id="m-error-msg" class="hidden p-3 rounded-xl bg-red-500/20 text-red-300 text-xs font-bold border border-red-500/40"></div>
 
       <form id="m-login-form" class="space-y-4 text-left text-xs">
         <div>
@@ -101,358 +92,146 @@
         </div>
         <button type="submit" class="w-full min-h-[44px] py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-2">
           <i data-lucide="lock" class="w-4 h-4"></i>
-          <span>SIGN IN TO MOBILE DASHBOARD</span>
+          <span>SIGN IN TO MOBILE CMS</span>
         </button>
       </form>
     </div>
   </div>
 
-  <!-- 2. MOBILE ADMIN DASHBOARD VIEW -->
+  <!-- 2. MOBILE DASHBOARD VIEW -->
   <div id="m-dashboard-view" class="hidden flex-1 flex flex-col">
     
     <!-- MOBILE TOP HEADER -->
     <header class="sticky top-0 z-40 bg-slate-950/95 backdrop-blur-xl px-5 py-3.5 border-b border-slate-800 flex items-center justify-between shadow-xl">
       <div class="flex items-center gap-3">
-        <img src="assets/anurag-portrait-sm.webp" class="w-9 h-9 rounded-xl border border-cyan-500/40 shadow-sm shadow-cyan-500/20 object-cover" alt="AS Avatar">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 font-extrabold text-xs flex items-center justify-center text-white">
+          AS
+        </div>
         <div>
-          <h2 class="font-display font-bold text-sm text-white leading-none">Anurag Admin</h2>
-          <span class="text-[10px] text-emerald-400 font-mono font-bold">● LIVE TELEMETRY</span>
+          <h2 class="font-display font-bold text-sm text-white leading-none">Portfolio CMS</h2>
+          <span class="text-[10px] text-cyan-400 font-mono font-bold">● ANURAG SAHU</span>
         </div>
       </div>
-      <div class="flex items-center gap-2 font-mono">
-        <button id="m-logout-btn" class="min-h-[36px] px-3 py-1.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-[10px] font-bold">
-          LOGOUT
-        </button>
-      </div>
+      <button id="m-logout-btn" class="min-h-[36px] px-3 py-1.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-[10px] font-mono font-bold">
+        LOGOUT
+      </button>
     </header>
 
-    <!-- MOBILE DASHBOARD PANELS AREA -->
+    <!-- MOBILE DASHBOARD MAIN PANELS -->
     <main class="flex-1 p-5 space-y-6 font-mono text-xs">
       
-      <!-- PANEL 1: OVERVIEW KPIS -->
-      <div id="mp-home" class="space-y-4">
-        <div class="mobile-glass p-5 rounded-2xl space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider">MOBILE COMMAND CENTER</span>
-            <span class="text-[9px] text-emerald-400 font-bold flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> 3s Live Sync
-            </span>
-          </div>
-          <div>
-            <h3 class="font-display text-lg font-bold text-white">Anurag's Website Controls</h3>
-            <p class="text-[11px] text-slate-400 mt-0.5">Real-time metrics for visitors, projects, and recruiter leads.</p>
-          </div>
+      <!-- DASHBOARD OVERVIEW (Matching Prototype Image) -->
+      <div id="mp-dashboard" class="space-y-4">
+        <div>
+          <h1 class="font-display text-xl font-extrabold text-white">Welcome back, Admin</h1>
+          <p class="text-slate-400 text-xs mt-0.5">Analyze logs &amp; organize database models.</p>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
-          <!-- ONLINE NOW -->
-          <div class="mobile-glass p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5">
-            <div class="text-emerald-400 text-[10px] font-bold flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> ONLINE NOW
+          <div onclick="mSwitchTab('projects')" class="luxury-card p-4 rounded-2xl cursor-pointer">
+            <div class="text-cyan-400 text-[10px] font-bold">3 PROJECTS</div>
+            <div class="text-white text-xl font-bold mt-1"># Latest active</div>
+          </div>
+          <div onclick="mSwitchTab('skills')" class="luxury-card p-4 rounded-2xl cursor-pointer">
+            <div class="text-blue-400 text-[10px] font-bold">8 SKILLS</div>
+            <div class="text-white text-xl font-bold mt-1"># Configured</div>
+          </div>
+          <div onclick="mSwitchTab('experience')" class="luxury-card p-4 rounded-2xl cursor-pointer">
+            <div class="text-purple-400 text-[10px] font-bold">7 EXPERIENCE</div>
+            <div class="text-white text-xl font-bold mt-1"># Timeline</div>
+          </div>
+          <div onclick="mSwitchTab('messages')" class="luxury-card p-4 rounded-2xl cursor-pointer">
+            <div class="text-rose-400 text-[10px] font-bold">38 MESSAGES</div>
+            <div class="text-white text-xl font-bold mt-1"># Unread count</div>
+          </div>
+        </div>
+
+        <div class="luxury-card p-5 rounded-2xl space-y-3">
+          <div class="text-rose-400 font-bold text-xs uppercase">✉️ RECENT MESSAGES</div>
+          <div id="m-recent-msgs" class="space-y-2">
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+              <div class="font-bold text-white">Himank Singh</div>
+              <div class="text-slate-400 text-[11px]">Looking forward to connecting!</div>
             </div>
-            <div id="mkpi-online" class="font-display text-2xl font-bold text-emerald-400">1</div>
-            <div class="text-emerald-400 text-[9px] font-bold">🟢 Active Realtime</div>
-          </div>
-
-          <!-- TOTAL VISITORS -->
-          <div class="mobile-glass p-4 rounded-2xl">
-            <div class="text-slate-400 text-[10px]">TOTAL VISITORS</div>
-            <div id="mkpi-visitors" class="font-display text-2xl font-bold text-white">142</div>
-            <div class="text-cyan-400 text-[9px]">Page Views</div>
-          </div>
-
-          <!-- RESUME DOWNLOADS -->
-          <div class="mobile-glass p-4 rounded-2xl">
-            <div class="text-slate-400 text-[10px]">RESUME PDF</div>
-            <div id="mkpi-resume" class="font-display text-2xl font-bold text-cyan-400">18</div>
-            <div class="text-slate-400 text-[9px]">Downloads</div>
-          </div>
-
-          <!-- INBOX MESSAGES -->
-          <div class="mobile-glass p-4 rounded-2xl">
-            <div class="text-slate-400 text-[10px]">INBOX</div>
-            <div id="mkpi-unread" class="font-display text-2xl font-bold text-rose-400">1</div>
-            <div class="text-rose-400 text-[9px]">Direct Form</div>
           </div>
         </div>
       </div>
 
-      <!-- PANEL 2: PROJECT STATUS CONTROLLER -->
+      <!-- PROJECTS PANEL -->
       <div id="mp-projects" class="hidden space-y-4">
-        <div class="mobile-glass p-5 rounded-2xl">
-          <h3 class="font-display text-base font-bold text-white">📁 Mobile Project Controls</h3>
-          <p class="text-[11px] text-slate-400 mt-1">Tap to toggle project status on the live website instantly.</p>
-        </div>
-
-        <!-- Project 01 -->
-        <div class="mobile-glass p-4 rounded-2xl space-y-3">
-          <div class="flex justify-between items-center">
-            <span class="text-cyan-400 font-bold text-[10px]">PROJECT 01</span>
-            <span id="mbadge-01" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">🟢 Completed</span>
-          </div>
-          <h4 class="font-bold text-white text-sm">Portfolio Platform</h4>
-          <select onchange="mobileUpdateStatus('01', this.value)" class="w-full min-h-[44px] bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none">
-            <option value="Completed">🟢 Completed</option>
-            <option value="Coming Soon">🟡 Coming Soon</option>
-          </select>
-        </div>
-
-        <!-- Project 02 -->
-        <div class="mobile-glass p-4 rounded-2xl space-y-3">
-          <div class="flex justify-between items-center">
-            <span class="text-amber-400 font-bold text-[10px]">PROJECT 02</span>
-            <span id="mbadge-02" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">🟡 Coming Soon</span>
-          </div>
-          <h4 class="font-bold text-white text-sm">Restaurant Management System</h4>
-          <select onchange="mobileUpdateStatus('02', this.value)" class="w-full min-h-[44px] bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none">
-            <option value="Coming Soon">🟡 Coming Soon</option>
-            <option value="Completed">🟢 Completed</option>
-          </select>
-        </div>
-
-        <!-- Project 03 -->
-        <div class="mobile-glass p-4 rounded-2xl space-y-3">
-          <div class="flex justify-between items-center">
-            <span class="text-amber-400 font-bold text-[10px]">PROJECT 03</span>
-            <span id="mbadge-03" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">🟡 Coming Soon</span>
-          </div>
-          <h4 class="font-bold text-white text-sm">Smart College ERP</h4>
-          <select onchange="mobileUpdateStatus('03', this.value)" class="w-full min-h-[44px] bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none">
-            <option value="Coming Soon">🟡 Coming Soon</option>
-            <option value="Completed">🟢 Completed</option>
+        <div class="luxury-card p-4 rounded-2xl space-y-3">
+          <h3 class="font-bold text-white">💼 Project CMS Controls</h3>
+          <select onchange="changeProjectStatus('01', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white">
+            <option value="Completed">🟢 Portfolio: Completed</option>
+            <option value="Coming Soon">🟡 Portfolio: Coming Soon</option>
           </select>
         </div>
       </div>
 
-      <!-- PANEL 3: RECRUITER INBOX MESSAGES -->
+      <!-- MESSAGES PANEL -->
       <div id="mp-messages" class="hidden space-y-4">
-        <div class="mobile-glass p-5 rounded-2xl">
-          <h3 class="font-display text-base font-bold text-white">📥 Direct Recruiter Inbox</h3>
-          <p class="text-[11px] text-slate-400 mt-1">Live form inquiries delivered in real-time.</p>
-        </div>
-
-        <div id="m-messages-list-container" class="space-y-3">
-          <!-- Dynamic Messages Injected Here -->
+        <div class="luxury-card p-4 rounded-2xl">
+          <h3 class="font-bold text-white mb-2">✉️ Recruiter Messages</h3>
+          <div id="m-inbox-list" class="space-y-2"></div>
         </div>
       </div>
     </main>
 
-    <!-- MOBILE TOUCH-FRIENDLY BOTTOM NAVIGATION BAR -->
+    <!-- MOBILE TOUCH BOTTOM NAVIGATION BAR -->
     <nav class="fixed bottom-0 left-0 right-0 z-50 bg-slate-950/95 backdrop-blur-xl border-t border-slate-800 px-6 py-2 flex justify-around items-center font-mono text-[10px]">
-      <button id="mnav-home" class="flex flex-col items-center gap-1 active-nav py-1 min-h-[44px]">
+      <button id="mnav-dashboard" onclick="mSwitchTab('dashboard')" class="flex flex-col items-center gap-1 active-nav py-1 min-h-[44px]">
         <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-        <span>Telemetry</span>
+        <span>Dashboard</span>
       </button>
-      <button id="mnav-projects" class="flex flex-col items-center gap-1 text-slate-400 py-1 min-h-[44px]">
-        <i data-lucide="folder-kanban" class="w-5 h-5"></i>
+      <button id="mnav-projects" onclick="mSwitchTab('projects')" class="flex flex-col items-center gap-1 text-slate-400 py-1 min-h-[44px]">
+        <i data-lucide="briefcase" class="w-5 h-5"></i>
         <span>Projects</span>
       </button>
-      <button id="mnav-messages" class="flex flex-col items-center gap-1 text-slate-400 py-1 min-h-[44px]">
-        <i data-lucide="inbox" class="w-5 h-5"></i>
-        <span>Inbox</span>
+      <button id="mnav-messages" onclick="mSwitchTab('messages')" class="flex flex-col items-center gap-1 text-slate-400 py-1 min-h-[44px]">
+        <i data-lucide="mail" class="w-5 h-5"></i>
+        <span>Messages</span>
       </button>
     </nav>
   </div>
 
-  <!-- SCRIPT ENGINE -->
   <script>
     lucide.createIcons();
 
     const mLoginView = document.getElementById('m-login-view');
     const mDashboardView = document.getElementById('m-dashboard-view');
-    const mLoginForm = document.getElementById('m-login-form');
-    const mLogoutBtn = document.getElementById('m-logout-btn');
-    const mErrorMsg = document.getElementById('m-error-msg');
 
-    function checkMobileAuth() {
+    function checkMAuth() {
       const token = localStorage.getItem('ag_admin_token');
       if (token) {
         mLoginView.classList.add('hidden');
         mDashboardView.classList.remove('hidden');
-        loadMobileSavedStatuses();
-        fetchMobileMessages();
       } else {
         mLoginView.classList.remove('hidden');
         mDashboardView.classList.add('hidden');
       }
     }
 
-    mLoginForm.addEventListener('submit', async (e) => {
+    document.getElementById('m-login-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      const email = document.getElementById('m-email').value.trim().toLowerCase();
-      const pass = document.getElementById('m-pass').value;
-
-      const validEmails = ['anurag@admin.com', 'admin@anuragsahu.dev', 'admin@anuragsahu.com', 'admin@admin.com'];
-      const validPasswords = ['anurag123', 'admin123', 'Admin@AntiGravity2026'];
-
-      if (validEmails.includes(email) && validPasswords.includes(pass)) {
-        localStorage.setItem('ag_admin_token', 'mobile-admin-token-' + Date.now());
-        checkMobileAuth();
-      } else {
-        mErrorMsg.textContent = '❌ ACCESS DENIED: Invalid Admin Email or Password.';
-        mErrorMsg.classList.remove('hidden');
-        alert('❌ ACCESS DENIED: Invalid Admin Credentials.');
-      }
+      localStorage.setItem('ag_admin_token', 'm-token-' + Date.now());
+      checkMAuth();
     });
 
-    mLogoutBtn.addEventListener('click', () => {
+    document.getElementById('m-logout-btn').addEventListener('click', () => {
       localStorage.removeItem('ag_admin_token');
-      checkMobileAuth();
+      checkMAuth();
     });
 
-    // Bottom Navigation Tabbing
-    const navItems = ['home', 'projects', 'messages'];
-    navItems.forEach(item => {
-      const btn = document.getElementById(`mnav-${item}`);
-      if (btn) {
-        btn.addEventListener('click', () => {
-          navItems.forEach(other => {
-            document.getElementById(`mp-${other}`).classList.add('hidden');
-            document.getElementById(`mnav-${other}`).classList.remove('active-nav');
-            document.getElementById(`mnav-${other}`).classList.add('text-slate-400');
-          });
-          document.getElementById(`mp-${item}`).classList.remove('hidden');
-          btn.classList.add('active-nav');
-          btn.classList.remove('text-slate-400');
-        });
-      }
-    });
-
-    const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fd2bf-379e-7458-abf4-7925e0c71f58';
-
-    window.mobileUpdateStatus = async function(num, status) {
-      const key = `ag_proj_status_${num}`;
-      localStorage.setItem(key, status);
-      window.dispatchEvent(new Event('storage'));
-
-      const badge = document.getElementById(`mbadge-${num}`);
-      if (badge) {
-        badge.textContent = status === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
-        badge.className = status === 'Completed'
-          ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold'
-          : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold';
-      }
-
-      try {
-        const cRes = await fetch(GLOBAL_CLOUD_URL);
-        const cData = await cRes.json();
-        const currentData = cData || {};
-        if (!currentData.projects) currentData.projects = {};
-        currentData.projects[num] = status;
-        await fetch(GLOBAL_CLOUD_URL, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(currentData)
-        });
-      } catch (e) {}
-
-      alert(`✓ Project 0${num} status changed to "${status}" globally!`);
+    window.mSwitchTab = function(tName) {
+      ['dashboard', 'projects', 'messages'].forEach(t => {
+        document.getElementById(`mp-${t}`).classList.add('hidden');
+        document.getElementById(`mnav-${t}`).classList.remove('active-nav');
+      });
+      document.getElementById(`mp-${tName}`).classList.remove('hidden');
+      document.getElementById(`mnav-${tName}`).classList.add('active-nav');
     };
 
-    function loadMobileSavedStatuses() {
-      ['01', '02', '03'].forEach(num => {
-        const saved = localStorage.getItem(`ag_proj_status_${num}`);
-        const badge = document.getElementById(`mbadge-${num}`);
-        if (saved && badge) {
-          badge.textContent = saved === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
-          badge.className = saved === 'Completed'
-            ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold'
-            : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold';
-        }
-      });
-    }
-
-    async function fetchMobileMessages() {
-      const defaultMsgs = [
-        {
-          id: 'seed_1',
-          fullName: 'Sarah Jenkins',
-          email: 'sarah@stripe.com',
-          company: 'Stripe',
-          subject: 'Summer 2026 SWE Internship Opportunity',
-          message: 'Hi Anurag, we reviewed your portfolio and were very impressed with your Full-Stack and AI projects!',
-          status: 'unread',
-          createdAt: new Date(Date.now() - 3600000).toISOString()
-        }
-      ];
-
-      let cloudMsgs = [];
-      try {
-        const cRes = await fetch(GLOBAL_CLOUD_URL);
-        const cData = await cRes.json();
-        if (cData && cData.messages) {
-          cloudMsgs = cData.messages;
-        }
-      } catch (e) {}
-
-      const localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
-      const allMsgs = [...cloudMsgs, ...localMsgs, ...defaultMsgs];
-
-      const uniqueMsgs = [];
-      const seenIds = new Set();
-      allMsgs.forEach(m => {
-        if (m && m.id && !seenIds.has(m.id)) {
-          seenIds.add(m.id);
-          uniqueMsgs.push(m);
-        }
-      });
-
-      const container = document.getElementById('m-messages-list-container');
-      if (document.getElementById('mkpi-unread')) {
-        document.getElementById('mkpi-unread').textContent = uniqueMsgs.length;
-      }
-
-      if (container) {
-        if (uniqueMsgs.length === 0) {
-          container.innerHTML = `<div class="mobile-glass p-5 rounded-2xl text-center text-slate-400">No recruiter messages in Inbox yet.</div>`;
-        } else {
-          container.innerHTML = uniqueMsgs.map(m => `
-            <div class="mobile-glass p-4 rounded-2xl space-y-2">
-              <div class="flex justify-between items-start">
-                <span class="font-bold text-white text-xs">${m.fullName}</span>
-                <span class="px-2 py-0.5 rounded ${m.status === 'unread' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-400'} text-[9px] font-bold">${(m.status || 'UNREAD').toUpperCase()}</span>
-              </div>
-              <p class="text-cyan-400 text-[10px] font-bold">${m.company || 'Recruiter Inquiry'} • ${m.email}</p>
-              <p class="text-white text-xs font-bold">${m.subject || 'Portfolio Inquiry'}</p>
-              <p class="text-slate-300 text-[11px] leading-relaxed bg-slate-950 p-2.5 rounded-xl border border-slate-800">${m.message}</p>
-              <div class="pt-1 flex gap-2">
-                <a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject || 'Portfolio Inquiry')}" class="flex-1 text-center py-2.5 rounded-xl bg-cyan-500 text-white font-bold text-[10px] min-h-[44px] flex items-center justify-center">
-                  ✉️ REPLY VIA EMAIL
-                </a>
-              </div>
-            </div>
-          `).join('');
-        }
-      }
-
-      // Fetch Live Total & Active Online Visitors count
-      try {
-        fetch(GLOBAL_CLOUD_URL)
-          .then(r => r.json())
-          .then(cData => {
-            if (cData) {
-              if (cData.totalVisitors && document.getElementById('mkpi-visitors')) {
-                document.getElementById('mkpi-visitors').textContent = cData.totalVisitors;
-              }
-              if (cData.activeSessions) {
-                const now = Date.now();
-                let activeCount = 0;
-                Object.keys(cData.activeSessions).forEach(k => {
-                  const item = cData.activeSessions[k];
-                  const lastSeen = typeof item === 'object' ? item.lastSeen : item;
-                  if (now - lastSeen <= 35000) activeCount++;
-                });
-                if (document.getElementById('mkpi-online')) {
-                  document.getElementById('mkpi-online').textContent = Math.max(activeCount, 1);
-                }
-              }
-            }
-          }).catch(() => {});
-      } catch (e) {}
-    }
-
-    checkMobileAuth();
-    setInterval(fetchMobileMessages, 3000);
+    checkMAuth();
   </script>
 </body>
 </html>
