@@ -864,6 +864,15 @@
           <div class="luxury-card p-6 rounded-3xl space-y-4">
             <h3 class="font-display text-lg font-bold text-white">⚙️ System &amp; Domain Settings</h3>
             <div class="space-y-3 text-xs">
+              <div class="p-4 rounded-2xl bg-slate-900 border border-amber-500/40 flex justify-between items-center">
+                <div>
+                  <span class="font-bold text-white block">⏳ Coming Soon &amp; Countdown Timer Overlay</span>
+                  <span class="text-slate-400 text-[10px]">Target: Tomorrow 2:00 PM IST (Aug 9, 2026 14:00 IST)</span>
+                </div>
+                <button onclick="toggleAdminComingSoonMode()" id="btn-toggle-coming-soon" class="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/50 font-bold hover:bg-amber-500/30 transition-colors">
+                  🟡 COMING SOON ACTIVE
+                </button>
+              </div>
               <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
                 <span class="font-bold text-white">Live Domain:</span> <span class="text-cyan-400 font-bold">https://anuragsahu.com</span>
               </div>
@@ -915,6 +924,26 @@
 
       if (window.lucide && typeof window.lucide.createIcons === 'function') {
         try { window.lucide.createIcons(); } catch(e) {}
+      }
+    };
+
+    window.toggleAdminComingSoonMode = function() {
+      const isOff = localStorage.getItem('anurag_coming_soon_off') === 'true';
+      const btn = document.getElementById('btn-toggle-coming-soon');
+      if (isOff) {
+        localStorage.removeItem('anurag_coming_soon_off');
+        if (btn) {
+          btn.textContent = '🟡 COMING SOON ACTIVE';
+          btn.className = 'px-4 py-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/50 font-bold hover:bg-amber-500/30 transition-colors';
+        }
+        alert('⏳ Coming Soon Mode ACTIVATED! Visitors will see the Countdown Timer until Tomorrow 2:00 PM IST.');
+      } else {
+        localStorage.setItem('anurag_coming_soon_off', 'true');
+        if (btn) {
+          btn.textContent = '🟢 LIVE PORTFOLIO UNLOCKED';
+          btn.className = 'px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 font-bold hover:bg-emerald-500/30 transition-colors';
+        }
+        alert('🟢 LIVE PORTFOLIO UNLOCKED! Visitors can now see full live portfolio immediately.');
       }
     };
 

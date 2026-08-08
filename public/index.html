@@ -109,6 +109,100 @@
 </head>
 <body>
 
+  <!-- ⏳ EXCLUSIVE COMING SOON & REVERSE COUNTDOWN TIMER OVERLAY (Target: Tomorrow 2:00 PM IST) -->
+  <div id="coming-soon-overlay" style="position: fixed; inset: 0; z-index: 99999; background: #030712; background-image: radial-gradient(at 50% 0%, rgba(6, 182, 212, 0.18) 0px, transparent 60%), radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.18) 0px, transparent 60%); display: flex; align-items: center; justify-content: center; padding: 20px; font-family: 'Inter', sans-serif;">
+    
+    <div style="background: rgba(11, 15, 25, 0.94); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(6, 182, 212, 0.35); border-radius: 28px; padding: 40px 32px; max-width: 500px; width: 100%; text-align: center; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95), 0 0 40px rgba(6, 182, 212, 0.25);">
+      
+      <!-- Top Badge -->
+      <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 100px; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.35); color: #06b6d4; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 24px;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #06b6d4; box-shadow: 0 0 10px #06b6d4;"></span>
+        <span>ANURAG SAHU • OFFICIAL LAUNCH</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.7rem, 4.5vw, 2.4rem); font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, #38bdf8 50%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 12px 0; line-height: 1.2;">
+        SOMETHING EXTRAORDINARY IS COMING
+      </h1>
+
+      <p style="color: #94a3b8; font-size: 13px; line-height: 1.6; margin: 0 0 28px 0; font-family: 'Inter', sans-serif;">
+        Our official portfolio website launch is scheduled for tomorrow at <strong style="color: #06b6d4;">2:00 PM IST</strong>. Get ready to experience the new portfolio control center.
+      </p>
+
+      <!-- REVERSE COUNTDOWN TIMER BOXES -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; font-family: 'JetBrains Mono', monospace;">
+        <!-- Hours -->
+        <div style="background: rgba(3, 7, 18, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 18px; padding: 16px 8px; text-align: center;">
+          <div id="cs-hours" style="font-size: 2.2rem; font-weight: 800; color: #06b6d4; line-height: 1;">15</div>
+          <div style="font-size: 9px; color: #64748b; font-weight: 700; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.1em;">HOURS</div>
+        </div>
+
+        <!-- Minutes -->
+        <div style="background: rgba(3, 7, 18, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 18px; padding: 16px 8px; text-align: center;">
+          <div id="cs-minutes" style="font-size: 2.2rem; font-weight: 800; color: #8b5cf6; line-height: 1;">22</div>
+          <div style="font-size: 9px; color: #64748b; font-weight: 700; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.1em;">MINUTES</div>
+        </div>
+
+        <!-- Seconds -->
+        <div style="background: rgba(3, 7, 18, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 18px; padding: 16px 8px; text-align: center;">
+          <div id="cs-seconds" style="font-size: 2.2rem; font-weight: 800; color: #10b981; line-height: 1;">00</div>
+          <div style="font-size: 9px; color: #64748b; font-weight: 700; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.1em;">SECONDS</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; flex-direction: column; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">
+        <a href="mailto:shivasahu0612@gmail.com" style="display: block; padding: 14px; border-radius: 14px; background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); color: #ffffff; font-weight: 700; text-decoration: none; box-shadow: 0 4px 20px rgba(6, 182, 212, 0.35);">
+          ✉️ Direct Inquiry: shivasahu0612@gmail.com
+        </a>
+        <a href="admin.html" style="display: block; padding: 12px; border-radius: 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; font-weight: 600; text-decoration: none;">
+          🔐 Admin Control Panel Login
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    (function initComingSoonCountdown() {
+      const targetTime = new Date('2026-08-09T14:00:00+05:30').getTime();
+
+      function update() {
+        const overlay = document.getElementById('coming-soon-overlay');
+        if (!overlay) return;
+
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('preview') === 'true' || localStorage.getItem('anurag_coming_soon_off') === 'true') {
+          overlay.style.display = 'none';
+          return;
+        }
+
+        const now = new Date().getTime();
+        const diff = targetTime - now;
+
+        if (diff <= 0) {
+          overlay.style.display = 'none';
+          return;
+        }
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const hEl = document.getElementById('cs-hours');
+        const mEl = document.getElementById('cs-minutes');
+        const sEl = document.getElementById('cs-seconds');
+
+        if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+        if (mEl) mEl.textContent = String(minutes).padStart(2, '0');
+        if (sEl) sEl.textContent = String(seconds).padStart(2, '0');
+      }
+
+      setInterval(update, 1000);
+      update();
+    })();
+  </script>
+
   <!-- Top Scroll Reading Progress Bar -->
   <div id="scroll-progress"></div>
 

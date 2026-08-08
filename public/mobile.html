@@ -83,6 +83,100 @@
 </head>
 <body class="min-h-screen flex flex-col font-sans pb-24">
 
+  <!-- ⏳ EXCLUSIVE MOBILE COMING SOON & REVERSE COUNTDOWN TIMER OVERLAY (Target: Tomorrow 2:00 PM IST) -->
+  <div id="m-coming-soon-overlay" style="position: fixed; inset: 0; z-index: 99999; background: #030712; background-image: radial-gradient(at 50% 0%, rgba(6, 182, 212, 0.2) 0px, transparent 60%), radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.2) 0px, transparent 60%); display: flex; align-items: center; justify-content: center; padding: 16px; font-family: 'Inter', sans-serif;">
+    
+    <div style="background: rgba(11, 15, 25, 0.95); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(6, 182, 212, 0.4); border-radius: 24px; padding: 28px 20px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95), 0 0 35px rgba(6, 182, 212, 0.3);">
+      
+      <!-- Top Badge -->
+      <div style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 100px; background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.4); color: #06b6d4; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 18px;">
+        <span style="width: 7px; height: 7px; border-radius: 50%; background: #06b6d4; box-shadow: 0 0 8px #06b6d4;"></span>
+        <span>ANURAG SAHU • LAUNCH</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, #38bdf8 50%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 10px 0; line-height: 1.25;">
+        LAUNCHING TOMORROW AT 2 PM
+      </h1>
+
+      <p style="color: #94a3b8; font-size: 11px; line-height: 1.5; margin: 0 0 22px 0;">
+        Portfolio website launch is scheduled for tomorrow at <strong style="color: #06b6d4;">2:00 PM IST</strong>. Live reverse countdown active below.
+      </p>
+
+      <!-- REVERSE COUNTDOWN TIMER BOXES -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 22px; font-family: 'JetBrains Mono', monospace;">
+        <!-- Hours -->
+        <div style="background: rgba(3, 7, 18, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 12px 4px; text-align: center;">
+          <div id="mcs-hours" style="font-size: 1.6rem; font-weight: 800; color: #06b6d4; line-height: 1;">15</div>
+          <div style="font-size: 8px; color: #64748b; font-weight: 700; margin-top: 4px; text-transform: uppercase;">HOURS</div>
+        </div>
+
+        <!-- Minutes -->
+        <div style="background: rgba(3, 7, 18, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 12px 4px; text-align: center;">
+          <div id="mcs-minutes" style="font-size: 1.6rem; font-weight: 800; color: #8b5cf6; line-height: 1;">22</div>
+          <div style="font-size: 8px; color: #64748b; font-weight: 700; margin-top: 4px; text-transform: uppercase;">MINUTES</div>
+        </div>
+
+        <!-- Seconds -->
+        <div style="background: rgba(3, 7, 18, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 12px 4px; text-align: center;">
+          <div id="mcs-seconds" style="font-size: 1.6rem; font-weight: 800; color: #10b981; line-height: 1;">00</div>
+          <div style="font-size: 8px; color: #64748b; font-weight: 700; margin-top: 4px; text-transform: uppercase;">SECONDS</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; flex-direction: column; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px;">
+        <a href="mailto:shivasahu0612@gmail.com" style="display: block; padding: 12px; border-radius: 12px; background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); color: #ffffff; font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.35);">
+          ✉️ Direct Inquiry Email
+        </a>
+        <a href="mobile-admin.html" style="display: block; padding: 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; font-weight: 600; text-decoration: none;">
+          🔐 Mobile Admin CMS Login
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    (function initMobileComingSoonCountdown() {
+      const targetTime = new Date('2026-08-09T14:00:00+05:30').getTime();
+
+      function update() {
+        const overlay = document.getElementById('m-coming-soon-overlay');
+        if (!overlay) return;
+
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('preview') === 'true' || localStorage.getItem('anurag_coming_soon_off') === 'true') {
+          overlay.style.display = 'none';
+          return;
+        }
+
+        const now = new Date().getTime();
+        const diff = targetTime - now;
+
+        if (diff <= 0) {
+          overlay.style.display = 'none';
+          return;
+        }
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const hEl = document.getElementById('mcs-hours');
+        const mEl = document.getElementById('mcs-minutes');
+        const sEl = document.getElementById('mcs-seconds');
+
+        if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+        if (mEl) mEl.textContent = String(minutes).padStart(2, '0');
+        if (sEl) sEl.textContent = String(seconds).padStart(2, '0');
+      }
+
+      setInterval(update, 1000);
+      update();
+    })();
+  </script>
+
   <!-- TOP MOBILE APP HEADER BAR -->
   <header class="sticky top-0 z-50 bg-[#030712]/95 backdrop-blur-xl px-4 py-3 border-b border-cyan-500/30 flex items-center justify-between shadow-lg">
     <div class="flex items-center gap-2.5">
