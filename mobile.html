@@ -586,13 +586,13 @@
 
         // 2. Global Cloud Inbox Store Sync (Guarantees message appears in Admin Panel on ALL devices)
         try {
-          fetch('https://jsonblob.com/api/jsonBlob/019fd2bf-379e-7458-abf4-7925e0c71f58')
+          fetch('https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261')
             .then(res => res.json())
             .then(store => {
               const s = store || { messages: [], settings: {} };
               if (!s.messages) s.messages = [];
               s.messages.unshift(newMsg);
-              return fetch('https://jsonblob.com/api/jsonBlob/019fd2bf-379e-7458-abf4-7925e0c71f58', {
+              return fetch('https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(s)
@@ -689,11 +689,11 @@
 
       // 2. Fetch global cloud storage for cross-phone sync
       try {
-        const res = await fetch('https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67');
+        const res = await fetch('https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261');
         const data = await res.json();
-        if (data && data.data) {
+        if (data && data.projects) {
           ['01', '02', '03'].forEach(num => {
-            const globalVal = data.data[`ag_proj_status_${num}`];
+            const globalVal = data.projects[num];
             const badge = document.getElementById(`mp-badge-${num}`);
             if (globalVal) {
               localStorage.setItem(`ag_proj_status_${num}`, globalVal);

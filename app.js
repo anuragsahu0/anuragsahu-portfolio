@@ -40,7 +40,7 @@ function initLiveTelemetryTracking() {
   });
 }
 
-const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fd2bf-379e-7458-abf4-7925e0c71f58';
+const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261';
 
 function startVisitorHeartbeat() {
   let sessId = sessionStorage.getItem('as_visitor_sess');
@@ -536,34 +536,20 @@ async function syncProjectStatuses() {
     }
   });
 
-  // 2. Fetch global settings from Cloud API for 100% cross-phone sync
+  // 2. Fetch global settings from persistent Cloud Store (019fe1ec-02f6-78f8-a2ea-698a3b504261)
   try {
-    const res = await fetch('https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67');
+    const res = await fetch('https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261');
     const data = await res.json();
-    if (data && data.data) {
+    if (data && data.projects) {
       ['01', '02', '03'].forEach(num => {
-        const globalVal = data.data[`ag_proj_status_${num}`];
+        const globalVal = data.projects[num];
         if (globalVal) {
           localStorage.setItem(`ag_proj_status_${num}`, globalVal);
           applyBadgeUI(num, globalVal);
         }
       });
     }
-  } catch (e) {
-    try {
-      const res2 = await fetch('/api/settings');
-      const data2 = await res2.json();
-      if (data2.success && data2.settings) {
-        ['01', '02', '03'].forEach(num => {
-          const globalVal = data2.settings[`ag_proj_status_${num}`];
-          if (globalVal) {
-            localStorage.setItem(`ag_proj_status_${num}`, globalVal);
-            applyBadgeUI(num, globalVal);
-          }
-        });
-      }
-    } catch (e2) {}
-  }
+  } catch (e) {}
 }
 
 function applyBadgeUI(num, status) {

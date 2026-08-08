@@ -827,7 +827,7 @@
       if (breadcrumb) breadcrumb.textContent = tabName.toUpperCase();
     };
 
-    const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fd2bf-379e-7458-abf4-7925e0c71f58';
+    const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261';
 
     window.changeProjectStatus = async function(num, status) {
       const key = `ag_proj_status_${num}`;
@@ -871,11 +871,16 @@
             ['01', '02', '03'].forEach(num => {
               const val = cData.projects[num];
               const pbadge = document.getElementById(`pbadge-${num}`);
-              if (val && pbadge) {
-                pbadge.textContent = val === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
-                pbadge.className = val === 'Completed'
-                  ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold'
-                  : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold';
+              const select = document.querySelector(`select[onchange="changeProjectStatus('${num}', this.value)"]`);
+              if (val) {
+                localStorage.setItem(`ag_proj_status_${num}`, val);
+                if (select) select.value = val;
+                if (pbadge) {
+                  pbadge.textContent = val === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
+                  pbadge.className = val === 'Completed'
+                    ? 'px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold'
+                    : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold';
+                }
               }
             });
           }

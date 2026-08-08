@@ -35,7 +35,7 @@ class AdminHomeScreen extends StatefulWidget {
 }
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
-  static const String cloudUrl = 'https://jsonblob.com/api/jsonBlob/019fd2bf-379e-7458-abf4-7925e0c71f58';
+  static const String cloudUrl = 'https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261';
   
   int _totalVisitors = 142;
   int _onlineVisitors = 1;

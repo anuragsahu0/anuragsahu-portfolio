@@ -231,6 +231,29 @@
       document.getElementById(`mnav-${tName}`).classList.add('active-nav');
     };
 
+    const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261';
+
+    window.changeProjectStatus = async function(num, status) {
+      const key = `ag_proj_status_${num}`;
+      localStorage.setItem(key, status);
+      window.dispatchEvent(new Event('storage'));
+
+      try {
+        const cRes = await fetch(GLOBAL_CLOUD_URL);
+        const cData = await cRes.json();
+        const currentData = cData || {};
+        if (!currentData.projects) currentData.projects = {};
+        currentData.projects[num] = status;
+        await fetch(GLOBAL_CLOUD_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(currentData)
+        });
+      } catch (e) {}
+
+      alert(`✓ Project 0${num} status changed to "${status}" globally on main website!`);
+    };
+
     checkMAuth();
   </script>
 </body>
