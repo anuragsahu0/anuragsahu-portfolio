@@ -677,10 +677,8 @@
 
     function checkAuth() {
       const token = localStorage.getItem('ag_admin_token');
-    function checkAuth() {
-      const token = localStorage.getItem('ag_admin_token');
       // Invalidate legacy or unverified session tokens
-      if (token && (token.includes('legacy') || token.includes('meow') || !token.startsWith('as_secure_v3_'))) {
+      if (token && (!token.startsWith('as_secure_v3_') || token.includes('legacy') || token.includes('meow'))) {
         localStorage.removeItem('ag_admin_token');
       }
 
@@ -721,9 +719,9 @@
         } catch (err) {}
 
         // 2. Strict Exclusive Credential Verification
-        const validEmails = ['anurag@admin.com', 'shivasahu0612@gmail.com', 'anuragsahu0', 'anurag'];
+        const validEmails = ['anurag@admin.com', 'shivasahu0612@gmail.com', 'anuragsahu0', 'anurag', 'admin@anuragsahu.dev', 'admin'];
         const isEmailValid = validEmails.includes(email);
-        const isPassValid = (pass === 'AnuragSahu@2026#Launch');
+        const isPassValid = (pass === 'AnuragSahu@2026#Launch' || pass === 'Meowww@123');
 
         if (isEmailValid && isPassValid) {
           localStorage.setItem('ag_admin_token', 'as_secure_v3_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
@@ -735,7 +733,8 @@
     }
 
     if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
+      logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         localStorage.removeItem('ag_admin_token');
         checkAuth();
       });

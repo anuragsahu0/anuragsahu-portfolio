@@ -54,8 +54,8 @@ const login = async (req, res, next) => {
     }
 
     // Strict Admin Credentials validation
-    const validEmails = ['anurag@admin.com', 'admin@anuragsahu.dev', 'admin@anuragsahu.com', 'admin@admin.com'];
-    const validPasswords = ['Meowww@123', 'anurag123', 'admin123', 'Meowww@123'];
+    const validEmails = ['anurag@admin.com', 'shivasahu0612@gmail.com', 'anuragsahu0', 'anurag', 'admin@anuragsahu.dev', 'admin'];
+    const validPasswords = ['AnuragSahu@2026#Launch', 'AnuragSahu@2026#launch', 'Meowww@123'];
 
     if (validEmails.includes(cleanEmail) && validPasswords.includes(password)) {
       const token = jwt.sign(
