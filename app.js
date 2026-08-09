@@ -75,19 +75,23 @@ function startVisitorHeartbeat() {
       fetch(GLOBAL_CLOUD_URL)
         .then(r => r.json())
         .then(data => {
-          if (!data || typeof data !== 'object' || data.error) data = {};
+          // DO NOT OVERWRITE DATA IF CLOUD API RETURNED AN ERROR OR RATE LIMIT
+          if (!data || typeof data !== 'object' || data.error) {
+            return;
+          }
+
           if (!data.sessions) data.sessions = {};
           if (!data.activeSessions) data.activeSessions = {};
 
-          const currentSessionsCount = Object.keys(data.sessions).length;
-          const currentTotal = parseInt(data.totalVisitors, 10) || currentSessionsCount || 0;
+          const totalSessions = Object.keys(data.sessions).length;
+          const prevTotal = parseInt(data.totalVisitors, 10) || totalSessions || 0;
 
           if (!sessionStorage.getItem('as_page_counted')) {
-            data.totalVisitors = Math.max(currentTotal + 1, currentSessionsCount + 1, 1);
+            data.totalVisitors = Math.max(prevTotal + 1, totalSessions + 1, 1);
             localStorage.setItem('as_total_visitors', data.totalVisitors);
             sessionStorage.setItem('as_page_counted', 'true');
           } else {
-            data.totalVisitors = Math.max(currentTotal, currentSessionsCount, 1);
+            data.totalVisitors = Math.max(prevTotal, totalSessions, 1);
             localStorage.setItem('as_total_visitors', data.totalVisitors);
           }
 
@@ -131,13 +135,11 @@ function sendTelemetry(type, metadata = {}) {
     fetch(GLOBAL_CLOUD_URL)
       .then(r => r.json())
       .then(data => {
-        if (!data || typeof data !== 'object' || data.error) data = {};
+        if (!data || typeof data !== 'object' || data.error) return;
+        
         if (type === 'page_view') {
-          if (!sessionStorage.getItem('as_page_counted')) {
-            data.totalVisitors = (parseInt(data.totalVisitors, 10) || 0) + 1;
-            localStorage.setItem('as_total_visitors', data.totalVisitors);
-            sessionStorage.setItem('as_page_counted', 'true');
-          }
+          data.totalVisitors = Math.max((parseInt(data.totalVisitors, 10) || 0) + 1, Object.keys(data.sessions || {}).length + 1);
+          localStorage.setItem('as_total_visitors', data.totalVisitors);
         } else if (type === 'resume_download') {
           data.resumeDownloads = (parseInt(data.resumeDownloads, 10) || 0) + 1;
         } else if (type === 'github_click') {
