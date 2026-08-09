@@ -156,7 +156,12 @@
         const diff = targetTime - now;
 
         if (diff <= 0) {
-          overlay.style.display = 'none';
+          overlay.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+          overlay.style.opacity = '0';
+          overlay.style.transform = 'scale(1.05)';
+          setTimeout(() => {
+            overlay.style.display = 'none';
+          }, 800);
           return;
         }
 
