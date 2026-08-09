@@ -92,7 +92,7 @@ function sendTelemetry(type, metadata = {}) {
         if (!data || typeof data !== 'object') data = {};
         if (type === 'page_view') {
           if (!sessionStorage.getItem('as_page_counted')) {
-            data.totalVisitors = (parseInt(data.totalVisitors, 10) || 1420) + 1;
+            data.totalVisitors = (parseInt(data.totalVisitors, 10) || 0) + 1;
             localStorage.setItem('as_total_visitors', data.totalVisitors);
             sessionStorage.setItem('as_page_counted', 'true');
           }
