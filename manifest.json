@@ -1,17 +1,17 @@
 {
-  "name": "AS Admin Command Center",
+  "name": "Anurag Sahu Control Center",
   "short_name": "AS Admin",
-  "description": "Anurag Sahu Admin App Command Center for Project Status & Recruiter Messages",
-  "start_url": "/mobile-admin.html",
+  "description": "Anurag Sahu Admin Command Center for Portfolio CMS & Recruiter Messages",
+  "start_url": "/admin.html",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#070a14",
-  "theme_color": "#070a14",
+  "background_color": "#050811",
+  "theme_color": "#050811",
   "icons": [
     {
-      "src": "/assets/as-admin-icon.svg",
+      "src": "/assets/anurag-portrait-sm.webp",
       "sizes": "192x192 512x512",
-      "type": "image/svg+xml",
+      "type": "image/webp",
       "purpose": "any maskable"
     }
   ]

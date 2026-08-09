@@ -1,13 +1,12 @@
-const CACHE_NAME = 'as-admin-v1';
+const CACHE_NAME = 'as-admin-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/mobile-admin.html',
+  '/mobile.html',
   '/admin.html',
   '/styles.css',
   '/app.js',
   '/manifest.json',
-  '/assets/as-admin-icon.svg',
   '/assets/anurag-portrait-sm.webp',
   '/assets/anurag-sahu-resume.pdf'
 ];
@@ -15,7 +14,9 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      return cache.addAll(ASSETS_TO_CACHE).catch(err => {
+        console.warn('SW cache.addAll notice:', err);
+      });
     }).then(() => self.skipWaiting())
   );
 });

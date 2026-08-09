@@ -10,8 +10,8 @@
     (function detectMobilePhone() {
       const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
       const params = new URLSearchParams(window.location.search);
-      if (isMobileDevice && !params.has('desktop')) {
-        window.location.replace('mobile.html');
+      if (isMobileDevice && !params.has('desktop') && !window.location.pathname.includes('mobile')) {
+        window.location.replace('/mobile.html');
       }
     })();
   </script>
