@@ -81,10 +81,51 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans pb-24">
+<body class="min-h-screen flex flex-col font-sans pb-20">
 
-  <!-- ⏳ EXCLUSIVE MOBILE COMING SOON & REVERSE COUNTDOWN TIMER OVERLAY (Target: Tomorrow 12:00 PM NOON IST) -->
-  <div id="m-coming-soon-overlay" style="position: fixed; inset: 0; z-index: 99999; background: #030712; background-image: radial-gradient(at 50% 0%, rgba(6, 182, 212, 0.22) 0px, transparent 60%), radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.2) 0px, transparent 60%); display: flex; align-items: center; justify-content: center; padding: 16px; font-family: 'Inter', sans-serif; overflow-y: auto;">
+  <!-- ⚡ AWWWARDS-GRADE MOBILE PRELOADER -->
+  <div id="m-awwwards-preloader" style="position: fixed; inset: 0; z-index: 100000; background: #030712; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+    <div style="text-align: center; padding: 20px;">
+      <div style="font-size: 2.8rem; font-weight: 800; color: #06b6d4; letter-spacing: 0.1em; margin-bottom: 8px;">
+        <span id="m-loader-percent">0</span>%
+      </div>
+      <div style="width: 180px; height: 3px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; margin: 0 auto;">
+        <div id="m-loader-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%); transition: width 0.1s linear;"></div>
+      </div>
+      <div style="font-size: 10px; color: #94a3b8; font-weight: 700; margin-top: 12px; text-transform: uppercase; letter-spacing: 0.15em;">
+        INITIALIZING ANURAG SAHU MOBILE APP...
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function initMobilePreloader() {
+      const loader = document.getElementById('m-awwwards-preloader');
+      const percentEl = document.getElementById('m-loader-percent');
+      const barEl = document.getElementById('m-loader-bar');
+      if (!loader) return;
+
+      let count = 0;
+      const interval = setInterval(() => {
+        count += Math.floor(Math.random() * 12) + 6;
+        if (count >= 100) {
+          count = 100;
+          clearInterval(interval);
+          if (percentEl) percentEl.textContent = '100';
+          if (barEl) barEl.style.width = '100%';
+          setTimeout(() => {
+            loader.style.opacity = '0';
+            setTimeout(() => {
+              if (loader.parentNode) loader.parentNode.removeChild(loader);
+            }, 600);
+          }, 200);
+        } else {
+          if (percentEl) percentEl.textContent = count;
+          if (barEl) barEl.style.width = count + '%';
+        }
+      }, 30);
+    })();
+  </script>
     
     <div style="background: rgba(11, 15, 25, 0.96); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(6, 182, 212, 0.4); border-radius: 24px; padding: 24px 18px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95), 0 0 35px rgba(6, 182, 212, 0.3); margin: auto;">
       
