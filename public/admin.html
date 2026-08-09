@@ -763,8 +763,18 @@
         const cRes = await fetch(GLOBAL_CLOUD_URL);
         if (cRes.ok) {
           const cData = await cRes.json();
-          if (cData && cData.messages && cloudMsgs.length === 0) {
-            cloudMsgs = cData.messages;
+          if (cData && typeof cData === 'object') {
+            const visitorsCount = cData.totalVisitors || parseInt(localStorage.getItem('as_total_visitors') || '1420', 10);
+            if (document.getElementById('kpi-visitors')) {
+              document.getElementById('kpi-visitors').textContent = visitorsCount.toLocaleString();
+            }
+            if (document.getElementById('kpi-active')) {
+              const activeCount = Object.keys(cData.activeSessions || {}).length || 1;
+              document.getElementById('kpi-active').textContent = activeCount;
+            }
+            if (cData.messages && cloudMsgs.length === 0) {
+              cloudMsgs = cData.messages;
+            }
           }
         }
       } catch (e) {}
