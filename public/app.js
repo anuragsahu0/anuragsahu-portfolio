@@ -417,8 +417,8 @@ function initAdminModal() {
       const email = emailInput ? emailInput.value.trim().toLowerCase() : '';
       const password = passInput ? passInput.value : '';
 
-      const validEmails = ['anurag@admin.com', 'admin@anuragsahu.dev', 'admin@anuragsahu.com', 'admin@admin.com'];
-      const validPasswords = ['Meowww@123', 'anurag123', 'admin123', 'Meowww@123'];
+      const validEmails = ['anurag@admin.com', 'shivasahu0612@gmail.com', 'anuragsahu0', 'anurag'];
+      const validPasswords = ['AnuragSahu@2026#Launch'];
 
       let authenticated = false;
 
@@ -432,7 +432,7 @@ function initAdminModal() {
 
         if (data.success && data.token) {
           authenticated = true;
-          localStorage.setItem('ag_admin_token', data.token);
+          localStorage.setItem('ag_admin_token', 'as_secure_v3_' + data.token);
         }
       } catch (err) {
         console.warn('Backend connection notice, checking local credential validation');
@@ -441,7 +441,7 @@ function initAdminModal() {
       if (!authenticated) {
         if (validEmails.includes(email) && validPasswords.includes(password)) {
           authenticated = true;
-          localStorage.setItem('ag_admin_token', 'secure-admin-token-' + Date.now());
+          localStorage.setItem('ag_admin_token', 'as_secure_v3_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
         }
       }
 

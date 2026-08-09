@@ -677,7 +677,15 @@
 
     function checkAuth() {
       const token = localStorage.getItem('ag_admin_token');
-      if (token) {
+    function checkAuth() {
+      const token = localStorage.getItem('ag_admin_token');
+      // Invalidate legacy or unverified session tokens
+      if (token && (token.includes('legacy') || token.includes('meow') || !token.startsWith('as_secure_v3_'))) {
+        localStorage.removeItem('ag_admin_token');
+      }
+
+      const activeToken = localStorage.getItem('ag_admin_token');
+      if (activeToken) {
         loginScreen.classList.add('hidden');
         dashboardScreen.classList.remove('hidden');
         fetchStats();
@@ -706,24 +714,22 @@
           });
           const data = await res.json();
           if (data.success && data.token) {
-            localStorage.setItem('ag_admin_token', data.token);
+            localStorage.setItem('ag_admin_token', 'as_secure_v3_' + data.token);
             checkAuth();
             return;
           }
         } catch (err) {}
 
-        // 2. Direct Fallback Credential Match
-        const validEmails = ['anurag@admin.com', 'shivasahu0612@gmail.com', 'admin@anuragsahu.dev', 'admin@admin.com', 'anurag', 'admin', 'shivasahu'];
-        const validPasswords = ['Meowww@123', 'anurag123', 'admin123', 'Admin@AntiGravity2026'];
-
-        const isEmailValid = validEmails.includes(email) || email.includes('anurag') || email.includes('admin') || email.includes('shiva');
-        const isPassValid = validPasswords.includes(pass) || pass === 'Meowww@123' || pass.toLowerCase() === 'meowww@123';
+        // 2. Strict Exclusive Credential Verification
+        const validEmails = ['anurag@admin.com', 'shivasahu0612@gmail.com', 'anuragsahu0', 'anurag'];
+        const isEmailValid = validEmails.includes(email);
+        const isPassValid = (pass === 'AnuragSahu@2026#Launch');
 
         if (isEmailValid && isPassValid) {
-          localStorage.setItem('ag_admin_token', 'cms-admin-token-' + Date.now());
+          localStorage.setItem('ag_admin_token', 'as_secure_v3_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
           checkAuth();
         } else {
-          alert('❌ ACCESS DENIED: Invalid Admin Credentials.\n\nUse Email: anurag@admin.com\nPassword: Meowww@123');
+          alert('❌ ACCESS DENIED: Invalid Admin Credentials!\n\nAccess is restricted strictly to Anurag Sahu.');
         }
       });
     }
