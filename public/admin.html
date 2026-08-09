@@ -675,10 +675,18 @@
     const loginForm = document.getElementById('page-login-form');
     const logoutBtn = document.getElementById('page-btn-logout');
 
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    const MASTER_PASS_HASH = '0c7e33d5babbfff8b173520b30ab49f0af8683e1c26b595fa3e634c4b991168c';
+    const MASTER_EMAILS = ['anurag@admin.com', 'shivasahu0612@gmail.com', 'anuragsahu0', 'anurag'];
+
     function checkAuth() {
       const token = localStorage.getItem('ag_admin_token');
       // Invalidate legacy or unverified session tokens
-      if (token && (!token.startsWith('as_secure_v3_') || token.includes('legacy') || token.includes('meow'))) {
+      if (token && (!token.startsWith('as_master_v4_') || token.includes('legacy') || token.includes('meow'))) {
         localStorage.removeItem('ag_admin_token');
       }
 
@@ -696,6 +704,15 @@
     if (loginForm) {
       loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        // Brute-force check
+        const lockUntil = parseInt(localStorage.getItem('as_lock_until') || '0', 10);
+        if (Date.now() < lockUntil) {
+          const minsLeft = Math.ceil((lockUntil - Date.now()) / 60000);
+          alert(`⛔ SECURITY LOCKOUT ACTIVE: Access is blocked for ${minsLeft} more minute(s) due to multiple failed attempts.`);
+          return;
+        }
+
         const emailEl = document.getElementById('input-admin-email');
         const passEl = document.getElementById('input-admin-pass');
         if (!emailEl || !passEl) return;
@@ -712,22 +729,32 @@
           });
           const data = await res.json();
           if (data.success && data.token) {
-            localStorage.setItem('ag_admin_token', 'as_secure_v3_' + data.token);
+            localStorage.setItem('ag_admin_token', 'as_master_v4_' + data.token);
+            localStorage.removeItem('as_failed_attempts');
             checkAuth();
             return;
           }
         } catch (err) {}
 
-        // 2. Strict Exclusive Credential Verification
-        const validEmails = ['anurag@admin.com', 'shivasahu0612@gmail.com', 'anuragsahu0', 'anurag', 'admin@anuragsahu.dev', 'admin'];
-        const isEmailValid = validEmails.includes(email);
-        const isPassValid = (pass === 'AnuragSahu@2026#Launch' || pass === 'Meowww@123');
+        // 2. SHA-256 Zero-Trust Cryptographic Match
+        const passHash = await sha256(pass);
+        const isEmailValid = MASTER_EMAILS.includes(email);
+        const isPassValid = (passHash === MASTER_PASS_HASH);
 
         if (isEmailValid && isPassValid) {
-          localStorage.setItem('ag_admin_token', 'as_secure_v3_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
+          localStorage.setItem('ag_admin_token', 'as_master_v4_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
+          localStorage.removeItem('as_failed_attempts');
           checkAuth();
         } else {
-          alert('❌ ACCESS DENIED: Invalid Admin Credentials!\n\nAccess is restricted strictly to Anurag Sahu.');
+          let fails = parseInt(localStorage.getItem('as_failed_attempts') || '0', 10) + 1;
+          localStorage.setItem('as_failed_attempts', fails);
+
+          if (fails >= 5) {
+            localStorage.setItem('as_lock_until', Date.now() + 15 * 60 * 1000);
+            alert('⛔ MAXIMUM SECURITY LOCKOUT RECOVERY TRIGGERED!\n\n5 failed login attempts detected. Access blocked for 15 minutes.');
+          } else {
+            alert(`❌ ACCESS DENIED: Invalid Admin Credentials!\n\nAccess is restricted strictly to Anurag Sahu. (Attempt ${fails}/5)`);
+          }
         }
       });
     }
