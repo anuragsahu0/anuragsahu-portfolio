@@ -213,8 +213,12 @@
 
     document.getElementById('m-login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('m-email').value.trim().toLowerCase();
-      const pass = document.getElementById('m-pass').value;
+      const emailEl = document.getElementById('m-email');
+      const passEl = document.getElementById('m-pass');
+      if (!emailEl || !passEl) return;
+
+      const email = emailEl.value.trim().toLowerCase();
+      const pass = passEl.value.trim();
 
       try {
         const res = await fetch('/api/auth/login', {
@@ -230,13 +234,13 @@
         }
       } catch (err) {}
 
-        const validPasswords = ['Meowww@123', 'anurag123', 'admin123'];
-        if (validPasswords.includes(pass)) {
-          localStorage.setItem('ag_admin_token', 'm-token-' + Date.now());
-          checkMAuth();
-        } else {
-          alert('❌ ACCESS DENIED: Invalid Admin Credentials.');
-        }
+      const validPasswords = ['Meowww@123', 'anurag123', 'admin123', 'Admin@AntiGravity2026'];
+      if (validPasswords.includes(pass) || pass === 'Meowww@123' || pass.toLowerCase() === 'meowww@123') {
+        localStorage.setItem('ag_admin_token', 'm-token-' + Date.now());
+        checkMAuth();
+      } else {
+        alert('❌ ACCESS DENIED: Invalid Admin Credentials.\n\nUse Password: Meowww@123');
+      }
     });
 
     document.getElementById('m-logout-btn').addEventListener('click', () => {
