@@ -42,12 +42,33 @@ function initLiveTelemetryTracking() {
 
 const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261';
 
+function detectVisitorDevice() {
+  const ua = navigator.userAgent || '';
+  let device = 'Desktop PC';
+  if (/iPhone/i.test(ua)) device = 'iPhone (iOS)';
+  else if (/iPad/i.test(ua)) device = 'iPad (iOS)';
+  else if (/Android/i.test(ua)) device = 'Android Mobile';
+  else if (/Macintosh/i.test(ua)) device = 'MacBook / Mac';
+  else if (/Windows/i.test(ua)) device = 'Windows PC';
+
+  let browser = 'Chrome';
+  if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browser = 'Safari';
+  else if (/Firefox/i.test(ua)) browser = 'Firefox';
+  else if (/Edg/i.test(ua)) browser = 'Edge';
+
+  return `${device} • ${browser}`;
+}
+
 function startVisitorHeartbeat() {
   let sessId = sessionStorage.getItem('as_visitor_sess');
+  const isNewSession = !sessId;
   if (!sessId) {
-    sessId = 'sess_' + Math.random().toString(36).substr(2, 9);
+    sessId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
     sessionStorage.setItem('as_visitor_sess', sessId);
   }
+
+  const deviceLabel = detectVisitorDevice();
+  const entryTimeStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
   function ping() {
     try {
@@ -55,19 +76,34 @@ function startVisitorHeartbeat() {
         .then(r => r.json())
         .then(data => {
           if (!data || typeof data !== 'object' || data.error) data = {};
+          if (!data.sessions) data.sessions = {};
           if (!data.activeSessions) data.activeSessions = {};
-          data.activeSessions[sessId] = {
+
+          if (isNewSession && !sessionStorage.getItem('as_page_counted')) {
+            data.totalVisitors = (parseInt(data.totalVisitors, 10) || 0) + 1;
+            localStorage.setItem('as_total_visitors', data.totalVisitors);
+            sessionStorage.setItem('as_page_counted', 'true');
+          }
+
+          // Record session history entry
+          data.sessions[sessId] = {
+            id: sessId,
+            device: deviceLabel,
+            path: window.location.pathname || '/',
+            entryTime: data.sessions[sessId]?.entryTime || entryTimeStr,
             lastSeen: Date.now(),
-            path: window.location.pathname,
-            ua: (navigator.userAgent || '').slice(0, 30)
+            status: 'ONLINE'
           };
 
+          data.activeSessions[sessId] = Date.now();
+
+          // Mark sessions idle > 60s as LEFT
           const now = Date.now();
-          Object.keys(data.activeSessions).forEach(k => {
-            const item = data.activeSessions[k];
-            const time = typeof item === 'object' ? item.lastSeen : item;
-            if (now - time > 90000) {
-              delete data.activeSessions[k];
+          Object.keys(data.sessions).forEach(sid => {
+            const s = data.sessions[sid];
+            if (s && now - (s.lastSeen || 0) > 60000) {
+              s.status = 'LEFT';
+              delete data.activeSessions[sid];
             }
           });
 
@@ -81,7 +117,7 @@ function startVisitorHeartbeat() {
   }
 
   ping();
-  setInterval(ping, 30000);
+  setInterval(ping, 20000);
 }
 
 function sendTelemetry(type, metadata = {}) {

@@ -324,9 +324,59 @@
 
         <!-- 2. INDEX TAB: ANALYTICS -->
         <div id="panel-analytics" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-4">
-            <h3 class="font-display text-lg font-bold text-white">📈 Traffic &amp; Telemetry Analytics</h3>
-            <p class="text-slate-400 text-xs">Realtime visitor sessions, page views, and acquisition sources.</p>
+          <div class="luxury-card p-6 rounded-3xl space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+              <div>
+                <h3 class="font-display text-lg font-bold text-white">📈 Live Visitor Sessions &amp; Analytics Audit Log</h3>
+                <p class="text-slate-400 text-xs mt-0.5">Real-time tracking of active online visitors and session history (who came &amp; who left).</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-xs text-emerald-400 font-bold">REAL-TIME TELEMETRY ACTIVE</span>
+              </div>
+            </div>
+
+            <!-- ANALYTICS SUMMARY CARDS -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+                <span class="text-slate-400 font-bold block text-[10px]">TOTAL UNIQUE VISITS</span>
+                <span id="ana-total-visits" class="text-xl font-extrabold text-white">0</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+                <span class="text-slate-400 font-bold block text-[10px]">CURRENTLY ONLINE</span>
+                <span id="ana-online-now" class="text-xl font-extrabold text-emerald-400">1</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+                <span class="text-slate-400 font-bold block text-[10px]">TOTAL SESSIONS LOGGED</span>
+                <span id="ana-total-sessions" class="text-xl font-extrabold text-cyan-400">1</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+                <span class="text-slate-400 font-bold block text-[10px]">LIVE SYNC RATE</span>
+                <span class="text-xl font-extrabold text-purple-400">10 Sec Polling</span>
+              </div>
+            </div>
+
+            <!-- LIVE VISITOR SESSION TABLE -->
+            <div class="space-y-2">
+              <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">RECORDS &amp; VISITOR HISTORY LOG</h4>
+              <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left text-xs">
+                  <thead>
+                    <tr class="border-b border-slate-800 text-slate-400">
+                      <th class="pb-3 px-3">STATUS</th>
+                      <th class="pb-3 px-3">DEVICE / BROWSER</th>
+                      <th class="pb-3 px-3">PAGE PATH</th>
+                      <th class="pb-3 px-3">ENTRY TIME</th>
+                      <th class="pb-3 px-3 text-right">SESSION ID</th>
+                    </tr>
+                  </thead>
+                  <tbody id="analytics-table-body">
+                    <!-- Dynamic Live Sessions -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -775,13 +825,19 @@
           const cData = await cRes.json();
           if (cData && typeof cData === 'object' && !cData.error) {
             const vCount = cData.totalVisitors !== undefined ? cData.totalVisitors : localVisitors;
-            if (document.getElementById('kpi-visitors')) {
-              document.getElementById('kpi-visitors').textContent = vCount.toLocaleString();
-            }
-            if (document.getElementById('kpi-active')) {
-              const activeCount = Object.keys(cData.activeSessions || {}).length || 1;
-              document.getElementById('kpi-active').textContent = activeCount;
-            }
+            const activeCount = Object.keys(cData.activeSessions || {}).length || 1;
+            
+            if (document.getElementById('kpi-visitors')) document.getElementById('kpi-visitors').textContent = vCount.toLocaleString();
+            if (document.getElementById('kpi-active')) document.getElementById('kpi-active').textContent = activeCount;
+            if (document.getElementById('ana-total-visits')) document.getElementById('ana-total-visits').textContent = vCount.toLocaleString();
+            if (document.getElementById('ana-online-now')) document.getElementById('ana-online-now').textContent = activeCount;
+            
+            const sessionsObj = cData.sessions || {};
+            const sessionList = Object.values(sessionsObj);
+            if (document.getElementById('ana-total-sessions')) document.getElementById('ana-total-sessions').textContent = Math.max(sessionList.length, vCount, 1);
+            
+            renderAnalyticsTable(sessionList);
+
             if (cData.messages && cloudMsgs.length === 0) {
               cloudMsgs = cData.messages;
             }
@@ -792,6 +848,35 @@
       const localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
       const allMsgs = [...localMsgs, ...cloudMsgs];
       renderMessagesTable(allMsgs);
+    }
+
+    function renderAnalyticsTable(sessions) {
+      const tbody = document.getElementById('analytics-table-body');
+      if (!tbody) return;
+
+      if (!sessions || sessions.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-500">No active visitor session logs recorded yet.</td></tr>`;
+        return;
+      }
+
+      const sorted = [...sessions].sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
+
+      tbody.innerHTML = sorted.map(s => {
+        const isOnline = (Date.now() - (s.lastSeen || 0)) < 60000;
+        const statusBadge = isOnline 
+          ? `<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">🟢 ONLINE</span>`
+          : `<span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-bold text-[10px]">⚪ LEFT</span>`;
+        
+        return `
+          <tr class="border-b border-slate-800/60 hover:bg-white/5 transition-colors font-mono">
+            <td class="py-3 px-3">${statusBadge}</td>
+            <td class="py-3 px-3 text-white font-bold">${s.device || 'Mobile/Desktop Device'}</td>
+            <td class="py-3 px-3 text-cyan-400">${s.path || '/'}</td>
+            <td class="py-3 px-3 text-slate-300">${s.entryTime || 'Just now'}</td>
+            <td class="py-3 px-3 text-right text-slate-500 text-[10px]">${(s.id || '').slice(0, 12)}</td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function renderMessagesTable(messages) {
