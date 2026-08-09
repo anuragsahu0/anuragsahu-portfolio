@@ -856,18 +856,18 @@
         if (cRes.ok) {
           const cData = await cRes.json();
           if (cData && typeof cData === 'object' && !cData.error) {
-            const vCount = cData.totalVisitors !== undefined ? cData.totalVisitors : localVisitors;
-            const activeCount = Object.keys(cData.activeSessions || {}).length || 1;
-            
+            const sessionsObj = cData.sessions || {};
+            const sessionList = Object.values(sessionsObj);
+            const totalSessionsCount = sessionList.length;
+            const vCount = Math.max(cData.totalVisitors || 0, totalSessionsCount, localVisitors);
+            const activeCount = Object.keys(cData.activeSessions || {}).length || (totalSessionsCount > 0 ? 1 : 0);
+
             if (document.getElementById('kpi-visitors')) document.getElementById('kpi-visitors').textContent = vCount.toLocaleString();
             if (document.getElementById('kpi-active')) document.getElementById('kpi-active').textContent = activeCount;
             if (document.getElementById('ana-total-visits')) document.getElementById('ana-total-visits').textContent = vCount.toLocaleString();
             if (document.getElementById('ana-online-now')) document.getElementById('ana-online-now').textContent = activeCount;
-            
-            const sessionsObj = cData.sessions || {};
-            const sessionList = Object.values(sessionsObj);
-            if (document.getElementById('ana-total-sessions')) document.getElementById('ana-total-sessions').textContent = Math.max(sessionList.length, vCount, 1);
-            
+            if (document.getElementById('ana-total-sessions')) document.getElementById('ana-total-sessions').textContent = Math.max(totalSessionsCount, vCount);
+
             renderAnalyticsTable(sessionList);
 
             if (cData.messages && cloudMsgs.length === 0) {

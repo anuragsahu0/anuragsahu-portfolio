@@ -79,10 +79,16 @@ function startVisitorHeartbeat() {
           if (!data.sessions) data.sessions = {};
           if (!data.activeSessions) data.activeSessions = {};
 
-          if (isNewSession && !sessionStorage.getItem('as_page_counted')) {
-            data.totalVisitors = (parseInt(data.totalVisitors, 10) || 0) + 1;
+          const currentSessionsCount = Object.keys(data.sessions).length;
+          const currentTotal = parseInt(data.totalVisitors, 10) || currentSessionsCount || 0;
+
+          if (!sessionStorage.getItem('as_page_counted')) {
+            data.totalVisitors = Math.max(currentTotal + 1, currentSessionsCount + 1, 1);
             localStorage.setItem('as_total_visitors', data.totalVisitors);
             sessionStorage.setItem('as_page_counted', 'true');
+          } else {
+            data.totalVisitors = Math.max(currentTotal, currentSessionsCount, 1);
+            localStorage.setItem('as_total_visitors', data.totalVisitors);
           }
 
           // Record session history entry
