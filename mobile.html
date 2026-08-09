@@ -160,7 +160,11 @@
           overlay.style.opacity = '0';
           overlay.style.transform = 'scale(1.05)';
           setTimeout(() => {
-            overlay.style.display = 'none';
+            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            if (!sessionStorage.getItem('as_auto_reloaded')) {
+              sessionStorage.setItem('as_auto_reloaded', 'true');
+              window.location.reload();
+            }
           }, 800);
           return;
         }
