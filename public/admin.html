@@ -739,6 +739,13 @@
       let cloudMsgs = [];
       const token = localStorage.getItem('ag_admin_token');
 
+      // 1. Instant Display from Local Storage
+      const localVisitors = parseInt(localStorage.getItem('as_total_visitors') || '0', 10);
+      if (document.getElementById('kpi-visitors')) {
+        document.getElementById('kpi-visitors').textContent = localVisitors.toLocaleString();
+      }
+
+      // 2. Fetch Express Backend Stats
       try {
         const apiRes = await fetch('/api/admin/dashboard', {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
@@ -748,7 +755,9 @@
           if (apiData.success && apiData.stats) {
             const s = apiData.stats;
             if (document.getElementById('kpi-projects-count')) document.getElementById('kpi-projects-count').textContent = s.totalProjects || 3;
-            if (document.getElementById('kpi-visitors')) document.getElementById('kpi-visitors').textContent = (s.totalVisitors !== undefined ? s.totalVisitors : 0);
+            if (s.totalVisitors !== undefined && s.totalVisitors > 0) {
+              if (document.getElementById('kpi-visitors')) document.getElementById('kpi-visitors').textContent = s.totalVisitors.toLocaleString();
+            }
             if (document.getElementById('kpi-resume')) document.getElementById('kpi-resume').textContent = s.resumeDownloads || 342;
             if (document.getElementById('kpi-unread')) document.getElementById('kpi-unread').textContent = s.unreadContacts || 1;
             
@@ -759,14 +768,15 @@
         }
       } catch (aErr) {}
 
+      // 3. Fetch Cloud Telemetry Sync
       try {
         const cRes = await fetch(GLOBAL_CLOUD_URL);
         if (cRes.ok) {
           const cData = await cRes.json();
-          if (cData && typeof cData === 'object') {
-            const visitorsCount = (cData.totalVisitors !== undefined) ? cData.totalVisitors : parseInt(localStorage.getItem('as_total_visitors') || '0', 10);
+          if (cData && typeof cData === 'object' && !cData.error) {
+            const vCount = cData.totalVisitors !== undefined ? cData.totalVisitors : localVisitors;
             if (document.getElementById('kpi-visitors')) {
-              document.getElementById('kpi-visitors').textContent = visitorsCount.toLocaleString();
+              document.getElementById('kpi-visitors').textContent = vCount.toLocaleString();
             }
             if (document.getElementById('kpi-active')) {
               const activeCount = Object.keys(cData.activeSessions || {}).length || 1;
@@ -825,7 +835,7 @@
 
     checkAuth();
     fetchStats();
-    setInterval(fetchStats, 4000);
+    setInterval(fetchStats, 10000);
   </script>
 </body>
 </html>

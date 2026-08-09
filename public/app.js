@@ -54,7 +54,7 @@ function startVisitorHeartbeat() {
       fetch(GLOBAL_CLOUD_URL)
         .then(r => r.json())
         .then(data => {
-          if (!data || typeof data !== 'object') data = {};
+          if (!data || typeof data !== 'object' || data.error) data = {};
           if (!data.activeSessions) data.activeSessions = {};
           data.activeSessions[sessId] = {
             lastSeen: Date.now(),
@@ -66,7 +66,7 @@ function startVisitorHeartbeat() {
           Object.keys(data.activeSessions).forEach(k => {
             const item = data.activeSessions[k];
             const time = typeof item === 'object' ? item.lastSeen : item;
-            if (now - time > 30000) {
+            if (now - time > 90000) {
               delete data.activeSessions[k];
             }
           });
@@ -81,7 +81,7 @@ function startVisitorHeartbeat() {
   }
 
   ping();
-  setInterval(ping, 5000);
+  setInterval(ping, 30000);
 }
 
 function sendTelemetry(type, metadata = {}) {
@@ -89,7 +89,7 @@ function sendTelemetry(type, metadata = {}) {
     fetch(GLOBAL_CLOUD_URL)
       .then(r => r.json())
       .then(data => {
-        if (!data || typeof data !== 'object') data = {};
+        if (!data || typeof data !== 'object' || data.error) data = {};
         if (type === 'page_view') {
           if (!sessionStorage.getItem('as_page_counted')) {
             data.totalVisitors = (parseInt(data.totalVisitors, 10) || 0) + 1;
