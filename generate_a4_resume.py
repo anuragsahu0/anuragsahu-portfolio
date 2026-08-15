@@ -242,19 +242,24 @@ def create_a4_pdf(filename):
 
     # Project 2
     left_flowables.append(Paragraph("<b>Meoww Racing Game</b> &nbsp;<font color='#475569' size=7>(HTML5 Canvas • JS • Web Audio)</font>", style_body))
-    left_flowables.append(Paragraph("• Action-packed arcade cat racing game with HTML5 Canvas physics engine.", style_bullet))
+    left_flowables.append(Paragraph("• Action-packed arcade cat racing game with Canvas physics engine.", style_bullet))
     left_flowables.append(Paragraph("• Dynamic race tracks, nitro boosters, obstacle dodging &amp; sound FX.", style_bullet))
-    left_flowables.append(Paragraph("• Interactive feline characters and competitive high score leaderboard.", style_bullet))
     left_flowables.append(Paragraph("<i>Tech: HTML5 Canvas, JavaScript, Web Audio API, Game Physics</i>", style_subbullet))
-    left_flowables.append(Spacer(1, 4))
+    left_flowables.append(Spacer(1, 3))
 
     # Project 3
+    left_flowables.append(Paragraph("<b>Restaurant Management System</b> &nbsp;<font color='#475569' size=7>(Node • Express • WebSockets • MongoDB)</font>", style_body))
+    left_flowables.append(Paragraph("• Multi-tenant POS, kitchen order display (KDS), billing &amp; inventory control.", style_bullet))
+    left_flowables.append(Paragraph("• Secure JWT auth and multi-role user access control system.", style_bullet))
+    left_flowables.append(Paragraph("<i>Tech: Node.js, Express.js, MongoDB, WebSockets, Redis</i>", style_subbullet))
+    left_flowables.append(Spacer(1, 3))
+
+    # Project 4
     left_flowables.append(Paragraph("<b>Smart College ERP</b> &nbsp;<font color='#475569' size=7>(React.js • Node.js • Express • MongoDB)</font>", style_body))
-    left_flowables.append(Paragraph("• Developed college ERP system to manage students, faculty &amp; courses.", style_bullet))
-    left_flowables.append(Paragraph("• Role-based dashboards for admin, faculty and students.", style_bullet))
-    left_flowables.append(Paragraph("• Integrated authentication and automated PDF reports.", style_bullet))
+    left_flowables.append(Paragraph("• Academic ERP managing student attendance, result portal &amp; fee gateway.", style_bullet))
+    left_flowables.append(Paragraph("• Role-based access control for students, faculty &amp; admin.", style_bullet))
     left_flowables.append(Paragraph("<i>Tech: React.js, Node.js, Express.js, MongoDB</i>", style_subbullet))
-    left_flowables.append(Spacer(1, 8))
+    left_flowables.append(Spacer(1, 6))
 
     # Relevant Coursework Chips
     left_flowables.append(Paragraph("📖 <b>RELEVANT COURSEWORK</b>", style_section_heading))
