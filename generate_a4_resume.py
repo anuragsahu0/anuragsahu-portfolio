@@ -241,11 +241,11 @@ def create_a4_pdf(filename):
     left_flowables.append(Spacer(1, 4))
 
     # Project 2
-    left_flowables.append(Paragraph("<b>Restaurant Management System</b> &nbsp;<font color='#475569' size=7>(HTML • CSS • JS • Node • MongoDB)</font>", style_body))
-    left_flowables.append(Paragraph("• Built complete restaurant system with menu management, orders &amp; billing.", style_bullet))
-    left_flowables.append(Paragraph("• Admin panel to manage menu, active orders, and customer leads.", style_bullet))
-    left_flowables.append(Paragraph("• Secure authentication and role-based access for staff.", style_bullet))
-    left_flowables.append(Paragraph("<i>Tech: HTML, CSS, JavaScript, Node.js, Express.js, MongoDB</i>", style_subbullet))
+    left_flowables.append(Paragraph("<b>Meoww Racing Game</b> &nbsp;<font color='#475569' size=7>(HTML5 Canvas • JS • Web Audio)</font>", style_body))
+    left_flowables.append(Paragraph("• Action-packed arcade cat racing game with HTML5 Canvas physics engine.", style_bullet))
+    left_flowables.append(Paragraph("• Dynamic race tracks, nitro boosters, obstacle dodging &amp; sound FX.", style_bullet))
+    left_flowables.append(Paragraph("• Interactive feline characters and competitive high score leaderboard.", style_bullet))
+    left_flowables.append(Paragraph("<i>Tech: HTML5 Canvas, JavaScript, Web Audio API, Game Physics</i>", style_subbullet))
     left_flowables.append(Spacer(1, 4))
 
     # Project 3

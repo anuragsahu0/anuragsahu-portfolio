@@ -32,17 +32,17 @@ export const ROADMAP_PROJECTS = [
     category: 'Full-Stack Web & Telemetry'
   },
   {
-    id: 'restaurant-management-system',
+    id: 'meoww-racing-game',
     number: '02',
-    name: 'Restaurant Management System',
-    subtitle: 'End-to-end POS, inventory control, billing, and real-time order processing platform.',
+    name: 'Meoww Racing Game',
+    subtitle: 'Interactive 2D/3D arcade cat racing game with HTML5 Canvas physics engine.',
     status: 'Coming Soon',
     statusVariant: 'amber',
     statusSymbol: '🟡',
     progress: 15,
     progressLabel: 'Planning • 15% Completed',
     lastUpdated: 'Planned Q2 2026',
-    description: 'A complete multi-tenant restaurant management platform with role-based authentication, real-time kitchen order display (KDS), automated inventory tracking, invoice billing, and revenue analytics.',
+    description: 'An action-packed arcade racing game featuring feline racers, nitro boosters, dynamic obstacle courses, and high score leaderboards.',
     currentFocus: [
       'Database Schema Design & ERD Modeling',
       'Role-Based Access Control (RBAC) System',

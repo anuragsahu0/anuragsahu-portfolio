@@ -57,17 +57,17 @@ const PROJECTS = [
     order: 1,
   },
   {
-    id: 'restaurant-management-system',
-    title: 'Restaurant Management System',
-    subtitle: 'End-to-end POS, inventory control, billing, and real-time order processing.',
-    category: 'enterprise',
-    categoryLabel: 'Enterprise Full-Stack System',
-    badge: 'PLANNED ENTERPRISE SYSTEM',
-    tagline: 'Complete multi-tenant restaurant platform with role-based auth, real-time KDS, inventory control, and billing.',
-    description: 'A comprehensive restaurant management system featuring JWT authentication, role-based access control, WebSocket kitchen order display, inventory tracking, invoice billing, and revenue analytics.',
-    github: 'https://github.com/anuragsahu0/restaurant-management-system',
+    id: 'meoww-racing-game',
+    title: 'Meoww Racing Game',
+    subtitle: 'Interactive 2D/3D arcade cat racing game with HTML5 Canvas physics engine.',
+    category: 'gaming',
+    categoryLabel: 'Gaming & Interactive Arcade',
+    badge: 'PLANNED ARCADE GAME',
+    tagline: 'Action-packed cat racing game featuring feline racers, nitro boosters, dynamic tracks, and high score leaderboards.',
+    description: 'An exciting arcade racing game built with HTML5 Canvas, JavaScript, and custom physics, featuring customizable cat racers, obstacle courses, power-ups, and competitive high score leaderboards.',
+    github: 'https://github.com/anuragsahu0/meoww-racing-game',
     demo: '#',
-    image: '/assets/project-restaurant-system.webp',
+    image: '/assets/project-meoww-racing.webp',
     metrics: [
       { label: 'Phase', value: '15%', change: 'Coming Soon' },
       { label: 'Auth', value: 'RBAC', change: 'JWT + Multi-Tenant' },
@@ -122,7 +122,7 @@ const EDUCATION = [
 
 const ROADMAP = [
   { number: '01', name: 'Portfolio', subtitle: 'Production-ready personal platform & developer telemetry dashboard.', status: 'Completed', statusVariant: 'emerald', statusSymbol: '🟢', progress: 100, progressLabel: 'Completed', lastUpdated: 'Updated Q1 2026', description: 'Building a premium production-ready portfolio with React 18, Node.js, Express backend API, modern glassmorphism design system, and recruiter-focused experience.', currentFocus: ['Nodemailer Contact Form Integration', 'Telemetry Admin Dashboard & Real-Time Analytics', 'Vercel & Docker Multi-Platform Public Deployment'], plannedModules: ['Interactive WebGL Anti-Gravity Particle Canvas', 'Centralized Candidate Data Store', 'Product-Grade Case Study Modals & Metrics'], technologies: ['React 18', 'Node.js', 'Express', 'Tailwind CSS', 'Framer Motion', 'MongoDB'], category: 'Full-Stack Web & Telemetry', order: 1 },
-  { number: '02', name: 'Restaurant Management System', subtitle: 'End-to-end POS, inventory control, billing, and real-time order processing platform.', status: 'Coming Soon', statusVariant: 'amber', statusSymbol: '🟡', progress: 0, progressLabel: 'Coming Soon', lastUpdated: 'Planned Q2 2026', description: 'A complete multi-tenant restaurant management platform with role-based authentication, real-time kitchen order display (KDS), inventory tracking, invoice billing, and revenue analytics.', currentFocus: ['Database Schema Design & ERD Modeling', 'Role-Based Access Control (RBAC) System', 'POS & Invoice Billing Module Specifications'], plannedModules: ['JWT Authentication & Multi-Role User Management', 'Real-Time Kitchen Order Display via WebSockets', 'Inventory Stock Tracking & Automatic Low-Stock Alerts', 'Automated Billing & Digital Receipt Generation', 'Manager Analytics Dashboard (Revenue & Popular Dishes)'], technologies: ['Node.js', 'Express', 'React', 'PostgreSQL', 'Redis', 'WebSockets', 'Tailwind CSS'], category: 'Enterprise Full-Stack System', order: 2 },
+  { number: '02', name: 'Meoww Racing Game', subtitle: 'Interactive 2D/3D arcade cat racing game with HTML5 Canvas physics engine.', status: 'Coming Soon', statusVariant: 'amber', statusSymbol: '🟡', progress: 15, progressLabel: 'Coming Soon', lastUpdated: 'Planned Q2 2026', description: 'An action-packed arcade racing game featuring feline racers, nitro boosters, dynamic obstacle courses, and high score leaderboards.', currentFocus: ['HTML5 Canvas Engine & Rendering Loop', 'Physics & Collision Detection Algorithms', 'Dynamic Track & Obstacle Generation'], plannedModules: ['Custom Feline Character Selection & Upgrades', 'Nitro Boosters & Power-up Mechanics', 'Interactive Web Audio Sound System', 'Global Leaderboard & High Score Tracking'], technologies: ['HTML5 Canvas', 'JavaScript', 'Web Audio API', 'Physics Engine'], category: 'Gaming & Interactive Arcade', order: 2 },
 ];
 
 const SOCIAL_LINKS = [
