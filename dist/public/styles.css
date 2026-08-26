@@ -411,7 +411,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .portrait-inner-frame {
-  height: clamp(300px, 42vh, 440px);
+  height: clamp(400px, 52vh, 480px);
 }
 
 .hero-title {
@@ -445,29 +445,38 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==============================================================
-   9. SKILLS 3D FLIP CARDS & CODING PROFILES
+   9. SKILLS 3D FLIP CARDS (Flips Strictly In-Place on Own Axis)
    ============================================================== */
 .flip-card {
   background-color: transparent;
   perspective: 1000px;
-  height: 205px;
+  height: 220px;
+  position: relative;
+  overflow: visible;
 }
 
 .flip-card-inner {
   position: relative;
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   text-align: center;
-  transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.25, 1);
   transform-style: preserve-3d;
+  transform-origin: center center;
+  transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: transform;
 }
 
 .flip-card:hover .flip-card-inner {
   transform: rotateY(180deg);
 }
 
-.flip-card-front, .flip-card-back {
+.flip-card-front,
+.flip-card-back {
   position: absolute;
-  width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   border-radius: 18px;
@@ -475,8 +484,15 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 22px;
+  padding: 24px 20px;
   box-sizing: border-box;
+  transform-origin: center center;
+  transform-style: preserve-3d;
+}
+
+.flip-card-front {
+  transform: rotateY(0deg);
+  z-index: 2;
   background: rgba(18, 18, 18, 0.95) !important;
   backdrop-filter: blur(20px) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -485,8 +501,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .flip-card-back {
   transform: rotateY(180deg);
+  z-index: 1;
   background: rgba(24, 24, 24, 0.98) !important;
-  border-color: rgba(251, 191, 36, 0.45) !important;
+  border: 1px solid rgba(251, 191, 36, 0.45) !important;
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(251, 191, 36, 0.18) !important;
 }
 
@@ -747,12 +764,12 @@ footer {
     gap: 12px !important;
   }
   .hero-portrait-showcase-container .glass-panel {
-    padding: 12px !important;
+    padding: 14px !important;
     border-radius: 20px !important;
   }
   .portrait-inner-frame {
-    height: clamp(240px, 36vh, 310px) !important;
-    border-radius: 16px !important;
+    height: clamp(370px, 46vh, 430px) !important;
+    border-radius: 18px !important;
   }
   .hero-actions {
     gap: 10px !important;
@@ -760,9 +777,6 @@ footer {
   .hero-actions .btn-primary, .hero-actions .btn-secondary {
     padding: 9px 18px !important;
     font-size: 0.82rem !important;
-  }
-  .tilt-card {
-    padding: 12px !important;
   }
   #aboutme {
     padding-top: 40px !important;
@@ -792,10 +806,10 @@ footer {
     gap: 8px !important;
   }
   .portrait-inner-frame {
-    height: clamp(210px, 32vh, 250px) !important;
+    height: clamp(320px, 42vh, 370px) !important;
   }
   .hero-portrait-showcase-container .glass-panel {
-    padding: 10px !important;
+    padding: 12px !important;
   }
 }
 
@@ -810,7 +824,7 @@ footer {
     font-size: clamp(2.2rem, 3.6vw, 3.2rem) !important;
   }
   .portrait-inner-frame {
-    height: clamp(330px, 42vh, 410px) !important;
+    height: clamp(400px, 50vh, 460px) !important;
   }
 }
 
@@ -825,7 +839,7 @@ footer {
     font-size: 3.5rem !important;
   }
   .portrait-inner-frame {
-    height: 440px !important;
+    height: 480px !important;
   }
 }
 
