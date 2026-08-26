@@ -691,7 +691,6 @@ function bootApp() {
   initCategoryFilters();
   initScrollReveal();
   initContactForm();
-  initReelCustomCursor();
   initNavScrollSpy();
 }
 
@@ -699,55 +698,11 @@ function bootApp() {
 /* Reel Custom Cursor Follower Engine                                         */
 /* -------------------------------------------------------------------------- */
 function initReelCustomCursor() {
-  if (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 992) return;
-
-  let dot = document.getElementById('custom-cursor');
-  let follower = document.getElementById('custom-cursor-follower');
-
-  if (!dot) {
-    dot = document.createElement('div');
-    dot.id = 'custom-cursor';
-    document.body.appendChild(dot);
-  }
-  if (!follower) {
-    follower = document.createElement('div');
-    follower.id = 'custom-cursor-follower';
-    document.body.appendChild(follower);
-  }
-
-  let mouseX = -100, mouseY = -100;
-  let followerX = -100, followerY = -100;
-
-  window.addEventListener('mousemove', (e) => {
-    dot.style.opacity = '1';
-    follower.style.opacity = '1';
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
-  }, { passive: true });
-
-  function renderCursor() {
-    followerX += (mouseX - followerX) * 0.18;
-    followerY += (mouseY - followerY) * 0.18;
-    follower.style.transform = `translate3d(${followerX - 18}px, ${followerY - 18}px, 0)`;
-    requestAnimationFrame(renderCursor);
-  }
-  renderCursor();
-
-  function attachCursorHover() {
-    document.querySelectorAll('a, button, input, textarea, .tilt-card, .flip-card, .filter-btn').forEach((el) => {
-      el.removeEventListener('mouseenter', onEnter);
-      el.removeEventListener('mouseleave', onLeave);
-      el.addEventListener('mouseenter', onEnter);
-      el.addEventListener('mouseleave', onLeave);
-    });
-  }
-
-  function onEnter() { follower.classList.add('cursor-hover'); }
-  function onLeave() { follower.classList.remove('cursor-hover'); }
-
-  attachCursorHover();
-  setTimeout(attachCursorHover, 1500);
+  // Mouse tracer effect disabled per user request
+  const dot = document.getElementById('custom-cursor');
+  const follower = document.getElementById('custom-cursor-follower');
+  if (dot) dot.remove();
+  if (follower) follower.remove();
 }
 
 /* -------------------------------------------------------------------------- */

@@ -279,46 +279,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==============================================================================
-   5. REFINED CUSTOM CURSOR FOLLOWER
+   5. CUSTOM CURSOR (DISABLED)
    ============================================================================== */
-#custom-cursor {
-  position: fixed;
-  top: 0; left: 0;
-  width: 8px; height: 8px;
-  opacity: 0; /* Hidden until mouse moves to prevent stray dot on portrait - Issue 20 */
-  border-radius: 50%;
-  background-color: #ffffff;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
-  pointer-events: none;
-  z-index: 9999999;
-  transform: translate(-50%, -50%);
-  transition: transform 0.08s linear, opacity 0.2s ease;
-}
-
+#custom-cursor,
 #custom-cursor-follower {
-  position: fixed;
-  top: 0; left: 0;
-  width: 36px; height: 36px;
-  opacity: 0; /* Hidden until mouse moves - Issue 20 */
-  border-radius: 50%;
-  border: 1.5px solid rgba(251, 191, 36, 0.6);
-  pointer-events: none;
-  z-index: 9999998;
-  transform: translate(-50%, -50%);
-  transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease, background-color 0.25s ease, transform 0.15s ease-out;
-}
-
-#custom-cursor-follower.cursor-hover {
-  width: 58px;
-  height: 58px;
-  border-color: rgba(182, 0, 168, 0.8);
-  background-color: rgba(118, 33, 176, 0.12);
-}
-
-@media (pointer: coarse), (max-width: 991px) {
-  #custom-cursor, #custom-cursor-follower {
-    display: none !important;
-  }
+  display: none !important;
 }
 
 /* ==============================================================================
