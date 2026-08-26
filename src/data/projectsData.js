@@ -59,7 +59,7 @@ export const PROJECTS_LIST = [
     tagline: 'Autonomous enterprise financial operations platform with multi-source ingestion, reconciliation, tax intelligence & Finance Copilot.',
     description: 'Autonomous enterprise financial operations platform featuring multi-source data ingestion, deterministic multi-way reconciliation engine, GST/VAT tax intelligence, statistical anomaly detection 2.0 (+178% surge detection), controlled settlement automation with Four-Eyes authorization, and Finance Copilot.',
     github: `${SITE_CONFIG.github}/ai-finance-controller`,
-    demo: 'https://ai-finance-controller.vercel.app',
+    demo: 'https://anuragsahu.com/AI-FINANCE-CONTROLLER',
     image: '/assets/project-portfolio.webp',
     metrics: [
       { label: 'Platform Status', value: '100%', change: '🟢 Live & Operational' },

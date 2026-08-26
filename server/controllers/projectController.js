@@ -29,7 +29,7 @@ const FALLBACK_PROJECTS = [
     badge: 'FLAGSHIP AI FINTECH',
     description: 'Autonomous enterprise financial operations platform featuring multi-source data ingestion, deterministic reconciliation engine, GST/VAT tax intelligence, anomaly detection 2.0, controlled settlement automation with Four-Eyes authorization, and Finance Copilot.',
     github: 'https://github.com/anuragsahu0/ai-finance-controller',
-    demo: 'https://ai-finance-controller.vercel.app',
+    demo: 'https://anuragsahu.com/AI-FINANCE-CONTROLLER',
     techStack: ['Next.js 14', 'FastAPI', 'Python', 'PostgreSQL', 'Tailwind CSS', 'Docker', 'AI Copilot'],
     isFeatured: true,
     order: 2,
