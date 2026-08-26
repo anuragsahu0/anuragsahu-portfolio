@@ -294,7 +294,7 @@ function initCLI() {
       } else if (val === 'skills') {
         appendLog('STACK: React 18, Node.js, Express, Python, PyTorch, MongoDB, PostgreSQL, C++', '#9ca3af');
       } else if (val === 'projects') {
-        appendLog('1. Portfolio (Working) | 2. AI Finance Controller (Live & Operational) | 3. Restaurant Management System (Coming Soon) | 4. Smart College ERP (Coming Soon)', '#9ca3af');
+        appendLog('1. Portfolio (Working) | 2. AI Finance Controller (Completed) | 3. Restaurant Management System (Coming Soon) | 4. Smart College ERP (Coming Soon)', '#9ca3af');
       } else if (val === 'clear') {
         body.innerHTML = '';
       } else {
@@ -574,9 +574,13 @@ function initAdminModal() {
 }
 
 async function syncProjectStatuses() {
+  if (!localStorage.getItem('ag_proj_status_02')) {
+    localStorage.setItem('ag_proj_status_02', 'Completed');
+  }
+
   // 1. Apply local storage immediately (High Priority - Rate-limit proof)
   ['01', '02', '03'].forEach(num => {
-    const status = localStorage.getItem(`ag_proj_status_${num}`);
+    const status = localStorage.getItem(`ag_proj_status_${num}`) || (num === '02' ? 'Completed' : null);
     if (status) {
       applyBadgeUI(num, status);
     }
