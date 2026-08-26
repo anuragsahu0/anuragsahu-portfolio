@@ -50,41 +50,42 @@ export const FEATURED_PROJECT = {
 export const PROJECTS_LIST = [
   FEATURED_PROJECT,
   {
-    id: 'meoww-racing-game',
-    title: 'Meoww Racing Game',
-    subtitle: 'Interactive 2D/3D arcade cat racing game with HTML5 Canvas physics engine.',
-    category: 'gaming',
-    categoryLabel: 'Gaming & Interactive Arcade',
-    badge: 'PLANNED ARCADE GAME',
-    tagline: 'Action-packed cat racing game featuring feline racers, nitro boosters, dynamic tracks, and high score leaderboards.',
-    description: 'An exciting arcade racing game built with HTML5 Canvas, JavaScript, and custom physics, featuring customizable cat racers, obstacle courses, power-ups, and competitive high score leaderboards.',
-    github: `${SITE_CONFIG.github}/meoww-racing-game`,
-    demo: '#',
-    image: '/assets/project-meoww-racing.webp',
+    id: 'ai-finance-controller',
+    title: 'AI Finance Controller',
+    subtitle: 'Autonomous Financial Operations, Multi-Way Reconciliation & Audit Platform.',
+    category: 'enterprise',
+    categoryLabel: 'Autonomous AI & Fintech',
+    badge: 'FLAGSHIP AI FINTECH',
+    tagline: 'Autonomous enterprise financial operations platform with multi-source ingestion, reconciliation, tax intelligence & Finance Copilot.',
+    description: 'Autonomous enterprise financial operations platform featuring multi-source data ingestion, deterministic multi-way reconciliation engine, GST/VAT tax intelligence, statistical anomaly detection 2.0 (+178% surge detection), controlled settlement automation with Four-Eyes authorization, and Finance Copilot.',
+    github: `${SITE_CONFIG.github}/ai-finance-controller`,
+    demo: 'https://ai-finance-controller.vercel.app',
+    image: '/assets/project-portfolio.webp',
     metrics: [
-      { label: 'Development Phase', value: '15%', change: '🟡 Status: Coming Soon' },
-      { label: 'Role Security', value: 'RBAC Auth', change: 'JWT + Multi-Tenant' },
-      { label: 'Real-Time Sync', value: 'WebSockets', change: 'Kitchen Order Display' },
-      { label: 'Primary Storage', value: 'PostgreSQL', change: 'Relational + Redis Cache' }
+      { label: 'Platform Status', value: '100%', change: '🟢 Live & Operational' },
+      { label: 'Reconciliation', value: 'Multi-Way Engine', change: 'Deterministic' },
+      { label: 'Tax & Anomaly', value: 'Active', change: 'GST/VAT Matching' },
+      { label: 'Governance', value: 'Four-Eyes', change: 'Strict Dual Authorization' }
     ],
     techStack: [
-      'Node.js', 'Express', 'React', 'PostgreSQL',
-      'Redis', 'WebSockets', 'Tailwind CSS', 'JWT'
+      'Next.js 14', 'FastAPI', 'Python', 'PostgreSQL',
+      'Alembic', 'Tailwind CSS', 'Docker', 'AI Copilot'
     ],
     recruiterHighlights: [
-      'Designed PostgreSQL ERD relational database schema for multi-tenant restaurant inventory, orders, and billing.',
-      'Specified real-time WebSocket architecture connecting POS billing terminals directly to Kitchen Order Display (KDS) screens.',
-      'Planned JWT role-based access control (RBAC) separating Admin Managers, Kitchen Chefs, Cashiers, and Waiters.'
+      'Built multi-way deterministic reconciliation pipeline comparing real bank statements, ledger entries, and payment feeds.',
+      'Implemented automated GST/VAT tax matching and statistical anomaly detection flagging volume surges with UNUSUAL tag.',
+      'Designed controlled settlement engine enforcing Four-Eyes principle preventing self-approval of payouts.',
+      'Integrated Finance Copilot with specialized logical agents citing verified database records and PII masking.'
     ],
     architecture: {
-      frontend: 'React single-page application with dark glassmorphism POS interface and live WebSocket KDS queue.',
-      backend: 'Node.js + Express REST & WebSocket server backed by PostgreSQL relational queries and Redis session cache.'
+      frontend: 'Next.js 14 App Router with Tailwind CSS, Lucide icons, and responsive executive finance consoles.',
+      backend: 'FastAPI Python asynchronous service with SQLAlchemy ORM, Alembic migrations, and security middlewares.'
     },
     timeline: [
-      { phase: 'Phase 1: ERD & Database Schema', detail: 'PostgreSQL relational table modeling.' },
-      { phase: 'Phase 2: Authentication & RBAC', detail: 'JWT auth & role-based middleware.' },
-      { phase: 'Phase 3: POS & Kitchen Display', detail: 'Real-time WebSocket order pipeline.' },
-      { phase: 'Phase 4: Billing & Analytics', detail: 'Automated invoice generation & revenue charts.' }
+      { phase: 'Phase 1-4: Foundation & Ingestion', detail: 'Multi-source CSV/Excel parsing & schemas.' },
+      { phase: 'Phase 5: Reconciliation Engine', detail: 'Deterministic multi-way matching & scores.' },
+      { phase: 'Phase 6-8: Tax, Risk & Settlement', detail: 'Four-Eyes approval & tax discrepancy engine.' },
+      { phase: 'Phase 9-10: Monitoring & Intelligence', detail: 'Event bus, 7-day cash flow forecast & Copilot.' }
     ]
   }
 ];

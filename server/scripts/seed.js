@@ -57,32 +57,32 @@ const PROJECTS = [
     order: 1,
   },
   {
-    id: 'meoww-racing-game',
-    title: 'Meoww Racing Game',
-    subtitle: 'Interactive 2D/3D arcade cat racing game with HTML5 Canvas physics engine.',
-    category: 'gaming',
-    categoryLabel: 'Gaming & Interactive Arcade',
-    badge: 'PLANNED ARCADE GAME',
-    tagline: 'Action-packed cat racing game featuring feline racers, nitro boosters, dynamic tracks, and high score leaderboards.',
-    description: 'An exciting arcade racing game built with HTML5 Canvas, JavaScript, and custom physics, featuring customizable cat racers, obstacle courses, power-ups, and competitive high score leaderboards.',
-    github: 'https://github.com/anuragsahu0/meoww-racing-game',
-    demo: '#',
-    image: '/assets/project-meoww-racing.webp',
+    id: 'ai-finance-controller',
+    title: 'AI Finance Controller',
+    subtitle: 'Autonomous Financial Operations, Multi-Way Reconciliation & Audit Platform.',
+    category: 'enterprise',
+    categoryLabel: 'Autonomous AI & Fintech',
+    badge: 'FLAGSHIP AI FINTECH',
+    tagline: 'Autonomous enterprise financial operations platform with multi-source ingestion, reconciliation, tax intelligence & Finance Copilot.',
+    description: 'Autonomous enterprise financial operations platform featuring multi-source data ingestion, deterministic multi-way reconciliation engine, GST/VAT tax intelligence, statistical anomaly detection 2.0 (+178% surge detection), controlled settlement automation with Four-Eyes authorization, and Finance Copilot.',
+    github: 'https://github.com/anuragsahu0/ai-finance-controller',
+    demo: 'https://ai-finance-controller.vercel.app',
+    image: '/assets/project-portfolio.webp',
     metrics: [
-      { label: 'Phase', value: '15%', change: 'Coming Soon' },
-      { label: 'Auth', value: 'RBAC', change: 'JWT + Multi-Tenant' },
-      { label: 'Real-Time', value: 'WebSockets', change: 'KDS Display' },
-      { label: 'DB', value: 'PostgreSQL', change: 'Relational + Redis' },
+      { label: 'Status', value: '100%', change: 'Live & Operational' },
+      { label: 'Reconciliation', value: 'Multi-Way Engine', change: 'Deterministic' },
+      { label: 'Tax & Anomaly', value: 'Active', change: 'GST/VAT Matching' },
+      { label: 'Governance', value: 'Four-Eyes', change: 'Strict Dual Auth' },
     ],
-    techStack: ['Node.js', 'Express', 'React', 'PostgreSQL', 'Redis', 'WebSockets', 'Tailwind CSS', 'JWT'],
+    techStack: ['Next.js 14', 'FastAPI', 'Python', 'PostgreSQL', 'Alembic', 'Tailwind CSS', 'Docker', 'AI Copilot'],
     recruiterHighlights: [
-      'Designed PostgreSQL ERD schema for multi-tenant restaurant inventory.',
-      'Specified real-time WebSocket KDS architecture.',
-      'Planned JWT RBAC separating Admin, Chef, Cashier, Waiter roles.',
+      'Built multi-way deterministic reconciliation pipeline comparing real bank statements and ledger entries.',
+      'Implemented automated GST/VAT tax matching and statistical anomaly detection (+178% volume surges).',
+      'Designed controlled settlement engine enforcing Four-Eyes principle preventing self-approval.',
     ],
     architecture: {
-      frontend: 'React SPA with glassmorphism POS interface and live KDS.',
-      backend: 'Node.js + Express REST & WebSocket server with PostgreSQL + Redis.',
+      frontend: 'Next.js 14 App Router with Tailwind CSS and responsive executive finance consoles.',
+      backend: 'FastAPI Python asynchronous service with SQLAlchemy ORM and Alembic migrations.',
     },
     timeline: [
       { phase: 'Phase 1: ERD Schema', detail: 'PostgreSQL relational modeling.' },
@@ -122,7 +122,7 @@ const EDUCATION = [
 
 const ROADMAP = [
   { number: '01', name: 'Portfolio', subtitle: 'Production-ready personal platform & developer telemetry dashboard.', status: 'Completed', statusVariant: 'emerald', statusSymbol: '🟢', progress: 100, progressLabel: 'Completed', lastUpdated: 'Updated Q1 2026', description: 'Building a premium production-ready portfolio with React 18, Node.js, Express backend API, modern glassmorphism design system, and recruiter-focused experience.', currentFocus: ['Nodemailer Contact Form Integration', 'Telemetry Admin Dashboard & Real-Time Analytics', 'Vercel & Docker Multi-Platform Public Deployment'], plannedModules: ['Interactive WebGL Anti-Gravity Particle Canvas', 'Centralized Candidate Data Store', 'Product-Grade Case Study Modals & Metrics'], technologies: ['React 18', 'Node.js', 'Express', 'Tailwind CSS', 'Framer Motion', 'MongoDB'], category: 'Full-Stack Web & Telemetry', order: 1 },
-  { number: '02', name: 'Meoww Racing Game', subtitle: 'Interactive 2D/3D arcade cat racing game with HTML5 Canvas physics engine.', status: 'Coming Soon', statusVariant: 'amber', statusSymbol: '🟡', progress: 15, progressLabel: 'Coming Soon', lastUpdated: 'Planned Q2 2026', description: 'An action-packed arcade racing game featuring feline racers, nitro boosters, dynamic obstacle courses, and high score leaderboards.', currentFocus: ['HTML5 Canvas Engine & Rendering Loop', 'Physics & Collision Detection Algorithms', 'Dynamic Track & Obstacle Generation'], plannedModules: ['Custom Feline Character Selection & Upgrades', 'Nitro Boosters & Power-up Mechanics', 'Interactive Web Audio Sound System', 'Global Leaderboard & High Score Tracking'], technologies: ['HTML5 Canvas', 'JavaScript', 'Web Audio API', 'Physics Engine'], category: 'Gaming & Interactive Arcade', order: 2 },
+  { number: '02', name: 'AI Finance Controller', subtitle: 'Autonomous Financial Operations, Multi-Way Reconciliation & Audit Platform.', status: 'Completed', statusVariant: 'emerald', statusSymbol: '🟢', progress: 100, progressLabel: 'Live & Operational', lastUpdated: 'Updated Q3 2026', description: 'Autonomous enterprise financial operations platform featuring multi-source data ingestion, deterministic reconciliation engine, GST/VAT tax intelligence, statistical anomaly detection 2.0 (+178% surge detection), controlled settlement automation with Four-Eyes authorization, and Finance Copilot.', currentFocus: ['Deterministic Multi-Way Matching', 'Four-Eyes Dual Authorization Engine', 'Real-Time Event Processing & Anomaly Baselines'], plannedModules: ['Predictive 7-Day Cash Flow Forecast', 'Specialized Logical Agents & Copilot 2.0', 'Continuous Financial Operations Monitoring'], technologies: ['Next.js 14', 'FastAPI', 'Python', 'PostgreSQL', 'Alembic', 'Docker'], category: 'Autonomous AI & Fintech', order: 2 },
 ];
 
 const SOCIAL_LINKS = [
