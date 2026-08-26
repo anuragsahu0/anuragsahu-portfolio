@@ -407,69 +407,12 @@
     </nav>
 
     <div class="hud-actions font-mono">
-      <div id="red-typewriter-pill" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px; border-radius: 20px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.5); color: #ef4444; font-size: 0.85rem; font-weight: 800; text-shadow: 0 0 12px rgba(239,68,68,0.9), 0 0 25px rgba(239,68,68,0.5); box-shadow: 0 0 20px rgba(239,68,68,0.3);">
-        <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 10px #ef4444; display: inline-block;"></span>
-        <span id="red-typewriter-text" style="letter-spacing: 1px; min-width: 60px; display: inline-block;">Dream</span>
-        <span id="red-typewriter-cursor" style="color: #ef4444; font-weight: 900; font-size: 0.9rem;">|</span>
+      <div id="red-typewriter-pill" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 20px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.35); color: #ef4444; font-size: 0.82rem; font-weight: 700; margin-left: 1cm; margin-right: 1cm; white-space: nowrap;">
+        <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+        <span id="red-typewriter-text" style="letter-spacing: 0.5px; display: inline-block;">Dream | Grow | Lead</span>
       </div>
     </div>
   </header>
-
-  <style>
-    @keyframes cursorBlink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-    #red-typewriter-cursor {
-      animation: cursorBlink 0.8s infinite;
-    }
-  </style>
-
-  <script>
-    (function startTypewriter() {
-      const words = ["Dream", "Grow", "Lead", "Dream | Grow | Lead"];
-      let wordIdx = 0;
-      let charIdx = 0;
-      let isDeleting = false;
-
-      function typeNext() {
-        const textEl = document.getElementById('red-typewriter-text');
-        if (!textEl) {
-          setTimeout(typeNext, 100);
-          return;
-        }
-
-        const currentWord = words[wordIdx];
-
-        if (isDeleting) {
-          charIdx--;
-        } else {
-          charIdx++;
-        }
-
-        textEl.textContent = currentWord.substring(0, charIdx);
-
-        let speed = isDeleting ? 50 : 100;
-
-        if (!isDeleting && charIdx === currentWord.length) {
-          speed = 1800; // Pause when word typing is complete
-          isDeleting = true;
-        } else if (isDeleting && charIdx === 0) {
-          isDeleting = false;
-          wordIdx = (wordIdx + 1) % words.length;
-          speed = 400; // Pause before starting next word
-        }
-
-        setTimeout(typeNext, speed);
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', typeNext);
-      } else {
-        typeNext();
-      }
-    })();
-  </script>
 
   <!-- Main Container -->
   <main id="main-content" class="container">

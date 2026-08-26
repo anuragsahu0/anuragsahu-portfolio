@@ -642,40 +642,7 @@ window.addEventListener('storage', (e) => {
 });
 
 function initRedTypewriter() {
-  const textEl = document.getElementById('red-typewriter-text');
-  if (!textEl) return;
-
-  const words = ['Dream', 'Grow', 'Lead', 'Dream | Grow | Lead'];
-  let wordIndex = 0;
-  let charIndex = 0;
-  let isDeleting = false;
-
-  function type() {
-    const currentWord = words[wordIndex];
-
-    if (isDeleting) {
-      charIndex--;
-    } else {
-      charIndex++;
-    }
-
-    textEl.textContent = currentWord.substring(0, charIndex);
-
-    let speed = isDeleting ? 60 : 120;
-
-    if (!isDeleting && charIndex === currentWord.length) {
-      speed = 1600; // Pause when word is fully typed
-      isDeleting = true;
-    } else if (isDeleting && charIndex === 0) {
-      isDeleting = false;
-      wordIndex = (wordIndex + 1) % words.length;
-      speed = 350; // Pause before typing next word
-    }
-
-    setTimeout(type, speed);
-  }
-
-  type();
+  // Disabled per user request (static Dream | Grow | Lead text)
 }
 
 function bootApp() {
@@ -685,7 +652,6 @@ function bootApp() {
   initAdminModal();
   syncProjectStatuses();
   setInterval(syncProjectStatuses, 1000);
-  initRedTypewriter();
   initScrollProgress();
 
   initCategoryFilters();

@@ -388,6 +388,31 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
+#red-typewriter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #ef4444;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-left: 1cm;
+  margin-right: 1cm;
+  white-space: nowrap;
+}
+
+@media (max-width: 991px) {
+  #red-typewriter-pill {
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 0.75rem;
+    padding: 4px 12px;
+  }
+}
+
 /* ==============================================================
    8. HERO SECTION & ENTRANCE
    ============================================================== */
