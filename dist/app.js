@@ -294,7 +294,7 @@ function initCLI() {
       } else if (val === 'skills') {
         appendLog('STACK: React 18, Node.js, Express, Python, PyTorch, MongoDB, PostgreSQL, C++', '#9ca3af');
       } else if (val === 'projects') {
-        appendLog('1. Portfolio (Working) | 2. Meoww Racing Game (Coming Soon) | 3. Restaurant Management System (Coming Soon) | 4. Smart College ERP (Coming Soon)', '#9ca3af');
+        appendLog('1. Portfolio (Working) | 2. AI Finance Controller (Live & Operational) | 3. Restaurant Management System (Coming Soon) | 4. Smart College ERP (Coming Soon)', '#9ca3af');
       } else if (val === 'clear') {
         body.innerHTML = '';
       } else {
