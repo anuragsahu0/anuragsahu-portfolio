@@ -372,12 +372,12 @@ h1, h2, h3, h4, h5, h6 {
    8. HERO SECTION & ENTRANCE
    ============================================================== */
 #hero {
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 130px;
-  padding-bottom: 80px;
+  padding-top: clamp(80px, 11vh, 105px);
+  padding-bottom: clamp(30px, 5vh, 50px);
   position: relative;
   overflow: hidden;
 }
