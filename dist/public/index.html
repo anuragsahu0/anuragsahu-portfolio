@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0C0C0C">
+  <meta name="theme-color" content="#070400">
 
   <!-- Smart Mobile Phone Device Auto-Detection Engine -->
   <script>
@@ -465,10 +465,6 @@
   <!-- Background WebGL/Canvas Particle Field -->
   <canvas id="bg-canvas"></canvas>
 
-  <!-- Reel-Inspired Smooth Custom Cursor -->
-  <div id="custom-cursor"></div>
-  <div id="custom-cursor-follower"></div>
-
   <!-- Persistent Zero-Gravity HUD Header -->
   <header id="hud-header" class="glass-panel">
     <a href="#" class="hud-logo" aria-label="Anurag Sahu Homepage">
@@ -477,11 +473,10 @@
     </a>
     
     <nav aria-label="Main Navigation">
-      <ul class="hud-nav font-kanit">
-        <li><a href="#hero" class="active">Overview</a></li>
+      <ul class="hud-nav">
+        <li><a href="#hero">Overview</a></li>
         <li><a href="#aboutme">About Me</a></li>
         <li><a href="#skills">Lab</a></li>
-        <li><a href="#coding-profiles">Coding</a></li>
         <li><a href="#roadmap">Projects</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
@@ -572,8 +567,8 @@
             <span>B.Tech CSE (AI & ML) 2nd Year</span>
           </div>
 
-          <h1 class="hero-title hero-heading">
-            Building Modern Full-Stack Systems & Practical AI Solutions.
+          <h1 class="hero-title heading-gradient">
+            Building modern full-stack web applications and practical AI solutions.
           </h1>
 
           <p class="hero-subtitle">
@@ -581,7 +576,7 @@
           </p>
 
           <div class="hero-actions">
-            <a href="#roadmap" class="btn-primary reel-btn" aria-label="Explore Anurag Sahu's projects roadmap">
+            <a href="#roadmap" class="btn-primary" aria-label="Explore Anurag Sahu's projects roadmap">
               <span>Explore My Work</span>
               <i data-lucide="arrow-right" style="width: 18px;" aria-hidden="true"></i>
             </a>
@@ -800,13 +795,6 @@
 
         </div>
 
-                  <!-- Anurag Sahu Academic Credentials Card -->
-          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: -20px; font-family: var(--font-mono); font-size: 0.76rem;">
-            <span class="tag-mini" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);">🎓 B.Tech CSE (AI & ML) Sophomore</span>
-            <span class="tag-mini" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);">🏛️ Maharana Pratap Institute</span>
-            <span class="tag-mini" style="background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); color: #10b981; font-weight: 700;">🚀 Open to Summer 2026 Internships</span>
-          </div>
-
         <!-- Group 2: Contact Button -->
         <div
           id="about-cta"
@@ -947,7 +935,7 @@
     <!-- SKILLS LABORATORY SECTION -->
     <section id="skills" aria-label="Engineering Laboratory">
       <div class="section-header">
-        <h2 class="section-title hero-heading">My Working Lab</h2>
+        <h2 class="section-title heading-gradient">My Working Lab</h2>
         <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
           Explore my technical capabilities, languages, frameworks, AI/ML tools, databases, and continuous learning progression.
         </p>
@@ -1049,7 +1037,7 @@
     <!-- MY CODING PROFILES SECTION -->
     <section id="coding-profiles" aria-label="Coding Profiles Section">
       <div class="section-header">
-        <h2 class="section-title hero-heading">My Coding Profiles</h2>
+        <h2 class="section-title heading-gradient">My Coding Profiles</h2>
         <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
           Track my continuous problem solving, competitive programming, and algorithmic data structures progression across global coding platforms.
         </p>
@@ -1096,7 +1084,7 @@
     <!-- PROJECTS SECTION -->
     <section id="roadmap" aria-label="Projects Section">
       <div class="section-header">
-        <h2 class="section-title hero-heading">Projects Showcase</h2>
+        <h2 class="section-title heading-gradient">Projects</h2>
         <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
           Explore the active development status of current builds, planned architecture modules, and upcoming system milestones in my engineering pipeline.
         </p>
@@ -1211,7 +1199,7 @@
     <!-- CONTACT MISSION CONTROL SECTION -->
     <section id="contact" aria-label="Contact Section" style="padding-bottom: 60px;">
       <div class="section-header">
-        <h2 class="section-title hero-heading">Let's Build Something Great Together</h2>
+        <h2 class="section-title heading-gradient">Let's Build Something Great Together</h2>
         <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
           Open for Summer 2026 Software Engineering & AI/ML Internship opportunities. Fill out the direct form below or reach out via email, LinkedIn, or GitHub.
         </p>
@@ -1278,7 +1266,7 @@
               <textarea id="contact-msg" rows="4" required placeholder="Hi Anurag, we reviewed your portfolio..." style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--color-starlight-white); font-family: inherit; margin-top: 4px; resize: none;"></textarea>
             </div>
 
-            <button id="contact-submit-btn" type="submit" class="btn-primary reel-btn" style="justify-content: center;" aria-label="Send Direct Message">
+            <button id="contact-submit-btn" type="submit" class="btn-primary" style="justify-content: center;" aria-label="Send Direct Message">
               <span>Send Message</span>
               <i data-lucide="send" style="width: 16px;" aria-hidden="true"></i>
             </button>

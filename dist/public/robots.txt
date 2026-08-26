@@ -1,0 +1,5 @@
+# Robots.txt for Anurag Sahu Anti Gravity Portfolio
+User-agent: *
+Allow: /
+
+Sitemap: https://anuragsahu.com/sitemap.xml
