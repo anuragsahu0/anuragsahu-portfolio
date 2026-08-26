@@ -314,12 +314,12 @@ h1, h2, h3, h4, h5, h6 {
   position: fixed;
   top: 18px; left: 50%;
   transform: translateX(-50%);
-  width: min(92%, 1050px);
+  width: min(94%, 1160px);
   z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 28px;
+  padding: 10px clamp(1cm, 2.5vw, 36px);
   border-radius: 9999px;
   background: rgba(12, 12, 12, 0.82);
   backdrop-filter: blur(24px) saturate(180%);
@@ -351,6 +351,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 1.15rem;
   letter-spacing: -0.01em;
   text-shadow: 0 0 16px rgba(251, 191, 36, 0.4);
+  white-space: nowrap;
 }
 
 .hud-logo-glyph {
@@ -374,10 +375,11 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 6px 16px;
+  padding: 6px 14px;
   border-radius: 9999px;
   border: 1px solid transparent;
   transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  white-space: nowrap;
 }
 
 .hud-nav a:hover, .hud-nav a.active {
@@ -399,23 +401,32 @@ h1, h2, h3, h4, h5, h6 {
   color: #ef4444;
   font-size: 0.82rem;
   font-weight: 700;
-  margin-left: 1cm;
-  margin-right: 1cm;
+  margin-left: 12px;
+  margin-right: 0;
   white-space: nowrap;
 }
 
 @media (max-width: 991px) {
   #red-typewriter-pill {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 8px;
+    margin-right: 0;
     font-size: 0.75rem;
     padding: 4px 12px;
   }
 }
 
 /* ==============================================================
-   8. HERO SECTION & ENTRANCE
+   8. CONTAINER & HERO SECTION (1cm Balanced Margin & Spacing)
    ============================================================== */
+.container {
+  width: min(92%, 1280px);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1cm, 3.5vw, 48px);
+  padding-right: clamp(1cm, 3.5vw, 48px);
+  box-sizing: border-box;
+}
+
 #hero {
   min-height: calc(100vh - 50px);
   display: flex;
@@ -423,8 +434,11 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   padding-top: clamp(75px, 10vh, 95px);
   padding-bottom: clamp(25px, 4vh, 45px);
+  padding-left: clamp(1cm, 2.5vw, 32px);
+  padding-right: clamp(1cm, 2.5vw, 32px);
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .hero-grid-container {
