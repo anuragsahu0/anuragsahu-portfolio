@@ -39,7 +39,7 @@
   <!-- Font Preconnect & Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -640,78 +640,297 @@
       </div>
     </section>
 
-    <!-- ABOUT ME SECTION -->
-    <section id="aboutme" aria-label="About Me Overview">
-      <div class="section-header">
-        <h2 class="section-title heading-gradient">About Me</h2>
-        <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
-          Passionate about building modern web experiences and continuously growing as a software developer.
-        </p>
-      </div>
+    <!-- ============================================================
+         ABOUT ME SECTION — Royal Gold + Kanit + Scroll Char Reveal
+         ============================================================ -->
+    <section id="aboutme" aria-label="About Me" style="
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      overflow: hidden;
+      background: #070400;
+    ">
+      <!-- ── DECORATIVE CORNER IMAGES (absolute, z-0) ── -->
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; align-items: start;">
-        <!-- Left Content -->
-        <div class="glass-panel glass-spotlight" style="padding: 32px;">
-          <div style="color: var(--color-muted-text); font-size: 0.95rem; line-height: 1.7; display: flex; flex-direction: column; gap: 16px;">
-            <p>
-              Hi, I'm <strong style="color: var(--color-starlight-white);">Anurag Sahu</strong>, a B.Tech student in <strong style="color: var(--color-nebula-cyan);">Computer Science & Engineering (AI & ML)</strong> at <strong style="color: var(--color-starlight-white);">Maharana Pratap Institute of Professional Studies</strong>.
-            </p>
-            <p>
-              I am passionate about building modern, scalable web applications and continuously improving my problem-solving skills.
-            </p>
-            <p>
-              My current focus is <strong style="color: var(--color-nebula-cyan);">Full-Stack Development</strong>, where I work with both frontend and backend technologies to create responsive, efficient, and user-centric solutions.
-            </p>
-            <p>
-              I enjoy learning new technologies, taking on challenging projects, and writing clean, maintainable code.
-            </p>
-            <p>
-              I'm actively seeking opportunities to contribute, grow as a developer, and deliver meaningful software that creates real-world impact.
-            </p>
-          </div>
+      <!-- Top-Left: Moon Icon -->
+      <img
+        id="about-deco-tl"
+        src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/moon_icon.11395d36.png"
+        alt=""
+        aria-hidden="true"
+        style="
+          position: absolute;
+          top: 4%;
+          left: clamp(8px, 2vw, 4%);
+          width: clamp(120px, 14vw, 210px);
+          height: auto;
+          z-index: 0;
+          pointer-events: none;
+          opacity: 0;
+          transform: translateX(-80px);
+          transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.1s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.1s;
+          filter: drop-shadow(0 0 20px rgba(251,191,36,0.18));
+        "
+      />
 
-          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; font-family: var(--font-mono); font-size: 0.75rem;">
-            <span class="tag-mini">🎓 B.Tech CSE (AI & ML)</span>
-            <span class="tag-mini">💻 Full-Stack Developer</span>
-            <span class="tag-mini">⚡ React • Node.js</span>
-            <span class="tag-mini">🗄 MongoDB</span>
-            <span class="tag-mini">🌐 REST APIs</span>
-            <span class="tag-mini" style="background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: #10b981;">🚀 Open to Internship Opportunities</span>
-          </div>
+      <!-- Bottom-Left: 3D Object -->
+      <img
+        id="about-deco-bl"
+        src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/p59_1.4659672e.png"
+        alt=""
+        aria-hidden="true"
+        style="
+          position: absolute;
+          bottom: 8%;
+          left: clamp(12px, 5vw, 10%);
+          width: clamp(100px, 12vw, 180px);
+          height: auto;
+          z-index: 0;
+          pointer-events: none;
+          opacity: 0;
+          transform: translateX(-80px);
+          transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.25s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.25s;
+          filter: drop-shadow(0 0 15px rgba(251,191,36,0.12));
+        "
+      />
+
+      <!-- Top-Right: Lego Icon -->
+      <img
+        id="about-deco-tr"
+        src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/lego_icon-1.703bb594.png"
+        alt=""
+        aria-hidden="true"
+        style="
+          position: absolute;
+          top: 4%;
+          right: clamp(8px, 2vw, 4%);
+          width: clamp(120px, 14vw, 210px);
+          height: auto;
+          z-index: 0;
+          pointer-events: none;
+          opacity: 0;
+          transform: translateX(80px);
+          transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.15s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.15s;
+          filter: drop-shadow(0 0 20px rgba(251,191,36,0.18));
+        "
+      />
+
+      <!-- Bottom-Right: 3D Group -->
+      <img
+        id="about-deco-br"
+        src="https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/Group_134-1.2e04f3ce.png"
+        alt=""
+        aria-hidden="true"
+        style="
+          position: absolute;
+          bottom: 8%;
+          right: clamp(12px, 5vw, 10%);
+          width: clamp(130px, 14vw, 220px);
+          height: auto;
+          z-index: 0;
+          pointer-events: none;
+          opacity: 0;
+          transform: translateX(80px);
+          transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.3s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.3s;
+          filter: drop-shadow(0 0 15px rgba(251,191,36,0.12));
+        "
+      />
+
+      <!-- ── CENTER CONTENT (z-10) ── -->
+      <div style="
+        position: relative;
+        z-index: 10;
+        max-width: 896px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(64px, 8vw, 96px);
+      ">
+
+        <!-- Group 1: Heading + Animated Paragraph -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: clamp(40px, 6vw, 64px);">
+
+          <!-- "About me" Heading -->
+          <h2
+            id="about-heading"
+            style="
+              font-family: 'Kanit', sans-serif;
+              font-weight: 900;
+              text-transform: uppercase;
+              line-height: 1;
+              letter-spacing: -0.02em;
+              text-align: center;
+              font-size: clamp(3rem, 12vw, 160px);
+              background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
+              opacity: 0;
+              transform: translateY(40px);
+              transition: opacity 0.7s cubic-bezier(0.25,0.1,0.25,1), transform 0.7s cubic-bezier(0.25,0.1,0.25,1);
+              margin: 0;
+            "
+          >About me</h2>
+
+          <!-- Scroll-driven Character-by-Character Paragraph -->
+          <p
+            id="about-char-para"
+            style="
+              font-family: 'Kanit', sans-serif;
+              font-weight: 500;
+              color: #D7E2EA;
+              text-align: center;
+              line-height: 1.7;
+              max-width: 560px;
+              font-size: clamp(1rem, 2vw, 1.35rem);
+              margin: 0;
+              word-break: break-word;
+            "
+          ></p>
+
         </div>
 
-        <!-- Right Summary Card -->
-        <div class="glass-panel glass-spotlight" style="padding: 32px; border-color: rgba(6,182,212,0.4);">
-          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
-            <div style="width: 64px; height: 75px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.4); padding: 2px; overflow: hidden; flex-shrink: 0;">
-              <picture>
-                <source srcSet="assets/anurag-portrait-sm.webp" type="image/webp">
-                <img src="assets/anurag-portrait-sm.jpg" alt="Professional portrait of Anurag Sahu." width="64" height="75" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
-              </picture>
-            </div>
-            <div>
-              <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--color-starlight-white);">Anurag Sahu</h3>
-              <p class="font-mono" style="font-size: 0.8rem; color: var(--color-nebula-cyan);">B.Tech CSE (AI & ML)</p>
-            </div>
-          </div>
-
-          <div style="font-family: var(--font-mono); font-size: 0.8rem; display: flex; flex-direction: column; gap: 12px;">
-            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 8px;">
-              <span style="color: var(--color-muted-text);">Education:</span>
-              <span style="color: var(--color-starlight-white); font-weight: 600;">B.Tech CSE (AI & ML)</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 8px;">
-              <span style="color: var(--color-muted-text);">College:</span>
-              <span style="color: var(--color-starlight-white); font-weight: 600; text-align: right; max-width: 180px;">Maharana Pratap Institute</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 8px;">
-              <span style="color: var(--color-muted-text);">Focus:</span>
-              <span style="color: var(--color-nebula-cyan); font-weight: 700;">Full-Stack Development</span>
-            </div>
-          </div>
+        <!-- Group 2: Contact Button -->
+        <div
+          id="about-cta"
+          style="
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.7s cubic-bezier(0.25,0.1,0.25,1) 0.3s, transform 0.7s cubic-bezier(0.25,0.1,0.25,1) 0.3s;
+          "
+        >
+          <a
+            href="#contact"
+            id="about-contact-btn"
+            style="
+              display: inline-block;
+              padding: clamp(12px,2.5vw,16px) clamp(32px,4vw,48px);
+              border-radius: 9999px;
+              font-family: 'Kanit', sans-serif;
+              font-weight: 500;
+              text-transform: uppercase;
+              letter-spacing: 0.18em;
+              font-size: clamp(0.75rem, 1.5vw, 1rem);
+              color: #ffffff;
+              text-decoration: none;
+              background: linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%);
+              box-shadow: 0px 4px 4px rgba(181,1,167,0.25), 4px 4px 12px #7721B1 inset;
+              outline: 2px solid #E3E3E3;
+              outline-offset: -3px;
+              transition: opacity 0.2s ease;
+              cursor: pointer;
+            "
+            onmouseover="this.style.opacity='0.9'"
+            onmouseout="this.style.opacity='1'"
+            onmousedown="this.style.opacity='0.75'"
+            onmouseup="this.style.opacity='0.9'"
+          >Contact Me</a>
         </div>
+
       </div>
     </section>
+
+    <script>
+    /* ============================================================
+       ABOUT ME SECTION — Vanilla JS Animations
+       ============================================================ */
+    (function initAboutSection() {
+
+      // ── 1. IntersectionObserver: fade-in corner images + heading + CTA ──
+      const fadeTargets = [
+        { el: document.getElementById('about-deco-tl'), show: true },
+        { el: document.getElementById('about-deco-bl'), show: true },
+        { el: document.getElementById('about-deco-tr'), show: true },
+        { el: document.getElementById('about-deco-br'), show: true },
+        { el: document.getElementById('about-heading'),  show: true },
+        { el: document.getElementById('about-cta'),      show: true },
+      ];
+
+      const sectionEl = document.getElementById('aboutme');
+
+      const sectionObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            fadeTargets.forEach(({ el }) => {
+              if (!el) return;
+              el.style.opacity = '1';
+              el.style.transform = 'translateX(0) translateY(0)';
+            });
+            sectionObs.disconnect();
+          }
+        });
+      }, { threshold: 0.05, rootMargin: '50px' });
+
+      if (sectionEl) sectionObs.observe(sectionEl);
+
+      // ── 2. Scroll-driven character reveal ──
+      const paraEl = document.getElementById('about-char-para');
+      if (!paraEl) return;
+
+      const TEXT = "With more than five years of experience in design, i focus on branding, web design, and user experience, i truly enjoy working with businesses that aim to stand out and present their best image. Let\u2019s build something incredible together!";
+
+      // Build character spans
+      const chars = TEXT.split('');
+      const totalChars = chars.length;
+
+      // Build inner HTML: each char is a wrapper <span> (holds space) with
+      // an absolutely-positioned visible <span> on top
+      let html = '';
+      chars.forEach((ch, i) => {
+        const display = ch === ' ' ? '\u00A0' : ch;
+        html += `<span style="position:relative;display:inline-block;">` +
+                  `<span style="opacity:0.15;user-select:none;" aria-hidden="true">${display}</span>` +
+                  `<span id="ac${i}" style="position:absolute;top:0;left:0;opacity:0.15;transition:opacity 0.15s ease;">${display}</span>` +
+                `</span>`;
+      });
+      paraEl.innerHTML = html;
+
+      // Collect all visible char spans
+      const charSpans = Array.from({ length: totalChars }, (_, i) => document.getElementById(`ac${i}`));
+
+      // ── Scroll handler: map section scroll progress to per-char opacity ──
+      function updateCharReveal() {
+        if (!sectionEl) return;
+        const rect = sectionEl.getBoundingClientRect();
+        const winH = window.innerHeight;
+
+        // scrollYProgress: 0 when section top hits 0.8 * winH, 1 when section bottom hits 0.2 * winH
+        const sectionH = rect.height;
+        // When rect.top = winH * 0.8  =>  progress = 0
+        // When rect.bottom = winH * 0.2  =>  progress = 1
+        // rect.bottom = rect.top + sectionH
+        // At progress=0: rect.top = winH * 0.8
+        // At progress=1: rect.top = winH * 0.2 - sectionH
+        const startScroll = winH * 0.8;   // rect.top value when progress=0
+        const endScroll   = winH * 0.2 - sectionH;  // rect.top value when progress=1
+        const progress    = Math.max(0, Math.min(1, (startScroll - rect.top) / (startScroll - endScroll)));
+
+        charSpans.forEach((span, index) => {
+          if (!span) return;
+          const charProgress = index / totalChars;
+          const start = Math.max(0, charProgress - 0.1);
+          const end   = Math.min(1, charProgress + 0.05);
+          let opacity;
+          if (progress <= start) {
+            opacity = 0.15;
+          } else if (progress >= end) {
+            opacity = 1;
+          } else {
+            opacity = 0.15 + ((progress - start) / (end - start)) * 0.85;
+          }
+          span.style.opacity = opacity.toFixed(3);
+        });
+      }
+
+      window.addEventListener('scroll', updateCharReveal, { passive: true });
+      updateCharReveal(); // run once on load
+    })();
+    </script>
 
     <!-- SKILLS LABORATORY SECTION -->
     <section id="skills" aria-label="Engineering Laboratory">
