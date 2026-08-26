@@ -170,6 +170,7 @@ function initParticleBackground() {
   const canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  if (!ctx) return; // Three.js is using WebGL context on bg-canvas
 
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);

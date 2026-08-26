@@ -1,3 +1,14 @@
+/* Fixed Background 3D Canvas */
+#bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+
 /* ==============================================================================
    ANURAG SAHU — REEL-INSPIRED LUXURY DESIGN SYSTEM
    Dark #0C0C0C Obsidian Canvas • Kanit Display Typography • Hero-Heading Gradients

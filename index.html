@@ -48,7 +48,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=20260826_laptop_v2">
+  <link rel="stylesheet" href="styles.css?v=20260826_gap_fixed_final">
 
   <style>
     /* Admin Modal Glassmorphism Overlay */
@@ -106,6 +106,18 @@
     ]
   }
   </script>
+  <!-- Inline Guarantee: #bg-canvas is always fixed and never in document flow -->
+  <style>
+    #bg-canvas {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: -1 !important;
+      pointer-events: none !important;
+    }
+  </style>
 </head>
 <body>
   <!-- Reset scroll to top immediately on load to prevent stuck gaps -->
@@ -1527,7 +1539,7 @@
     </div>
   </footer>
 
-  <script src="app.js?v=20260820_gold" type="module"></script>
+  <script src="app.js?v=20260826_gap_fixed_final" type="module"></script>
   <script>
     lucide.createIcons();
 
