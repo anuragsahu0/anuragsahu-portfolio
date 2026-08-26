@@ -39,7 +39,7 @@
   <!-- Font Preconnect & Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -48,7 +48,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=20260826_gap_fixed_final">
+  <link rel="stylesheet" href="styles.css?v=20260826_usability_v3">
 
   <style>
     /* Admin Modal Glassmorphism Overlay */
@@ -214,7 +214,7 @@
     }
 
     .preloader-brand-title {
-      font-family: var(--font-display, 'Space Grotesk', sans-serif);
+      font-family: var(--font-display, var(--font-kanit));
       font-size: clamp(2rem, 5.5vw, 4.2rem);
       font-weight: 900;
       color: #ffffff;
@@ -285,7 +285,7 @@
     }
 
     .preloader-counter-huge {
-      font-family: var(--font-display, 'Space Grotesk', sans-serif);
+      font-family: var(--font-display, var(--font-kanit));
       font-size: clamp(5rem, 14vw, 9.5rem);
       font-weight: 900;
       color: #ffffff;
@@ -479,16 +479,13 @@
 
     <!-- HERO SECTION -->
     <section id="hero" aria-label="Hero Section" style="position: relative; overflow: hidden;">
-      <!-- Animated Ambient Glowing Orbs -->
-      <div class="ambient-orb orb-1"></div>
-      <div class="ambient-orb orb-2"></div>
 
       <div class="hero-grid-container" style="position: relative; z-index: 2;">
         
         <!-- LEFT COLUMN: Authentic Brand Pitch & Actions -->
         <div class="hero-left-column" style="display: flex; flex-direction: column; gap: 20px;">
 
-          <div class="hero-tagline font-mono" style="font-size: 0.85rem; color: var(--color-muted-text); text-transform: uppercase;">
+          <div class="hero-tagline font-mono" style="font-size: var(--font-size-sm); color: var(--color-muted-text); text-transform: none;">
             <span style="color: var(--color-starlight-white); font-weight: 700;">Anurag Sahu</span>
             <span style="color: var(--color-nebula-cyan); font-weight: 700;">•</span>
             <span>B.Tech CSE (AI & ML) 2nd Year</span>
@@ -548,16 +545,19 @@
               </picture>
             </div>
 
-            <!-- Direct Contact Buttons Row Below Portrait Image -->
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-family: var(--font-mono); font-size: 0.78rem; margin-top: 14px;">
-              <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="btn-primary" style="padding: 10px 8px; justify-content: center; border-radius: 12px; font-size: 0.78rem; border-color: rgba(6,182,212,0.6); box-shadow: 0 0 15px rgba(6,182,212,0.25);" aria-label="GitHub Profile">
-                <i data-lucide="github" style="width: 15px;" aria-hidden="true"></i> GitHub
+            <!-- Direct Contact Buttons Row Below Portrait Image (Issues 18, 19, 21) -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-family: var(--font-mono); font-size: var(--font-size-xs); margin-top: 14px; margin-bottom: 4px;">
+              <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 9px 6px; justify-content: center; border-radius: var(--radius-md); font-size: var(--font-size-xs); display: inline-flex; align-items: center; gap: 6px;" aria-label="GitHub Profile">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                <span>GitHub</span>
               </a>
-              <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 10px 8px; justify-content: center; border-radius: 12px; font-size: 0.78rem; border-color: rgba(139,92,246,0.6); color: var(--color-quantum-violet);" aria-label="LinkedIn Profile">
-                <i data-lucide="linkedin" style="width: 15px;" aria-hidden="true"></i> LinkedIn
+              <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 9px 6px; justify-content: center; border-radius: var(--radius-md); font-size: var(--font-size-xs); display: inline-flex; align-items: center; gap: 6px;" aria-label="LinkedIn Profile">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                <span>LinkedIn</span>
               </a>
-              <button onclick="copyEmail()" class="btn-secondary" style="padding: 10px 8px; justify-content: center; border-radius: 12px; font-size: 0.78rem; border-color: rgba(16,185,129,0.6); color: #10b981;" aria-label="Copy Direct Email Address">
-                <i data-lucide="mail" style="width: 15px;" aria-hidden="true"></i> Gmail
+              <button onclick="copyEmail()" class="btn-secondary" style="padding: 9px 6px; justify-content: center; border-radius: var(--radius-md); font-size: var(--font-size-xs); display: inline-flex; align-items: center; gap: 6px;" aria-label="Copy Direct Email Address">
+                <i data-lucide="mail" style="width: 15px;" aria-hidden="true"></i>
+                <span>Gmail</span>
               </button>
             </div>
 
@@ -883,13 +883,13 @@
             <div class="flip-card-inner">
               <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(6,182,212,0.4); flex-direction: column; justify-content: center; gap: 8px;">
                 <i data-lucide="layout" style="width: 42px; height: 42px; color: var(--color-nebula-cyan); z-index: 2;" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Frontend Web</h4>
-                <span style="font-size: 0.72rem; color: var(--color-nebula-cyan); background: rgba(6,182,212,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.3); z-index: 2;" class="font-mono">React • Tailwind • JS 🔄</span>
+                <h3 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Frontend Web</h3>
+                <span style="font-size: 0.72rem; color: var(--color-nebula-cyan); background: rgba(6,182,212,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.3); z-index: 2;" class="font-mono">React • Tailwind • JS</span>
                 <!-- Topic Logo Watermark -->
                 <i data-lucide="code-2" class="topic-watermark-icon" aria-hidden="true"></i>
               </div>
               <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1rem; margin-bottom: 6px; z-index: 2;">Frontend Capabilities</h4>
+                
                 <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">React 18 Architecture, Tailwind CSS Systems, ES6+ JavaScript, Responsive UI/UX</p>
                 <i data-lucide="layout" class="topic-watermark-icon" aria-hidden="true"></i>
               </div>
@@ -901,12 +901,12 @@
             <div class="flip-card-inner">
               <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(139,92,246,0.4); flex-direction: column; justify-content: center; gap: 8px;">
                 <i data-lucide="server" style="width: 42px; height: 42px; color: var(--color-quantum-violet); z-index: 2;" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Backend & APIs</h4>
-                <span style="font-size: 0.72rem; color: var(--color-quantum-violet); background: rgba(139,92,246,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(139,92,246,0.3); z-index: 2;" class="font-mono">Node.js • Express • REST 🔄</span>
+                <h3 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Backend & APIs</h3>
+                <span style="font-size: 0.72rem; color: var(--color-quantum-violet); background: rgba(139,92,246,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(139,92,246,0.3); z-index: 2;" class="font-mono">Node.js • Express • REST</span>
                 <i data-lucide="terminal" class="topic-watermark-icon" style="color: var(--color-quantum-violet);" aria-hidden="true"></i>
               </div>
               <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1rem; margin-bottom: 6px; z-index: 2;">Backend Engine</h4>
+                
                 <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">Node.js Runtimes, Express Server API Routes, JWT Bearer Auth, Rate Limiters</p>
                 <i data-lucide="server" class="topic-watermark-icon" style="color: var(--color-quantum-violet);" aria-hidden="true"></i>
               </div>
@@ -918,12 +918,12 @@
             <div class="flip-card-inner">
               <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(6,182,212,0.4); flex-direction: column; justify-content: center; gap: 8px;">
                 <i data-lucide="cpu" style="width: 42px; height: 42px; color: var(--color-nebula-cyan); z-index: 2;" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">AI & ML</h4>
-                <span style="font-size: 0.72rem; color: var(--color-nebula-cyan); background: rgba(6,182,212,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.3); z-index: 2;" class="font-mono">PyTorch • Python • GNNs 🔄</span>
+                <h3 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">AI & ML</h3>
+                <span style="font-size: 0.72rem; color: var(--color-nebula-cyan); background: rgba(6,182,212,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.3); z-index: 2;" class="font-mono">PyTorch • Python • GNNs</span>
                 <i data-lucide="bot" class="topic-watermark-icon" aria-hidden="true"></i>
               </div>
               <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1rem; margin-bottom: 6px; z-index: 2;">AI/ML Pipeline</h4>
+                
                 <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">PyTorch Model Pipelines, Python Data Processing, Graph Neural Networks (GNNs)</p>
                 <i data-lucide="cpu" class="topic-watermark-icon" aria-hidden="true"></i>
               </div>
@@ -935,12 +935,12 @@
             <div class="flip-card-inner">
               <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(16,185,129,0.4); flex-direction: column; justify-content: center; gap: 8px;">
                 <i data-lucide="database" style="width: 42px; height: 42px; color: #10b981; z-index: 2;" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Databases</h4>
-                <span style="font-size: 0.72rem; color: #10b981; background: rgba(16,185,129,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(16,185,129,0.3); z-index: 2;" class="font-mono">MongoDB • Mongoose • SQL 🔄</span>
+                <h3 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Databases</h3>
+                <span style="font-size: 0.72rem; color: #10b981; background: rgba(16,185,129,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(16,185,129,0.3); z-index: 2;" class="font-mono">MongoDB • Mongoose • SQL</span>
                 <i data-lucide="hard-drive" class="topic-watermark-icon" style="color: #10b981;" aria-hidden="true"></i>
               </div>
               <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1rem; margin-bottom: 6px; z-index: 2;">Database Architecture</h4>
+                
                 <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">MongoDB Atlas Cloud Clusters, Mongoose ODM Schemas, SQL Data Modeling</p>
                 <i data-lucide="database" class="topic-watermark-icon" style="color: #10b981;" aria-hidden="true"></i>
               </div>
@@ -952,12 +952,12 @@
             <div class="flip-card-inner">
               <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(239,68,68,0.4); flex-direction: column; justify-content: center; gap: 8px;">
                 <i data-lucide="smartphone" style="width: 42px; height: 42px; color: #ef4444; z-index: 2;" aria-hidden="true"></i>
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Mobile Apps</h4>
-                <span style="font-size: 0.72rem; color: #ef4444; background: rgba(239,68,68,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(239,68,68,0.3); z-index: 2;" class="font-mono">Flutter • Dart • Firebase 🔄</span>
+                <h3 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Mobile Apps</h3>
+                <span style="font-size: 0.72rem; color: #ef4444; background: rgba(239,68,68,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(239,68,68,0.3); z-index: 2;" class="font-mono">Flutter • Dart • Firebase</span>
                 <i data-lucide="smartphone" class="topic-watermark-icon" style="color: #ef4444;" aria-hidden="true"></i>
               </div>
               <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
-                <h4 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1rem; margin-bottom: 6px; z-index: 2;">Mobile App Engine</h4>
+                
                 <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">Flutter Framework, Dart Language, Cross-Platform Android/iOS UI, Firebase Integration</p>
                 <i data-lucide="smartphone" class="topic-watermark-icon" style="color: #ef4444;" aria-hidden="true"></i>
               </div>
@@ -1046,10 +1046,16 @@
         <p style="color: var(--color-muted-text); font-size: 0.9rem; margin-bottom: 16px;">
           Building a premium production-ready portfolio with React 18, Node.js, Express backend API, modern glassmorphism design system, and recruiter-focused telemetry experience.
         </p>
-        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-starlight-white); display: flex; flex-direction: column; gap: 6px;">
-          <div>✓ Contact Form & Nodemailer Email Delivery Engine</div>
-          <div>✓ Telemetry Admin Dashboard & Analytics Tracker</div>
-          <div>✓ Multi-Platform Production Deployment</div>
+        <div style="font-family: var(--font-mono); font-size: var(--font-size-xs); color: var(--color-starlight-white); display: flex; flex-direction: column; gap: 6px;">
+          <div>• Contact Form & Nodemailer Email Delivery Engine</div>
+          <div>• Telemetry Admin Dashboard & Analytics Tracker</div>
+          <div>• Multi-Platform Production Deployment</div>
+        </div>
+        <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: var(--font-size-xs); padding: 8px 16px; display: inline-flex; align-items: center; gap: 6px;" aria-label="View Portfolio Source Code on GitHub">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>View Source</span>
+          </a>
         </div>
       </div>
 
@@ -1122,11 +1128,12 @@
         </div>
       </div>
 
-      <!-- Glowing Announcement Banner -->
+      <!-- Informational Status Note (Issue 15 - Non-interactive affordance) -->
       <div style="text-align: center; margin-top: 24px; margin-bottom: 40px;" class="font-mono">
-        <span style="padding: 8px 24px; border-radius: 20px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.4); color: var(--color-nebula-cyan); font-size: 0.85rem; font-weight: 700; box-shadow: 0 0 20px rgba(6,182,212,0.25);">
-          ✨ and many others will be updated soon...
-        </span>
+        <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 0; display: inline-flex; align-items: center; gap: 6px;">
+          <span>✨</span>
+          <span>and many others will be updated soon...</span>
+        </p>
       </div>
     </section>
 
@@ -1163,16 +1170,19 @@
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-              <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="btn-primary" style="padding: 10px; justify-content: center; font-size: 0.75rem; border-color: rgba(6,182,212,0.6); box-shadow: 0 0 15px rgba(6,182,212,0.3);" aria-label="GitHub Profile">
-                <i data-lucide="github" style="width: 14px;" aria-hidden="true"></i> GitHub✨
+              <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 10px; justify-content: center; font-size: var(--font-size-xs); display: inline-flex; align-items: center; gap: 6px;" aria-label="GitHub Profile">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                <span>GitHub</span>
               </a>
 
-              <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 10px; justify-content: center; font-size: 0.75rem; border-color: rgba(139,92,246,0.6); color: var(--color-quantum-violet); box-shadow: 0 0 15px rgba(139,92,246,0.3);" aria-label="LinkedIn Profile">
-                <i data-lucide="linkedin" style="width: 14px;" aria-hidden="true"></i> LinkedIn✨
+              <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="padding: 10px; justify-content: center; font-size: var(--font-size-xs); display: inline-flex; align-items: center; gap: 6px;" aria-label="LinkedIn Profile">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                <span>LinkedIn</span>
               </a>
 
-              <button onclick="copyEmail()" class="btn-secondary" style="padding: 10px; justify-content: center; font-size: 0.75rem; border-color: rgba(16,185,129,0.6); color: #10b981; box-shadow: 0 0 15px rgba(16,185,129,0.3);" aria-label="Copy Direct Email Address">
-                <i data-lucide="mail" style="width: 14px;" aria-hidden="true"></i> Email✨
+              <button onclick="copyEmail()" class="btn-secondary" style="padding: 10px; justify-content: center; font-size: var(--font-size-xs); display: inline-flex; align-items: center; gap: 6px;" aria-label="Copy Direct Email Address">
+                <i data-lucide="mail" style="width: 14px;" aria-hidden="true"></i>
+                <span>Email</span>
               </button>
             </div>
           </div>
@@ -1378,25 +1388,25 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
               <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(6,182,212,0.3); border-radius: 14px; padding: 16px;">
                 <div style="color: var(--color-nebula-cyan); font-size: 0.7rem; font-weight: 700; margin-bottom: 4px;">PROJECT 01 • FLAGSHIP BUILD</div>
-                <h4 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Portfolio</h4>
+                <h3 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Portfolio</h3>
                 <p style="color: var(--color-muted-text); font-size: 0.75rem; margin-bottom: 12px;">Production-ready personal platform with telemetry & admin console.</p>
                 <span style="padding: 2px 8px; border-radius: 10px; background: rgba(16,185,129,0.2); color: #10b981; font-size: 0.7rem; font-weight: 700;">🟢 Completed</span>
               </div>
               <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(245,158,11,0.3); border-radius: 14px; padding: 16px;">
                 <div style="color: #f59e0b; font-size: 0.7rem; font-weight: 700; margin-bottom: 4px;">PROJECT 02 • GAMING & ARCADE</div>
-                <h4 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Meoww Racing Game</h4>
+                <h3 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Meoww Racing Game</h3>
                 <p style="color: var(--color-muted-text); font-size: 0.75rem; margin-bottom: 12px;">Interactive arcade cat racing game with HTML5 Canvas physics.</p>
                 <span style="padding: 2px 8px; border-radius: 10px; background: rgba(245,158,11,0.2); color: #f59e0b; font-size: 0.7rem; font-weight: 700;">🟡 Coming Soon</span>
               </div>
               <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(245,158,11,0.3); border-radius: 14px; padding: 16px;">
                 <div style="color: #f59e0b; font-size: 0.7rem; font-weight: 700; margin-bottom: 4px;">PROJECT 03 • ENTERPRISE SYSTEM</div>
-                <h4 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Restaurant Management System</h4>
+                <h3 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Restaurant Management System</h3>
                 <p style="color: var(--color-muted-text); font-size: 0.75rem; margin-bottom: 12px;">Multi-tenant POS, kitchen order display, and billing engine.</p>
                 <span style="padding: 2px 8px; border-radius: 10px; background: rgba(245,158,11,0.2); color: #f59e0b; font-size: 0.7rem; font-weight: 700;">🟡 Coming Soon</span>
               </div>
               <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(245,158,11,0.3); border-radius: 14px; padding: 16px;">
                 <div style="color: #f59e0b; font-size: 0.7rem; font-weight: 700; margin-bottom: 4px;">PROJECT 04 • ACADEMIC ERP</div>
-                <h4 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Smart College ERP</h4>
+                <h3 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Smart College ERP</h3>
                 <p style="color: var(--color-muted-text); font-size: 0.75rem; margin-bottom: 12px;">Student attendance, result publishing & fee collection portal.</p>
                 <span style="padding: 2px 8px; border-radius: 10px; background: rgba(245,158,11,0.2); color: #f59e0b; font-size: 0.7rem; font-weight: 700;">🟡 Coming Soon</span>
               </div>
@@ -1513,7 +1523,7 @@
       </div>
       
       <div style="margin-bottom: 12px;">
-        <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; font-weight: 700; color: #ffffff; margin: 0;">Message Delivered!</h3>
+        <h3 style="font-family: var(--font-kanit); font-size: 1.25rem; font-weight: 700; color: #ffffff; margin: 0;">Message Delivered!</h3>
         <span style="font-size: 10px; color: #10b981; font-family: monospace; font-weight: 700;">● Team Anurag Sahu Notification Sent</span>
       </div>
 
@@ -1539,7 +1549,7 @@
     </div>
   </footer>
 
-  <script src="app.js?v=20260826_gap_fixed_final" type="module"></script>
+  <script src="app.js?v=20260826_usability_v3" type="module"></script>
   <script>
     lucide.createIcons();
 

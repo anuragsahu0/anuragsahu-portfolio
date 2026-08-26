@@ -22,18 +22,16 @@
   --color-card-border: rgba(255, 255, 255, 0.09);
   --color-card-hover-border: rgba(251, 191, 36, 0.35);
 
-  /* Primary Accent & Gold Tokens */
-  --color-royal-gold: #fbbf24;
-  --color-deep-gold: #d97706;
-  --color-pale-gold: #fef3c7;
-  --color-warm-gold: #f59e0b;
-  --color-light-gold: #fde68a;
-
-  /* Typography Text Tokens */
+  /* Semantic Text Colors (Target: <= 12 tokens) [Issue 3] */
   --color-text-white: #ffffff;
   --color-text-light: #D7E2EA;
   --color-text-muted: #94a3b8;
   --color-text-dim: #64748b;
+  --color-royal-gold: #fbbf24;
+  --color-deep-gold: #d97706;
+  --color-pale-gold: #fef3c7;
+  --color-success-green: #10b981;
+  --color-error-red: #ef4444;
 
   /* Legacy Aliases for Full Compatibility */
   --color-starlight-white: #ffffff;
@@ -46,12 +44,31 @@
   --color-glass-surface: rgba(18, 18, 18, 0.78);
   --color-glass-border: rgba(255, 255, 255, 0.09);
 
-  /* Fonts */
+  /* Standardized Typography System (3 core fonts) [Issue 1] */
   --font-kanit: 'Kanit', sans-serif;
-  --font-display: 'Kanit', 'Space Grotesk', -apple-system, sans-serif;
+  --font-display: 'Kanit', sans-serif;
   --font-heading: 'Kanit', sans-serif;
   --font-body: 'Inter', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+
+  /* Standardized Type Scale (9 steps) [Issue 2] */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px - Issue 8 min readable threshold */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-md: 1.125rem;   /* 18px */
+  --font-size-lg: 1.25rem;    /* 20px */
+  --font-size-xl: 1.5rem;     /* 24px */
+  --font-size-2xl: clamp(1.85rem, 3.5vw, 2.25rem);
+  --font-size-3xl: clamp(2.2rem, 4.5vw, 3rem);
+  --font-size-display: clamp(2.5rem, 6vw, 4rem);
+
+  /* Consistent Radius Scale (6 tokens) [Issue 4] */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-card: 24px;
+  --radius-pill: 9999px;
+  --radius-circle: 50%;
 
   /* Sizing & Transitions */
   --max-width: 1280px;
@@ -104,7 +121,7 @@ h1, h2, h3, h4, h5, h6 {
 .hero-heading {
   font-family: var(--font-kanit);
   font-weight: 900;
-  text-transform: uppercase;
+  text-transform: none;
   background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -113,11 +130,36 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1;
 }
 
+
+/* Section Header Centered Alignment System (Issues 14, 22, 25) */
+.section-header {
+  text-align: center;
+  margin-bottom: clamp(32px, 5vh, 48px);
+  width: 100%;
+}
+
+.section-header .section-title {
+  display: inline-block;
+  text-align: center;
+  margin-bottom: 12px;
+  font-size: clamp(2rem, 4.5vw, 2.8rem);
+}
+
+.section-header p {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  max-width: 650px;
+  line-height: 1.6;
+}
+
 /* Reel Golden Flame Heading Gradient */
 .heading-gradient, .section-title {
   font-family: var(--font-kanit);
   font-weight: 900;
-  text-transform: uppercase;
+  text-transform: none;
   background: linear-gradient(180deg, #ffffff 0%, #fde68a 35%, #fbbf24 70%, #d97706 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -243,6 +285,7 @@ h1, h2, h3, h4, h5, h6 {
   position: fixed;
   top: 0; left: 0;
   width: 8px; height: 8px;
+  opacity: 0; /* Hidden until mouse moves to prevent stray dot on portrait - Issue 20 */
   border-radius: 50%;
   background-color: #ffffff;
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
@@ -256,6 +299,7 @@ h1, h2, h3, h4, h5, h6 {
   position: fixed;
   top: 0; left: 0;
   width: 36px; height: 36px;
+  opacity: 0; /* Hidden until mouse moves - Issue 20 */
   border-radius: 50%;
   border: 1.5px solid rgba(251, 191, 36, 0.6);
   pointer-events: none;
@@ -566,14 +610,55 @@ input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
   opacity: 1;
 }
 
+
+/* Interactive Terminal Input Affordance System (Issue 27) */
+.terminal-input-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  transition: var(--transition-fast);
+}
+
+.terminal-input-line:focus-within {
+  border-color: var(--color-royal-gold);
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
+}
+
+.terminal-prompt {
+  font-family: var(--font-mono);
+  color: var(--color-royal-gold);
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  flex-shrink: 0;
+}
+
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-white);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  padding: 2px 0;
+}
+
+.terminal-input::placeholder {
+  color: var(--color-text-dim);
+}
+
 /* ==============================================================
    12. FOOTER
    ============================================================== */
 footer {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 40px 0;
+  padding: 36px 0;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-dim);
 }
 
@@ -583,6 +668,19 @@ footer {
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
+  padding: 0 clamp(16px, 4vw, 32px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footer-content a {
+  word-break: break-all;
+  color: var(--color-royal-gold);
+  transition: var(--transition-fast);
+}
+
+.footer-content a:hover {
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
 }
 
 /* ==============================================================
@@ -764,4 +862,76 @@ footer {
   .portrait-inner-frame {
     height: 440px !important;
   }
+}
+
+
+/* Standardized Button Hierarchy System (5 Styles) [Issue 5] */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-card-hover-border);
+  background: transparent;
+  color: var(--color-text-white);
+  font-family: var(--font-kanit);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.btn-outline:hover {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: var(--color-royal-gold);
+  color: var(--color-royal-gold);
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-ghost:hover {
+  color: var(--color-text-white);
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: var(--font-size-xs);
+}
+
+
+/* Section Separation to Prevent Overlap (Issue 23) */
+#skills {
+  margin-bottom: clamp(48px, 8vh, 72px) !important;
+}
+
+#coding-profiles {
+  padding-top: clamp(24px, 4vh, 40px) !important;
+  margin-bottom: clamp(48px, 8vh, 72px) !important;
+}
+
+
+/* Skill Card Balance (Issue 24) */
+.flip-card-front {
+  gap: 10px !important;
+  padding: 24px 20px !important;
+}
+
+.flip-card-back {
+  gap: 8px !important;
+  padding: 24px 20px !important;
 }

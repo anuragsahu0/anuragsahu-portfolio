@@ -719,6 +719,8 @@ function initReelCustomCursor() {
   let followerX = -100, followerY = -100;
 
   window.addEventListener('mousemove', (e) => {
+    dot.style.opacity = '1';
+    follower.style.opacity = '1';
     mouseX = e.clientX;
     mouseY = e.clientY;
     dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
