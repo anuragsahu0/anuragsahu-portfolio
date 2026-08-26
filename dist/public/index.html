@@ -48,7 +48,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260826_laptop_v2">
 
   <style>
     /* Admin Modal Glassmorphism Overlay */
@@ -108,107 +108,16 @@
   </script>
 </head>
 <body>
-
-  <!-- ⏳ EXCLUSIVE COMING SOON & REVERSE COUNTDOWN TIMER OVERLAY (Target: Tomorrow 12:00 PM NOON IST) -->
-  <div id="coming-soon-overlay" style="position: fixed; inset: 0; z-index: 99999; background: #070400; background-image: radial-gradient(at 50% 0%, rgba(251, 191, 36, 0.25) 0px, transparent 65%), radial-gradient(at 100% 100%, rgba(217, 119, 6, 0.2) 0px, transparent 65%); display: flex; align-items: flex-start; justify-content: center; padding: 12px; font-family: 'Inter', sans-serif; overflow-y: auto;">
-    
-    <div style="background: rgba(12, 7, 1, 0.97); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(251, 191, 36, 0.45); border-radius: 24px; padding: 24px 24px 20px 24px; max-width: 460px; width: 100%; text-align: center; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95), 0 0 50px rgba(251, 191, 36, 0.35); margin: 8px auto 0 auto;">
-      
-      <!-- Top Badge -->
-      <div style="display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 100px; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.4); color: #fbbf24; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px;">
-        <span style="width: 8px; height: 8px; border-radius: 50%; background: #fbbf24; box-shadow: 0 0 10px #fbbf24;"></span>
-        <span>ANURAG SAHU • LAUNCHING TODAY AT 12:00 PM</span>
-      </div>
-
-      <!-- REVERSE COUNTDOWN TIMER BOXES (FIRST ELEMENT AT TOP OF CARD - ZERO SCROLL) -->
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; font-family: 'JetBrains Mono', monospace;">
-        <!-- Hours -->
-        <div style="background: rgba(7, 4, 0, 0.95); border: 1px solid rgba(251, 191, 36, 0.4); border-radius: 16px; padding: 12px 4px; text-align: center; box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);">
-          <div id="cs-hours" style="font-size: 2.5rem; font-weight: 800; color: #fbbf24; line-height: 1;">01</div>
-          <div style="font-size: 9px; color: #94a3b8; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.1em;">HOURS</div>
-        </div>
-
-        <!-- Minutes -->
-        <div style="background: rgba(7, 4, 0, 0.95); border: 1px solid rgba(217, 119, 6, 0.4); border-radius: 16px; padding: 12px 4px; text-align: center; box-shadow: 0 0 20px rgba(217, 119, 6, 0.2);">
-          <div id="cs-minutes" style="font-size: 2.5rem; font-weight: 800; color: #d97706; line-height: 1;">55</div>
-          <div style="font-size: 9px; color: #94a3b8; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.1em;">MINUTES</div>
-        </div>
-
-        <!-- Seconds -->
-        <div style="background: rgba(7, 4, 0, 0.95); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 16px; padding: 12px 4px; text-align: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);">
-          <div id="cs-seconds" style="font-size: 2.5rem; font-weight: 800; color: #10b981; line-height: 1;">00</div>
-          <div style="font-size: 9px; color: #94a3b8; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.1em;">SECONDS</div>
-        </div>
-      </div>
-
-      <!-- Headline -->
-      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.35rem, 3.5vw, 1.85rem); font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, #fde68a 50%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 8px 0; line-height: 1.25;">
-        SOMETHING EXTRAORDINARY IS COMING
-      </h1>
-
-      <p style="color: #94a3b8; font-size: 11px; line-height: 1.5; margin: 0 0 16px 0; font-family: 'Inter', sans-serif;">
-        Website launch scheduled for today at <strong style="color: #fbbf24;">12:00 PM IST (NOON)</strong>. Website unlocks automatically when timer hits 00:00:00.
-      </p>
-
-      <!-- Action Buttons -->
-      <div style="display: flex; flex-direction: column; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px;">
-        <a href="mailto:shivasahu0612@gmail.com" style="display: block; padding: 12px; border-radius: 12px; background: linear-gradient(135deg, #fbbf24 0%, #3b82f6 100%); color: #ffffff; font-weight: 700; text-decoration: none; box-shadow: 0 4px 18px rgba(251, 191, 36, 0.35);">
-          ✉️ Direct Inquiry: shivasahu0612@gmail.com
-        </a>
-      </div>
-
-    </div>
-  </div>
-
+  <!-- Reset scroll to top immediately on load to prevent stuck gaps -->
   <script>
-    (function initComingSoonCountdown() {
-      // Target: Tomorrow Sunday, Aug 9, 2026 at 12:00 NOON IST
-      const targetTime = new Date('2026-08-09T12:00:00+05:30').getTime();
-
-      function update() {
-        const overlay = document.getElementById('coming-soon-overlay');
-        if (!overlay) return;
-
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('preview') === 'true' || localStorage.getItem('anurag_coming_soon_off') === 'true') {
-          overlay.style.display = 'none';
-          return;
-        }
-
-        const now = new Date().getTime();
-        const diff = targetTime - now;
-
-        if (diff <= 0) {
-          overlay.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
-          overlay.style.opacity = '0';
-          overlay.style.transform = 'scale(1.05)';
-          setTimeout(() => {
-            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-            if (!sessionStorage.getItem('as_auto_reloaded')) {
-              sessionStorage.setItem('as_auto_reloaded', 'true');
-              window.location.reload();
-            }
-          }, 800);
-          return;
-        }
-
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        const hEl = document.getElementById('cs-hours');
-        const mEl = document.getElementById('cs-minutes');
-        const sEl = document.getElementById('cs-seconds');
-
-        if (hEl) hEl.textContent = String(hours).padStart(2, '0');
-        if (mEl) mEl.textContent = String(minutes).padStart(2, '0');
-        if (sEl) sEl.textContent = String(seconds).padStart(2, '0');
-      }
-
-      setInterval(update, 1000);
-      update();
-    })();
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
   </script>
+
+
+  
 
   <!-- Top Scroll Reading Progress Bar -->
   <div id="scroll-progress"></div>
@@ -433,7 +342,7 @@
       ];
 
       const interval = setInterval(() => {
-        percent += Math.floor(Math.random() * 3) + 2;
+        percent += Math.floor(Math.random() * 7) + 6;
         if (percent > 100) percent = 100;
 
         if (barTop) barTop.style.width = percent + '%';
@@ -454,11 +363,12 @@
               container.classList.add('shutter-active');
               setTimeout(() => {
                 container.style.display = 'none';
-              }, 850);
+                if (container.parentNode) container.parentNode.removeChild(container);
+              }, 400);
             }
-          }, 200);
+          }, 100);
         }
-      }, 65);
+      }, 30);
     })();
   </script>
 
@@ -561,7 +471,7 @@
       <div class="ambient-orb orb-1"></div>
       <div class="ambient-orb orb-2"></div>
 
-      <div class="hero-grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center; width: 100%; position: relative; z-index: 2;">
+      <div class="hero-grid-container" style="position: relative; z-index: 2;">
         
         <!-- LEFT COLUMN: Authentic Brand Pitch & Actions -->
         <div class="hero-left-column" style="display: flex; flex-direction: column; gap: 20px;">
@@ -619,7 +529,7 @@
         <div class="hero-portrait-showcase-container">
           <div class="glass-panel glass-spotlight tilt-card" style="padding: 20px; border-radius: 28px; border-color: rgba(6,182,212,0.4); box-shadow: 0 0 50px rgba(6,182,212,0.22); position: relative;">
             
-            <div style="width: 100%; height: 440px; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #070400;">
+            <div class="portrait-inner-frame" style="width: 100%; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #070400;">
               <picture>
                 <source srcSet="assets/anurag-portrait.webp" type="image/webp">
                 <img src="assets/anurag-portrait.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" loading="eager" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
@@ -650,14 +560,14 @@
          ============================================================ -->
     <section id="aboutme" aria-label="About Me" style="
       position: relative;
-      min-height: 100vh;
+      min-height: auto;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 80px 20px;
+      padding: clamp(50px, 8vh, 80px) 20px;
       overflow: hidden;
-      background: #070400;
+      background: transparent;
     ">
       <!-- ── DECORATIVE CORNER IMAGES (absolute, z-0) ── -->
 
@@ -675,8 +585,8 @@
           height: auto;
           z-index: 0;
           pointer-events: none;
-          opacity: 0;
-          transform: translateX(-80px);
+          opacity: 0.85;
+          transform: none;
           transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.1s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.1s;
           filter: drop-shadow(0 0 20px rgba(251,191,36,0.18));
         "
@@ -696,8 +606,8 @@
           height: auto;
           z-index: 0;
           pointer-events: none;
-          opacity: 0;
-          transform: translateX(-80px);
+          opacity: 0.85;
+          transform: none;
           transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.25s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.25s;
           filter: drop-shadow(0 0 15px rgba(251,191,36,0.12));
         "
@@ -717,8 +627,8 @@
           height: auto;
           z-index: 0;
           pointer-events: none;
-          opacity: 0;
-          transform: translateX(80px);
+          opacity: 0.85;
+          transform: none;
           transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.15s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.15s;
           filter: drop-shadow(0 0 20px rgba(251,191,36,0.18));
         "
@@ -738,8 +648,8 @@
           height: auto;
           z-index: 0;
           pointer-events: none;
-          opacity: 0;
-          transform: translateX(80px);
+          opacity: 0.85;
+          transform: none;
           transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.3s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.3s;
           filter: drop-shadow(0 0 15px rgba(251,191,36,0.12));
         "
@@ -754,11 +664,11 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: clamp(64px, 8vw, 96px);
+        gap: clamp(32px, 4vw, 48px);
       ">
 
         <!-- Group 1: Heading + Animated Paragraph -->
-        <div style="display: flex; flex-direction: column; align-items: center; gap: clamp(40px, 6vw, 64px);">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: clamp(20px, 3vw, 32px);">
 
           <!-- "About me" Heading -->
           <h2
@@ -770,13 +680,13 @@
               line-height: 1;
               letter-spacing: -0.02em;
               text-align: center;
-              font-size: clamp(3rem, 12vw, 160px);
+              font-size: clamp(2.2rem, 5vw, 4rem);
               background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
               -webkit-background-clip: text;
               -webkit-text-fill-color: transparent;
               background-clip: text;
-              opacity: 0;
-              transform: translateY(40px);
+              opacity: 1;
+              transform: none;
               transition: opacity 0.7s cubic-bezier(0.25,0.1,0.25,1), transform 0.7s cubic-bezier(0.25,0.1,0.25,1);
               margin: 0;
             "
@@ -811,8 +721,8 @@
         <div
           id="about-cta"
           style="
-            opacity: 0;
-            transform: translateY(20px);
+            opacity: 1;
+            transform: none;
             transition: opacity 0.7s cubic-bezier(0.25,0.1,0.25,1) 0.3s, transform 0.7s cubic-bezier(0.25,0.1,0.25,1) 0.3s;
           "
         >
@@ -896,8 +806,8 @@
       chars.forEach((ch, i) => {
         const display = ch === ' ' ? '\u00A0' : ch;
         html += `<span style="position:relative;display:inline-block;">` +
-                  `<span style="opacity:0.15;user-select:none;" aria-hidden="true">${display}</span>` +
-                  `<span id="ac${i}" style="position:absolute;top:0;left:0;opacity:0.15;transition:opacity 0.15s ease;">${display}</span>` +
+                  `<span style="opacity:0.3;user-select:none;" aria-hidden="true">${display}</span>` +
+                  `<span id="ac${i}" style="position:absolute;top:0;left:0;opacity:0.85;transition:opacity 0.2s ease;">${display}</span>` +
                 `</span>`;
       });
       paraEl.innerHTML = html;
@@ -929,11 +839,11 @@
           const end   = Math.min(1, charProgress + 0.05);
           let opacity;
           if (progress <= start) {
-            opacity = 0.15;
+            opacity = 0.85;
           } else if (progress >= end) {
             opacity = 1;
           } else {
-            opacity = 0.15 + ((progress - start) / (end - start)) * 0.85;
+            opacity = 0.85 + ((progress - start) / (end - start)) * 0.15;
           }
           span.style.opacity = opacity.toFixed(3);
         });

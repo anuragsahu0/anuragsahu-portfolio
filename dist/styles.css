@@ -73,7 +73,7 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   position: relative;
-  contain: layout style;
+  /* contain removed for Safari layout compatibility */
   background:
     radial-gradient(circle at 50% 0%, rgba(251, 191, 36, 0.08) 0%, transparent 55%),
     radial-gradient(circle at 100% 70%, rgba(182, 0, 168, 0.06) 0%, transparent 50%),
@@ -372,22 +372,26 @@ h1, h2, h3, h4, h5, h6 {
    8. HERO SECTION & ENTRANCE
    ============================================================== */
 #hero {
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 50px);
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  padding-top: clamp(80px, 11vh, 105px);
-  padding-bottom: clamp(30px, 5vh, 50px);
+  padding-top: clamp(75px, 10vh, 95px);
+  padding-bottom: clamp(25px, 4vh, 45px);
   position: relative;
   overflow: hidden;
 }
 
 .hero-grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 48px;
+  grid-template-columns: 1.12fr 0.88fr;
+  gap: clamp(24px, 3.5vw, 48px);
   align-items: center;
   width: 100%;
+}
+
+.portrait-inner-frame {
+  height: clamp(300px, 42vh, 440px);
 }
 
 .hero-title {
@@ -633,5 +637,120 @@ footer {
   .btn-primary, .reel-btn, .btn-secondary {
     width: 100% !important;
     justify-content: center !important;
+  }
+}
+
+
+/* ==============================================================
+   15. AUTOMATIC LAPTOP DISPLAY SIZE ADAPTATION ENGINE
+   Adapts automatically to all laptop screen sizes & display scalings:
+   - 13" MacBook Air / Pro (1024x665, 1280x800, 1440x900)
+   - 14"/15" Mid-size laptops (1366x768, 1536x864)
+   - 16" MacBook Pro / 1080p FHD (1680x1050, 1920x1080)
+   - Short viewports (height <= 760px)
+   ============================================================== */
+
+/* Compact Laptop & Scaled Viewports (e.g. 13" MacBook, 1024px-1280px or height <= 760px) */
+@media (min-width: 900px) and (max-width: 1280px), (min-width: 900px) and (max-height: 760px) {
+  #hero {
+    min-height: calc(100vh - 30px) !important;
+    padding-top: clamp(65px, 9vh, 78px) !important;
+    padding-bottom: 20px !important;
+  }
+  .hero-grid-container {
+    grid-template-columns: 1.15fr 0.85fr !important;
+    gap: clamp(16px, 2.5vw, 32px) !important;
+  }
+  .hero-title {
+    font-size: clamp(1.75rem, 3.2vw, 2.35rem) !important;
+    line-height: 1.12 !important;
+  }
+  .hero-subtitle {
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+  }
+  .hero-left-column {
+    gap: 12px !important;
+  }
+  .hero-portrait-showcase-container .glass-panel {
+    padding: 12px !important;
+    border-radius: 20px !important;
+  }
+  .portrait-inner-frame {
+    height: clamp(240px, 36vh, 310px) !important;
+    border-radius: 16px !important;
+  }
+  .hero-actions {
+    gap: 10px !important;
+  }
+  .hero-actions .btn-primary, .hero-actions .btn-secondary {
+    padding: 9px 18px !important;
+    font-size: 0.82rem !important;
+  }
+  .tilt-card {
+    padding: 12px !important;
+  }
+  #aboutme {
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+}
+
+/* Very Short Laptop Viewports (e.g. height <= 670px, common when dock and browser bars are open) */
+@media (min-width: 900px) and (max-height: 670px) {
+  #hero {
+    min-height: auto !important;
+    padding-top: 62px !important;
+    padding-bottom: 16px !important;
+  }
+  .hero-title {
+    font-size: clamp(1.55rem, 2.8vw, 1.95rem) !important;
+    line-height: 1.1 !important;
+  }
+  .hero-subtitle {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 0.85rem !important;
+  }
+  .hero-left-column {
+    gap: 8px !important;
+  }
+  .portrait-inner-frame {
+    height: clamp(210px, 32vh, 250px) !important;
+  }
+  .hero-portrait-showcase-container .glass-panel {
+    padding: 10px !important;
+  }
+}
+
+/* Standard & Large Laptops (1281px - 1600px width, height > 760px) */
+@media (min-width: 1281px) and (max-width: 1600px) and (min-height: 761px) {
+  #hero {
+    min-height: calc(100vh - 40px) !important;
+    padding-top: 85px !important;
+    padding-bottom: 35px !important;
+  }
+  .hero-title {
+    font-size: clamp(2.2rem, 3.6vw, 3.2rem) !important;
+  }
+  .portrait-inner-frame {
+    height: clamp(330px, 42vh, 410px) !important;
+  }
+}
+
+/* Widescreen & External Monitors (>= 1601px) */
+@media (min-width: 1601px) {
+  #hero {
+    min-height: calc(100vh - 50px) !important;
+    padding-top: 95px !important;
+    padding-bottom: 45px !important;
+  }
+  .hero-title {
+    font-size: 3.5rem !important;
+  }
+  .portrait-inner-frame {
+    height: 440px !important;
   }
 }
