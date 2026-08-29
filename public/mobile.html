@@ -483,7 +483,7 @@
         <div class="mproj-item mobile-glass p-5 rounded-3xl space-y-3 cursor-pointer active:scale-[0.98] transition-all" data-cat="enterprise" onclick="window.open('https://anuragsahu.com/AI-FINANCE-CONTROLLER', '_blank')">
           <div class="flex justify-between items-center">
             <span class="text-[10px] font-mono text-cyan-400 font-bold">PROJECT 02 • AUTONOMOUS AI & FINTECH</span>
-            <span id="mp-badge-02" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold text-[10px]">🟢 Live & Operational</span>
+            <span id="mp-badge-02" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold text-[10px]">🟢 Completed</span>
           </div>
           <h4 class="font-display text-base font-bold text-white flex items-center justify-between">
             <span>AI Finance Controller</span>
@@ -819,9 +819,13 @@
     }
 
     async function syncMobileProjectBadges() {
+      if (!localStorage.getItem('ag_proj_status_02')) {
+        localStorage.setItem('ag_proj_status_02', 'Completed');
+      }
+
       // 1. Apply local storage
       ['01', '02', '03'].forEach(num => {
-        const status = localStorage.getItem(`ag_proj_status_${num}`);
+        const status = localStorage.getItem(`ag_proj_status_${num}`) || (num === '02' ? 'Completed' : null);
         const badge = document.getElementById(`mp-badge-${num}`);
         if (badge && status) {
           badge.textContent = status === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
