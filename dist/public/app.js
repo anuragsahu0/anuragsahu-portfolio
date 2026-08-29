@@ -574,13 +574,11 @@ function initAdminModal() {
 }
 
 async function syncProjectStatuses() {
-  if (!localStorage.getItem('ag_proj_status_02')) {
-    localStorage.setItem('ag_proj_status_02', 'Completed');
-  }
+  localStorage.setItem('ag_proj_status_02', 'Completed');
 
   // 1. Apply local storage immediately (High Priority - Rate-limit proof)
   ['01', '02', '03'].forEach(num => {
-    const status = localStorage.getItem(`ag_proj_status_${num}`) || (num === '02' ? 'Completed' : null);
+    const status = num === '02' ? 'Completed' : (localStorage.getItem(`ag_proj_status_${num}`) || 'Coming Soon');
     if (status) {
       applyBadgeUI(num, status);
     }
@@ -593,6 +591,11 @@ async function syncProjectStatuses() {
       const data = await res.json();
       if (data && data.settings) {
         ['01', '02', '03'].forEach(num => {
+          if (num === '02') {
+            localStorage.setItem('ag_proj_status_02', 'Completed');
+            applyBadgeUI('02', 'Completed');
+            return;
+          }
           const val = data.settings[`ag_proj_status_${num}`];
           if (val === 'Completed' || val === 'Coming Soon') {
             localStorage.setItem(`ag_proj_status_${num}`, val);
@@ -603,29 +606,13 @@ async function syncProjectStatuses() {
       }
     }
   } catch (e) {}
-
-  // 3. Fallback to Cloud JSONBlob if backend API unavailable
-  try {
-    const res = await fetch('https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261');
-    if (res.ok) {
-      const data = await res.json();
-      if (data) {
-        ['01', '02', '03'].forEach(num => {
-          const globalVal = (data.projects && data.projects[num]) || data[`ag_proj_status_${num}`];
-          if (globalVal === 'Completed' || globalVal === 'Coming Soon') {
-            localStorage.setItem(`ag_proj_status_${num}`, globalVal);
-            applyBadgeUI(num, globalVal);
-          }
-        });
-      }
-    }
-  } catch (e) {}
 }
 
 function applyBadgeUI(num, status) {
   const badge = document.getElementById(`main-project-status-${num}`);
-  if (badge && status) {
-    if (status === 'Completed') {
+  const actualStatus = num === '02' ? 'Completed' : status;
+  if (badge && actualStatus) {
+    if (actualStatus === 'Completed') {
       badge.textContent = '🟢 Status: Completed';
       badge.style.color = '#10b981';
       badge.style.background = 'rgba(16,185,129,0.1)';
