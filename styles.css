@@ -484,66 +484,76 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==============================================================
-   9. SKILLS 3D FLIP CARDS (Flips Strictly In-Place on Own Axis)
+   9. SKILLS 3D FLIP CARDS (Click-to-Flip 3D Architecture)
    ============================================================== */
 .flip-card {
   background-color: transparent;
   perspective: 1000px;
-  height: 220px;
+  height: 205px;
   position: relative;
-  overflow: visible;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 18px;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.flip-card:hover {
+  transform: translateY(-4px);
+}
+
+.flip-card:focus-visible {
+  outline: 2px solid var(--color-royal-gold, #fbbf24);
+  outline-offset: 4px;
 }
 
 .flip-card-inner {
   position: relative;
   width: 100%;
   height: 100%;
-  text-align: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
   transform-origin: center center;
-  transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
   will-change: transform;
 }
 
-.flip-card:hover .flip-card-inner {
+.flip-card-inner.flipped {
   transform: rotateY(180deg);
 }
 
 .flip-card-front,
 .flip-card-back {
   position: absolute;
+  inset: 0;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   border-radius: 18px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 24px 20px;
-  box-sizing: border-box;
-  transform-origin: center center;
+  justify-content: space-between;
+  padding: 20px;
   transform-style: preserve-3d;
 }
 
 .flip-card-front {
   transform: rotateY(0deg);
   z-index: 2;
-  background: rgba(18, 18, 18, 0.95) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+  background: rgba(18, 18, 18, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .flip-card-back {
   transform: rotateY(180deg);
   z-index: 1;
-  background: rgba(24, 24, 24, 0.98) !important;
-  border: 1px solid rgba(251, 191, 36, 0.45) !important;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(251, 191, 36, 0.18) !important;
+  background: rgba(14, 14, 14, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .topic-watermark-icon {
@@ -940,16 +950,4 @@ footer {
 #coding-profiles {
   padding-top: clamp(24px, 4vh, 40px) !important;
   margin-bottom: clamp(48px, 8vh, 72px) !important;
-}
-
-
-/* Skill Card Balance (Issue 24) */
-.flip-card-front {
-  gap: 10px !important;
-  padding: 24px 20px !important;
-}
-
-.flip-card-back {
-  gap: 8px !important;
-  padding: 24px 20px !important;
 }

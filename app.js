@@ -649,6 +649,23 @@ function initRedTypewriter() {
   // Disabled per user request (static Dream | Grow | Lead text)
 }
 
+function initSkillsFlipCards() {
+  const cards = document.querySelectorAll('#skills .flip-card');
+  cards.forEach((card) => {
+    const inner = card.querySelector('.flip-card-inner');
+    if (!inner) return;
+
+    // Keyboard accessibility: Enter or Space toggles 3D flip
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        inner.classList.toggle('flipped');
+        card.setAttribute('aria-expanded', inner.classList.contains('flipped') ? 'true' : 'false');
+      }
+    });
+  });
+}
+
 function bootApp() {
   if (typeof initParticleBackground === 'function') initParticleBackground();
   initCLI();
@@ -657,6 +674,7 @@ function bootApp() {
   syncProjectStatuses();
   setInterval(syncProjectStatuses, 1000);
   initScrollProgress();
+  initSkillsFlipCards();
 
   initCategoryFilters();
   initScrollReveal();

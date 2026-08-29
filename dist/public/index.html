@@ -807,99 +807,145 @@
     </script>
 
     <!-- SKILLS LABORATORY SECTION -->
+    <!-- SKILLS LABORATORY SECTION -->
     <section id="skills" aria-label="Engineering Laboratory">
       <div class="section-header">
+        <span style="color: var(--color-nebula-cyan); font-family: var(--font-mono); font-size: var(--font-size-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: inline-block; margin-bottom: 6px;">LABORATORY & CAPABILITIES</span>
         <h2 class="section-title hero-heading">My Working Lab</h2>
-        <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
-          Explore my technical capabilities, languages, frameworks, AI/ML tools, databases, and continuous learning progression.
+        <p style="color: var(--color-text-muted); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
+          Tap any card below to flip and inspect full tech stack.
         </p>
       </div>
 
       <div class="glass-panel glass-spotlight" style="padding: 32px;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
           
           <!-- 3D Flip Card 1: Frontend Web -->
-          <div class="flip-card">
+          <div class="flip-card" tabindex="0" role="button" aria-expanded="false" aria-label="Frontend Web Card, click to flip" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped'); this.setAttribute('aria-expanded', this.querySelector('.flip-card-inner').classList.contains('flipped'));">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(6,182,212,0.4); flex-direction: column; justify-content: center; gap: 8px;">
-                <i data-lucide="layout" style="width: 42px; height: 42px; color: var(--color-nebula-cyan); z-index: 2;" aria-hidden="true"></i>
-                <h3 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Frontend Web</h3>
-                <span style="font-size: 0.72rem; color: var(--color-nebula-cyan); background: rgba(6,182,212,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.3); z-index: 2;" class="font-mono">React • Tailwind • JS</span>
-                <!-- Topic Logo Watermark -->
-                <i data-lucide="code-2" class="topic-watermark-icon" aria-hidden="true"></i>
+              <div class="flip-card-front" style="border: 1px solid rgba(6,182,212,0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(6,182,212,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <i data-lucide="layout" style="width: 30px; height: 30px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
+                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.4); color: var(--color-nebula-cyan); font-size: 0.72rem; font-weight: 700;">TAP TO FLIP 🔄</span>
+                </div>
+                <div>
+                  <h3 class="font-display" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Frontend Web</h3>
+                  <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0; line-height: 1.45;">React, HTML5, CSS3, Tailwind, JavaScript ES6+</p>
+                </div>
               </div>
-              <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
-                
-                <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">React 18 Architecture, Tailwind CSS Systems, ES6+ JavaScript, Responsive UI/UX</p>
-                <i data-lucide="layout" class="topic-watermark-icon" aria-hidden="true"></i>
+              <div class="flip-card-back" style="border: 1px solid rgba(6,182,212,0.7); box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 25px rgba(6,182,212,0.2);">
+                <h3 class="font-display" style="font-size: 0.95rem; font-weight: 700; color: var(--color-nebula-cyan); margin: 0 0 8px 0;">Frontend Tech Stack</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem;">
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">React 18</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">JavaScript ES6+</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">TailwindCSS</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">CSS Glassmorphism</span>
+                </div>
+                <span class="font-mono" style="font-size: 0.7rem; color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
               </div>
             </div>
           </div>
 
           <!-- 3D Flip Card 2: Backend & APIs -->
-          <div class="flip-card">
+          <div class="flip-card" tabindex="0" role="button" aria-expanded="false" aria-label="Backend and APIs Card, click to flip" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped'); this.setAttribute('aria-expanded', this.querySelector('.flip-card-inner').classList.contains('flipped'));">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(139,92,246,0.4); flex-direction: column; justify-content: center; gap: 8px;">
-                <i data-lucide="server" style="width: 42px; height: 42px; color: var(--color-quantum-violet); z-index: 2;" aria-hidden="true"></i>
-                <h3 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Backend & APIs</h3>
-                <span style="font-size: 0.72rem; color: var(--color-quantum-violet); background: rgba(139,92,246,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(139,92,246,0.3); z-index: 2;" class="font-mono">Node.js • Express • REST</span>
-                <i data-lucide="terminal" class="topic-watermark-icon" style="color: var(--color-quantum-violet);" aria-hidden="true"></i>
+              <div class="flip-card-front" style="border: 1px solid rgba(139,92,246,0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(139,92,246,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <i data-lucide="server" style="width: 30px; height: 30px; color: var(--color-quantum-violet);" aria-hidden="true"></i>
+                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.4); color: var(--color-quantum-violet); font-size: 0.72rem; font-weight: 700;">TAP TO FLIP 🔄</span>
+                </div>
+                <div>
+                  <h3 class="font-display" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Backend & APIs</h3>
+                  <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0; line-height: 1.45;">Node.js, Express.js, REST Architecture, JWT</p>
+                </div>
               </div>
-              <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
-                
-                <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">Node.js Runtimes, Express Server API Routes, JWT Bearer Auth, Rate Limiters</p>
-                <i data-lucide="server" class="topic-watermark-icon" style="color: var(--color-quantum-violet);" aria-hidden="true"></i>
+              <div class="flip-card-back" style="border: 1px solid rgba(139,92,246,0.7); box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 25px rgba(139,92,246,0.2);">
+                <h3 class="font-display" style="font-size: 0.95rem; font-weight: 700; color: var(--color-quantum-violet); margin: 0 0 8px 0;">Backend Architecture</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem;">
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Node.js</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Express REST API</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">JWT Auth</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Nodemailer</span>
+                </div>
+                <span class="font-mono" style="font-size: 0.7rem; color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
               </div>
             </div>
           </div>
 
           <!-- 3D Flip Card 3: AI & Machine Learning -->
-          <div class="flip-card">
+          <div class="flip-card" tabindex="0" role="button" aria-expanded="false" aria-label="AI and Machine Learning Card, click to flip" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped'); this.setAttribute('aria-expanded', this.querySelector('.flip-card-inner').classList.contains('flipped'));">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(6,182,212,0.4); flex-direction: column; justify-content: center; gap: 8px;">
-                <i data-lucide="cpu" style="width: 42px; height: 42px; color: var(--color-nebula-cyan); z-index: 2;" aria-hidden="true"></i>
-                <h3 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">AI & ML</h3>
-                <span style="font-size: 0.72rem; color: var(--color-nebula-cyan); background: rgba(6,182,212,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.3); z-index: 2;" class="font-mono">PyTorch • Python • GNNs</span>
-                <i data-lucide="bot" class="topic-watermark-icon" aria-hidden="true"></i>
+              <div class="flip-card-front" style="border: 1px solid rgba(16,185,129,0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(16,185,129,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <i data-lucide="cpu" style="width: 30px; height: 30px; color: #10b981;" aria-hidden="true"></i>
+                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #10b981; font-size: 0.72rem; font-weight: 700;">TAP TO FLIP 🔄</span>
+                </div>
+                <div>
+                  <h3 class="font-display" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">AI & ML</h3>
+                  <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0; line-height: 1.45;">Python, NumPy, Pandas, Scikit-Learn</p>
+                </div>
               </div>
-              <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
-                
-                <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">PyTorch Model Pipelines, Python Data Processing, Graph Neural Networks (GNNs)</p>
-                <i data-lucide="cpu" class="topic-watermark-icon" aria-hidden="true"></i>
+              <div class="flip-card-back" style="border: 1px solid rgba(16,185,129,0.7); box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 25px rgba(16,185,129,0.2);">
+                <h3 class="font-display" style="font-size: 0.95rem; font-weight: 700; color: #10b981; margin: 0 0 8px 0;">AI & Machine Learning</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem;">
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Python 3.12</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Pandas & NumPy</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Scikit-Learn</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Model Training</span>
+                </div>
+                <span class="font-mono" style="font-size: 0.7rem; color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
               </div>
             </div>
           </div>
 
           <!-- 3D Flip Card 4: Databases -->
-          <div class="flip-card">
+          <div class="flip-card" tabindex="0" role="button" aria-expanded="false" aria-label="Databases Card, click to flip" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped'); this.setAttribute('aria-expanded', this.querySelector('.flip-card-inner').classList.contains('flipped'));">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(16,185,129,0.4); flex-direction: column; justify-content: center; gap: 8px;">
-                <i data-lucide="database" style="width: 42px; height: 42px; color: #10b981; z-index: 2;" aria-hidden="true"></i>
-                <h3 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Databases</h3>
-                <span style="font-size: 0.72rem; color: #10b981; background: rgba(16,185,129,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(16,185,129,0.3); z-index: 2;" class="font-mono">MongoDB • Mongoose • SQL</span>
-                <i data-lucide="hard-drive" class="topic-watermark-icon" style="color: #10b981;" aria-hidden="true"></i>
+              <div class="flip-card-front" style="border: 1px solid rgba(245,158,11,0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(245,158,11,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <i data-lucide="database" style="width: 30px; height: 30px; color: #f59e0b;" aria-hidden="true"></i>
+                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.4); color: #f59e0b; font-size: 0.72rem; font-weight: 700;">TAP TO FLIP 🔄</span>
+                </div>
+                <div>
+                  <h3 class="font-display" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Databases</h3>
+                  <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0; line-height: 1.45;">MongoDB, Mongoose, PostgreSQL</p>
+                </div>
               </div>
-              <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
-                
-                <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">MongoDB Atlas Cloud Clusters, Mongoose ODM Schemas, SQL Data Modeling</p>
-                <i data-lucide="database" class="topic-watermark-icon" style="color: #10b981;" aria-hidden="true"></i>
+              <div class="flip-card-back" style="border: 1px solid rgba(245,158,11,0.7); box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 25px rgba(245,158,11,0.2);">
+                <h3 class="font-display" style="font-size: 0.95rem; font-weight: 700; color: #f59e0b; margin: 0 0 8px 0;">Database Engineering</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem;">
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">MongoDB Atlas</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Mongoose ODM</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">PostgreSQL</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Data Modeling</span>
+                </div>
+                <span class="font-mono" style="font-size: 0.7rem; color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
               </div>
             </div>
           </div>
 
-          <!-- 3D Flip Card 5: Mobile & Flutter Development -->
-          <div class="flip-card">
+          <!-- 3D Flip Card 5: Mobile Apps -->
+          <div class="flip-card" tabindex="0" role="button" aria-expanded="false" aria-label="Mobile Apps Card, click to flip" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped'); this.setAttribute('aria-expanded', this.querySelector('.flip-card-inner').classList.contains('flipped'));">
             <div class="flip-card-inner">
-              <div class="flip-card-front glass-panel" style="position: relative; overflow: hidden; border-color: rgba(239,68,68,0.4); flex-direction: column; justify-content: center; gap: 8px;">
-                <i data-lucide="smartphone" style="width: 42px; height: 42px; color: #ef4444; z-index: 2;" aria-hidden="true"></i>
-                <h3 style="color: var(--color-starlight-white); font-weight: 800; font-size: 1.15rem; margin: 0; z-index: 2;">Mobile Apps</h3>
-                <span style="font-size: 0.72rem; color: #ef4444; background: rgba(239,68,68,0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(239,68,68,0.3); z-index: 2;" class="font-mono">Flutter • Dart • Firebase</span>
-                <i data-lucide="smartphone" class="topic-watermark-icon" style="color: #ef4444;" aria-hidden="true"></i>
+              <div class="flip-card-front" style="border: 1px solid rgba(239,68,68,0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(239,68,68,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <i data-lucide="smartphone" style="width: 30px; height: 30px; color: #ef4444;" aria-hidden="true"></i>
+                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: #ef4444; font-size: 0.72rem; font-weight: 700;">TAP TO FLIP 🔄</span>
+                </div>
+                <div>
+                  <h3 class="font-display" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Mobile Apps</h3>
+                  <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0; line-height: 1.45;">Flutter Framework, Dart Language, Cross-Platform Android/iOS UI</p>
+                </div>
               </div>
-              <div class="flip-card-back glass-panel" style="position: relative; overflow: hidden;">
-                
-                <p style="font-size: 0.8rem; color: var(--color-starlight-white); line-height: 1.55; margin: 0; z-index: 2;" class="font-mono">Flutter Framework, Dart Language, Cross-Platform Android/iOS UI, Firebase Integration</p>
-                <i data-lucide="smartphone" class="topic-watermark-icon" style="color: #ef4444;" aria-hidden="true"></i>
+              <div class="flip-card-back" style="border: 1px solid rgba(239,68,68,0.7); box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 25px rgba(239,68,68,0.2);">
+                <h3 class="font-display" style="font-size: 0.95rem; font-weight: 700; color: #ef4444; margin: 0 0 8px 0;">Mobile App Engine</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem;">
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Flutter Framework</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Dart Language</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Cross-Platform UI</span>
+                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Firebase Integration</span>
+                </div>
+                <span class="font-mono" style="font-size: 0.7rem; color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
               </div>
             </div>
           </div>
