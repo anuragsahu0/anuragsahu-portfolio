@@ -36,16 +36,21 @@
   <meta property="og:description" content="Explore Anurag Sahu's portfolio featuring full-stack web applications, Machine Learning models, interactive case studies, engineering roadmap, and laboratory.">
   <meta property="og:image" content="https://anuragsahu.com/assets/anurag-portrait.webp">
 
-  <!-- Font Preconnect & Optimization -->
+  <!-- Preload Critical Hero Image & Font Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/anurag-portrait.webp" type="image/webp" fetchpriority="high">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
+  </noscript>
   
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Icons CDN (Deferred) -->
+  <script defer src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Three.js 3D WebGL Library CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Three.js 3D WebGL Library CDN (Deferred) -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="styles.css?v=20260827_margins">
@@ -481,7 +486,7 @@
             <div class="portrait-inner-frame" style="width: 100%; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #070400;">
               <picture>
                 <source srcSet="assets/anurag-portrait.webp" type="image/webp">
-                <img src="assets/anurag-portrait.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" loading="eager" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;">
+                <img src="assets/anurag-portrait.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" fetchpriority="high" loading="eager" decoding="async" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;">
               </picture>
             </div>
 
@@ -1515,7 +1520,16 @@
 
   <script src="app.js?v=20260829_p2_completed" type="module"></script>
   <script>
-    lucide.createIcons();
+    function initIcons() {
+      if (window.lucide) {
+        lucide.createIcons();
+      } else {
+        window.addEventListener('DOMContentLoaded', () => {
+          if (window.lucide) lucide.createIcons();
+        });
+      }
+    }
+    initIcons();
 
     // Direct Admin Modal Trigger Handler
     const adminBtn = document.getElementById('btn-admin-trigger');

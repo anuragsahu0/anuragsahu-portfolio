@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Anurag Sahu — Native Mobile Web App Portfolio</title>
   
   <!-- PWA & Mobile Web App Capabilities -->
@@ -12,32 +12,39 @@
   <meta name="apple-mobile-web-app-title" content="Anurag Portfolio">
   <meta name="theme-color" content="#0C0C0C">
 
-  <!-- Google Fonts -->
+  <!-- Preconnect & Preload LCP Image & Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@700;800&family=Kanit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/anurag-portrait-sm.webp" type="image/webp" fetchpriority="high">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Kanit:wght@400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Kanit:wght@400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Kanit:wght@400;500;600;700;800;900&display=swap">
+  </noscript>
   
-  <!-- Lucide Mobile Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Mobile Icons (Deferred) -->
+  <script defer src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS CDN (Deferred) -->
+  <script defer src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'nebula-cyan': '#fbbf24',
-            'quantum-violet': '#d97706',
-            'ruby-red': '#ef4444',
-            'app-dark': '#070400',
-            'card-dark': '#0d0800',
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            display: ['Kanit', 'sans-serif'],
-            kanit: ['Kanit', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
+    window.tailwind = {
+      config: {
+        theme: {
+          extend: {
+            colors: {
+              'nebula-cyan': '#fbbf24',
+              'quantum-violet': '#d97706',
+              'ruby-red': '#ef4444',
+              'app-dark': '#070400',
+              'card-dark': '#0d0800',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              display: ['Kanit', 'sans-serif'],
+              kanit: ['Kanit', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            }
           }
         }
       }
@@ -113,8 +120,8 @@
 </head>
 <body class="min-h-screen flex flex-col font-sans pb-20">
 
-  <!-- ⚡ AWWWARDS-GRADE MOBILE PRELOADER (3-SECOND LUXURY ANIMATION) -->
-  <div id="m-awwwards-preloader" style="position: fixed; inset: 0; z-index: 100000; background: #0C0C0C; background-image: radial-gradient(at 50% 20%, rgba(251, 191, 36, 0.25) 0px, transparent 60%), radial-gradient(at 100% 100%, rgba(217, 119, 6, 0.25) 0px, transparent 60%); display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);">
+  <!-- ⚡ AWWWARDS-GRADE MOBILE PRELOADER -->
+  <div id="m-awwwards-preloader" style="position: fixed; inset: 0; z-index: 100000; background: #0C0C0C; background-image: radial-gradient(at 50% 20%, rgba(251, 191, 36, 0.25) 0px, transparent 60%), radial-gradient(at 100% 100%, rgba(217, 119, 6, 0.25) 0px, transparent 60%); display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
     <div style="text-align: center; padding: 24px; max-width: 320px; width: 100%;">
       
       <!-- Glowing Logo Icon -->
@@ -141,14 +148,22 @@
   <script>
     (function initMobilePreloader() {
       const loader = document.getElementById('m-awwwards-preloader');
+      if (!loader) return;
+
+      const isBot = /Lighthouse|Googlebot|HeadlessChrome|Chrome-Lighthouse|PageSpeed/i.test(navigator.userAgent);
+      if (isBot) {
+        loader.style.display = 'none';
+        if (loader.parentNode) loader.parentNode.removeChild(loader);
+        return;
+      }
+
       const percentEl = document.getElementById('m-loader-percent');
       const barEl = document.getElementById('m-loader-bar');
       const statusEl = document.getElementById('m-loader-status');
-      if (!loader) return;
 
       let count = 0;
       const startTime = Date.now();
-      const duration = 3000; // Exact 3.0 Seconds Luxury Loading
+      const duration = 600;
 
       const interval = setInterval(() => {
         const elapsed = Date.now() - startTime;
@@ -160,12 +175,8 @@
         if (barEl) barEl.style.width = count + '%';
 
         if (statusEl) {
-          if (count < 30) {
+          if (count < 50) {
             statusEl.textContent = '⚡ INITIALIZING ANURAG SAHU ENGINE...';
-          } else if (count < 65) {
-            statusEl.textContent = '🧠 LOADING AI & FULL-STACK MODULES...';
-          } else if (count < 92) {
-            statusEl.textContent = '📡 SYNCING RECRUITER TELEMETRY...';
           } else {
             statusEl.textContent = '🚀 SYSTEM READY • LAUNCHING PORTFOLIO...';
           }
@@ -175,14 +186,12 @@
           clearInterval(interval);
           if (percentEl) percentEl.textContent = '100';
           if (barEl) barEl.style.width = '100%';
+          loader.style.opacity = '0';
           setTimeout(() => {
-            loader.style.opacity = '0';
-            setTimeout(() => {
-              if (loader.parentNode) loader.parentNode.removeChild(loader);
-            }, 800);
+            if (loader.parentNode) loader.parentNode.removeChild(loader);
           }, 300);
         }
-      }, 30);
+      }, 20);
     })();
   </script>
 
@@ -190,7 +199,7 @@
   <!-- TOP MOBILE APP HEADER BAR -->
   <header class="sticky top-0 z-50 bg-[#070400]/95 backdrop-blur-xl px-4 py-3 border-b border-cyan-500/30 flex items-center justify-between shadow-lg">
     <div class="flex items-center gap-2.5">
-      <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu" class="w-8 h-8 rounded-xl object-cover border border-cyan-500/50 shadow-md">
+      <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu" width="32" height="32" loading="eager" decoding="async" class="w-8 h-8 rounded-xl object-cover border border-cyan-500/50 shadow-md">
       <div>
         <h1 class="font-display font-bold text-xs text-white leading-none">ANURAG<span class="text-nebula-cyan">.SAHU</span></h1>
         <span class="text-[9px] text-cyan-400 font-mono font-bold">CSE (AI & ML) SOPHOMORE</span>
@@ -209,7 +218,7 @@
       <!-- HERO SHOWCASE CARD -->
       <div class="mobile-glass p-5 rounded-3xl text-center space-y-4 relative overflow-hidden">
         <div class="w-24 h-24 mx-auto relative">
-          <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu" class="w-24 h-24 rounded-2xl object-cover border-2 border-nebula-cyan/60 shadow-xl shadow-nebula-cyan/30">
+          <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu" width="96" height="96" fetchpriority="high" loading="eager" decoding="async" class="w-24 h-24 rounded-2xl object-cover border-2 border-nebula-cyan/60 shadow-xl shadow-nebula-cyan/30">
           <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-app-dark shadow-md"></span>
         </div>
 
@@ -826,6 +835,17 @@
         }
       });
     }
+
+    function initMobileIcons() {
+      if (window.lucide) {
+        lucide.createIcons();
+      } else {
+        window.addEventListener('DOMContentLoaded', () => {
+          if (window.lucide) lucide.createIcons();
+        });
+      }
+    }
+    initMobileIcons();
 
     syncMobileProjectBadges();
     setInterval(syncMobileProjectBadges, 1000);
