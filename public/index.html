@@ -29,7 +29,10 @@
   <!-- Preload Critical Hero Image & Font Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="assets/anurag-portrait.webp" type="image/webp" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/anurag-portrait-sm.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/anurag-portrait.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
+  <link rel="preload" as="style" href="styles.css?v=20260830_fast">
+  <link rel="stylesheet" href="styles.css?v=20260830_fast">
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
   <noscript>
@@ -41,9 +44,6 @@
 
   <!-- Three.js 3D WebGL Library CDN (Deferred) -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=20260827_margins">
 
   <style>
     /* Admin Modal Glassmorphism Overlay */
@@ -475,6 +475,7 @@
             
             <div class="portrait-inner-frame" style="width: 100%; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #070400;">
               <picture>
+                <source srcSet="assets/anurag-portrait-sm.webp" media="(max-width: 768px)" type="image/webp">
                 <source srcSet="assets/anurag-portrait.webp" type="image/webp">
                 <img src="assets/anurag-portrait.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" fetchpriority="high" loading="eager" decoding="async" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;">
               </picture>
@@ -1553,13 +1554,14 @@
 
   <!-- 3D ROYAL GOLD PARTICLE CANVAS SYSTEM (Three.js) -->
   <script>
-  (function initRoyalGoldParticles() {
+  function startRoyalGoldParticles() {
     if (typeof THREE === 'undefined') return;
 
     const canvas = document.getElementById('bg-canvas');
     if (!canvas) return;
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+    const isMobile = window.innerWidth < 768;
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'low-power' });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
@@ -1569,7 +1571,7 @@
     camera.position.z = 80;
 
     // === ROYAL GOLD STAR FIELD ===
-    const starCount = 1200;
+    const starCount = isMobile ? 250 : 1200;
     const starPositions = new Float32Array(starCount * 3);
     const starColors = new Float32Array(starCount * 3);
 
@@ -1608,7 +1610,7 @@
     scene.add(stars);
 
     // === LARGE GOLD FLOATING DUST PARTICLES ===
-    const dustCount = 120;
+    const dustCount = isMobile ? 25 : 120;
     const dustPositions = new Float32Array(dustCount * 3);
     for (let i = 0; i < dustCount; i++) {
       dustPositions[i * 3]     = (Math.random() - 0.5) * 180;
@@ -1628,7 +1630,7 @@
     scene.add(dust);
 
     // === AMBIENT GOLD ORB (Sphere) ===
-    const orbGeo = new THREE.SphereGeometry(12, 32, 32);
+    const orbGeo = new THREE.SphereGeometry(12, 16, 16);
     const orbMat = new THREE.MeshBasicMaterial({
       color: 0xd97706,
       transparent: true,
@@ -1686,7 +1688,16 @@
       if (document.hidden) cancelAnimationFrame(animFrame);
       else animate();
     });
-  })();
+  }
+
+  // Defer execution to idle time so FCP and LCP are 100% instantaneous
+  window.addEventListener('load', () => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(startRoyalGoldParticles);
+    } else {
+      setTimeout(startRoyalGoldParticles, 300);
+    }
+  });
   </script>
 </body>
 </html>

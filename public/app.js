@@ -9,7 +9,13 @@ const API_BASE = (window.location.hostname === 'localhost' || window.location.ho
   : `/api`;
 
 document.addEventListener('DOMContentLoaded', () => {
-  initParticleBackground();
+  if (typeof THREE === 'undefined') {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(initParticleBackground);
+    } else {
+      setTimeout(initParticleBackground, 300);
+    }
+  }
   initCLI();
   initLiveTelemetryTracking();
   initScrollProgress();
