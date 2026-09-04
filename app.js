@@ -300,7 +300,7 @@ function initCLI() {
       } else if (val === 'skills') {
         appendLog('STACK: React 18, Node.js, Express, Python, PyTorch, MongoDB, PostgreSQL, C++', '#9ca3af');
       } else if (val === 'projects') {
-        appendLog('1. Portfolio (Working) | 2. AI Finance Controller (Completed) | 3. Restaurant Management System (Coming Soon) | 4. Smart College ERP (Coming Soon)', '#9ca3af');
+        appendLog('1. AI Finance Controller (Completed) | 2. Restaurant Management System (Coming Soon) | 3. Smart College ERP (Coming Soon)', '#9ca3af');
       } else if (val === 'clear') {
         body.innerHTML = '';
       } else {
@@ -580,11 +580,11 @@ function initAdminModal() {
 }
 
 async function syncProjectStatuses() {
-  localStorage.setItem('ag_proj_status_02', 'Completed');
+  localStorage.setItem('ag_proj_status_01', 'Completed');
 
   // 1. Apply local storage immediately (High Priority - Rate-limit proof)
   ['01', '02', '03'].forEach(num => {
-    const status = num === '02' ? 'Completed' : (localStorage.getItem(`ag_proj_status_${num}`) || 'Coming Soon');
+    const status = num === '01' ? 'Completed' : (localStorage.getItem(`ag_proj_status_${num}`) || 'Coming Soon');
     if (status) {
       applyBadgeUI(num, status);
     }
@@ -597,9 +597,9 @@ async function syncProjectStatuses() {
       const data = await res.json();
       if (data && data.settings) {
         ['01', '02', '03'].forEach(num => {
-          if (num === '02') {
-            localStorage.setItem('ag_proj_status_02', 'Completed');
-            applyBadgeUI('02', 'Completed');
+          if (num === '01') {
+            localStorage.setItem('ag_proj_status_01', 'Completed');
+            applyBadgeUI('01', 'Completed');
             return;
           }
           const val = data.settings[`ag_proj_status_${num}`];
@@ -616,7 +616,7 @@ async function syncProjectStatuses() {
 
 function applyBadgeUI(num, status) {
   const badge = document.getElementById(`main-project-status-${num}`);
-  const actualStatus = num === '02' ? 'Completed' : status;
+  const actualStatus = num === '01' ? 'Completed' : status;
   if (badge && actualStatus) {
     if (actualStatus === 'Completed') {
       badge.textContent = '🟢 Status: Completed';
