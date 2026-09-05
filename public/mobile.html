@@ -64,19 +64,24 @@
       scroll-behavior: smooth;
       width: 100%;
       max-width: 100%;
-      font-size: 17px;
+      font-size: 20px !important;
     }
-    @media (min-width: 480px) {
+    @media (min-width: 375px) {
       html {
-        font-size: 19px;
+        font-size: 21px !important;
+      }
+    }
+    @media (min-width: 420px) {
+      html {
+        font-size: 22px !important;
       }
     }
     body {
       background-color: #0C0C0C;
       color: #fefce8;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-size: 1rem;
-      line-height: 1.6;
+      font-size: 1.05rem;
+      line-height: 1.65;
       -webkit-tap-highlight-color: transparent;
       overflow-x: hidden;
       width: 100% !important;
@@ -93,7 +98,7 @@
       font-family: inherit;
     }
     input[type="text"], input[type="email"], textarea {
-      font-size: 16px !important; /* Prevents iOS Safari page zoom */
+      font-size: 18px !important; /* Prevents iOS Safari page zoom & provides massive readability */
     }
 
     /* Top Sticky Header: Full Screen Width */
@@ -101,7 +106,7 @@
       width: 100% !important;
       max-width: 100% !important;
       min-width: 100% !important;
-      padding: 14px 16px !important;
+      padding: 16px 18px !important;
       box-sizing: border-box !important;
     }
 
@@ -113,15 +118,15 @@
       margin: 0 !important;
       padding-left: 8px !important;
       padding-right: 8px !important;
-      padding-top: 16px !important;
-      padding-bottom: calc(110px + env(safe-area-inset-bottom, 24px)) !important;
+      padding-top: 18px !important;
+      padding-bottom: calc(120px + env(safe-area-inset-bottom, 24px)) !important;
       box-sizing: border-box !important;
       display: block !important;
     }
 
     /* Sections: Generous Vertical Spacing */
     section {
-      scroll-margin-top: 80px;
+      scroll-margin-top: 85px;
       width: 100% !important;
       max-width: 100% !important;
       min-width: 100% !important;
@@ -142,9 +147,9 @@
       background: rgba(14, 10, 3, 0.96);
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px);
-      border: 1px solid rgba(251, 191, 36, 0.35);
-      border-radius: 26px;
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.8);
+      border: 1.5px solid rgba(251, 191, 36, 0.38);
+      border-radius: 28px;
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.85);
     }
     .mproj-item {
       width: 100% !important;
@@ -163,7 +168,7 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* 3D Touch Flip Cards: STRETCHED TALL TO 290px */
+    /* 3D Touch Flip Cards: STRETCHED TALL TO 350px */
     .flip-card {
       perspective: 1000px;
       -webkit-perspective: 1000px;
@@ -171,8 +176,8 @@
       max-width: 100% !important;
       min-width: 100% !important;
       box-sizing: border-box !important;
-      min-height: 290px !important;
-      height: 290px !important;
+      min-height: 350px !important;
+      height: 350px !important;
       cursor: pointer;
       user-select: none;
       -webkit-user-select: none;
@@ -195,10 +200,10 @@
       height: 100%;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      border-radius: 24px;
+      border-radius: 26px;
       overflow: hidden;
       box-sizing: border-box;
-      padding: 24px 22px !important;
+      padding: 28px 24px !important;
     }
     .flip-back {
       transform: rotateY(180deg);
@@ -213,9 +218,9 @@
       left: 0 !important;
       right: 0 !important;
       box-sizing: border-box !important;
-      padding: 10px 4px !important;
-      padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important;
-      min-height: 72px;
+      padding: 12px 6px !important;
+      padding-bottom: max(18px, env(safe-area-inset-bottom, 18px)) !important;
+      min-height: 80px;
     }
 
     /* Utility Fallbacks */
@@ -237,9 +242,9 @@
     .font-extrabold { font-weight: 800; }
     .font-black { font-weight: 900; }
     .cursor-pointer { cursor: pointer; }
-    .rounded-xl { border-radius: 1rem; }
-    .rounded-2xl { border-radius: 1.35rem; }
-    .rounded-3xl { border-radius: 1.75rem; }
+    .rounded-xl { border-radius: 1.15rem; }
+    .rounded-2xl { border-radius: 1.5rem; }
+    .rounded-3xl { border-radius: 2rem; }
     .rounded-full { border-radius: 9999px; }
   </style>
 </head>
@@ -247,24 +252,24 @@
 
   <!-- ⚡ AWWWARDS-GRADE MOBILE PRELOADER (FAIL-SAFE & ULTRA-FAST) -->
   <div id="m-awwwards-preloader" style="position: fixed; inset: 0; z-index: 100000; background: #0C0C0C; background-image: radial-gradient(at 50% 20%, rgba(251, 191, 36, 0.25) 0px, transparent 60%), radial-gradient(at 100% 100%, rgba(217, 119, 6, 0.25) 0px, transparent 60%); display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; transition: opacity 0.25s ease-out; pointer-events: auto;">
-    <div style="text-align: center; padding: 24px; max-width: 340px; width: 100%;">
+    <div style="text-align: center; padding: 24px; max-width: 360px; width: 100%;">
       
       <!-- Glowing Logo Icon -->
-      <div style="width: 64px; height: 64px; border-radius: 20px; background: linear-gradient(135deg, rgba(251,191,36,0.2) 0%, rgba(217,119,6,0.2) 100%); border: 1.5px solid rgba(251,191,36,0.7); display: flex; align-items: center; justify-content: center; color: #fbbf24; font-weight: 900; font-size: 22px; margin: 0 auto 18px auto; box-shadow: 0 0 35px rgba(251,191,36,0.4);">
+      <div style="width: 72px; height: 72px; border-radius: 22px; background: linear-gradient(135deg, rgba(251,191,36,0.2) 0%, rgba(217,119,6,0.2) 100%); border: 2px solid rgba(251,191,36,0.75); display: flex; align-items: center; justify-content: center; color: #fbbf24; font-weight: 900; font-size: 26px; margin: 0 auto 20px auto; box-shadow: 0 0 40px rgba(251,191,36,0.45);">
         AS
       </div>
 
-      <div style="font-size: 4rem; font-weight: 900; color: #fbbf24; letter-spacing: 0.05em; line-height: 1; margin-bottom: 14px; text-shadow: 0 0 30px rgba(251,191,36,0.6);">
-        <span id="m-loader-percent">0</span><span style="font-size: 2.2rem; color: #d97706;">%</span>
+      <div style="font-size: 4.8rem; font-weight: 900; color: #fbbf24; letter-spacing: 0.05em; line-height: 1; margin-bottom: 16px; text-shadow: 0 0 35px rgba(251,191,36,0.65);">
+        <span id="m-loader-percent">0</span><span style="font-size: 2.5rem; color: #d97706;">%</span>
       </div>
 
       <!-- Glowing Progress Bar Container -->
-      <div style="width: 250px; height: 6px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(251, 191, 36, 0.25); border-radius: 12px; overflow: hidden; margin: 0 auto; box-shadow: 0 0 15px rgba(0,0,0,0.8);">
-        <div id="m-loader-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%); transition: width 0.05s ease-out; box-shadow: 0 0 14px #fbbf24;"></div>
+      <div style="width: 270px; height: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 14px; overflow: hidden; margin: 0 auto; box-shadow: 0 0 18px rgba(0,0,0,0.85);">
+        <div id="m-loader-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%); transition: width 0.05s ease-out; box-shadow: 0 0 16px #fbbf24;"></div>
       </div>
 
       <!-- Dynamic Cyber Status Label -->
-      <div id="m-loader-status" style="font-size: 11px; color: #fbbf24; font-weight: 800; margin-top: 16px; text-transform: uppercase; letter-spacing: 0.15em; min-height: 24px; display: flex; align-items: center; justify-content: center;">
+      <div id="m-loader-status" style="font-size: 12px; color: #fbbf24; font-weight: 800; margin-top: 18px; text-transform: uppercase; letter-spacing: 0.15em; min-height: 26px; display: flex; align-items: center; justify-content: center;">
         ⚡ INITIALIZING ANURAG SAHU ENGINE...
       </div>
     </div>
@@ -334,15 +339,15 @@
 
   <!-- TOP MOBILE APP HEADER BAR: LARGE, CRISP & READABLE -->
   <header class="sticky top-0 z-50 bg-[#070400]/95 backdrop-blur-xl border-b border-amber-500/30 flex items-center justify-between shadow-lg">
-    <div class="flex items-center gap-3.5">
-      <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu" width="46" height="46" loading="eager" decoding="async" class="w-11 h-11 rounded-2xl object-cover border-2 border-amber-400/80 shadow-md">
+    <div class="flex items-center gap-4">
+      <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu" width="52" height="52" loading="eager" decoding="async" class="w-13 h-13 rounded-2xl object-cover border-2 border-amber-400/80 shadow-md">
       <div>
-        <h1 class="font-display font-black text-base text-white leading-tight">ANURAG<span class="text-amber-400">.SAHU</span></h1>
-        <span class="text-xs text-amber-300 font-mono font-extrabold tracking-wider">CSE (AI & ML) SOPHOMORE</span>
+        <h1 class="font-display font-black text-lg text-white leading-tight">ANURAG<span class="text-amber-400">.SAHU</span></h1>
+        <span class="text-xs text-amber-300 font-mono font-black tracking-wider">CSE (AI & ML) SOPHOMORE</span>
       </div>
     </div>
     <div class="flex items-center gap-2">
-      <a href="/" class="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-mono text-gray-100 hover:text-white flex items-center gap-2 transition-colors font-extrabold shadow-sm">
+      <a href="/" class="px-4 py-2 rounded-full bg-white/10 border border-white/20 text-xs font-mono text-gray-100 hover:text-white flex items-center gap-2 transition-colors font-extrabold shadow-sm">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
         <span>Desktop</span>
       </a>
@@ -350,58 +355,58 @@
   </header>
 
   <!-- MAIN MOBILE APP CONTENT PANELS: TALL, STRETCHED & READABLE -->
-  <main class="space-y-7">
+  <main class="space-y-8">
 
     <!-- TAB 1: HERO & OVERVIEW -->
-    <section id="m-sec-home" class="space-y-6">
+    <section id="m-sec-home" class="space-y-7">
       
       <!-- HERO SHOWCASE CARD -->
-      <div class="mobile-glass p-6 py-8 rounded-3xl text-center space-y-6 relative overflow-hidden">
+      <div class="mobile-glass p-7 py-9 rounded-3xl text-center space-y-7 relative overflow-hidden">
         
-        <!-- Big High-Resolution Avatar (128px) -->
-        <div class="w-32 h-32 mx-auto relative pt-1">
-          <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu" width="128" height="128" fetchpriority="high" loading="eager" decoding="async" class="w-32 h-32 rounded-3xl object-cover border-3 border-amber-400/90 shadow-2xl shadow-amber-500/35">
-          <span class="absolute bottom-0.5 right-0.5 w-6 h-6 rounded-full bg-emerald-500 border-3 border-[#070400] shadow-xl"></span>
+        <!-- Big High-Resolution Avatar (144px) -->
+        <div class="w-36 h-36 mx-auto relative pt-1">
+          <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu" width="144" height="144" fetchpriority="high" loading="eager" decoding="async" class="w-36 h-36 rounded-3xl object-cover border-4 border-amber-400/90 shadow-2xl shadow-amber-500/40">
+          <span class="absolute bottom-1 right-1 w-7 h-7 rounded-full bg-emerald-500 border-3 border-[#070400] shadow-xl"></span>
         </div>
 
         <div class="space-y-4">
-          <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 font-mono text-xs font-black tracking-wide shadow-sm">
+          <div class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-amber-500/15 border border-amber-500/45 text-amber-400 font-mono text-xs font-black tracking-wide shadow-sm">
             <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
             <span>AVAILABLE FOR SUMMER 2026 INTERNSHIPS</span>
           </div>
 
-          <h2 class="font-display text-3xl font-black heading-gradient leading-snug px-1">
+          <h2 class="font-display text-3xl sm:text-4xl font-black heading-gradient leading-tight px-1">
             Building modern full-stack web applications and practical AI solutions.
           </h2>
 
-          <p class="text-base text-gray-200 leading-relaxed w-full mx-auto font-normal px-2">
+          <p class="text-lg text-gray-200 leading-relaxed w-full mx-auto font-normal px-2">
             Hi, I'm <strong class="text-white font-extrabold">Anurag Sahu</strong> — a Computer Science sophomore specializing in AI & ML. I build clean, performant full-stack web applications.
           </p>
         </div>
 
-        <!-- HERO BUTTONS: TALL TOUCH TARGETS (min-height 60px) -->
-        <div class="pt-2 space-y-3.5 font-mono text-base w-full">
-          <button onclick="switchMobileTab('projects')" class="w-full py-4.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-black text-base shadow-2xl shadow-amber-500/35 flex items-center justify-center gap-3 cursor-pointer active:scale-98 transition-transform min-h-[60px]">
+        <!-- HERO BUTTONS: MASSIVE TOUCH TARGETS (min-height 66px) -->
+        <div class="pt-2 space-y-4 font-mono text-lg w-full">
+          <button onclick="switchMobileTab('projects')" class="w-full py-5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-black text-lg shadow-2xl shadow-amber-500/40 flex items-center justify-center gap-3 cursor-pointer active:scale-98 transition-transform min-h-[66px]">
             <span>Explore My Work</span>
-            <i data-lucide="arrow-right" class="w-6 h-6 text-black"></i>
+            <i data-lucide="arrow-right" class="w-7 h-7 text-black"></i>
           </button>
-          <a href="assets/anurag-sahu-resume.pdf" download="Anurag_Sahu_Resume.pdf" target="_blank" class="block w-full py-4.5 rounded-2xl bg-white/10 border border-white/25 text-white font-extrabold text-base flex items-center justify-center gap-3 active:scale-98 transition-transform min-h-[60px]">
-            <i data-lucide="file-text" class="w-6 h-6 text-amber-400"></i>
+          <a href="assets/anurag-sahu-resume.pdf" download="Anurag_Sahu_Resume.pdf" target="_blank" class="block w-full py-5 rounded-2xl bg-white/10 border border-white/25 text-white font-black text-lg flex items-center justify-center gap-3 active:scale-98 transition-transform min-h-[66px]">
+            <i data-lucide="file-text" class="w-7 h-7 text-amber-400"></i>
             <span>Download Resume</span>
           </a>
         </div>
 
         <!-- SOCIAL FAST ACTION BUTTONS: ROOMY & TALL -->
-        <div class="pt-4 border-t border-white/15 grid grid-cols-3 gap-3 font-mono text-sm w-full">
-          <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="py-3.5 rounded-2xl bg-white/5 border border-white/15 text-white font-extrabold flex items-center justify-center gap-2 hover:bg-cyan-500/20 active:scale-95 transition-all">
+        <div class="pt-5 border-t border-white/15 grid grid-cols-3 gap-3.5 font-mono text-base w-full">
+          <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="py-4 rounded-2xl bg-white/5 border border-white/15 text-white font-extrabold flex items-center justify-center gap-2 hover:bg-cyan-500/20 active:scale-95 transition-all">
             <i data-lucide="github" class="w-5 h-5 text-cyan-400"></i>
             <span>GitHub</span>
           </a>
-          <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="py-3.5 rounded-2xl bg-white/5 border border-white/15 text-white font-extrabold flex items-center justify-center gap-2 hover:bg-cyan-500/20 active:scale-95 transition-all">
+          <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="py-4 rounded-2xl bg-white/5 border border-white/15 text-white font-extrabold flex items-center justify-center gap-2 hover:bg-cyan-500/20 active:scale-95 transition-all">
             <i data-lucide="linkedin" class="w-5 h-5 text-blue-400"></i>
             <span>LinkedIn</span>
           </a>
-          <a href="mailto:shivasahu0612@gmail.com" class="py-3.5 rounded-2xl bg-white/5 border border-white/15 text-white font-extrabold flex items-center justify-center gap-2 hover:bg-cyan-500/20 active:scale-95 transition-all">
+          <a href="mailto:shivasahu0612@gmail.com" class="py-4 rounded-2xl bg-white/5 border border-white/15 text-white font-extrabold flex items-center justify-center gap-2 hover:bg-cyan-500/20 active:scale-95 transition-all">
             <i data-lucide="mail" class="w-5 h-5 text-rose-400"></i>
             <span>Gmail</span>
           </a>
@@ -410,68 +415,68 @@
     </section>
 
     <!-- TAB 2: ABOUT ME & EDUCATION -->
-    <section id="m-sec-about" class="space-y-4">
-      <div class="mobile-glass p-6 py-7 rounded-3xl space-y-5">
+    <section id="m-sec-about" class="space-y-5">
+      <div class="mobile-glass p-7 py-8 rounded-3xl space-y-6">
         <div class="flex items-center gap-3 text-amber-400 font-mono text-sm font-black tracking-wider">
-          <i data-lucide="user" class="w-5 h-5"></i>
+          <i data-lucide="user" class="w-6 h-6"></i>
           <span>ABOUT ME • BIOGRAPHY</span>
         </div>
-        <h3 class="font-display text-2xl font-black text-white">Full-Stack Architect & AI/ML Student</h3>
-        <p class="text-base text-gray-200 leading-relaxed">
+        <h3 class="font-display text-3xl font-black text-white">Full-Stack Architect & AI/ML Student</h3>
+        <p class="text-base sm:text-lg text-gray-200 leading-relaxed">
           I am a 2nd year Computer Science & Engineering student specializing in Artificial Intelligence and Machine Learning. Passionate about building robust web applications, REST APIs, and modern UI systems.
         </p>
 
-        <div class="pt-3 border-t border-white/15 space-y-3.5 font-mono text-sm w-full">
-          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span class="text-gray-400 font-bold text-xs uppercase tracking-wider">DEGREE</span>
-            <span class="text-white font-black text-sm">B.Tech CSE (AI & ML)</span>
+        <div class="pt-4 border-t border-white/15 space-y-4 font-mono text-base w-full">
+          <div class="flex justify-between items-center py-2 border-b border-white/10">
+            <span class="text-gray-400 font-bold text-xs sm:text-sm uppercase tracking-wider">DEGREE</span>
+            <span class="text-white font-black text-sm sm:text-base">B.Tech CSE (AI & ML)</span>
           </div>
-          <div class="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span class="text-gray-400 font-bold text-xs uppercase tracking-wider">STATUS</span>
-            <span class="text-emerald-400 font-black text-sm">🟢 2nd Year Sophomore</span>
+          <div class="flex justify-between items-center py-2 border-b border-white/10">
+            <span class="text-gray-400 font-bold text-xs sm:text-sm uppercase tracking-wider">STATUS</span>
+            <span class="text-emerald-400 font-black text-sm sm:text-base">🟢 2nd Year Sophomore</span>
           </div>
-          <div class="flex justify-between items-center py-1.5">
-            <span class="text-gray-400 font-bold text-xs uppercase tracking-wider">PRIMARY EMAIL</span>
-            <span class="text-amber-400 font-black text-xs break-all">shivasahu0612@gmail.com</span>
+          <div class="flex justify-between items-center py-2">
+            <span class="text-gray-400 font-bold text-xs sm:text-sm uppercase tracking-wider">PRIMARY EMAIL</span>
+            <span class="text-amber-400 font-black text-xs sm:text-sm break-all">shivasahu0612@gmail.com</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 3: MY WORKING LAB (3D FLIP CARDS: 290px TALL) -->
-    <section id="m-sec-lab" class="space-y-5">
+    <!-- TAB 3: MY WORKING LAB (3D FLIP CARDS: MASSIVE 350px TALL) -->
+    <section id="m-sec-lab" class="space-y-6">
       <div class="text-center space-y-2 px-2">
-        <h3 class="font-display text-3xl font-black text-white">My Working Lab</h3>
-        <p class="text-sm text-gray-400 font-medium">Tap any card below to flip and inspect full tech stack.</p>
+        <h3 class="font-display text-3xl sm:text-4xl font-black text-white">My Working Lab</h3>
+        <p class="text-base text-gray-300 font-medium">Tap any card below to flip and inspect full tech stack.</p>
       </div>
 
-      <!-- 4 TOUCH FLIP CARDS: MASSIVE 290px VERTICAL STRETCH -->
-      <div class="grid grid-cols-1 gap-5 w-full">
+      <!-- 4 TOUCH FLIP CARDS: MASSIVE 350px VERTICAL STRETCH -->
+      <div class="grid grid-cols-1 gap-6 w-full">
         
         <!-- CARD 1: FRONTEND -->
         <div class="flip-card" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped')">
           <div class="flip-card-inner">
             <div class="flip-front mobile-glass flex flex-col justify-between">
               <div class="flex justify-between items-center">
-                <div class="w-14 h-14 rounded-2xl bg-cyan-500/20 border border-cyan-500/50 flex items-center justify-center text-cyan-400 shadow-md shadow-cyan-500/20">
-                  <i data-lucide="layout" class="w-8 h-8"></i>
+                <div class="w-16 h-16 rounded-2xl bg-cyan-500/20 border border-cyan-500/50 flex items-center justify-center text-cyan-400 shadow-md shadow-cyan-500/20">
+                  <i data-lucide="layout" class="w-9 h-9"></i>
                 </div>
-                <span class="px-3.5 py-1.5 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-mono font-black border border-cyan-500/50">TAP TO FLIP 🔄</span>
+                <span class="px-4 py-2 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-mono font-black border border-cyan-500/50 tracking-wider">TAP TO FLIP 🔄</span>
               </div>
-              <div class="space-y-2">
-                <h4 class="font-display text-2xl font-black text-white">Frontend Web</h4>
-                <p class="text-sm text-gray-300 leading-relaxed font-medium">React 18, HTML5, CSS3, Tailwind, JavaScript ES6+, Glassmorphism & Framer Motion</p>
+              <div class="space-y-3">
+                <h4 class="font-display text-3xl font-black text-white leading-tight">Frontend Web</h4>
+                <p class="text-base text-gray-200 leading-relaxed font-normal">React 18, HTML5, CSS3, Tailwind, JavaScript ES6+, Glassmorphism & Framer Motion</p>
               </div>
             </div>
             <div class="flip-back mobile-glass flex flex-col justify-between border-2 border-cyan-500/80">
-              <h4 class="font-display text-base font-black text-cyan-400 uppercase tracking-wider">Frontend Tech Stack</h4>
-              <div class="flex flex-wrap gap-2.5 font-mono text-sm py-2">
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">React 18</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">JavaScript ES6+</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">TailwindCSS</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">Glassmorphism</span>
+              <h4 class="font-display text-lg font-black text-cyan-400 uppercase tracking-wider">Frontend Tech Stack</h4>
+              <div class="flex flex-wrap gap-2.5 font-mono text-base py-3">
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">React 18</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">JavaScript ES6+</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">TailwindCSS</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">Glassmorphism</span>
               </div>
-              <span class="text-xs text-gray-400 font-mono font-bold">Tap again to flip back</span>
+              <span class="text-sm text-gray-400 font-mono font-bold">Tap again to flip back</span>
             </div>
           </div>
         </div>
@@ -481,25 +486,25 @@
           <div class="flip-card-inner">
             <div class="flip-front mobile-glass flex flex-col justify-between">
               <div class="flex justify-between items-center">
-                <div class="w-14 h-14 rounded-2xl bg-purple-500/20 border border-purple-500/50 flex items-center justify-center text-purple-400 shadow-md shadow-purple-500/20">
-                  <i data-lucide="server" class="w-8 h-8"></i>
+                <div class="w-16 h-16 rounded-2xl bg-purple-500/20 border border-purple-500/50 flex items-center justify-center text-purple-400 shadow-md shadow-purple-500/20">
+                  <i data-lucide="server" class="w-9 h-9"></i>
                 </div>
-                <span class="px-3.5 py-1.5 rounded-full bg-purple-500/20 text-purple-300 text-xs font-mono font-black border border-purple-500/50">TAP TO FLIP 🔄</span>
+                <span class="px-4 py-2 rounded-full bg-purple-500/20 text-purple-300 text-xs font-mono font-black border border-purple-500/50 tracking-wider">TAP TO FLIP 🔄</span>
               </div>
-              <div class="space-y-2">
-                <h4 class="font-display text-2xl font-black text-white">Backend & APIs</h4>
-                <p class="text-sm text-gray-300 leading-relaxed font-medium">Node.js, Express.js, REST Architecture, JWT Security, Nodemailer Engine</p>
+              <div class="space-y-3">
+                <h4 class="font-display text-3xl font-black text-white leading-tight">Backend & APIs</h4>
+                <p class="text-base text-gray-200 leading-relaxed font-normal">Node.js, Express.js, REST Architecture, JWT Security, Nodemailer Engine</p>
               </div>
             </div>
             <div class="flip-back mobile-glass flex flex-col justify-between border-2 border-purple-500/80">
-              <h4 class="font-display text-base font-black text-purple-400 uppercase tracking-wider">Backend Architecture</h4>
-              <div class="flex flex-wrap gap-2.5 font-mono text-sm py-2">
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">Node.js</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">Express REST</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">JWT Auth</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">Nodemailer</span>
+              <h4 class="font-display text-lg font-black text-purple-400 uppercase tracking-wider">Backend Architecture</h4>
+              <div class="flex flex-wrap gap-2.5 font-mono text-base py-3">
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">Node.js</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">Express REST</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">JWT Auth</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">Nodemailer</span>
               </div>
-              <span class="text-xs text-gray-400 font-mono font-bold">Tap again to flip back</span>
+              <span class="text-sm text-gray-400 font-mono font-bold">Tap again to flip back</span>
             </div>
           </div>
         </div>
@@ -509,25 +514,25 @@
           <div class="flip-card-inner">
             <div class="flip-front mobile-glass flex flex-col justify-between">
               <div class="flex justify-between items-center">
-                <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 shadow-md shadow-emerald-500/20">
-                  <i data-lucide="cpu" class="w-8 h-8"></i>
+                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 shadow-md shadow-emerald-500/20">
+                  <i data-lucide="cpu" class="w-9 h-9"></i>
                 </div>
-                <span class="px-3.5 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-mono font-black border border-emerald-500/50">TAP TO FLIP 🔄</span>
+                <span class="px-4 py-2 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-mono font-black border border-emerald-500/50 tracking-wider">TAP TO FLIP 🔄</span>
               </div>
-              <div class="space-y-2">
-                <h4 class="font-display text-2xl font-black text-white">AI & Machine Learning</h4>
-                <p class="text-sm text-gray-300 leading-relaxed font-medium">Python 3.12, NumPy, Pandas, Scikit-Learn, Predictive Analysis & Model Training</p>
+              <div class="space-y-3">
+                <h4 class="font-display text-3xl font-black text-white leading-tight">AI & Machine Learning</h4>
+                <p class="text-base text-gray-200 leading-relaxed font-normal">Python 3.12, NumPy, Pandas, Scikit-Learn, Predictive Analysis & Model Training</p>
               </div>
             </div>
             <div class="flip-back mobile-glass flex flex-col justify-between border-2 border-emerald-500/80">
-              <h4 class="font-display text-base font-black text-emerald-400 uppercase tracking-wider">AI & Machine Learning</h4>
-              <div class="flex flex-wrap gap-2.5 font-mono text-sm py-2">
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">Python 3.12</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">Pandas & NumPy</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">Scikit-Learn</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">Model Training</span>
+              <h4 class="font-display text-lg font-black text-emerald-400 uppercase tracking-wider">AI & Machine Learning</h4>
+              <div class="flex flex-wrap gap-2.5 font-mono text-base py-3">
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">Python 3.12</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">Pandas & NumPy</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">Scikit-Learn</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">Model Training</span>
               </div>
-              <span class="text-xs text-gray-400 font-mono font-bold">Tap again to flip back</span>
+              <span class="text-sm text-gray-400 font-mono font-bold">Tap again to flip back</span>
             </div>
           </div>
         </div>
@@ -537,25 +542,25 @@
           <div class="flip-card-inner">
             <div class="flip-front mobile-glass flex flex-col justify-between">
               <div class="flex justify-between items-center">
-                <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 shadow-md shadow-amber-500/20">
-                  <i data-lucide="database" class="w-8 h-8"></i>
+                <div class="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 shadow-md shadow-amber-500/20">
+                  <i data-lucide="database" class="w-9 h-9"></i>
                 </div>
-                <span class="px-3.5 py-1.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-mono font-black border border-amber-500/50">TAP TO FLIP 🔄</span>
+                <span class="px-4 py-2 rounded-full bg-amber-500/20 text-amber-300 text-xs font-mono font-black border border-amber-500/50 tracking-wider">TAP TO FLIP 🔄</span>
               </div>
-              <div class="space-y-2">
-                <h4 class="font-display text-2xl font-black text-white">Databases & Storage</h4>
-                <p class="text-sm text-gray-300 leading-relaxed font-medium">MongoDB Atlas, Mongoose ODM, PostgreSQL, Relational ERD Modeling & Indexing</p>
+              <div class="space-y-3">
+                <h4 class="font-display text-3xl font-black text-white leading-tight">Databases & Storage</h4>
+                <p class="text-base text-gray-200 leading-relaxed font-normal">MongoDB Atlas, Mongoose ODM, PostgreSQL, Relational ERD Modeling & Indexing</p>
               </div>
             </div>
             <div class="flip-back mobile-glass flex flex-col justify-between border-2 border-amber-500/80">
-              <h4 class="font-display text-base font-black text-amber-400 uppercase tracking-wider">Database Engineering</h4>
-              <div class="flex flex-wrap gap-2.5 font-mono text-sm py-2">
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">MongoDB Atlas</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">Mongoose ODM</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">PostgreSQL</span>
-                <span class="px-3.5 py-2 rounded-xl bg-white/10 text-white border border-white/20 font-bold">Data Modeling</span>
+              <h4 class="font-display text-lg font-black text-amber-400 uppercase tracking-wider">Database Engineering</h4>
+              <div class="flex flex-wrap gap-2.5 font-mono text-base py-3">
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">MongoDB Atlas</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">Mongoose ODM</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">PostgreSQL</span>
+                <span class="px-4 py-2.5 rounded-2xl bg-white/10 text-white border border-white/20 font-bold">Data Modeling</span>
               </div>
-              <span class="text-xs text-gray-400 font-mono font-bold">Tap again to flip back</span>
+              <span class="text-sm text-gray-400 font-mono font-bold">Tap again to flip back</span>
             </div>
           </div>
         </div>
@@ -564,166 +569,166 @@
     </section>
 
     <!-- TAB 4: MY CODING PROFILES -->
-    <section id="m-sec-profiles" class="space-y-4">
+    <section id="m-sec-profiles" class="space-y-5">
       <div class="text-center space-y-2 px-2">
         <span class="text-amber-400 font-mono text-xs font-black uppercase tracking-wider">PROBLEM SOLVING & COMPETITIVE CODE</span>
-        <h3 class="font-display text-3xl font-black text-white">Coding Profiles</h3>
+        <h3 class="font-display text-3xl sm:text-4xl font-black text-white">Coding Profiles</h3>
       </div>
 
-      <div class="space-y-3.5 font-mono w-full">
+      <div class="space-y-4 font-mono w-full">
         <!-- LEETCODE -->
-        <a href="https://leetcode.com/u/anuragsahu0" target="_blank" rel="noopener noreferrer" class="mobile-glass p-5 py-5.5 rounded-2xl flex items-center justify-between hover:border-amber-500/60 transition-colors gap-4 active:scale-98">
+        <a href="https://leetcode.com/u/anuragsahu0" target="_blank" rel="noopener noreferrer" class="mobile-glass p-6 py-6.5 rounded-3xl flex items-center justify-between hover:border-amber-500/60 transition-colors gap-5 active:scale-98">
           <div class="flex items-center gap-4 min-w-0">
-            <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 font-black text-2xl flex-shrink-0 shadow-md shadow-amber-500/20">
+            <div class="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 font-black text-3xl flex-shrink-0 shadow-md shadow-amber-500/20">
               📙
             </div>
             <div class="min-w-0 space-y-1">
-              <h4 class="font-black text-white text-lg leading-tight">LeetCode</h4>
-              <span class="text-xs text-gray-400 block truncate font-semibold">leetcode.com/u/anuragsahu0</span>
+              <h4 class="font-black text-white text-xl leading-tight">LeetCode</h4>
+              <span class="text-sm text-gray-300 block truncate font-bold">leetcode.com/u/anuragsahu0</span>
             </div>
           </div>
-          <i data-lucide="external-link" class="w-6 h-6 text-amber-400 flex-shrink-0"></i>
+          <i data-lucide="external-link" class="w-7 h-7 text-amber-400 flex-shrink-0"></i>
         </a>
 
         <!-- GEEKSFORGEEKS -->
-        <a href="https://www.geeksforgeeks.org/profile/shivasal83s" target="_blank" rel="noopener noreferrer" class="mobile-glass p-5 py-5.5 rounded-2xl flex items-center justify-between hover:border-green-500/60 transition-colors gap-4 active:scale-98">
+        <a href="https://www.geeksforgeeks.org/profile/shivasal83s" target="_blank" rel="noopener noreferrer" class="mobile-glass p-6 py-6.5 rounded-3xl flex items-center justify-between hover:border-green-500/60 transition-colors gap-5 active:scale-98">
           <div class="flex items-center gap-4 min-w-0">
-            <div class="w-14 h-14 rounded-2xl bg-green-500/20 border border-green-500/50 flex items-center justify-center text-green-400 font-black text-2xl flex-shrink-0 shadow-md shadow-green-500/20">
+            <div class="w-16 h-16 rounded-2xl bg-green-500/20 border border-green-500/50 flex items-center justify-center text-green-400 font-black text-3xl flex-shrink-0 shadow-md shadow-green-500/20">
               🟢
             </div>
             <div class="min-w-0 space-y-1">
-              <h4 class="font-black text-white text-lg leading-tight">GeeksforGeeks</h4>
-              <span class="text-xs text-gray-400 block truncate font-semibold">geeksforgeeks.org/profile/shivasal83s</span>
+              <h4 class="font-black text-white text-xl leading-tight">GeeksforGeeks</h4>
+              <span class="text-sm text-gray-300 block truncate font-bold">geeksforgeeks.org/profile/shivasal83s</span>
             </div>
           </div>
-          <i data-lucide="external-link" class="w-6 h-6 text-green-400 flex-shrink-0"></i>
+          <i data-lucide="external-link" class="w-7 h-7 text-green-400 flex-shrink-0"></i>
         </a>
       </div>
     </section>
 
     <!-- TAB 5: PROJECTS -->
-    <section id="m-sec-projects" class="space-y-5">
+    <section id="m-sec-projects" class="space-y-6">
       <div class="text-center space-y-2 px-2">
         <span class="text-amber-400 font-mono text-xs font-black uppercase tracking-wider">FEATURED BUILDS & ROADMAP</span>
-        <h3 class="font-display text-3xl font-black text-white">Projects</h3>
+        <h3 class="font-display text-3xl sm:text-4xl font-black text-white">Projects</h3>
       </div>
 
       <!-- FILTER BUTTONS: TALL PILLS -->
-      <div class="flex justify-center gap-3 font-mono text-sm w-full">
-        <button id="mbtn-filter-all" onclick="filterMobileProjects('all')" class="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-black shadow-lg cursor-pointer text-center text-base">
+      <div class="flex justify-center gap-3.5 font-mono text-base w-full">
+        <button id="mbtn-filter-all" onclick="filterMobileProjects('all')" class="flex-1 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-black shadow-lg cursor-pointer text-center text-lg min-h-[58px]">
           All Builds
         </button>
-        <button id="mbtn-filter-enterprise" onclick="filterMobileProjects('enterprise')" class="flex-1 py-3.5 rounded-2xl bg-white/10 border border-white/25 text-gray-200 font-black cursor-pointer text-center text-base">
+        <button id="mbtn-filter-enterprise" onclick="filterMobileProjects('enterprise')" class="flex-1 py-4 rounded-2xl bg-white/10 border border-white/25 text-gray-200 font-black cursor-pointer text-center text-lg min-h-[58px]">
           Enterprise
         </button>
       </div>
 
       <!-- PROJECTS LIST: FULL WIDTH & ROOMY -->
-      <div class="space-y-5 w-full">
+      <div class="space-y-6 w-full">
         <!-- PROJECT 01 (AUTONOMOUS AI & FINTECH) -->
-        <div class="mproj-item mobile-glass p-6 py-7 rounded-3xl space-y-4 cursor-pointer active:scale-[0.98] transition-all" data-cat="enterprise" onclick="window.open('https://anuragsahu.com/AI-FINANCE-CONTROLLER', '_blank')">
-          <div class="flex flex-wrap items-center justify-between gap-2.5">
-            <span class="text-xs font-mono text-cyan-400 font-black tracking-wider">PROJECT 01 • AUTONOMOUS AI & FINTECH</span>
-            <span id="mp-badge-01" class="px-3.5 py-1 rounded-full bg-emerald-500/25 text-emerald-400 font-mono font-black text-xs border border-emerald-500/40 flex-shrink-0">🟢 Completed</span>
+        <div class="mproj-item mobile-glass p-7 py-8 rounded-3xl space-y-5 cursor-pointer active:scale-[0.98] transition-all" data-cat="enterprise" onclick="window.open('https://anuragsahu.com/AI-FINANCE-CONTROLLER', '_blank')">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <span class="text-xs sm:text-sm font-mono text-cyan-400 font-black tracking-wider">PROJECT 01 • AUTONOMOUS AI & FINTECH</span>
+            <span id="mp-badge-01" class="px-4 py-1.5 rounded-full bg-emerald-500/25 text-emerald-400 font-mono font-black text-xs sm:text-sm border border-emerald-500/40 flex-shrink-0">🟢 Completed</span>
           </div>
-          <h4 class="font-display text-2xl font-black text-white">AI Finance Controller</h4>
-          <p class="text-base text-gray-200 leading-relaxed font-normal">Autonomous enterprise financial operations, multi-source reconciliation engine, tax matching, anomaly detection 2.0 & Finance Copilot.</p>
-          <div class="flex flex-wrap gap-2.5 font-mono text-xs">
-            <span class="px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">Next.js 14</span>
-            <span class="px-3 py-1.5 rounded-xl bg-white/10 text-white border border-white/15 font-bold">FastAPI</span>
-            <span class="px-3 py-1.5 rounded-xl bg-white/10 text-white border border-white/15 font-bold">Python</span>
-            <span class="px-3 py-1.5 rounded-xl bg-white/10 text-white border border-white/15 font-bold">Reconciliation</span>
-            <span class="px-3 py-1.5 rounded-xl bg-white/10 text-white border border-white/15 font-bold">AI Copilot</span>
+          <h4 class="font-display text-3xl font-black text-white">AI Finance Controller</h4>
+          <p class="text-base sm:text-lg text-gray-200 leading-relaxed font-normal">Autonomous enterprise financial operations, multi-source reconciliation engine, tax matching, anomaly detection 2.0 & Finance Copilot.</p>
+          <div class="flex flex-wrap gap-2.5 font-mono text-xs sm:text-sm">
+            <span class="px-3.5 py-2 rounded-2xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">Next.js 14</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-white/10 text-white border border-white/15 font-bold">FastAPI</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-white/10 text-white border border-white/15 font-bold">Python</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-white/10 text-white border border-white/15 font-bold">Reconciliation</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-white/10 text-white border border-white/15 font-bold">AI Copilot</span>
           </div>
-          <div class="pt-4 border-t border-white/15 flex items-center justify-between text-cyan-400 font-mono text-sm font-black">
-            <span class="flex items-center gap-2">Open Full Architecture <i data-lucide="arrow-up-right" class="w-4.5 h-4.5"></i></span>
-            <span class="text-xs text-gray-400 font-normal">anuragsahu.com ↗</span>
+          <div class="pt-5 border-t border-white/15 flex items-center justify-between text-cyan-400 font-mono text-base font-black">
+            <span class="flex items-center gap-2">Open Full Architecture <i data-lucide="arrow-up-right" class="w-5 h-5"></i></span>
+            <span class="text-sm text-gray-400 font-normal">anuragsahu.com ↗</span>
           </div>
         </div>
 
         <!-- PROJECT 02 (ENTERPRISE) -->
-        <div class="mproj-item mobile-glass p-6 py-7 rounded-3xl space-y-4" data-cat="enterprise">
-          <div class="flex flex-wrap items-center justify-between gap-2.5">
-            <span class="text-xs font-mono text-amber-400 font-black tracking-wider">PROJECT 02 • ENTERPRISE SYSTEM</span>
-            <span id="mp-badge-02" class="px-3.5 py-1 rounded-full bg-amber-500/25 text-amber-400 font-mono font-black text-xs border border-amber-500/40 flex-shrink-0">🟡 Coming Soon</span>
+        <div class="mproj-item mobile-glass p-7 py-8 rounded-3xl space-y-5" data-cat="enterprise">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <span class="text-xs sm:text-sm font-mono text-amber-400 font-black tracking-wider">PROJECT 02 • ENTERPRISE SYSTEM</span>
+            <span id="mp-badge-02" class="px-4 py-1.5 rounded-full bg-amber-500/25 text-amber-400 font-mono font-black text-xs sm:text-sm border border-amber-500/40 flex-shrink-0">🟡 Coming Soon</span>
           </div>
-          <h4 class="font-display text-2xl font-black text-white">Restaurant Management System</h4>
-          <p class="text-base text-gray-200 leading-relaxed font-normal">Multi-tenant POS, kitchen order display, automated billing engine, and inventory tracking.</p>
-          <div class="flex flex-wrap gap-2.5 font-mono text-xs">
-            <span class="px-3 py-1.5 rounded-xl bg-white/10 text-white border border-white/15 font-bold">Node.js</span>
-            <span class="px-3 py-1.5 rounded-xl bg-white/10 text-white border border-white/15 font-bold">PostgreSQL</span>
-            <span class="px-3 py-1.5 rounded-xl bg-white/10 text-white border border-white/15 font-bold">Redis</span>
-            <span class="px-3 py-1.5 rounded-xl bg-white/10 text-white border border-white/15 font-bold">WebSockets</span>
+          <h4 class="font-display text-3xl font-black text-white">Restaurant Management System</h4>
+          <p class="text-base sm:text-lg text-gray-200 leading-relaxed font-normal">Multi-tenant POS, kitchen order display, automated billing engine, and inventory tracking.</p>
+          <div class="flex flex-wrap gap-2.5 font-mono text-xs sm:text-sm">
+            <span class="px-3.5 py-2 rounded-2xl bg-white/10 text-white border border-white/15 font-bold">Node.js</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-white/10 text-white border border-white/15 font-bold">PostgreSQL</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-white/10 text-white border border-white/15 font-bold">Redis</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-white/10 text-white border border-white/15 font-bold">WebSockets</span>
           </div>
         </div>
 
         <!-- PROJECT 03 (ACADEMIC ERP) -->
-        <div class="mproj-item mobile-glass p-6 py-7 rounded-3xl space-y-4" data-cat="academic">
-          <div class="flex flex-wrap items-center justify-between gap-2.5">
-            <span class="text-xs font-mono text-amber-400 font-black tracking-wider">PROJECT 03 • ACADEMIC ERP</span>
-            <span id="mp-badge-03" class="px-3.5 py-1 rounded-full bg-amber-500/25 text-amber-400 font-mono font-black text-xs border border-amber-500/40 flex-shrink-0">🟡 Coming Soon</span>
+        <div class="mproj-item mobile-glass p-7 py-8 rounded-3xl space-y-5" data-cat="academic">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <span class="text-xs sm:text-sm font-mono text-amber-400 font-black tracking-wider">PROJECT 03 • ACADEMIC ERP</span>
+            <span id="mp-badge-03" class="px-4 py-1.5 rounded-full bg-amber-500/25 text-amber-400 font-mono font-black text-xs sm:text-sm border border-amber-500/40 flex-shrink-0">🟡 Coming Soon</span>
           </div>
-          <h4 class="font-display text-2xl font-black text-white">Smart College ERP</h4>
-          <p class="text-base text-gray-200 leading-relaxed font-normal">Student attendance tracking, result publishing portal, and online fee collection gateway.</p>
-          <div class="flex flex-wrap gap-2.5 font-mono text-xs">
-            <span class="px-3 py-1.5 rounded-xl bg-white/10 text-white border border-white/15 font-bold">React</span>
-            <span class="px-3 py-1.5 rounded-xl bg-white/10 text-white border border-white/15 font-bold">Express</span>
-            <span class="px-3 py-1.5 rounded-xl bg-white/10 text-white border border-white/15 font-bold">MongoDB</span>
+          <h4 class="font-display text-3xl font-black text-white">Smart College ERP</h4>
+          <p class="text-base sm:text-lg text-gray-200 leading-relaxed font-normal">Student attendance tracking, result publishing portal, and online fee collection gateway.</p>
+          <div class="flex flex-wrap gap-2.5 font-mono text-xs sm:text-sm">
+            <span class="px-3.5 py-2 rounded-2xl bg-white/10 text-white border border-white/15 font-bold">React</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-white/10 text-white border border-white/15 font-bold">Express</span>
+            <span class="px-3.5 py-2 rounded-2xl bg-white/10 text-white border border-white/15 font-bold">MongoDB</span>
           </div>
         </div>
       </div>
     </section>
 
     <!-- TAB 6: CONTACT FORM -->
-    <section id="m-sec-contact" class="space-y-5 pb-8">
+    <section id="m-sec-contact" class="space-y-6 pb-8">
       <div class="text-center space-y-2 px-2">
         <span class="text-amber-400 font-mono text-xs font-black uppercase tracking-wider">DIRECT RECRUITER INQUIRY</span>
-        <h3 class="font-display text-3xl font-black text-white">Contact Anurag</h3>
+        <h3 class="font-display text-3xl sm:text-4xl font-black text-white">Contact Anurag</h3>
       </div>
 
-      <div class="mobile-glass p-6 py-7 rounded-3xl space-y-5 w-full">
-        <form id="m-contact-form" class="space-y-4 font-mono text-sm w-full">
+      <div class="mobile-glass p-7 py-8 rounded-3xl space-y-6 w-full">
+        <form id="m-contact-form" class="space-y-5 font-mono text-base w-full">
           <div>
-            <label class="block text-gray-200 font-black mb-2 text-xs uppercase tracking-wider">FULL NAME *</label>
-            <input id="mc-name" type="text" placeholder="Your Name or Recruiter Title" required class="w-full px-4.5 py-4 bg-black/75 border-2 border-amber-400/50 rounded-2xl text-white focus:outline-none focus:border-amber-400 font-medium" style="font-size: 16px;">
+            <label class="block text-gray-200 font-black mb-2.5 text-xs sm:text-sm uppercase tracking-wider">FULL NAME *</label>
+            <input id="mc-name" type="text" placeholder="Your Name or Recruiter Title" required class="w-full px-5 py-4.5 bg-black/75 border-2 border-amber-400/50 rounded-2xl text-white focus:outline-none focus:border-amber-400 font-semibold min-h-[64px]" style="font-size: 18px !important;">
           </div>
           <div>
-            <label class="block text-gray-200 font-black mb-2 text-xs uppercase tracking-wider">WORK EMAIL *</label>
-            <input id="mc-email" type="email" placeholder="name@company.com" required class="w-full px-4.5 py-4 bg-black/75 border-2 border-amber-400/50 rounded-2xl text-white focus:outline-none focus:border-amber-400 font-medium" style="font-size: 16px;">
+            <label class="block text-gray-200 font-black mb-2.5 text-xs sm:text-sm uppercase tracking-wider">WORK EMAIL *</label>
+            <input id="mc-email" type="email" placeholder="name@company.com" required class="w-full px-5 py-4.5 bg-black/75 border-2 border-amber-400/50 rounded-2xl text-white focus:outline-none focus:border-amber-400 font-semibold min-h-[64px]" style="font-size: 18px !important;">
           </div>
           <div>
-            <label class="block text-gray-200 font-black mb-2 text-xs uppercase tracking-wider">MESSAGE / INQUIRY *</label>
-            <textarea id="mc-msg" rows="5" placeholder="Hello Anurag, we reviewed your portfolio..." required class="w-full px-4.5 py-4 bg-black/75 border-2 border-amber-400/50 rounded-2xl text-white focus:outline-none focus:border-amber-400 min-h-[160px] resize-y leading-relaxed font-medium" style="font-size: 16px;"></textarea>
+            <label class="block text-gray-200 font-black mb-2.5 text-xs sm:text-sm uppercase tracking-wider">MESSAGE / INQUIRY *</label>
+            <textarea id="mc-msg" rows="5" placeholder="Hello Anurag, we reviewed your portfolio..." required class="w-full px-5 py-4.5 bg-black/75 border-2 border-amber-400/50 rounded-2xl text-white focus:outline-none focus:border-amber-400 min-h-[180px] resize-y leading-relaxed font-semibold" style="font-size: 18px !important;"></textarea>
           </div>
-          <button id="mc-submit-btn" type="submit" class="w-full py-4.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-black text-base shadow-2xl shadow-amber-500/35 flex items-center justify-center gap-3 cursor-pointer active:scale-98 transition-transform min-h-[60px]">
+          <button id="mc-submit-btn" type="submit" class="w-full py-5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-black text-lg shadow-2xl shadow-amber-500/40 flex items-center justify-center gap-3 cursor-pointer active:scale-98 transition-transform min-h-[66px]">
             <span>Send Message</span>
-            <i data-lucide="send" class="w-6 h-6 text-black"></i>
+            <i data-lucide="send" class="w-7 h-7 text-black"></i>
           </button>
         </form>
       </div>
       <!-- Extra empty scroll space buffer for mobile OS keyboard -->
-      <div style="height: 60px; width: 100%;"></div>
+      <div style="height: 70px; width: 100%;"></div>
     </section>
 
   </main>
 
   <!-- SLEEK GLASSMORPHIC SUCCESS CONFIRMATION MODAL -->
   <div id="contact-success-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-    <div id="contact-success-modal-card" class="mobile-glass p-7 rounded-3xl max-w-sm w-full text-center space-y-5 shadow-2xl border border-emerald-500/60 transform transition-all scale-95 opacity-0 duration-300">
-      <div class="w-18 h-18 mx-auto rounded-3xl bg-emerald-500/25 border border-emerald-400/60 flex items-center justify-center text-emerald-400 shadow-2xl shadow-emerald-500/35 text-3xl font-black">
+    <div id="contact-success-modal-card" class="mobile-glass p-8 rounded-3xl max-w-sm w-full text-center space-y-6 shadow-2xl border border-emerald-500/60 transform transition-all scale-95 opacity-0 duration-300">
+      <div class="w-20 h-20 mx-auto rounded-3xl bg-emerald-500/25 border border-emerald-400/60 flex items-center justify-center text-emerald-400 shadow-2xl shadow-emerald-500/35 text-4xl font-black">
         ✓
       </div>
       
-      <div class="space-y-1.5">
-        <h3 class="font-display text-2xl font-black text-white">Message Delivered!</h3>
-        <span class="text-xs text-emerald-400 font-mono font-bold">● Team Anurag Sahu Notification Sent</span>
+      <div class="space-y-2">
+        <h3 class="font-display text-3xl font-black text-white">Message Delivered!</h3>
+        <span class="text-xs sm:text-sm text-emerald-400 font-mono font-bold">● Team Anurag Sahu Notification Sent</span>
       </div>
 
-      <p id="contact-success-modal-msg" class="text-sm text-gray-200 leading-relaxed font-sans bg-black/50 p-4 rounded-2xl border border-white/10">
+      <p id="contact-success-modal-msg" class="text-base text-gray-200 leading-relaxed font-sans bg-black/50 p-5 rounded-2xl border border-white/10">
         Thank you! Your message has been sent to Anurag Sahu. Expect a response within 24–48 hours.
       </p>
 
-      <button onclick="closeSuccessModal()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black font-mono text-sm shadow-xl shadow-emerald-500/30 active:scale-95 transition-all cursor-pointer">
+      <button onclick="closeSuccessModal()" class="w-full py-4.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black font-mono text-base shadow-xl shadow-emerald-500/30 active:scale-95 transition-all cursor-pointer">
         OK
       </button>
     </div>
@@ -731,25 +736,25 @@
 
   <!-- FIXED BOTTOM MOBILE APP NAVBAR: LARGE, EASY TO TAP -->
   <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-[#070400]/95 backdrop-blur-xl border-t border-amber-500/30 flex justify-around font-mono z-50 shadow-2xl">
-    <button id="mnav-home" onclick="switchMobileTab('home')" class="flex flex-col items-center gap-1.5 nav-active py-2 cursor-pointer flex-1">
-      <i data-lucide="home" class="w-6 h-6"></i>
-      <span class="text-xs font-black tracking-wide">Home</span>
+    <button id="mnav-home" onclick="switchMobileTab('home')" class="flex flex-col items-center gap-2 nav-active py-2 cursor-pointer flex-1">
+      <i data-lucide="home" class="w-7 h-7"></i>
+      <span class="text-xs sm:text-sm font-black tracking-wide">Home</span>
     </button>
-    <button id="mnav-about" onclick="switchMobileTab('about')" class="flex flex-col items-center gap-1.5 text-gray-400 py-2 cursor-pointer flex-1">
-      <i data-lucide="user" class="w-6 h-6"></i>
-      <span class="text-xs font-bold tracking-wide">About</span>
+    <button id="mnav-about" onclick="switchMobileTab('about')" class="flex flex-col items-center gap-2 text-gray-400 py-2 cursor-pointer flex-1">
+      <i data-lucide="user" class="w-7 h-7"></i>
+      <span class="text-xs sm:text-sm font-bold tracking-wide">About</span>
     </button>
-    <button id="mnav-lab" onclick="switchMobileTab('lab')" class="flex flex-col items-center gap-1.5 text-gray-400 py-2 cursor-pointer flex-1">
-      <i data-lucide="flask-conical" class="w-6 h-6"></i>
-      <span class="text-xs font-bold tracking-wide">Lab</span>
+    <button id="mnav-lab" onclick="switchMobileTab('lab')" class="flex flex-col items-center gap-2 text-gray-400 py-2 cursor-pointer flex-1">
+      <i data-lucide="flask-conical" class="w-7 h-7"></i>
+      <span class="text-xs sm:text-sm font-bold tracking-wide">Lab</span>
     </button>
-    <button id="mnav-projects" onclick="switchMobileTab('projects')" class="flex flex-col items-center gap-1.5 text-gray-400 py-2 cursor-pointer flex-1">
-      <i data-lucide="folder-kanban" class="w-6 h-6"></i>
-      <span class="text-xs font-bold tracking-wide">Projects</span>
+    <button id="mnav-projects" onclick="switchMobileTab('projects')" class="flex flex-col items-center gap-2 text-gray-400 py-2 cursor-pointer flex-1">
+      <i data-lucide="folder-kanban" class="w-7 h-7"></i>
+      <span class="text-xs sm:text-sm font-bold tracking-wide">Projects</span>
     </button>
-    <button id="mnav-contact" onclick="switchMobileTab('contact')" class="flex flex-col items-center gap-1.5 text-gray-400 py-2 cursor-pointer flex-1">
-      <i data-lucide="mail" class="w-6 h-6"></i>
-      <span class="text-xs font-bold tracking-wide">Contact</span>
+    <button id="mnav-contact" onclick="switchMobileTab('contact')" class="flex flex-col items-center gap-2 text-gray-400 py-2 cursor-pointer flex-1">
+      <i data-lucide="mail" class="w-7 h-7"></i>
+      <span class="text-xs sm:text-sm font-bold tracking-wide">Contact</span>
     </button>
   </nav>
 
@@ -816,8 +821,8 @@
 
       if (category === 'all') {
         items.forEach(el => el.style.display = 'block');
-        if (btnAll) btnAll.className = 'flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-black shadow-lg cursor-pointer text-center text-base';
-        if (btnEnterprise) btnEnterprise.className = 'flex-1 py-3.5 rounded-2xl bg-white/10 border border-white/25 text-gray-200 font-black cursor-pointer text-center text-base';
+        if (btnAll) btnAll.className = 'flex-1 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-black shadow-lg cursor-pointer text-center text-lg min-h-[58px]';
+        if (btnEnterprise) btnEnterprise.className = 'flex-1 py-4 rounded-2xl bg-white/10 border border-white/25 text-gray-200 font-black cursor-pointer text-center text-lg min-h-[58px]';
       } else {
         items.forEach(el => {
           if (el.dataset.cat === 'enterprise') {
@@ -826,8 +831,8 @@
             el.style.display = 'none';
           }
         });
-        if (btnEnterprise) btnEnterprise.className = 'flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-black shadow-lg cursor-pointer text-center text-base';
-        if (btnAll) btnAll.className = 'flex-1 py-3.5 rounded-2xl bg-white/10 border border-white/25 text-gray-200 font-black cursor-pointer text-center text-base';
+        if (btnEnterprise) btnEnterprise.className = 'flex-1 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-black shadow-lg cursor-pointer text-center text-lg min-h-[58px]';
+        if (btnAll) btnAll.className = 'flex-1 py-4 rounded-2xl bg-white/10 border border-white/25 text-gray-200 font-black cursor-pointer text-center text-lg min-h-[58px]';
       }
       safeInitIcons();
     }
@@ -937,7 +942,7 @@
 
         if (btn) {
           btn.disabled = false;
-          btn.innerHTML = '<span>Send Message</span><i data-lucide="send" class="w-6 h-6 text-black"></i>';
+          btn.innerHTML = '<span>Send Message</span><i data-lucide="send" class="w-7 h-7 text-black"></i>';
           safeInitIcons();
         }
       });
@@ -949,13 +954,13 @@
       const msg = document.getElementById('contact-success-modal-msg');
       if (msg) {
         msg.innerHTML = `<div class="text-center space-y-3">
-          <span class="inline-block px-4 py-1.5 rounded-full bg-emerald-500/25 border border-emerald-500/45 text-emerald-400 text-xs font-bold">
+          <span class="inline-block px-4 py-1.5 rounded-full bg-emerald-500/25 border border-emerald-500/45 text-emerald-400 text-xs sm:text-sm font-bold">
             ✓ Message Dispatched to shivasahu0612@gmail.com
           </span>
-          <div class="text-base text-white font-black">
+          <div class="text-lg text-white font-black">
             Thank you <strong class="text-amber-400">${name}</strong>!
           </div>
-          <div class="text-sm text-slate-200 leading-relaxed">
+          <div class="text-base text-slate-200 leading-relaxed">
             Your message has been delivered directly to <strong>Anurag Sahu</strong>.
             <br/><br/>
             An auto-confirmation email has been sent to <strong class="text-white">${email}</strong>:
@@ -996,8 +1001,8 @@
         if (badge) {
           badge.textContent = status === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
           badge.className = status === 'Completed'
-            ? 'px-3.5 py-1 rounded-full bg-emerald-500/25 text-emerald-400 font-mono font-black text-xs border border-emerald-500/40 flex-shrink-0'
-            : 'px-3.5 py-1 rounded-full bg-amber-500/25 text-amber-400 font-mono font-black text-xs border border-amber-500/40 flex-shrink-0';
+            ? 'px-4 py-1.5 rounded-full bg-emerald-500/25 text-emerald-400 font-mono font-black text-xs sm:text-sm border border-emerald-500/40 flex-shrink-0'
+            : 'px-4 py-1.5 rounded-full bg-amber-500/25 text-amber-400 font-mono font-black text-xs sm:text-sm border border-amber-500/40 flex-shrink-0';
         }
       });
     }
