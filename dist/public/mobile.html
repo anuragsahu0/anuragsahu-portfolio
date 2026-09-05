@@ -1015,9 +1015,10 @@
 
     async function syncMobileProjectBadges() {
       localStorage.setItem('ag_proj_status_01', 'Completed');
+      localStorage.setItem('ag_proj_status_02', 'Coming Soon');
 
       ['01', '02', '03'].forEach(num => {
-        const status = num === '01' ? 'Completed' : (localStorage.getItem(`ag_proj_status_${num}`) || 'Coming Soon');
+        const status = num === '01' ? 'Completed' : (num === '02' ? 'Coming Soon' : (localStorage.getItem(`ag_proj_status_${num}`) || 'Coming Soon'));
         const badge = document.getElementById(`mp-badge-${num}`);
         if (badge) {
           badge.textContent = status === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';

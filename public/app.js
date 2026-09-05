@@ -581,10 +581,11 @@ function initAdminModal() {
 
 async function syncProjectStatuses() {
   localStorage.setItem('ag_proj_status_01', 'Completed');
+  localStorage.setItem('ag_proj_status_02', 'Coming Soon');
 
   // 1. Apply local storage immediately (High Priority - Rate-limit proof)
   ['01', '02', '03'].forEach(num => {
-    const status = num === '01' ? 'Completed' : (localStorage.getItem(`ag_proj_status_${num}`) || 'Coming Soon');
+    const status = num === '01' ? 'Completed' : (num === '02' ? 'Coming Soon' : (localStorage.getItem(`ag_proj_status_${num}`) || 'Coming Soon'));
     if (status) {
       applyBadgeUI(num, status);
     }
@@ -600,6 +601,11 @@ async function syncProjectStatuses() {
           if (num === '01') {
             localStorage.setItem('ag_proj_status_01', 'Completed');
             applyBadgeUI('01', 'Completed');
+            return;
+          }
+          if (num === '02') {
+            localStorage.setItem('ag_proj_status_02', 'Coming Soon');
+            applyBadgeUI('02', 'Coming Soon');
             return;
           }
           const val = data.settings[`ag_proj_status_${num}`];
