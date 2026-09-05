@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>Anurag Sahu — Native Mobile Web App Portfolio</title>
   
   <!-- PWA & Mobile Web App Capabilities -->
@@ -51,7 +51,7 @@
     }
   </script>
 
-  <!-- 🚀 ZERO-DEPENDENCY NATIVE MOBILE CSS ENGINE -->
+  <!-- 🚀 ZERO-DEPENDENCY NATIVE MOBILE EDGE-TO-EDGE CSS ENGINE -->
   <style>
     /* Reset & Base System */
     *, *::before, *::after {
@@ -62,6 +62,8 @@
     html {
       -webkit-text-size-adjust: 100%;
       scroll-behavior: smooth;
+      width: 100%;
+      max-width: 100%;
     }
     body {
       background-color: #0C0C0C;
@@ -69,11 +71,12 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
       overflow-x: hidden;
-      width: 100%;
-      max-width: 100vw;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
       position: relative;
-      margin: 0;
-      padding: 0;
+      margin: 0 !important;
+      padding: 0 !important;
       min-height: 100vh;
     }
 
@@ -85,29 +88,64 @@
       font-size: 16px !important; /* Prevents iOS Safari page zoom */
     }
 
-    /* Layout & Section Offsets */
-    section {
-      scroll-margin-top: 70px; /* Leaves clean room under sticky header */
-      width: 100%;
-    }
-    main {
-      width: 100%;
-      max-width: 580px;
-      margin: 0 auto;
-      padding-left: 16px;
-      padding-right: 16px;
-      padding-top: 20px;
-      padding-bottom: calc(95px + env(safe-area-inset-bottom, 20px));
+    /* Top Sticky Header: Edge-to-Edge */
+    header {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+      box-sizing: border-box !important;
     }
 
-    /* Glassmorphism System */
+    /* Main Container: Full Screen Width with Sleek 6px Edge Padding */
+    main {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      margin: 0 !important;
+      padding-left: 6px !important;
+      padding-right: 6px !important;
+      padding-top: 14px !important;
+      padding-bottom: calc(85px + env(safe-area-inset-bottom, 20px)) !important;
+      box-sizing: border-box !important;
+      display: block !important;
+    }
+
+    /* Sections: Edge-to-Edge */
+    section {
+      scroll-margin-top: 70px; /* Leaves clean room under sticky header */
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
+      display: block !important;
+    }
+
+    /* Glassmorphism Cards: 100% Full Width across Screen Edge */
     .mobile-glass {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      box-sizing: border-box !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
       background: rgba(13, 9, 2, 0.94);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(251, 191, 36, 0.28);
+      border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
     }
+    .mproj-item {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
     .nav-active {
       color: #fbbf24 !important;
       font-weight: 700 !important;
@@ -118,11 +156,14 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* 3D Touch Flip Cards Engine */
+    /* 3D Touch Flip Cards: 100% Full Width */
     .flip-card {
       perspective: 1000px;
       -webkit-perspective: 1000px;
-      width: 100%;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      box-sizing: border-box !important;
       min-height: 185px;
       height: 185px;
       cursor: pointer;
@@ -156,8 +197,16 @@
       background: #0d0800;
     }
 
-    /* Fixed Bottom Nav Safe Area */
+    /* Fixed Bottom Nav: Edge-to-Edge with Safe Area */
     nav.bottom-nav {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      left: 0 !important;
+      right: 0 !important;
+      box-sizing: border-box !important;
+      padding-left: 8px !important;
+      padding-right: 8px !important;
       padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
     }
 
@@ -186,7 +235,7 @@
     .cursor-pointer { cursor: pointer; }
     .rounded-xl { border-radius: 0.75rem; }
     .rounded-2xl { border-radius: 1rem; }
-    .rounded-3xl { border-radius: 1.5rem; }
+    .rounded-3xl { border-radius: 1.25rem; }
     .rounded-full { border-radius: 9999px; }
   </style>
 </head>
@@ -280,10 +329,10 @@
     })();
   </script>
 
-  <!-- TOP MOBILE APP HEADER BAR -->
-  <header class="sticky top-0 z-50 bg-[#070400]/95 backdrop-blur-xl px-4 py-3 border-b border-amber-500/30 flex items-center justify-between shadow-lg">
+  <!-- TOP MOBILE APP HEADER BAR: FULL SCREEN WIDTH -->
+  <header class="sticky top-0 z-50 bg-[#070400]/95 backdrop-blur-xl px-3 py-2.5 border-b border-amber-500/30 flex items-center justify-between shadow-lg">
     <div class="flex items-center gap-2.5">
-      <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu" width="32" height="32" loading="eager" decoding="async" class="w-8 h-8 rounded-xl object-cover border border-amber-400/50 shadow-md">
+      <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu" width="34" height="34" loading="eager" decoding="async" class="w-8 h-8 rounded-xl object-cover border border-amber-400/50 shadow-md">
       <div>
         <h1 class="font-display font-bold text-xs text-white leading-none">ANURAG<span class="text-amber-400">.SAHU</span></h1>
         <span class="text-[9px] text-amber-300 font-mono font-bold">CSE (AI & ML) SOPHOMORE</span>
@@ -297,14 +346,14 @@
     </div>
   </header>
 
-  <!-- MAIN MOBILE APP CONTENT PANELS -->
-  <main class="flex-1 space-y-6">
+  <!-- MAIN MOBILE APP CONTENT PANELS: FULL SCREEN WIDTH (6px edge padding) -->
+  <main class="space-y-4">
 
     <!-- TAB 1: HERO & OVERVIEW -->
-    <section id="m-sec-home" class="space-y-5">
+    <section id="m-sec-home" class="space-y-4">
       
       <!-- HERO SHOWCASE CARD -->
-      <div class="mobile-glass p-5 rounded-3xl text-center space-y-4 relative overflow-hidden">
+      <div class="mobile-glass p-4 rounded-2xl text-center space-y-4 relative overflow-hidden">
         <div class="w-24 h-24 mx-auto relative">
           <img src="assets/anurag-portrait-sm.webp" alt="Anurag Sahu" width="96" height="96" fetchpriority="high" loading="eager" decoding="async" class="w-24 h-24 rounded-2xl object-cover border-2 border-amber-400/60 shadow-xl shadow-amber-500/20">
           <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-[#070400] shadow-md"></span>
@@ -320,25 +369,25 @@
             Building modern full-stack web applications and practical AI solutions.
           </h2>
 
-          <p class="text-xs text-gray-300 leading-relaxed max-w-xs mx-auto">
+          <p class="text-xs text-gray-300 leading-relaxed w-full mx-auto">
             Hi, I'm <strong class="text-white">Anurag Sahu</strong> — a Computer Science sophomore specializing in AI & ML. I build clean, performant full-stack web applications.
           </p>
         </div>
 
-        <!-- HERO BUTTONS -->
-        <div class="pt-2 space-y-2 font-mono text-xs">
-          <button onclick="switchMobileTab('projects')" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer active:scale-98 transition-transform">
+        <!-- HERO BUTTONS: FULL WIDTH -->
+        <div class="pt-2 space-y-2.5 font-mono text-xs w-full">
+          <button onclick="switchMobileTab('projects')" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer active:scale-98 transition-transform">
             <span>Explore My Work</span>
             <i data-lucide="arrow-right" class="w-4 h-4 text-black"></i>
           </button>
-          <a href="assets/anurag-sahu-resume.pdf" download="Anurag_Sahu_Resume.pdf" target="_blank" class="block w-full py-3.5 rounded-2xl bg-white/5 border border-white/15 text-white font-bold flex items-center justify-center gap-2 active:scale-98 transition-transform">
+          <a href="assets/anurag-sahu-resume.pdf" download="Anurag_Sahu_Resume.pdf" target="_blank" class="block w-full py-3.5 rounded-xl bg-white/5 border border-white/15 text-white font-bold flex items-center justify-center gap-2 active:scale-98 transition-transform">
             <i data-lucide="file-text" class="w-4 h-4 text-amber-400"></i>
             <span>Download Resume</span>
           </a>
         </div>
 
-        <!-- SOCIAL & CONTACT FAST ACTION BUTTONS -->
-        <div class="pt-3 border-t border-white/10 grid grid-cols-3 gap-2 font-mono text-[10px]">
+        <!-- SOCIAL & CONTACT FAST ACTION BUTTONS: FULL WIDTH 3 COLS -->
+        <div class="pt-3 border-t border-white/10 grid grid-cols-3 gap-2 font-mono text-[10px] w-full">
           <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-bold flex items-center justify-center gap-1.5 hover:bg-cyan-500/20 active:scale-95 transition-all">
             <i data-lucide="github" class="w-3.5 h-3.5 text-cyan-400"></i>
             <span>GitHub</span>
@@ -357,7 +406,7 @@
 
     <!-- TAB 2: ABOUT ME & EDUCATION -->
     <section id="m-sec-about" class="space-y-4">
-      <div class="mobile-glass p-5 rounded-3xl space-y-3">
+      <div class="mobile-glass p-4 rounded-2xl space-y-3">
         <div class="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold">
           <i data-lucide="user" class="w-4 h-4"></i>
           <span>ABOUT ME • BIOGRAPHY</span>
@@ -367,7 +416,7 @@
           I am a 2nd year Computer Science & Engineering student specializing in Artificial Intelligence and Machine Learning. Passionate about building robust web applications, REST APIs, and modern UI systems.
         </p>
 
-        <div class="pt-3 border-t border-white/10 space-y-2.5 font-mono text-xs">
+        <div class="pt-3 border-t border-white/10 space-y-2.5 font-mono text-xs w-full">
           <div class="flex justify-between items-center py-1">
             <span class="text-gray-400">DEGREE</span>
             <span class="text-white font-bold">B.Tech CSE (AI & ML)</span>
@@ -385,14 +434,14 @@
     </section>
 
     <!-- TAB 3: MY WORKING LAB (3D FLIP CARDS) -->
-    <section id="m-sec-lab" class="space-y-4">
+    <section id="m-sec-lab" class="space-y-3">
       <div class="text-center space-y-1">
         <h3 class="font-display text-xl font-bold text-white">My Working Lab</h3>
         <p class="text-[11px] text-gray-400">Tap any card below to flip and inspect full tech stack.</p>
       </div>
 
-      <!-- 4 TOUCH FLIP CARDS -->
-      <div class="grid grid-cols-1 gap-4">
+      <!-- 4 TOUCH FLIP CARDS: FULL WIDTH -->
+      <div class="grid grid-cols-1 gap-3 w-full">
         
         <!-- CARD 1: FRONTEND -->
         <div class="flip-card" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped')">
@@ -502,15 +551,15 @@
     </section>
 
     <!-- TAB 4: MY CODING PROFILES -->
-    <section id="m-sec-profiles" class="space-y-4">
+    <section id="m-sec-profiles" class="space-y-3">
       <div class="text-center space-y-1">
         <span class="text-amber-400 font-mono text-xs font-bold uppercase tracking-wider">PROBLEM SOLVING & COMPETITIVE CODE</span>
         <h3 class="font-display text-xl font-bold text-white">Coding Profiles</h3>
       </div>
 
-      <div class="space-y-3 font-mono">
+      <div class="space-y-2.5 font-mono w-full">
         <!-- LEETCODE -->
-        <a href="https://leetcode.com/u/anuragsahu0" target="_blank" rel="noopener noreferrer" class="mobile-glass p-4 rounded-2xl flex items-center justify-between hover:border-amber-500/60 transition-colors gap-3 active:scale-98">
+        <a href="https://leetcode.com/u/anuragsahu0" target="_blank" rel="noopener noreferrer" class="mobile-glass p-3.5 rounded-xl flex items-center justify-between hover:border-amber-500/60 transition-colors gap-3 active:scale-98">
           <div class="flex items-center gap-3 min-w-0">
             <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-lg flex-shrink-0">
               📙
@@ -524,7 +573,7 @@
         </a>
 
         <!-- GEEKSFORGEEKS -->
-        <a href="https://www.geeksforgeeks.org/profile/shivasal83s" target="_blank" rel="noopener noreferrer" class="mobile-glass p-4 rounded-2xl flex items-center justify-between hover:border-green-500/60 transition-colors gap-3 active:scale-98">
+        <a href="https://www.geeksforgeeks.org/profile/shivasal83s" target="_blank" rel="noopener noreferrer" class="mobile-glass p-3.5 rounded-xl flex items-center justify-between hover:border-green-500/60 transition-colors gap-3 active:scale-98">
           <div class="flex items-center gap-3 min-w-0">
             <div class="w-10 h-10 rounded-xl bg-green-500/20 border border-green-500/40 flex items-center justify-center text-green-400 font-bold text-lg flex-shrink-0">
               🟢
@@ -546,20 +595,20 @@
         <h3 class="font-display text-xl font-bold text-white">Projects</h3>
       </div>
 
-      <!-- FILTER BUTTONS -->
-      <div class="flex justify-center gap-2 font-mono text-xs">
-        <button id="mbtn-filter-all" onclick="filterMobileProjects('all')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold shadow-md cursor-pointer">
+      <!-- FILTER BUTTONS: FULL WIDTH -->
+      <div class="flex justify-center gap-2 font-mono text-xs w-full">
+        <button id="mbtn-filter-all" onclick="filterMobileProjects('all')" class="flex-1 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold shadow-md cursor-pointer text-center">
           All Builds
         </button>
-        <button id="mbtn-filter-enterprise" onclick="filterMobileProjects('enterprise')" class="px-4 py-2 rounded-xl bg-white/5 border border-white/15 text-gray-300 font-bold cursor-pointer">
+        <button id="mbtn-filter-enterprise" onclick="filterMobileProjects('enterprise')" class="flex-1 py-2 rounded-xl bg-white/5 border border-white/15 text-gray-300 font-bold cursor-pointer text-center">
           Enterprise
         </button>
       </div>
 
-      <!-- PROJECTS LIST -->
-      <div class="space-y-4">
+      <!-- PROJECTS LIST: FULL WIDTH -->
+      <div class="space-y-3.5 w-full">
         <!-- PROJECT 01 (AUTONOMOUS AI & FINTECH) -->
-        <div class="mproj-item mobile-glass p-5 rounded-3xl space-y-3 cursor-pointer active:scale-[0.98] transition-all" data-cat="enterprise" onclick="window.open('https://anuragsahu.com/AI-FINANCE-CONTROLLER', '_blank')">
+        <div class="mproj-item mobile-glass p-4 rounded-2xl space-y-3 cursor-pointer active:scale-[0.98] transition-all" data-cat="enterprise" onclick="window.open('https://anuragsahu.com/AI-FINANCE-CONTROLLER', '_blank')">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="text-[10px] font-mono text-cyan-400 font-bold tracking-wider">PROJECT 01 • AUTONOMOUS AI & FINTECH</span>
             <span id="mp-badge-01" class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono font-bold text-[10px] border border-emerald-500/30 flex-shrink-0">🟢 Completed</span>
@@ -580,7 +629,7 @@
         </div>
 
         <!-- PROJECT 02 (ENTERPRISE) -->
-        <div class="mproj-item mobile-glass p-5 rounded-3xl space-y-3" data-cat="enterprise">
+        <div class="mproj-item mobile-glass p-4 rounded-2xl space-y-3" data-cat="enterprise">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="text-[10px] font-mono text-amber-400 font-bold tracking-wider">PROJECT 02 • ENTERPRISE SYSTEM</span>
             <span id="mp-badge-02" class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-mono font-bold text-[10px] border border-amber-500/30 flex-shrink-0">🟡 Coming Soon</span>
@@ -596,7 +645,7 @@
         </div>
 
         <!-- PROJECT 03 (ACADEMIC ERP) -->
-        <div class="mproj-item mobile-glass p-5 rounded-3xl space-y-3" data-cat="academic">
+        <div class="mproj-item mobile-glass p-4 rounded-2xl space-y-3" data-cat="academic">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="text-[10px] font-mono text-amber-400 font-bold tracking-wider">PROJECT 03 • ACADEMIC ERP</span>
             <span id="mp-badge-03" class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-mono font-bold text-[10px] border border-amber-500/30 flex-shrink-0">🟡 Coming Soon</span>
@@ -619,21 +668,21 @@
         <h3 class="font-display text-xl font-bold text-white">Contact Anurag</h3>
       </div>
 
-      <div class="mobile-glass p-5 rounded-3xl space-y-4">
-        <form id="m-contact-form" class="space-y-3 font-mono text-xs">
+      <div class="mobile-glass p-4 rounded-2xl space-y-4 w-full">
+        <form id="m-contact-form" class="space-y-3 font-mono text-xs w-full">
           <div>
             <label class="block text-gray-300 font-bold mb-1">FULL NAME *</label>
-            <input id="mc-name" type="text" placeholder="Your Name or Recruiter Title" required class="w-full px-4 py-3 bg-black/60 border border-amber-400/40 rounded-xl text-white focus:outline-none focus:border-amber-400" style="font-size: 16px;">
+            <input id="mc-name" type="text" placeholder="Your Name or Recruiter Title" required class="w-full px-3.5 py-3 bg-black/60 border border-amber-400/40 rounded-xl text-white focus:outline-none focus:border-amber-400" style="font-size: 16px;">
           </div>
           <div>
             <label class="block text-gray-300 font-bold mb-1">WORK EMAIL *</label>
-            <input id="mc-email" type="email" placeholder="name@company.com" required class="w-full px-4 py-3 bg-black/60 border border-amber-400/40 rounded-xl text-white focus:outline-none focus:border-amber-400" style="font-size: 16px;">
+            <input id="mc-email" type="email" placeholder="name@company.com" required class="w-full px-3.5 py-3 bg-black/60 border border-amber-400/40 rounded-xl text-white focus:outline-none focus:border-amber-400" style="font-size: 16px;">
           </div>
           <div>
             <label class="block text-gray-300 font-bold mb-1">MESSAGE / INQUIRY *</label>
-            <textarea id="mc-msg" rows="4" placeholder="Hello Anurag, we reviewed your portfolio..." required class="w-full px-4 py-3 bg-black/60 border border-amber-400/40 rounded-xl text-white focus:outline-none focus:border-amber-400 min-h-[120px] resize-y" style="font-size: 16px;"></textarea>
+            <textarea id="mc-msg" rows="4" placeholder="Hello Anurag, we reviewed your portfolio..." required class="w-full px-3.5 py-3 bg-black/60 border border-amber-400/40 rounded-xl text-white focus:outline-none focus:border-amber-400 min-h-[120px] resize-y" style="font-size: 16px;"></textarea>
           </div>
-          <button id="mc-submit-btn" type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer active:scale-98 transition-transform" style="min-height: 48px;">
+          <button id="mc-submit-btn" type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer active:scale-98 transition-transform" style="min-height: 48px;">
             <span>Send Message</span>
             <i data-lucide="send" class="w-4 h-4 text-black"></i>
           </button>
@@ -647,7 +696,7 @@
 
   <!-- SLEEK GLASSMORPHIC SUCCESS CONFIRMATION MODAL -->
   <div id="contact-success-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div id="contact-success-modal-card" class="mobile-glass p-6 rounded-3xl max-w-xs w-full text-center space-y-4 shadow-2xl border border-emerald-500/50 transform transition-all scale-95 opacity-0 duration-300">
+    <div id="contact-success-modal-card" class="mobile-glass p-5 rounded-2xl max-w-xs w-full text-center space-y-4 shadow-2xl border border-emerald-500/50 transform transition-all scale-95 opacity-0 duration-300">
       <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-500/30 text-2xl font-bold">
         ✓
       </div>
@@ -657,35 +706,35 @@
         <span class="text-[10px] text-emerald-400 font-mono font-bold">● Team Anurag Sahu Notification Sent</span>
       </div>
 
-      <p id="contact-success-modal-msg" class="text-xs text-gray-300 leading-relaxed font-sans bg-black/40 p-3 rounded-2xl border border-white/5">
+      <p id="contact-success-modal-msg" class="text-xs text-gray-300 leading-relaxed font-sans bg-black/40 p-3 rounded-xl border border-white/5">
         Thank you! Your message has been sent to Anurag Sahu. Expect a response within 24–48 hours.
       </p>
 
-      <button onclick="closeSuccessModal()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold font-mono text-xs shadow-lg shadow-emerald-500/30 active:scale-95 transition-all cursor-pointer">
+      <button onclick="closeSuccessModal()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold font-mono text-xs shadow-lg shadow-emerald-500/30 active:scale-95 transition-all cursor-pointer">
         OK
       </button>
     </div>
   </div>
 
-  <!-- FIXED BOTTOM MOBILE APP NAVBAR -->
-  <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-[#070400]/95 backdrop-blur-xl border-t border-amber-500/30 px-3 py-2 flex justify-around font-mono text-[10px] z-50 shadow-2xl">
-    <button id="mnav-home" onclick="switchMobileTab('home')" class="flex flex-col items-center gap-1 nav-active py-1 cursor-pointer">
+  <!-- FIXED BOTTOM MOBILE APP NAVBAR: EDGE-TO-EDGE -->
+  <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-[#070400]/95 backdrop-blur-xl border-t border-amber-500/30 px-2 py-2 flex justify-around font-mono text-[10px] z-50 shadow-2xl">
+    <button id="mnav-home" onclick="switchMobileTab('home')" class="flex flex-col items-center gap-1 nav-active py-1 cursor-pointer flex-1">
       <i data-lucide="home" class="w-5 h-5"></i>
       <span>Home</span>
     </button>
-    <button id="mnav-about" onclick="switchMobileTab('about')" class="flex flex-col items-center gap-1 text-gray-400 py-1 cursor-pointer">
+    <button id="mnav-about" onclick="switchMobileTab('about')" class="flex flex-col items-center gap-1 text-gray-400 py-1 cursor-pointer flex-1">
       <i data-lucide="user" class="w-5 h-5"></i>
       <span>About</span>
     </button>
-    <button id="mnav-lab" onclick="switchMobileTab('lab')" class="flex flex-col items-center gap-1 text-gray-400 py-1 cursor-pointer">
+    <button id="mnav-lab" onclick="switchMobileTab('lab')" class="flex flex-col items-center gap-1 text-gray-400 py-1 cursor-pointer flex-1">
       <i data-lucide="flask-conical" class="w-5 h-5"></i>
       <span>Lab</span>
     </button>
-    <button id="mnav-projects" onclick="switchMobileTab('projects')" class="flex flex-col items-center gap-1 text-gray-400 py-1 cursor-pointer">
+    <button id="mnav-projects" onclick="switchMobileTab('projects')" class="flex flex-col items-center gap-1 text-gray-400 py-1 cursor-pointer flex-1">
       <i data-lucide="folder-kanban" class="w-5 h-5"></i>
       <span>Projects</span>
     </button>
-    <button id="mnav-contact" onclick="switchMobileTab('contact')" class="flex flex-col items-center gap-1 text-gray-400 py-1 cursor-pointer">
+    <button id="mnav-contact" onclick="switchMobileTab('contact')" class="flex flex-col items-center gap-1 text-gray-400 py-1 cursor-pointer flex-1">
       <i data-lucide="mail" class="w-5 h-5"></i>
       <span>Contact</span>
     </button>
@@ -754,8 +803,8 @@
 
       if (category === 'all') {
         items.forEach(el => el.style.display = 'block');
-        if (btnAll) btnAll.className = 'px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold shadow-md cursor-pointer';
-        if (btnEnterprise) btnEnterprise.className = 'px-4 py-2 rounded-xl bg-white/5 border border-white/15 text-gray-300 font-bold cursor-pointer';
+        if (btnAll) btnAll.className = 'flex-1 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold shadow-md cursor-pointer text-center';
+        if (btnEnterprise) btnEnterprise.className = 'flex-1 py-2 rounded-xl bg-white/5 border border-white/15 text-gray-300 font-bold cursor-pointer text-center';
       } else {
         items.forEach(el => {
           if (el.dataset.cat === 'enterprise') {
@@ -764,8 +813,8 @@
             el.style.display = 'none';
           }
         });
-        if (btnEnterprise) btnEnterprise.className = 'px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold shadow-md cursor-pointer';
-        if (btnAll) btnAll.className = 'px-4 py-2 rounded-xl bg-white/5 border border-white/15 text-gray-300 font-bold cursor-pointer';
+        if (btnEnterprise) btnEnterprise.className = 'flex-1 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold shadow-md cursor-pointer text-center';
+        if (btnAll) btnAll.className = 'flex-1 py-2 rounded-xl bg-white/5 border border-white/15 text-gray-300 font-bold cursor-pointer text-center';
       }
       safeInitIcons();
     }
