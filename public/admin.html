@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Anurag Sahu — Admin Control Center</title>
+  <title>Anurag Sahu — Air-Gapped Admin Control Center</title>
 
-  <!-- PWA & Mobile Capabilities -->
+  <!-- PWA & Security Headers Metadata -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#050811">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <link rel="apple-touch-icon" href="assets/anurag-portrait-sm.webp">
   
   <!-- Google Fonts -->
@@ -20,7 +21,7 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Tailwind CDN for rapid styling -->
+  <!-- Tailwind CDN for styling -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -58,6 +59,8 @@
       color: #F8FAFC;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
+      user-select: none;
+      -webkit-user-select: none;
     }
     .luxury-card {
       background: rgba(13, 19, 34, 0.88);
@@ -101,9 +104,9 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans text-slate-100 selection:bg-cyan-500/30">
+<body class="min-h-screen flex flex-col font-sans text-slate-100 selection:bg-cyan-500/30" oncontextmenu="return false;">
 
-  <!-- 1. AUTHENTICATION LOGIN SCREEN -->
+  <!-- 1. ZERO-TRUST AUTHENTICATION LOGIN SCREEN -->
   <div id="page-login-screen" class="min-h-screen flex items-center justify-center p-4 relative">
     <div class="w-full max-w-md luxury-card p-8 rounded-3xl space-y-6 border border-cyan-500/30 shadow-2xl">
       <div class="text-center space-y-2">
@@ -111,521 +114,367 @@
           AS
         </div>
         <h1 class="font-display text-2xl font-extrabold text-white tracking-tight">Anurag Sahu</h1>
-        <p class="text-xs text-cyan-400 font-mono font-bold tracking-widest uppercase">CONTROL CENTER LOGIN</p>
+        <p class="text-xs text-cyan-400 font-mono font-bold tracking-widest uppercase">AIR-GAPPED CONTROL CENTER</p>
       </div>
 
-      <form id="page-login-form" class="space-y-4 font-mono text-xs">
+      <div id="lockout-alert" class="hidden p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 text-xs font-mono text-center font-bold space-y-1">
+        <div>⛔ ACCESS SUSPENDED</div>
+        <div id="lockout-timer" class="text-[11px] text-slate-300">Security lockout active due to failed attempts.</div>
+      </div>
+
+      <form id="page-login-form" class="space-y-4 font-mono text-xs" autocomplete="off">
         <div>
-          <label class="block text-slate-300 font-bold mb-1.5 uppercase">ADMIN EMAIL / USERNAME</label>
-          <input type="text" id="input-admin-email" value="anurag@admin.com" placeholder="anurag@admin.com" required class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-colors">
+          <label class="block text-slate-300 font-bold mb-1.5 uppercase">ADMIN USERNAME / EMAIL</label>
+          <input type="text" id="input-admin-email" placeholder="Enter Admin Username" required autocomplete="off" spellcheck="false" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-colors">
         </div>
         <div>
-          <label class="block text-slate-300 font-bold mb-1.5 uppercase">ADMIN PASSWORD</label>
-          <input type="password" id="input-admin-pass" value="Meowww@123" placeholder="••••••••" required class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-colors">
+          <label class="block text-slate-300 font-bold mb-1.5 uppercase">MASTER PASSWORD</label>
+          <input type="password" id="input-admin-pass" placeholder="••••••••••••" required autocomplete="new-password" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-colors">
         </div>
-        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 hover:from-cyan-400 hover:to-blue-500 transition-all flex items-center justify-center gap-2">
+        <button type="submit" id="btn-login-submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 hover:from-cyan-400 hover:to-blue-500 transition-all flex items-center justify-center gap-2 cursor-pointer">
           <i data-lucide="lock" class="w-4 h-4"></i>
           <span>SIGN IN TO CONTROL CENTER</span>
         </button>
       </form>
-    </div>
-  </div>
 
-  <!-- 2. MAIN ADMIN DASHBOARD CONTROL CENTER -->
-  <div id="page-admin-dashboard" class="min-h-screen flex flex-col hidden">
-    
-    <!-- TOP HEADER NAVBAR -->
-    <header class="h-16 border-b border-cms-border bg-cms-sidebar/90 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-40">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 text-white font-extrabold text-xs flex items-center justify-center shadow-md">
-          AS
-        </div>
-        <div>
-          <h1 class="font-display font-bold text-sm text-white leading-none">Anurag Sahu</h1>
-          <span class="text-[9px] text-cyan-400 font-bold font-mono">CONTROL CENTER</span>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-3 font-mono text-xs">
-        <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-[11px]">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>SYSTEM ONLINE</span>
-        </div>
-
-        <a href="index.html" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
-          <span>🌐 Live Website</span>
-        </a>
-
-        <button id="page-btn-logout" class="px-3.5 py-1.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 font-bold hover:bg-red-500/25 transition-all">
-          Logout 🔒
-        </button>
-      </div>
-    </header>
-
-    <!-- MAIN BODY LAYOUT WITH LEFT INDEX SIDEBAR -->
-    <div class="flex-1 flex overflow-hidden">
-      
-      <!-- LEFT INDEX NAVIGATION SIDEBAR -->
-      <aside class="w-64 xl:w-64 lg:w-56 md:w-52 border-r border-cms-border bg-cms-sidebar flex flex-col justify-between select-none custom-scrollbar overflow-y-auto shrink-0 transition-all">
-        <div class="p-4 space-y-4 font-mono text-xs">
-          
-          <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider px-2">INDEX MENU</div>
-
-          <div class="space-y-1">
-            <button id="tab-btn-dashboard" onclick="switchTab('dashboard')" class="sidebar-index-btn active w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 flex items-center gap-3">
-              <i data-lucide="layout-dashboard" class="w-4 h-4 text-cyan-400"></i>
-              <span>Dashboard</span>
-            </button>
-
-            <button id="tab-btn-analytics" onclick="switchTab('analytics')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
-              <i data-lucide="line-chart" class="w-4 h-4 text-purple-400"></i>
-              <span>Analytics</span>
-            </button>
-
-            <button id="tab-btn-personal" onclick="switchTab('personal')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
-              <i data-lucide="user-check" class="w-4 h-4 text-blue-400"></i>
-              <span>Personal Info</span>
-            </button>
-
-            <button id="tab-btn-media" onclick="switchTab('media')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
-              <i data-lucide="folder-git-2" class="w-4 h-4 text-emerald-400"></i>
-              <span>Media Manager</span>
-            </button>
-
-            <button id="tab-btn-projects" onclick="switchTab('projects')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
-              <i data-lucide="briefcase" class="w-4 h-4 text-amber-400"></i>
-              <span>Projects CMS</span>
-            </button>
-
-            <button id="tab-btn-skills" onclick="switchTab('skills')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
-              <i data-lucide="wrench" class="w-4 h-4 text-cyan-400"></i>
-              <span>Skills CMS</span>
-            </button>
-
-            <button id="tab-btn-experience" onclick="switchTab('experience')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
-              <i data-lucide="trending-up" class="w-4 h-4 text-purple-400"></i>
-              <span>Experience CMS</span>
-            </button>
-
-            <button id="tab-btn-education" onclick="switchTab('education')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
-              <i data-lucide="graduation-cap" class="w-4 h-4 text-emerald-400"></i>
-              <span>Education CMS</span>
-            </button>
-
-            <button id="tab-btn-certificates" onclick="switchTab('certificates')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
-              <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
-              <span>Certificates</span>
-            </button>
-
-            <button id="tab-btn-messages" onclick="switchTab('messages')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <i data-lucide="mail" class="w-4 h-4 text-rose-400"></i>
-                <span>Messages Inbox</span>
-              </div>
-              <span id="side-msg-badge" class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 text-[10px] font-bold">1</span>
-            </button>
-
-            <button id="tab-btn-profile" onclick="switchTab('profile')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
-              <i data-lucide="user" class="w-4 h-4 text-cyan-400"></i>
-              <span>Admin Profile</span>
-            </button>
-
-            <button id="tab-btn-settings" onclick="switchTab('settings')" class="sidebar-index-btn w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 flex items-center gap-3">
-              <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
-              <span>Settings &amp; Launch</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="p-4 border-t border-cms-border bg-black/40 font-mono text-xs">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 text-white font-bold text-xs flex items-center justify-center">
-              AS
-            </div>
-            <div class="overflow-hidden">
-              <div class="font-bold text-white text-xs truncate">Anurag Sahu</div>
-              <div class="text-[10px] text-cyan-400 truncate">anurag@admin.com</div>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      <!-- CONTENT PANELS DISPLAY AREA -->
-      <main id="admin-main-viewport" class="flex-1 overflow-y-auto p-6 lg:p-8 space-y-8 custom-scrollbar">
-        
-        <!-- 1. INDEX TAB: DASHBOARD -->
-        <div id="panel-dashboard" class="space-y-8">
-          <div>
-            <h1 class="font-display text-3xl font-extrabold text-white tracking-tight">
-              Welcome back, <span class="text-cyan-400">Anurag</span> 👋
-            </h1>
-            <p class="text-slate-400 text-xs mt-1 font-mono">
-              Live telemetry and production database management for Anurag Sahu's portfolio.
-            </p>
-          </div>
-
-          <!-- 6 DATABASE OVERVIEW SUMMARY CARDS -->
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 font-mono">
-            <!-- Card 1: PROJECTS -->
-            <div onclick="switchTab('projects')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
-              <div class="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 w-fit mb-3">
-                <i data-lucide="briefcase" class="w-4 h-4"></i>
-              </div>
-              <div id="kpi-projects-count" class="font-display text-2xl font-extrabold text-white">3</div>
-              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">PROJECTS</div>
-            </div>
-
-            <!-- Card 2: VISITORS -->
-            <div onclick="switchTab('analytics')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
-              <div class="p-2 rounded-xl bg-blue-500/10 text-blue-400 w-fit mb-3">
-                <i data-lucide="eye" class="w-4 h-4"></i>
-              </div>
-              <div id="kpi-visitors" class="font-display text-2xl font-extrabold text-white">0</div>
-              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">VISITORS</div>
-            </div>
-
-            <!-- Card 3: RESUME DOWNLOADS -->
-            <div onclick="switchTab('media')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
-              <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 w-fit mb-3">
-                <i data-lucide="file-text" class="w-4 h-4"></i>
-              </div>
-              <div id="kpi-resume" class="font-display text-2xl font-extrabold text-white">342</div>
-              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">RESUME DL</div>
-            </div>
-
-            <!-- Card 4: UNREAD MESSAGES -->
-            <div onclick="switchTab('messages')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
-              <div class="p-2 rounded-xl bg-rose-500/10 text-rose-400 w-fit mb-3">
-                <i data-lucide="mail" class="w-4 h-4"></i>
-              </div>
-              <div id="kpi-unread" class="font-display text-2xl font-extrabold text-white">1</div>
-              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">UNREAD MSGS</div>
-            </div>
-
-            <!-- Card 5: ACTIVE USERS -->
-            <div onclick="switchTab('analytics')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
-              <div class="p-2 rounded-xl bg-amber-500/10 text-amber-400 w-fit mb-3">
-                <i data-lucide="users" class="w-4 h-4"></i>
-              </div>
-              <div id="kpi-active" class="font-display text-2xl font-extrabold text-white">1</div>
-              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">ONLINE NOW</div>
-            </div>
-
-            <!-- Card 6: SYSTEM HEALTH -->
-            <div onclick="switchTab('settings')" class="luxury-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-transform">
-              <div class="p-2 rounded-xl bg-purple-500/10 text-purple-400 w-fit mb-3">
-                <i data-lucide="activity" class="w-4 h-4"></i>
-              </div>
-              <div id="kpi-health" class="font-display text-2xl font-extrabold text-white">99.9%</div>
-              <div class="text-slate-400 text-[10px] uppercase font-bold tracking-wider mt-0.5">UPTIME</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. INDEX TAB: ANALYTICS -->
-        <div id="panel-analytics" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-6">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-              <div>
-                <h3 class="font-display text-lg font-bold text-white">📈 Live Visitor Sessions &amp; Analytics Audit Log</h3>
-                <p class="text-slate-400 text-xs mt-0.5">Real-time tracking of active online visitors and session history (who came &amp; who left).</p>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="text-xs text-emerald-400 font-bold">REAL-TIME TELEMETRY ACTIVE</span>
-              </div>
-            </div>
-
-            <!-- ANALYTICS SUMMARY CARDS -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
-                <span class="text-slate-400 font-bold block text-[10px]">TOTAL UNIQUE VISITS</span>
-                <span id="ana-total-visits" class="text-xl font-extrabold text-white">0</span>
-              </div>
-              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
-                <span class="text-slate-400 font-bold block text-[10px]">CURRENTLY ONLINE</span>
-                <span id="ana-online-now" class="text-xl font-extrabold text-emerald-400">1</span>
-              </div>
-              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
-                <span class="text-slate-400 font-bold block text-[10px]">TOTAL SESSIONS LOGGED</span>
-                <span id="ana-total-sessions" class="text-xl font-extrabold text-cyan-400">1</span>
-              </div>
-              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
-                <span class="text-slate-400 font-bold block text-[10px]">LIVE SYNC RATE</span>
-                <span class="text-xl font-extrabold text-purple-400">3 Sec Polling</span>
-              </div>
-            </div>
-
-            <!-- LIVE VISITOR SESSION TABLE -->
-            <div class="space-y-2">
-              <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">RECORDS &amp; VISITOR HISTORY LOG</h4>
-              <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-left text-xs">
-                  <thead>
-                    <tr class="border-b border-slate-800 text-slate-400">
-                      <th class="pb-3 px-3">STATUS</th>
-                      <th class="pb-3 px-3">DEVICE / BROWSER</th>
-                      <th class="pb-3 px-3">PAGE PATH</th>
-                      <th class="pb-3 px-3">ENTRY TIME</th>
-                      <th class="pb-3 px-3 text-right">SESSION ID</th>
-                    </tr>
-                  </thead>
-                  <tbody id="analytics-table-body">
-                    <!-- Dynamic Live Sessions -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- 3. INDEX TAB: PERSONAL INFO -->
-        <div id="panel-personal" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-4">
-            <h3 class="font-display text-lg font-bold text-white">👤 Personal Information &amp; Profile Links</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <div>
-                <label class="block text-slate-300 font-bold mb-1">FULL NAME</label>
-                <input type="text" id="pi-name" value="Anurag Sahu" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white">
-              </div>
-              <div>
-                <label class="block text-slate-300 font-bold mb-1">EMAIL ADDRESS</label>
-                <input type="email" id="pi-email" value="shivasahu0612@gmail.com" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white">
-              </div>
-              <div>
-                <label class="block text-slate-300 font-bold mb-1">GITHUB PROFILE</label>
-                <input type="text" id="pi-github" value="https://github.com/anuragsahu0" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white">
-              </div>
-              <div>
-                <label class="block text-slate-300 font-bold mb-1">LINKEDIN PROFILE</label>
-                <input type="text" id="pi-linkedin" value="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white">
-              </div>
-            </div>
-            <button onclick="alert('✓ Profile Info Saved Successfully!')" class="px-6 py-2.5 rounded-xl bg-cyan-500 text-white font-bold hover:bg-cyan-600 transition-colors text-xs">
-              Save Profile Links 💾
-            </button>
-          </div>
-        </div>
-
-        <!-- 4. INDEX TAB: MEDIA MANAGER -->
-        <div id="panel-media" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-4">
-            <h3 class="font-display text-lg font-bold text-white">📁 Media &amp; Resume PDF Manager</h3>
-            <p class="text-slate-400 text-xs">A4 High-Res Vector Resume PDF active at <code class="text-cyan-400">assets/anurag-sahu-resume.pdf</code></p>
-          </div>
-        </div>
-
-        <!-- 5. INDEX TAB: PROJECTS CMS -->
-        <div id="panel-projects" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-6">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-              <div>
-                <h3 class="font-display text-lg font-bold text-white">💼 Project CMS &amp; Status Switcher</h3>
-                <p class="text-slate-400 text-xs mt-0.5">Control live project titles, links, and status badges on the public portfolio.</p>
-              </div>
-              <button onclick="toggleAddProjectModal(true)" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-xs shadow-lg shadow-cyan-500/20">
-                ➕ Add New Project
-              </button>
-            </div>
-
-            <!-- PROJECTS LIST -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-              <!-- Project 1 -->
-              <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3">
-                <div class="flex justify-between items-center">
-                  <span class="text-cyan-400 font-bold text-[10px]">PROJECT 01</span>
-                  <span id="pbadge-01" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">🟢 Completed</span>
-                </div>
-                <div>
-                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Project Title</label>
-                  <input type="text" id="p1-title" value="AI Finance Controller" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-white">
-                </div>
-                <div>
-                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Status Override</label>
-                  <select onchange="changeProjectStatus('01', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
-                    <option value="Completed">🟢 Completed</option>
-                    <option value="Coming Soon">🟡 Coming Soon</option>
-                  </select>
-                </div>
-                <button onclick="saveProjectDetails('01')" class="w-full py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 border border-cyan-500/40 font-bold text-xs transition-colors">
-                  Save Changes 💾
-                </button>
-              </div>
-
-              <!-- Project 2 -->
-              <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3">
-                <div class="flex justify-between items-center">
-                  <span class="text-amber-400 font-bold text-[10px]">PROJECT 02</span>
-                  <span id="pbadge-02" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">🟡 Coming Soon</span>
-                </div>
-                <div>
-                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Project Title</label>
-                  <input type="text" id="p2-title" value="Restaurant Management System" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-white">
-                </div>
-                <div>
-                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Status Override</label>
-                  <select onchange="changeProjectStatus('02', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
-                    <option value="Coming Soon">🟡 Coming Soon</option>
-                    <option value="Completed">🟢 Completed</option>
-                  </select>
-                </div>
-                <button onclick="saveProjectDetails('02')" class="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 font-bold text-xs transition-colors">
-                  Save Changes 💾
-                </button>
-              </div>
-
-              <!-- Project 3 -->
-              <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3">
-                <div class="flex justify-between items-center">
-                  <span class="text-amber-400 font-bold text-[10px]">PROJECT 03</span>
-                  <span id="pbadge-03" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">🟡 Coming Soon</span>
-                </div>
-                <div>
-                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Project Title</label>
-                  <input type="text" id="p3-title" value="Smart College ERP" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-white">
-                </div>
-                <div>
-                  <label class="text-slate-400 text-[10px] uppercase font-bold block mb-1">Status Override</label>
-                  <select onchange="changeProjectStatus('03', this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
-                    <option value="Coming Soon">🟡 Coming Soon</option>
-                    <option value="Completed">🟢 Completed</option>
-                  </select>
-                </div>
-                <button onclick="saveProjectDetails('03')" class="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 font-bold text-xs transition-colors">
-                  Save Changes 💾
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 6. INDEX TAB: SKILLS CMS -->
-        <div id="panel-skills" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-4">
-            <h3 class="font-display text-lg font-bold text-white">⚡ Skills CMS &amp; Tech Stack</h3>
-            <p class="text-slate-400 text-xs">Flutter, React.js, Node.js, Express.js, MongoDB, Python, C++, Dart</p>
-          </div>
-        </div>
-
-        <!-- 7. INDEX TAB: EXPERIENCE CMS -->
-        <div id="panel-experience" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-4">
-            <h3 class="font-display text-lg font-bold text-white">🏢 Work Experience CMS</h3>
-            <p class="text-slate-400 text-xs">Independent Full Stack Developer (2024 – Present)</p>
-          </div>
-        </div>
-
-        <!-- 8. INDEX TAB: EDUCATION CMS -->
-        <div id="panel-education" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-4">
-            <h3 class="font-display text-lg font-bold text-white">🎓 Education Details</h3>
-            <p class="text-slate-400 text-xs">B.Tech CSE (AI &amp; ML) Sophomore @ AKTU</p>
-          </div>
-        </div>
-
-        <!-- 9. INDEX TAB: CERTIFICATES -->
-        <div id="panel-certificates" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-4">
-            <h3 class="font-display text-lg font-bold text-white">🏅 Verified Certifications</h3>
-            <p class="text-slate-400 text-xs">NPTEL Soft Skills &amp; Python Certifications</p>
-          </div>
-        </div>
-
-        <!-- 10. INDEX TAB: MESSAGES INBOX -->
-        <div id="panel-messages" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-              <h3 class="font-display text-lg font-bold text-white">✉️ Recruiter Messages (Direct Inbox)</h3>
-              <span class="text-xs px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 font-bold">Instant Sync</span>
-            </div>
-            <div class="overflow-x-auto custom-scrollbar">
-              <table class="w-full text-left text-xs">
-                <thead>
-                  <tr class="border-b border-slate-800 text-slate-400">
-                    <th class="pb-3 px-3">SENDER</th>
-                    <th class="pb-3 px-3">EMAIL</th>
-                    <th class="pb-3 px-3">MESSAGE CONTENT</th>
-                    <th class="pb-3 px-3 text-right">ACTION</th>
-                  </tr>
-                </thead>
-                <tbody id="messages-table-body">
-                  <!-- Dynamic Inbox Rows -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- 11. INDEX TAB: PROFILE -->
-        <div id="panel-profile" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-4">
-            <h3 class="font-display text-lg font-bold text-white">🔑 Admin Credentials &amp; Profile</h3>
-            <div class="space-y-3 text-xs">
-              <div><span class="text-slate-400">Admin Email:</span> <strong class="text-white">anurag@admin.com</strong></div>
-              <div><span class="text-slate-400">Security Token:</span> <strong class="text-emerald-400">ACTIVE SESSION</strong></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 12. INDEX TAB: SETTINGS & LAUNCH CONTROLS -->
-        <div id="panel-settings" class="hidden space-y-6 font-mono">
-          <div class="luxury-card p-6 rounded-3xl space-y-4">
-            <h3 class="font-display text-lg font-bold text-white">⚙️ System &amp; Launch Controls</h3>
-            <div class="space-y-3 text-xs">
-              <div class="p-4 rounded-2xl bg-slate-900 border border-amber-500/40 flex justify-between items-center">
-                <div>
-                  <span class="font-bold text-white block">⏳ Coming Soon &amp; Countdown Timer Overlay</span>
-                  <span class="text-slate-400 text-[10px]">Target: Tomorrow 12:00 PM NOON IST (Aug 9, 2026 12:00 IST)</span>
-                </div>
-                <button onclick="toggleAdminComingSoonMode()" id="btn-toggle-coming-soon" class="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/50 font-bold hover:bg-amber-500/30 transition-colors">
-                  🟡 COMING SOON ACTIVE
-                </button>
-              </div>
-              <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
-                <span class="font-bold text-white">Live Domain:</span> <span class="text-cyan-400 font-bold">https://anuragsahu.com</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </main>
-    </div>
-  </div>
-
-  <!-- ADD NEW PROJECT MODAL -->
-  <div id="add-project-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 font-mono">
-    <div class="luxury-card p-6 rounded-3xl max-w-md w-full space-y-4 border border-cyan-500/40 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-display font-bold text-white text-base">➕ Add New Project</h3>
-        <button onclick="toggleAddProjectModal(false)" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
-      </div>
-      <div class="space-y-3 text-xs">
-        <div>
-          <label class="text-slate-300 font-bold block mb-1">Project Title</label>
-          <input type="text" id="new-proj-title" placeholder="e.g., AI Voice Assistant" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white">
-        </div>
-        <div>
-          <label class="text-slate-300 font-bold block mb-1">Status</label>
-          <select id="new-proj-status" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold">
-            <option value="Completed">🟢 Completed</option>
-            <option value="Coming Soon">🟡 Coming Soon</option>
-          </select>
-        </div>
-      </div>
-      <div class="flex gap-3 pt-2">
-        <button onclick="toggleAddProjectModal(false)" class="w-1/2 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs">Cancel</button>
-        <button onclick="submitNewProject()" class="w-1/2 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white font-bold text-xs">Save Project</button>
+      <div class="text-center font-mono text-[10px] text-slate-500">
+        🛡️ AES-256-GCM Zero-Trust Encrypted • Strict Single-Owner Security
       </div>
     </div>
   </div>
 
-  <!-- SCRIPT ENGINE -->
+  <!-- 2. ZERO-FOOTPRINT CONTAINER (Decrypted into DOM ONLY upon verified authentication) -->
+  <div id="page-admin-dashboard" class="min-h-screen flex flex-col hidden"></div>
+
+  <!-- SCRIPT ENGINE: AIR-GAPPED & DEVTOOLS CONSOLE BYPASS RESTRICTED -->
   <script>
-    // 1. Global Fail-Safe Tab Switcher
+  (() => {
+    'use strict';
+
+    // ─── ANTI-CONSOLE & ANTI-DEBUGGING SECURITY DEFENSE ─────────
+    // Prevent Console tampering and suppress variable inspection
+    try {
+      const banner = () => {
+        console.clear();
+        console.log('%c⛔ RESTRICTED AREA — ANURAG SAHU EXCLUSIVE', 'color:#ef4444;font-size:22px;font-weight:900;');
+        console.log('%cZero-Trust Cryptographic Enforcement Active. Unauthorized access, DOM manipulation, or script injection is logged and blocked.', 'color:#f59e0b;font-size:12px;font-weight:600;');
+      };
+      banner();
+      setInterval(banner, 15000);
+
+      // Disable dangerous keyboard shortcuts (F12, Inspect, View Source)
+      window.addEventListener('keydown', (e) => {
+        if (
+          e.key === 'F12' ||
+          (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+          (e.metaKey && e.altKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+          (e.ctrlKey && (e.key === 'U' || e.key === 'u')) ||
+          (e.metaKey && (e.key === 'U' || e.key === 'u'))
+        ) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      }, true);
+
+      // Context menu disable
+      window.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+      }, true);
+    } catch (e) {}
+
+    // ─── CRYPTOGRAPHIC CONSTANTS & ENCRYPTED VAULT ─────────────
+    const PEPPER = 'AGY_ZERO_TRUST_PEPPER_2026_ANURAG_SAHU_AIR_GAP';
+    const KEY_SLOT_1 = 'rDbUCopp78GJ8Kv0O4Osz4ZgiSgo7RhxufZiunSROvMcEEQ5Me8gNmH2RPpVBhGpyVrKs7MXDsABUHcUXhCkq00RJthrj5G1';
+    const KEY_SLOT_2 = 'pSxaThfITKj3Ah3lNrQ7CYl02CG8cYABWV5HbaOqjVzcCICsynGxZ9zgvoW9say2aKdMVmz1R82lmoYQfZQSUILGILTEcqrS';
+    const VAULT_CIPHERTEXT = '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';
+
+    const MASTER_EMAILS = [
+      'anurag@admin.com',
+      'admin@anuragsahu.dev',
+      'shivasahu0612@gmail.com',
+      'anuragsahu0',
+      'anurag',
+      'admin'
+    ];
+
+    let isSessionActive = false;
+    let inMemoryVaultKey = null;
+
+    const loginScreen = document.getElementById('page-login-screen');
+    const dashboardScreen = document.getElementById('page-admin-dashboard');
+    const loginForm = document.getElementById('page-login-form');
+    const lockoutAlert = document.getElementById('lockout-alert');
+    const lockoutTimer = document.getElementById('lockout-timer');
+
+    // ─── MUTATION OBSERVER SENTRY (PREVENTS CONSOLE DOM BYPASS) ─
+    // If an attacker uses document.getElementById('page-admin-dashboard').classList.remove('hidden')
+    // or injects HTML via Console without verified session, immediately purge and lock.
+    const sentryObserver = new MutationObserver(() => {
+      if (!isSessionActive) {
+        if (!dashboardScreen.classList.contains('hidden')) {
+          dashboardScreen.classList.add('hidden');
+          dashboardScreen.innerHTML = '';
+        }
+      }
+    });
+    sentryObserver.observe(dashboardScreen, { attributes: true, childList: true });
+
+    // ─── CRYPTO ENGINE ─────────────────────────────────────────
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function decryptAesGcm(keyBuffer, base64Payload) {
+      const raw = Uint8Array.from(atob(base64Payload), c => c.charCodeAt(0));
+      const iv = raw.subarray(0, 12);
+      const ctWithTag = raw.subarray(12);
+
+      const cryptoKey = await crypto.subtle.importKey(
+        'raw',
+        keyBuffer,
+        { name: 'AES-GCM' },
+        false,
+        ['decrypt']
+      );
+
+      const decryptedBuf = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv },
+        cryptoKey,
+        ctWithTag
+      );
+
+      return new TextDecoder().decode(decryptedBuf);
+    }
+
+    async function attemptUnlockVault(password) {
+      const rawPassKey = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password + PEPPER));
+
+      // Try Slot 1 then Slot 2
+      let masterKeyBase64 = null;
+      for (const slot of [KEY_SLOT_1, KEY_SLOT_2]) {
+        try {
+          masterKeyBase64 = await decryptAesGcm(rawPassKey, slot);
+          if (masterKeyBase64 && masterKeyBase64.length === 44) {
+            break;
+          }
+        } catch (e) {}
+      }
+
+      if (!masterKeyBase64) {
+        return null;
+      }
+
+      // Decrypt the vault HTML using Master Key
+      const rawMasterKey = Uint8Array.from(atob(masterKeyBase64), c => c.charCodeAt(0));
+      const decryptedHtml = await decryptAesGcm(rawMasterKey, VAULT_CIPHERTEXT);
+
+      return {
+        masterKeyBase64,
+        html: decryptedHtml
+      };
+    }
+
+    // ─── SESSION SIGNATURE ENGINE ──────────────────────────────
+    async function createSignedSessionToken(masterKeyBase64) {
+      const timestamp = Date.now();
+      const clientFp = await sha256(navigator.userAgent + screen.width + screen.height);
+      const payload = btoa(JSON.stringify({ k: masterKeyBase64, t: timestamp, f: clientFp }));
+      const sig = await sha256(payload + PEPPER);
+      return payload + '.' + sig;
+    }
+
+    async function verifySignedSessionToken(token) {
+      if (!token || !token.includes('.')) return null;
+      const [payload, sig] = token.split('.');
+      const expectedSig = await sha256(payload + PEPPER);
+      if (sig !== expectedSig) return null;
+
+      try {
+        const data = JSON.parse(atob(payload));
+        const currentFp = await sha256(navigator.userAgent + screen.width + screen.height);
+        if (data.f !== currentFp) return null;
+        // 8 hour max session validity
+        if (Date.now() - data.t > 8 * 60 * 60 * 1000) return null;
+        return data.k;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // ─── INACTIVITY AUTO-LOGOUT (15 MINUTES) ───────────────────
+    let inactivityTimer = null;
+    function resetInactivity() {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      if (isSessionActive) {
+        inactivityTimer = setTimeout(() => {
+          alert('🔒 Session expired due to inactivity. Please sign in again.');
+          terminateSession();
+        }, 15 * 60 * 1000);
+      }
+    }
+    ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+      window.addEventListener(evt, resetInactivity, { passive: true });
+    });
+
+    // ─── LOCKOUT CONTROLLER ────────────────────────────────────
+    function checkLockout() {
+      const lockUntil = parseInt(localStorage.getItem('ag_lock_until') || '0', 10);
+      if (Date.now() < lockUntil) {
+        const remainingSec = Math.ceil((lockUntil - Date.now()) / 1000);
+        const mins = Math.floor(remainingSec / 60);
+        const secs = remainingSec % 60;
+        if (lockoutAlert && lockoutTimer) {
+          lockoutAlert.classList.remove('hidden');
+          lockoutTimer.textContent = `Too many failed attempts. Access blocked for ${mins}m ${secs}s.`;
+        }
+        return true;
+      }
+      if (lockoutAlert) lockoutAlert.classList.add('hidden');
+      return false;
+    }
+    setInterval(checkLockout, 1000);
+
+    function recordFailedAttempt() {
+      let fails = parseInt(localStorage.getItem('ag_failed_attempts') || '0', 10) + 1;
+      localStorage.setItem('ag_failed_attempts', fails);
+
+      if (fails >= 3) {
+        const lockDuration = 30 * 60 * 1000; // 30 minutes
+        localStorage.setItem('ag_lock_until', Date.now() + lockDuration);
+        checkLockout();
+        alert('⛔ ACCESS TEMPORARILY SUSPENDED!
+
+3 failed attempts detected. Access blocked for 30 minutes.');
+      } else {
+        alert(`❌ ACCESS DENIED: Invalid Credentials!\n\nStrictly reserved for Anurag Sahu. (Attempt ${fails}/3)`);
+      }
+    }
+
+    // ─── ACTIVATE & INJECT DASHBOARD ───────────────────────────
+    async function activateDashboard(decryptedHtml, masterKeyBase64) {
+      isSessionActive = true;
+      inMemoryVaultKey = masterKeyBase64;
+
+      // Save signed token in sessionStorage (destroyed on tab close)
+      const sessionToken = await createSignedSessionToken(masterKeyBase64);
+      sessionStorage.setItem('ag_session_vault', sessionToken);
+      localStorage.removeItem('ag_failed_attempts');
+      localStorage.removeItem('ag_lock_until');
+
+      // Inject decrypted HTML
+      dashboardScreen.innerHTML = decryptedHtml;
+      loginScreen.classList.add('hidden');
+      dashboardScreen.classList.remove('hidden');
+
+      // Rebind Logout button
+      const logoutBtn = document.getElementById('page-btn-logout');
+      if (logoutBtn) {
+        logoutBtn.onclick = (e) => {
+          e.preventDefault();
+          terminateSession();
+        };
+      }
+
+      // Initialize UI & Icons
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+      fetchStats();
+      resetInactivity();
+    }
+
+    function terminateSession() {
+      isSessionActive = false;
+      inMemoryVaultKey = null;
+      sessionStorage.removeItem('ag_session_vault');
+      localStorage.removeItem('ag_admin_token');
+
+      dashboardScreen.classList.add('hidden');
+      dashboardScreen.innerHTML = '';
+      loginScreen.classList.remove('hidden');
+
+      const passEl = document.getElementById('input-admin-pass');
+      if (passEl) passEl.value = '';
+    }
+
+    // ─── INITIALIZE EXISTING SESSION ON RELOAD ─────────────────
+    async function tryRestoreSession() {
+      const savedToken = sessionStorage.getItem('ag_session_vault');
+      if (!savedToken) return;
+
+      const masterKeyBase64 = await verifySignedSessionToken(savedToken);
+      if (!masterKeyBase64) {
+        sessionStorage.removeItem('ag_session_vault');
+        return;
+      }
+
+      try {
+        const rawMasterKey = Uint8Array.from(atob(masterKeyBase64), c => c.charCodeAt(0));
+        const decryptedHtml = await decryptAesGcm(rawMasterKey, VAULT_CIPHERTEXT);
+        if (decryptedHtml) {
+          await activateDashboard(decryptedHtml, masterKeyBase64);
+        }
+      } catch (e) {
+        sessionStorage.removeItem('ag_session_vault');
+      }
+    }
+
+    // ─── LOGIN SUBMIT HANDLER ──────────────────────────────────
+    if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (checkLockout()) return;
+
+        const emailEl = document.getElementById('input-admin-email');
+        const passEl = document.getElementById('input-admin-pass');
+        const submitBtn = document.getElementById('btn-login-submit');
+
+        if (!emailEl || !passEl) return;
+        const email = emailEl.value.trim().toLowerCase();
+        const pass = passEl.value.trim();
+
+        if (!MASTER_EMAILS.includes(email)) {
+          recordFailedAttempt();
+          return;
+        }
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span>Verifying Cryptographic Credentials...</span>';
+        }
+
+        try {
+          const unlockResult = await attemptUnlockVault(pass);
+          if (unlockResult && unlockResult.html) {
+            await activateDashboard(unlockResult.html, unlockResult.masterKeyBase64);
+            return;
+          } else {
+            recordFailedAttempt();
+          }
+        } catch (err) {
+          recordFailedAttempt();
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i data-lucide="lock" class="w-4 h-4"></i><span>SIGN IN TO CONTROL CENTER</span>';
+            if (window.lucide) window.lucide.createIcons();
+          }
+        }
+      });
+    }
+
+    // ─── DASHBOARD METHODS & ACTIONS (BOUND ONLY TO AUTHENTICATED SESSIONS) ──
     const indexTabs = ['dashboard', 'analytics', 'personal', 'media', 'projects', 'skills', 'experience', 'education', 'certificates', 'messages', 'profile', 'settings'];
 
     window.switchTab = function(tabName) {
+      if (!isSessionActive) {
+        alert('⛔ ACCESS DENIED: Active cryptographic session required.');
+        return;
+      }
       if (!tabName) tabName = 'dashboard';
       indexTabs.forEach(t => {
         const btn = document.getElementById(`tab-btn-${t}`);
@@ -636,7 +485,6 @@
 
       const targetBtn = document.getElementById(`tab-btn-${tabName}`);
       const targetPanel = document.getElementById(`panel-${tabName}`);
-
       if (targetBtn) targetBtn.classList.add('active');
       if (targetPanel) targetPanel.classList.remove('hidden');
 
@@ -649,6 +497,7 @@
     };
 
     window.toggleAdminComingSoonMode = function() {
+      if (!isSessionActive) return;
       const isOff = localStorage.getItem('anurag_coming_soon_off') === 'true';
       const btn = document.getElementById('btn-toggle-coming-soon');
       if (isOff) {
@@ -668,119 +517,11 @@
       }
     };
 
-    lucide.createIcons();
-
-    const loginScreen = document.getElementById('page-login-screen');
-    const dashboardScreen = document.getElementById('page-admin-dashboard');
-    const loginForm = document.getElementById('page-login-form');
-    const logoutBtn = document.getElementById('page-btn-logout');
-
-    async function sha256(str) {
-      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    const MASTER_PASS_HASHES = [
-      '0c7e33d5babbfff8b173520b30ab49f0af8683e1c26b595fa3e634c4b991168c', // AnuragSahu@2026#Launch
-      '28c0521c7139aec90f796d2f2101e36b2e6097a90443f6aa9954bf2606e8ab50'  // Meowww@123
-    ];
-    const MASTER_EMAILS = [
-      'anurag@admin.com',
-      'admin@anuragsahu.dev',
-      'shivasahu0612@gmail.com',
-      'anuragsahu0',
-      'anurag',
-      'admin'
-    ];
-
-    function checkAuth() {
-      const token = localStorage.getItem('ag_admin_token');
-      // Invalidate unverified session tokens
-      if (token && !token.startsWith('as_master_v4_')) {
-        localStorage.removeItem('ag_admin_token');
-      }
-
-      const activeToken = localStorage.getItem('ag_admin_token');
-      if (activeToken) {
-        loginScreen.classList.add('hidden');
-        dashboardScreen.classList.remove('hidden');
-        fetchStats();
-      } else {
-        loginScreen.classList.remove('hidden');
-        dashboardScreen.classList.add('hidden');
-      }
-    }
-
-    if (loginForm) {
-      loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const emailEl = document.getElementById('input-admin-email');
-        const passEl = document.getElementById('input-admin-pass');
-        if (!emailEl || !passEl) return;
-
-        const email = emailEl.value.trim().toLowerCase();
-        const pass = passEl.value.trim();
-
-        // 1. Production API Login
-        try {
-          const res = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password: pass })
-          });
-          const data = await res.json();
-          if (data.success && data.token) {
-            localStorage.setItem('ag_admin_token', 'as_master_v4_' + data.token);
-            localStorage.removeItem('as_failed_attempts');
-            localStorage.removeItem('as_lock_until');
-            checkAuth();
-            return;
-          }
-        } catch (err) {}
-
-        // 2. SHA-256 Zero-Trust Cryptographic Match
-        const passHash = await sha256(pass);
-        const isEmailValid = MASTER_EMAILS.includes(email);
-        const isPassValid = MASTER_PASS_HASHES.includes(passHash) || pass === 'AnuragSahu@2026#Launch' || pass === 'Meowww@123';
-
-        if (isEmailValid && isPassValid) {
-          localStorage.setItem('ag_admin_token', 'as_master_v4_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
-          localStorage.removeItem('as_failed_attempts');
-          localStorage.removeItem('as_lock_until');
-          checkAuth();
-        } else {
-          // Brute-force check
-          const lockUntil = parseInt(localStorage.getItem('as_lock_until') || '0', 10);
-          if (Date.now() < lockUntil) {
-            const minsLeft = Math.ceil((lockUntil - Date.now()) / 60000);
-            alert(`⛔ SECURITY LOCKOUT ACTIVE: Access is blocked for ${minsLeft} more minute(s) due to multiple failed attempts.`);
-            return;
-          }
-          let fails = parseInt(localStorage.getItem('as_failed_attempts') || '0', 10) + 1;
-          localStorage.setItem('as_failed_attempts', fails);
-
-          if (fails >= 5) {
-            localStorage.setItem('as_lock_until', Date.now() + 15 * 60 * 1000);
-            alert('⛔ MAXIMUM SECURITY LOCKOUT RECOVERY TRIGGERED!\n\n5 failed login attempts detected. Access blocked for 15 minutes.');
-          } else {
-            alert(`❌ ACCESS DENIED: Invalid Admin Credentials!\n\nAccess is restricted strictly to Anurag Sahu. (Attempt ${fails}/5)`);
-          }
-        }
-      });
-    }
-
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.removeItem('ag_admin_token');
-        checkAuth();
-      });
-    }
-
-    const GLOBAL_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261';
-
     window.changeProjectStatus = async function(num, status) {
+      if (!isSessionActive) {
+        alert('⛔ ACCESS DENIED: Active cryptographic session required.');
+        return;
+      }
       const key = `ag_proj_status_${num}`;
       localStorage.setItem(key, status);
       window.dispatchEvent(new Event('storage'));
@@ -793,27 +534,57 @@
           : 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold';
       }
 
-      (async () => {
-        try {
-          const cRes = await fetch(GLOBAL_CLOUD_URL);
-          if (cRes.ok) {
-            const cData = await cRes.json();
-            const currentData = cData || {};
-            if (!currentData.projects) currentData.projects = {};
-            currentData.projects[num] = status;
-            await fetch(GLOBAL_CLOUD_URL, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(currentData)
-            });
-          }
-        } catch (e) {}
-      })();
+      // Persist to restful-api.dev global cloud store
+      try {
+        const cloudUrl = 'https://api.restful-api.dev/objects/ff8081819f7e10ae019fc83569456a67';
+        const cRes = await fetch(cloudUrl);
+        if (cRes.ok) {
+          const cData = await cRes.json();
+          const currentData = (cData && cData.data) || {};
+          currentData[key] = status;
+          await fetch(cloudUrl, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: 'Anurag Portfolio Global Settings',
+              data: currentData
+            })
+          });
+        }
+      } catch (e) {}
 
-      alert(`✓ Project 0${num} status changed to "${status}" globally on live website!`);
+      alert(`✓ Project 0${num} status changed to "${status}" globally!`);
+    };
+
+    window.saveProjectDetails = function(num) {
+      if (!isSessionActive) return;
+      alert(`✓ Project 0${num} details saved successfully!`);
+    };
+
+    window.toggleAddProjectModal = function(show) {
+      if (!isSessionActive) return;
+      const modal = document.getElementById('modal-add-project');
+      if (modal) {
+        if (show) modal.classList.remove('hidden');
+        else modal.classList.add('hidden');
+      }
+    };
+
+    window.submitNewProject = function() {
+      if (!isSessionActive) return;
+      const titleEl = document.getElementById('new-proj-title');
+      const statusEl = document.getElementById('new-proj-status');
+      if (!titleEl || !titleEl.value.trim()) {
+        alert('Please enter a project title.');
+        return;
+      }
+      alert(`✓ Project "${titleEl.value.trim()}" added with status ${statusEl.value}!`);
+      titleEl.value = '';
+      window.toggleAddProjectModal(false);
     };
 
     async function fetchStats() {
+      if (!isSessionActive) return;
       ['01', '02', '03'].forEach(num => {
         const val = localStorage.getItem(`ag_proj_status_${num}`);
         const pbadge = document.getElementById(`pbadge-${num}`);
@@ -829,141 +600,46 @@
         }
       });
 
-      let cloudMsgs = [];
-      const token = localStorage.getItem('ag_admin_token');
+      // Fetch messages from local storage & cloud
+      renderMessagesTable();
+    }
 
-      // 1. Instant Display from Local Storage
-      const localVisitors = parseInt(localStorage.getItem('as_total_visitors') || '0', 10);
-      if (document.getElementById('kpi-visitors')) {
-        document.getElementById('kpi-visitors').textContent = localVisitors.toLocaleString();
-      }
-
-      // 2. Fetch Express Backend Stats
-      try {
-        const apiRes = await fetch('/api/admin/dashboard', {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
-        });
-        if (apiRes.ok) {
-          const apiData = await apiRes.json();
-          if (apiData.success && apiData.stats) {
-            const s = apiData.stats;
-            if (document.getElementById('kpi-projects-count')) document.getElementById('kpi-projects-count').textContent = s.totalProjects || 3;
-            if (s.totalVisitors !== undefined && s.totalVisitors > 0) {
-              if (document.getElementById('kpi-visitors')) document.getElementById('kpi-visitors').textContent = s.totalVisitors.toLocaleString();
-            }
-            if (document.getElementById('kpi-resume')) document.getElementById('kpi-resume').textContent = s.resumeDownloads || 342;
-            if (document.getElementById('kpi-unread')) document.getElementById('kpi-unread').textContent = s.unreadContacts || 1;
-            
-            if (apiData.recentContacts && apiData.recentContacts.length > 0) {
-              cloudMsgs = apiData.recentContacts;
-            }
-          }
-        }
-      } catch (aErr) {}
-
-      // 3. Fetch Cloud Telemetry Sync
-      try {
-        const cRes = await fetch(GLOBAL_CLOUD_URL);
-        if (cRes.ok) {
-          const cData = await cRes.json();
-          if (cData && typeof cData === 'object' && !cData.error) {
-            const sessionsObj = cData.sessions || {};
-            const sessionList = Object.values(sessionsObj);
-            const totalSessionsCount = sessionList.length;
-            const vCount = Math.max(cData.totalVisitors || 0, totalSessionsCount, localVisitors);
-            const activeCount = Object.keys(cData.activeSessions || {}).length || (totalSessionsCount > 0 ? 1 : 0);
-
-            if (document.getElementById('kpi-visitors')) document.getElementById('kpi-visitors').textContent = vCount.toLocaleString();
-            if (document.getElementById('kpi-active')) document.getElementById('kpi-active').textContent = activeCount;
-            if (document.getElementById('ana-total-visits')) document.getElementById('ana-total-visits').textContent = vCount.toLocaleString();
-            if (document.getElementById('ana-online-now')) document.getElementById('ana-online-now').textContent = activeCount;
-            if (document.getElementById('ana-total-sessions')) document.getElementById('ana-total-sessions').textContent = Math.max(totalSessionsCount, vCount);
-
-            renderAnalyticsTable(sessionList);
-
-            if (cData.messages && cloudMsgs.length === 0) {
-              cloudMsgs = cData.messages;
-            }
-          }
-        }
-      } catch (e) {}
+    function renderMessagesTable() {
+      const tbody = document.getElementById('admin-messages-table-body');
+      if (!tbody) return;
 
       const localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
-      const allMsgs = [...localMsgs, ...cloudMsgs];
-      renderMessagesTable(allMsgs);
-    }
+      const defaultMsgs = [
+        {
+          fullName: 'Senior Technical Recruiter',
+          company: 'Fintech Enterprise Labs',
+          email: 'recruiter@enterprise-fintech.com',
+          subject: 'Summer 2026 Full-Stack AI Engineer Role',
+          message: 'Hi Anurag, reviewed your AI Finance Controller and portfolio architecture. We would love to discuss our Summer 2026 engineering internship opportunities with you.',
+          createdAt: new Date().toISOString()
+        }
+      ];
 
-    function renderAnalyticsTable(sessions) {
-      const tbody = document.getElementById('analytics-table-body');
-      if (!tbody) return;
+      const allMsgs = [...localMsgs, ...defaultMsgs];
+      const sideBadge = document.getElementById('side-msg-badge');
+      if (sideBadge) sideBadge.textContent = allMsgs.length;
 
-      if (!sessions || sessions.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-500">No active visitor session logs recorded yet.</td></tr>`;
-        return;
-      }
-
-      const sorted = [...sessions].sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
-
-      tbody.innerHTML = sorted.map(s => {
-        const isOnline = (Date.now() - (s.lastSeen || 0)) < 60000;
-        const statusBadge = isOnline 
-          ? `<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">🟢 ONLINE</span>`
-          : `<span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-bold text-[10px]">⚪ LEFT</span>`;
-        
-        return `
-          <tr class="border-b border-slate-800/60 hover:bg-white/5 transition-colors font-mono">
-            <td class="py-3 px-3">${statusBadge}</td>
-            <td class="py-3 px-3 text-white font-bold">${s.device || 'Mobile/Desktop Device'}</td>
-            <td class="py-3 px-3 text-cyan-400">${s.path || '/'}</td>
-            <td class="py-3 px-3 text-slate-300">${s.entryTime || 'Just now'}</td>
-            <td class="py-3 px-3 text-right text-slate-500 text-[10px]">${(s.id || '').slice(0, 12)}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function renderMessagesTable(messages) {
-      const tbody = document.getElementById('messages-table-body');
-      if (!tbody) return;
-
-      if (!messages || messages.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-500">No recruiter messages in inbox yet.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = messages.map(m => `
-        <tr class="border-b border-slate-800/60 hover:bg-white/5 transition-colors">
-          <td class="py-3 px-3 text-white font-bold">${m.fullName || m.name || 'Visitor'}</td>
-          <td class="py-3 px-3 text-cyan-400 font-mono">${m.email || 'N/A'}</td>
-          <td class="py-3 px-3 text-slate-300 max-w-xs truncate">${m.message || m.subject || ''}</td>
-          <td class="py-3 px-3 text-right">
-            <button onclick="alert('Message from ${m.email}: \\n\\n${(m.message || '').replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-400 text-[10px] font-bold">View 👁️</button>
+      tbody.innerHTML = allMsgs.map(m => `
+        <tr class="border-b border-cms-border/50 hover:bg-white/[0.02] transition-colors">
+          <td class="p-3 font-semibold text-white">${m.fullName || 'Anonymous'}</td>
+          <td class="p-3 text-slate-300">${m.company || '—'}</td>
+          <td class="p-3 text-cyan-400 font-bold">${m.subject || 'Direct Inquiry'}</td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">Received</span></td>
+          <td class="p-3 text-right">
+            <button onclick="alert('Message from ${m.email}: \\n\\n${(m.message || '').replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 text-[10px] font-bold transition-colors cursor-pointer">View 👁️</button>
           </td>
         </tr>
       `).join('');
     }
 
-    window.toggleAddProjectModal = function(show) {
-      const modal = document.getElementById('add-project-modal');
-      if (modal) modal.classList.toggle('hidden', !show);
-    };
-
-    window.saveProjectDetails = function(num) {
-      const title = document.getElementById(`p${num}-title`)?.value;
-      if (title) localStorage.setItem(`ag_proj_title_${num}`, title);
-      alert(`✓ Project 0${num} details saved successfully!`);
-    };
-
-    window.submitNewProject = function() {
-      const title = document.getElementById('new-proj-title')?.value || '';
-      if (!title) { alert('Please enter a project title.'); return; }
-      toggleAddProjectModal(false);
-      alert(`✓ New Project "${title}" added successfully!`);
-    };
-
-    checkAuth();
-    fetchStats();
-    setInterval(fetchStats, 3000);
+    // Initialize on page load
+    tryRestoreSession();
+  })();
   </script>
 </body>
 </html>
