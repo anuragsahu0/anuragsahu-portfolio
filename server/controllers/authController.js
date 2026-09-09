@@ -6,8 +6,8 @@ require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-this';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@anuragsahu.dev';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Meowww@123';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'anuragsahu';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 
 /**
  * POST /api/auth/login
@@ -53,11 +53,8 @@ const login = async (req, res, next) => {
       console.warn('[Auth] Database offline, checking environment admin credentials');
     }
 
-    // Strict Admin Credentials validation
-    const validEmails = ['anurag@admin.com', 'shivasahu0612@gmail.com', 'anuragsahu0', 'anurag', 'admin@anuragsahu.dev', 'admin'];
-    const validPasswords = ['AnuragSahu@2026#Launch', 'AnuragSahu@2026#launch', 'Meowww@123'];
-
-    if (validEmails.includes(cleanEmail) && validPasswords.includes(password)) {
+    // Strict Admin Credentials validation via Environment
+    if (ADMIN_PASSWORD && (cleanEmail === ADMIN_EMAIL.toLowerCase() || cleanEmail === 'anuragsahu') && password === ADMIN_PASSWORD) {
       const token = jwt.sign(
         { id: 'admin-user', email: cleanEmail, role: 'admin' },
         JWT_SECRET,

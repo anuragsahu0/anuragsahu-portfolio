@@ -10,8 +10,8 @@ const SocialLink = require('../models/SocialLink');
 const Settings = require('../models/Settings');
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/anti_gravity_portfolio';
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@anuragsahu.dev';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Meowww@123';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'anuragsahu';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 
 // ─── Seed Data ──────────────────────────────────────────────
 

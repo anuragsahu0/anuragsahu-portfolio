@@ -49,8 +49,8 @@ export function AdminPage() {
   // Authentication State
   const [token, setToken] = useState(() => localStorage.getItem('ag_admin_token') || '');
   const [user, setUser] = useState(null);
-  const [loginEmail, setLoginEmail] = useState('admin@anuragsahu.dev');
-  const [loginPassword, setLoginPassword] = useState('Admin@AntiGravity2026');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 

@@ -412,66 +412,16 @@ function initAdminModal() {
   // 1-Click Fast Admin Login
   const quickLoginBtn = document.getElementById('btn-quick-admin-login');
   if (quickLoginBtn) {
-    quickLoginBtn.addEventListener('click', async () => {
-      localStorage.setItem('ag_admin_token', 'fast-admin-token-anurag');
-      showToast("⚡ INSTANT ACCESS: Launching Anurag's Portfolio Dashboard...");
-      setTimeout(() => {
-        window.location.href = 'admin.html';
-      }, 500);
+    quickLoginBtn.addEventListener('click', () => {
+      window.location.href = 'admin.html';
     });
   }
 
-  // Handle Login Form Submit
+  // Handle Login Form Submit (Redirects to Air-Gapped Zero-Trust Admin Portal)
   if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
+    loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (loginError) loginError.style.display = 'none';
-
-      const emailInput = document.getElementById('login-input-email');
-      const passInput = document.getElementById('login-input-pass');
-      const email = emailInput ? emailInput.value.trim().toLowerCase() : '';
-      const password = passInput ? passInput.value : '';
-
-      const validEmails = ['anurag@admin.com', 'shivasahu0612@gmail.com', 'anuragsahu0', 'anurag'];
-      const validPasswords = ['AnuragSahu@2026#Launch'];
-
-      let authenticated = false;
-
-      try {
-        const res = await fetch(`${API_BASE}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
-        const data = await res.json();
-
-        if (data.success && data.token) {
-          authenticated = true;
-          localStorage.setItem('ag_admin_token', 'as_secure_v3_' + data.token);
-        }
-      } catch (err) {
-        console.warn('Backend connection notice, checking local credential validation');
-      }
-
-      if (!authenticated) {
-        if (validEmails.includes(email) && validPasswords.includes(password)) {
-          authenticated = true;
-          localStorage.setItem('ag_admin_token', 'as_secure_v3_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
-        }
-      }
-
-      if (authenticated) {
-        showToast("⚡ AUTHENTICATED: Launching Anurag's Portfolio Dashboard...");
-        setTimeout(() => {
-          window.location.href = 'admin.html';
-        }, 500);
-      } else {
-        if (loginError) {
-          loginError.textContent = '❌ ACCESS DENIED: Incorrect Email or Password!';
-          loginError.style.display = 'block';
-        }
-        alert('❌ ACCESS DENIED: Incorrect Admin Email or Password!\n\nPlease enter valid admin credentials.');
-      }
+      window.location.href = 'admin.html';
     });
   }
 
