@@ -6,8 +6,8 @@
     { "src": "/ai-finance-controller", "dest": "/AI-FINANCE-CONTROLLER.html" },
     { "src": "/AI-FINANCE%20CONTROLLER", "dest": "/AI-FINANCE-CONTROLLER.html" },
     { "src": "/api/(.*)", "dest": "/api/index.js" },
-    { "src": "/admin", "dest": "/admin.html" },
-    { "src": "/mobile-admin", "dest": "/admin.html" },
+    { "src": "/admin(.*)", "dest": "/admin.html" },
+    { "src": "/mobile-admin(.*)", "dest": "/admin.html" },
     { "src": "/mobile", "dest": "/mobile.html" },
     { "src": "/mobile.html", "dest": "/mobile.html" }
   ]
