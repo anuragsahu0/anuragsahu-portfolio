@@ -1,5 +1,21 @@
-const { validationResult } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 const { sendError } = require('../utils/apiResponse');
+
+/**
+ * Login input validation rules
+ */
+const loginRules = [
+  body('email')
+    .trim()
+    .notEmpty()
+    .withMessage('Email is required.')
+    .isEmail()
+    .withMessage('Please provide a valid email address.')
+    .normalizeEmail(),
+  body('password')
+    .notEmpty()
+    .withMessage('Password is required.'),
+];
 
 /**
  * Validation Middleware
@@ -17,4 +33,5 @@ const validate = (req, res, next) => {
   next();
 };
 
-module.exports = { validate };
+module.exports = { validate, loginRules };
+

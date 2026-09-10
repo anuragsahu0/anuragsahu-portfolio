@@ -134,8 +134,17 @@
                 required
                 placeholder="••••••••••••"
                 autocomplete="current-password"
-                class="w-full bg-slate-900/90 border border-brand-border rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 font-mono"
+                class="w-full bg-slate-900/90 border border-brand-border rounded-xl pl-10 pr-10 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 font-mono"
               >
+              <button
+                type="button"
+                id="toggle-pwd-btn"
+                onclick="togglePasswordVisibility()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors p-1"
+                aria-label="Toggle password visibility"
+              >
+                <i id="pwd-eye-icon" data-lucide="eye" class="w-4 h-4"></i>
+              </button>
             </div>
           </div>
 
@@ -571,23 +580,24 @@
 
   <!-- APPLICATION CONTROLLER SCRIPT -->
   <script>
-    const TOKEN_KEY = 'as_admin_token';
     const USER_KEY = 'as_admin_user';
 
-    function getToken() {
-      return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
-    }
-
-    function setToken(token, user, remember) {
-      const storage = remember ? localStorage : sessionStorage;
-      storage.setItem(TOKEN_KEY, token);
-      if (user) storage.setItem(USER_KEY, JSON.stringify(user));
+    function togglePasswordVisibility() {
+      const pwdInput = document.getElementById('input-password');
+      const eyeIcon = document.getElementById('pwd-eye-icon');
+      if (!pwdInput) return;
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        if (eyeIcon) eyeIcon.setAttribute('data-lucide', 'eye-off');
+      } else {
+        pwdInput.type = 'password';
+        if (eyeIcon) eyeIcon.setAttribute('data-lucide', 'eye');
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function clearAuth() {
-      localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
-      sessionStorage.removeItem(TOKEN_KEY);
       sessionStorage.removeItem(USER_KEY);
     }
 
@@ -597,35 +607,70 @@
       checkAuth();
     });
 
-    function checkAuth() {
-      const token = getToken();
-      if (token) {
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('admin-shell').classList.remove('hidden');
-        try {
-          const user = JSON.parse(localStorage.getItem(USER_KEY) || sessionStorage.getItem(USER_KEY) || '{}');
-          if (user.email) {
-            document.getElementById('user-display-email').textContent = user.email.split('@')[0];
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/auth/me', {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          credentials: 'include',
+        });
+
+        if (res.ok) {
+          const result = await res.json();
+          const user = result.data?.user || result.user;
+          if (user) {
+            sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('admin-shell').classList.remove('hidden');
+
+            const userDisplay = document.getElementById('user-display-email');
+            if (userDisplay) {
+              userDisplay.textContent = user.name || (user.email ? user.email.split('@')[0] : 'Admin');
+            }
+
+            loadDashboard();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            return;
           }
-        } catch(e) {}
-        loadDashboard();
-      } else {
-        document.getElementById('admin-shell').classList.add('hidden');
-        document.getElementById('auth-screen').classList.remove('hidden');
+        }
+      } catch (err) {
+        console.warn('[Auth] Session verification error:', err);
       }
+
+      // If unauthenticated, transition cleanly to auth screen
+      clearAuth();
+      document.getElementById('admin-shell').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     async function handleLogin(e) {
       e.preventDefault();
-      const email = document.getElementById('input-email').value.trim();
-      const password = document.getElementById('input-password').value;
+      const emailInput = document.getElementById('input-email');
+      const passwordInput = document.getElementById('input-password');
       const remember = document.getElementById('input-remember').checked;
       const errorBox = document.getElementById('login-error');
       const errorText = document.getElementById('login-error-text');
       const submitBtn = document.getElementById('login-btn');
 
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
       errorBox.classList.add('hidden');
+
+      // Frontend validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !emailRegex.test(email)) {
+        errorText.textContent = 'Please enter a valid email address.';
+        errorBox.classList.remove('hidden');
+        return;
+      }
+      if (!password) {
+        errorText.textContent = 'Password is required.';
+        errorBox.classList.remove('hidden');
+        return;
+      }
+
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span><span>Authenticating...</span>';
 
@@ -633,27 +678,27 @@
         const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ email, password }),
         });
+
         const data = await res.json();
 
         if (!res.ok) {
-          throw new Error(data.message || 'Invalid credentials.');
+          const errorMsg = data.error?.message || data.message || 'Invalid email or password.';
+          throw new Error(errorMsg);
         }
 
-        setToken(data.token, data.user, remember);
-        checkAuth();
+        const user = data.data?.user || data.user;
+        if (user) {
+          const storage = remember ? localStorage : sessionStorage;
+          storage.setItem(USER_KEY, JSON.stringify(user));
+        }
+
+        passwordInput.value = '';
+        await checkAuth();
       } catch (err) {
-        // Fallback for direct master authentication if serverless offline
-        const localAllowedEmails = ['anuragsahu', 'admin@anuragsahu.dev', 'admin', 'shivasahu0612@gmail.com'];
-        const localAllowedPasswords = ['ABCDEF123', 'Meowww@123'];
-        if (localAllowedEmails.includes(email.toLowerCase()) && localAllowedPasswords.includes(password)) {
-          setToken('ABCDEF123', { id: 'admin', email: email.toLowerCase(), role: 'admin', candidateName: 'Anurag Sahu' }, remember);
-          checkAuth();
-          return;
-        }
-
-        errorText.textContent = err.message || 'Login failed. Please verify credentials.';
+        errorText.textContent = err.message || 'Invalid email or password.';
         errorBox.classList.remove('hidden');
       } finally {
         submitBtn.disabled = false;
@@ -662,9 +707,17 @@
       }
     }
 
-    function handleLogout() {
+    async function handleLogout() {
+      try {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        });
+      } catch (_) {}
+
       clearAuth();
-      checkAuth();
+      await checkAuth();
     }
 
     // Tab Navigation
@@ -724,27 +777,32 @@
 
     // Live Telemetry Loaders
     async function loadDashboard() {
-      const token = getToken();
       try {
         const [dashRes, healthRes] = await Promise.allSettled([
-          fetch('/api/admin/dashboard', { headers: { 'Authorization': `Bearer ${token}` } }),
+          fetch('/api/admin/dashboard', { credentials: 'include' }),
           fetch('/api/health')
         ]);
 
-        if (dashRes.status === 'fulfilled' && dashRes.value.ok) {
-          const data = await dashRes.value.json();
-          document.getElementById('stat-total-contacts').textContent = data.stats?.contactSubmissions ?? '0';
-          document.getElementById('stat-unread-contacts').textContent = data.stats?.unreadContacts ?? '0';
-
-          const unreadPill = document.getElementById('unread-pill');
-          if (unreadPill) {
-            const count = data.stats?.unreadContacts || 0;
-            unreadPill.textContent = count;
-            if (count > 0) unreadPill.classList.remove('hidden');
-            else unreadPill.classList.add('hidden');
+        if (dashRes.status === 'fulfilled') {
+          if (dashRes.value.status === 401) {
+            handleLogout();
+            return;
           }
+          if (dashRes.value.ok) {
+            const data = await dashRes.value.json();
+            document.getElementById('stat-total-contacts').textContent = data.stats?.contactSubmissions ?? '0';
+            document.getElementById('stat-unread-contacts').textContent = data.stats?.unreadContacts ?? '0';
 
-          renderRecentMessages(data.recentContacts || []);
+            const unreadPill = document.getElementById('unread-pill');
+            if (unreadPill) {
+              const count = data.stats?.unreadContacts || 0;
+              unreadPill.textContent = count;
+              if (count > 0) unreadPill.classList.remove('hidden');
+              else unreadPill.classList.add('hidden');
+            }
+
+            renderRecentMessages(data.recentContacts || []);
+          }
         }
 
         if (healthRes.status === 'fulfilled' && healthRes.value.ok) {
@@ -781,14 +839,19 @@
     }
 
     async function loadMessages() {
-      const token = getToken();
       const container = document.getElementById('messages-container');
       container.innerHTML = '<div class="text-center py-12 text-xs text-slate-500 font-mono">Loading inquiries...</div>';
 
       try {
         const res = await fetch('/api/admin/messages', {
-          headers: { 'Authorization': `Bearer ${token}` }
+          credentials: 'include'
         });
+
+        if (res.status === 401) {
+          handleLogout();
+          return;
+        }
+
         const data = await res.json();
         const msgs = data.messages || [];
 
@@ -836,12 +899,15 @@
     }
 
     async function markRead(id) {
-      const token = getToken();
       try {
-        await fetch(`/api/admin/messages/${id}/read`, {
+        const res = await fetch(`/api/admin/messages/${id}/read`, {
           method: 'PUT',
-          headers: { 'Authorization': `Bearer ${token}` }
+          credentials: 'include'
         });
+        if (res.status === 401) {
+          handleLogout();
+          return;
+        }
         loadMessages();
         loadDashboard();
       } catch(e) {

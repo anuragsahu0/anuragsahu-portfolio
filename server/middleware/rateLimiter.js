@@ -24,9 +24,13 @@ const authLimiter = rateLimit({
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
+  statusCode: 429,
   message: {
     success: false,
-    message: 'Too many authentication attempts. Please try again in 15 minutes.',
+    error: {
+      code: 'RATE_LIMIT_EXCEEDED',
+      message: 'Too many authentication attempts. Please try again in 15 minutes.',
+    },
   },
 });
 

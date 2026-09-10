@@ -1,16 +1,11 @@
 /**
  * ANURAG SAHU CONTROL CENTER — Auth Service
- * Production auth management: login, token storage, and session validation.
+ * Production auth management: login, cookie sessions, and session validation.
  */
 
-const TOKEN_KEY = 'as_admin_token';
 const USER_KEY = 'as_admin_user';
 
 export const authService = {
-  getToken() {
-    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || null;
-  },
-
   getUser() {
     try {
       const raw = localStorage.getItem(USER_KEY) || sessionStorage.getItem(USER_KEY);
@@ -20,37 +15,69 @@ export const authService = {
     }
   },
 
-  isAuthenticated() {
-    return Boolean(this.getToken());
+  async getMe() {
+    try {
+      const res = await fetch('/api/auth/me', {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        this.clearSession();
+        return null;
+      }
+
+      const data = await res.json();
+      const user = data.data?.user || data.user || null;
+      if (user) {
+        sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+      }
+      return user;
+    } catch (_err) {
+      return null;
+    }
   },
 
   async login(email, password, remember = false) {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ email: email.trim(), password }),
     });
 
     const data = await res.json();
     if (!res.ok) {
-      throw new Error(data.message || 'Authentication failed');
+      const errorMsg = data.error?.message || data.message || 'Authentication failed.';
+      throw new Error(errorMsg);
     }
 
+    const user = data.data?.user || data.user;
     const storage = remember ? localStorage : sessionStorage;
-    if (data.token) {
-      storage.setItem(TOKEN_KEY, data.token);
-    }
-    if (data.user) {
-      storage.setItem(USER_KEY, JSON.stringify(data.user));
+    if (user) {
+      storage.setItem(USER_KEY, JSON.stringify(user));
     }
 
     return data;
   },
 
-  logout() {
-    localStorage.removeItem(TOKEN_KEY);
+  async logout() {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+    } catch (err) {
+      console.warn('Logout network notification failed:', err);
+    }
+    this.clearSession();
+  },
+
+  clearSession() {
     localStorage.removeItem(USER_KEY);
-    sessionStorage.removeItem(TOKEN_KEY);
     sessionStorage.removeItem(USER_KEY);
   },
 };
+

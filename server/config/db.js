@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// Disable Mongoose query buffering so offline/fallback operations fail instantly without hanging
+mongoose.set('bufferCommands', false);
+
 let cached = global.mongoose;
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };

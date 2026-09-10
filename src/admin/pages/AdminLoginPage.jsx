@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Lock, Mail, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Lock, Mail, ArrowRight, ShieldCheck, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { FormField } from '../components/FormField';
 
 export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
   const [validationError, setValidationError] = useState('');
 
@@ -12,12 +13,19 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
     e.preventDefault();
     setValidationError('');
 
-    if (!email.trim() || !password) {
-      setValidationError('Please provide both your administrator email and password.');
+    const emailTrimmed = email.trim();
+    if (!emailTrimmed || !password) {
+      setValidationError('Please provide both administrator email and password.');
       return;
     }
 
-    onLogin(email.trim(), password, remember);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailTrimmed)) {
+      setValidationError('Please enter a valid email address.');
+      return;
+    }
+
+    onLogin(emailTrimmed, password, remember);
   };
 
   return (
@@ -62,7 +70,7 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@anuragsahu.com"
+                  placeholder="admin@anuragsahu.dev"
                   autoComplete="email"
                   required
                   className="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 font-mono transition-colors"
@@ -75,14 +83,22 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
                 <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   id="admin-password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   autoComplete="current-password"
                   required
-                  className="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 font-mono transition-colors"
+                  className="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-10 pr-10 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 font-mono transition-colors"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors p-1"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </FormField>
 
