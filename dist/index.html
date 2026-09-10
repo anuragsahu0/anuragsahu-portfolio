@@ -45,33 +45,6 @@
   <!-- Three.js 3D WebGL Library CDN (Deferred) -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-  <style>
-    /* Admin Modal Glassmorphism Overlay */
-    #admin-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 10000;
-      background: rgba(7, 4, 0, 0.95);
-      backdrop-filter: blur(20px);
-      overflow-y: auto;
-    }
-    #admin-modal.active {
-      display: flex;
-      flex-direction: column;
-    }
-    .admin-card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-    }
-    .admin-kpi-card {
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-    }
-  </style>
 
   <!-- JSON-LD Structured Data Schema for Person & WebSite -->
   <script type="application/ld+json">
@@ -1193,258 +1166,6 @@
 
   </main>
 
-  <!-- ANTI GRAVITY CONTROL CENTER ADMIN MODAL -->
-  <div id="admin-modal" role="dialog" aria-label="Anti Gravity Control Center Admin Console">
-    <div style="width: 100%; max-width: 1200px; margin: 20px auto; padding: 24px;" class="glass-panel">
-      
-      <!-- 1. LOGIN SCREEN (Shown if not logged in) -->
-      <div id="admin-login-view" style="max-width: 440px; margin: 30px auto; padding: 36px; background: rgba(7, 4, 0, 0.9); border: 1px solid rgba(6,182,212,0.4); border-radius: 28px; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8), 0 0 30px rgba(6,182,212,0.2);" class="font-mono">
-        <div style="text-align: center; margin-bottom: 24px;">
-          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 20px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.4); color: var(--color-nebula-cyan); font-size: 0.75rem; font-weight: 700; margin-bottom: 14px;">
-            <i data-lucide="shield-check" style="width: 14px;" aria-hidden="true"></i>
-            <span>AUTHENTICATED ADMIN PANEL</span>
-          </div>
-          <h2 style="font-family: var(--font-display); font-size: 1.65rem; font-weight: 800; color: var(--color-starlight-white); margin: 0; line-height: 1.2;">
-            Anurag's <span style="color: var(--color-nebula-cyan);">Portfolio Dashboard</span>
-          </h2>
-          <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-top: 6px;">
-            Full Control Panel & Telemetry Console
-          </div>
-        </div>
-
-        <div id="admin-login-error" style="display: none; padding: 10px; margin-bottom: 16px; border-radius: 10px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #f87171; font-size: 0.75rem; text-align: center;"></div>
-
-        <form id="admin-login-form" style="display: flex; flex-direction: column; gap: 16px; font-size: 0.75rem;">
-          <div>
-            <label style="color: var(--color-starlight-white); font-weight: 700; display: block; margin-bottom: 6px;">ADMIN EMAIL</label>
-            <input id="login-input-email" type="text" required value="" placeholder="Enter Admin Email..." style="width: 100%; padding: 12px 14px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: var(--color-starlight-white); font-family: inherit; font-size: 0.85rem;">
-          </div>
-
-          <div>
-            <label style="color: var(--color-starlight-white); font-weight: 700; display: block; margin-bottom: 6px;">PASSWORD</label>
-            <input id="login-input-pass" type="password" required value="" placeholder="Enter Security Password..." style="width: 100%; padding: 12px 14px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: var(--color-starlight-white); font-family: inherit; font-size: 0.85rem;">
-          </div>
-
-          <button type="submit" class="btn-primary" style="justify-content: center; padding: 14px; margin-top: 6px; font-weight: 800; font-size: 0.85rem; border-radius: 12px; box-shadow: 0 0 20px rgba(6,182,212,0.3);">
-            <i data-lucide="lock" style="width: 16px;" aria-hidden="true"></i>
-            <span>LOGIN TO ADMIN DASHBOARD</span>
-          </button>
-        </form>
-
-        <div style="margin-top: 16px; text-align: center;">
-          <button id="admin-login-close-btn" class="btn-secondary" style="padding: 6px 16px; font-size: 0.75rem;">Close</button>
-        </div>
-      </div>
-
-      <!-- 2. DASHBOARD VIEW (Shown when authenticated) -->
-      <div id="admin-dashboard-view" style="display: none;">
-        <!-- Admin Modal Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 20px;" class="font-mono">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <img src="assets/anurag-portrait-sm.jpg" alt="Anurag Sahu Portrait" style="width: 40px; height: 40px; border-radius: 12px; object-fit: cover; border: 1px solid rgba(6,182,212,0.4);">
-            <div>
-              <h2 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--color-starlight-white); margin: 0;">
-                Anurag's <span style="color: var(--color-nebula-cyan);">Portfolio Dashboard</span>
-              </h2>
-              <div style="font-size: 0.75rem; color: var(--color-muted-text);">
-                REAL-TIME ADMIN CONTROL CENTER v3.0 • LATENCY: <span style="color: #10b981; font-weight: 700;">12ms</span>
-              </div>
-            </div>
-          </div>
-
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <button id="btn-export-json" class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem; color: var(--color-nebula-cyan); border-color: rgba(6,182,212,0.4);">
-              ⬇ EXPORT JSON
-            </button>
-            <button id="btn-export-csv" class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem; color: #10b981; border-color: rgba(16,185,129,0.4);">
-              ⬇ EXPORT CSV
-            </button>
-            <button id="admin-logout-btn" class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem; border-color: rgba(239,68,68,0.4); color: #f87171;" aria-label="Log Out Admin">
-              LOGOUT
-            </button>
-            <button id="admin-close-btn" class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" aria-label="Close Admin Modal">
-              ✕ CLOSE
-            </button>
-          </div>
-        </div>
-
-        <!-- Dashboard Navigation Tabs Bar -->
-        <div style="display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; overflow-x: auto;" class="font-mono">
-          <button id="tab-btn-kpi" class="btn-primary" style="padding: 8px 16px; font-size: 0.75rem;">📊 Overview KPIs</button>
-          <button id="tab-btn-live" class="btn-secondary" style="padding: 8px 16px; font-size: 0.75rem;">🌐 Live Visitors</button>
-          <button id="tab-btn-projects" class="btn-secondary" style="padding: 8px 16px; font-size: 0.75rem;">📁 Projects Manager</button>
-          <button id="tab-btn-messages" class="btn-secondary" style="padding: 8px 16px; font-size: 0.75rem;">📬 Recruiter Messages</button>
-          <button id="tab-btn-logs" class="btn-secondary" style="padding: 8px 16px; font-size: 0.75rem;">🛡️ Security Audit Logs</button>
-        </div>
-
-        <!-- TAB CONTENT 1: OVERVIEW KPIS -->
-        <div id="tab-content-kpi">
-          <div class="admin-card-grid" style="margin-bottom: 24px;">
-            <div class="admin-kpi-card font-mono">
-              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">REAL VISITORS</div>
-              <div id="kpi-visitors" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--color-nebula-cyan);">1</div>
-              <div style="font-size: 0.7rem; color: #10b981;">● Live Telemetry</div>
-            </div>
-
-            <div class="admin-kpi-card font-mono">
-              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">RESUME DOWNLOADS</div>
-              <div id="kpi-resume" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: #10b981;">0</div>
-              <div style="font-size: 0.7rem; color: var(--color-muted-text);">ATS PDF Clicks</div>
-            </div>
-
-            <div class="admin-kpi-card font-mono">
-              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">ACTIVE PROJECTS</div>
-              <div id="kpi-projects" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: #f59e0b;">3</div>
-              <div style="font-size: 0.7rem; color: var(--color-muted-text);">Portfolio, RMS, ERP</div>
-            </div>
-
-            <div class="admin-kpi-card font-mono">
-              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">UNREAD MESSAGES</div>
-              <div id="kpi-unread" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--color-quantum-violet);">1</div>
-              <div style="font-size: 0.7rem; color: var(--color-nebula-cyan);">Direct Contact Form</div>
-            </div>
-
-            <div class="admin-kpi-card font-mono">
-              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">GITHUB CLICKS</div>
-              <div id="kpi-github" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--color-nebula-cyan);">0</div>
-              <div style="font-size: 0.7rem; color: var(--color-muted-text);">profile/anuragsahu0</div>
-            </div>
-
-            <div class="admin-kpi-card font-mono">
-              <div style="font-size: 0.75rem; color: var(--color-muted-text); margin-bottom: 4px;">LINKEDIN CLICKS</div>
-              <div id="kpi-linkedin" style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: #10b981;">0</div>
-              <div style="font-size: 0.7rem; color: var(--color-muted-text);">in/anurag-sahu-5a</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB CONTENT 2: LIVE VISITORS -->
-        <div id="tab-content-live" style="display: none;" class="font-mono">
-          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px;">
-            <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--color-starlight-white); margin-bottom: 12px;">
-              🌐 Active Real-Time Visitor Sessions
-            </h3>
-            <div style="overflow-x: auto;">
-              <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
-                <thead>
-                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--color-muted-text);">
-                    <th style="padding: 10px;">IP ADDRESS</th>
-                    <th style="padding: 10px;">CURRENT ROUTE</th>
-                    <th style="padding: 10px;">BROWSER</th>
-                    <th style="padding: 10px;">OS</th>
-                    <th style="padding: 10px;">DEVICE</th>
-                    <th style="padding: 10px;">STATUS</th>
-                  </tr>
-                </thead>
-                <tbody id="live-visitors-table-body">
-                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 12px; font-weight: 700; color: var(--color-starlight-white);">127.0.0.1 (Current Session)</td>
-                    <td style="padding: 12px; color: var(--color-nebula-cyan); font-weight: 700;">/#admin</td>
-                    <td style="padding: 12px; color: var(--color-muted-text);">Chrome</td>
-                    <td style="padding: 12px; color: var(--color-muted-text);">macOS</td>
-                    <td style="padding: 12px; color: var(--color-muted-text);">Desktop</td>
-                    <td style="padding: 12px;"><span style="padding: 2px 8px; border-radius: 12px; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.4); color: #10b981; font-weight: 700;">ONLINE NOW</span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB CONTENT 3: PROJECTS MANAGER -->
-        <div id="tab-content-projects" style="display: none;" class="font-mono">
-          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px;">
-            <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--color-starlight-white); margin-bottom: 16px;">
-              📁 Active Portfolio Projects CMS
-            </h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(16,185,129,0.3); border-radius: 14px; padding: 16px; cursor: pointer;" onclick="window.open('https://anuragsahu.com/AI-FINANCE-CONTROLLER', '_blank')">
-                <div style="color: var(--color-nebula-cyan); font-size: 0.7rem; font-weight: 700; margin-bottom: 4px;">PROJECT 01 • AUTONOMOUS AI & FINTECH</div>
-                <h3 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">AI Finance Controller</h3>
-                <p style="color: var(--color-muted-text); font-size: 0.75rem; margin-bottom: 12px;">Enterprise multi-source reconciliation, tax intelligence, anomaly detection 2.0 & Finance Copilot.</p>
-                <span style="padding: 2px 8px; border-radius: 10px; background: rgba(16,185,129,0.2); color: #10b981; font-size: 0.7rem; font-weight: 700;">🟢 Completed</span>
-              </div>
-              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(245,158,11,0.3); border-radius: 14px; padding: 16px;">
-                <div style="color: #f59e0b; font-size: 0.7rem; font-weight: 700; margin-bottom: 4px;">PROJECT 02 • ENTERPRISE SYSTEM</div>
-                <h3 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Restaurant Management System</h3>
-                <p style="color: var(--color-muted-text); font-size: 0.75rem; margin-bottom: 12px;">Multi-tenant POS, kitchen order display, and billing engine.</p>
-                <span style="padding: 2px 8px; border-radius: 10px; background: rgba(245,158,11,0.2); color: #f59e0b; font-size: 0.7rem; font-weight: 700;">🟡 Coming Soon</span>
-              </div>
-              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(245,158,11,0.3); border-radius: 14px; padding: 16px;">
-                <div style="color: #f59e0b; font-size: 0.7rem; font-weight: 700; margin-bottom: 4px;">PROJECT 03 • ACADEMIC ERP</div>
-                <h3 style="font-size: 1rem; color: var(--color-starlight-white); margin-bottom: 8px;">Smart College ERP</h3>
-                <p style="color: var(--color-muted-text); font-size: 0.75rem; margin-bottom: 12px;">Student attendance, result publishing & fee collection portal.</p>
-                <span style="padding: 2px 8px; border-radius: 10px; background: rgba(245,158,11,0.2); color: #f59e0b; font-size: 0.7rem; font-weight: 700;">🟡 Coming Soon</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB CONTENT 4: RECRUITER MESSAGES -->
-        <div id="tab-content-messages" style="display: none;" class="font-mono">
-          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px;">
-            <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--color-starlight-white); margin-bottom: 16px;">
-              📬 Recruiter Direct Messages (MongoDB Stored)
-            </h3>
-            <div style="overflow-x: auto;">
-              <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
-                <thead>
-                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--color-muted-text);">
-                    <th style="padding: 10px;">SENDER</th>
-                    <th style="padding: 10px;">COMPANY</th>
-                    <th style="padding: 10px;">SUBJECT</th>
-                    <th style="padding: 10px;">STATUS</th>
-                    <th style="padding: 10px; text-align: right;">ACTION</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-messages-table-body">
-                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 12px; font-weight: 700; color: var(--color-starlight-white);">Sarah Jenkins<br><span style="font-size:0.7rem; color: var(--color-muted-text);">sarah@stripe.com</span></td>
-                    <td style="padding: 12px; color: var(--color-muted-text);">Stripe</td>
-                    <td style="padding: 12px; color: var(--color-starlight-white);">Summer 2026 SWE Internship Opportunity</td>
-                    <td style="padding: 12px;"><span style="padding: 2px 8px; border-radius: 12px; background: rgba(6,182,212,0.2); border: 1px solid rgba(6,182,212,0.4); color: var(--color-nebula-cyan); font-weight: 700;">UNREAD</span></td>
-                    <td style="padding: 12px; text-align: right;"><a href="mailto:sarah@stripe.com?subject=Re: Internship Inquiry" class="btn-primary" style="padding: 4px 10px; font-size: 0.7rem;">Reply</a></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB CONTENT 5: SECURITY AUDIT LOGS -->
-        <div id="tab-content-logs" style="display: none;" class="font-mono">
-          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px;">
-            <h3 style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--color-starlight-white); margin-bottom: 16px;">
-              🛡️ Administrative Security & Action Logs
-            </h3>
-            <div style="overflow-x: auto;">
-              <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
-                <thead>
-                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--color-muted-text);">
-                    <th style="padding: 10px;">ACTION</th>
-                    <th style="padding: 10px;">TARGET</th>
-                    <th style="padding: 10px;">IP ADDRESS</th>
-                    <th style="padding: 10px;">TIMESTAMP</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-logs-table-body">
-                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 12px; font-weight: 700; color: var(--color-nebula-cyan);">ADMIN_LOGIN_SUCCESS</td>
-                    <td style="padding: 12px; color: var(--color-muted-text);">User (anurag@admin.com)</td>
-                    <td style="padding: 12px; color: var(--color-muted-text);">127.0.0.1</td>
-                    <td style="padding: 12px; color: var(--color-muted-text);">Live Active Session</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-
   <!-- TOAST NOTIFICATION -->
   <div id="toast" role="status" aria-live="polite">✓ COPIED TO CLIPBOARD</div>
 
@@ -1496,25 +1217,24 @@
     initIcons();
 
     // Direct Admin Modal Trigger Handler
+    // Direct Admin Trigger Handler: Redirects to secure air-gapped /admin page
     const adminBtn = document.getElementById('btn-admin-trigger');
-    const adminModal = document.getElementById('admin-modal');
-    const adminCloseBtn = document.getElementById('admin-close-btn');
-
-    if (adminBtn && adminModal) {
-      adminBtn.addEventListener('click', () => {
-        adminModal.classList.add('active');
-      });
-    }
-    if (adminCloseBtn && adminModal) {
-      adminCloseBtn.addEventListener('click', () => {
-        adminModal.classList.remove('active');
+    if (adminBtn) {
+      adminBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = '/admin';
       });
     }
 
-    // Auto open if URL has #admin
+    // Auto redirect if URL has #admin
     if (window.location.hash === '#admin') {
-      if (adminModal) adminModal.classList.add('active');
+      window.location.href = '/admin';
     }
+    window.addEventListener('hashchange', () => {
+      if (window.location.hash === '#admin') {
+        window.location.href = '/admin';
+      }
+    });
   </script>
 
   <!-- 3D ROYAL GOLD PARTICLE CANVAS SYSTEM (Three.js) -->

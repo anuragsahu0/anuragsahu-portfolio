@@ -341,192 +341,27 @@ function copyEmail() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 4. Admin Control Center Modal & Login Logic                                */
+/* 4. Admin Routing & Air-Gapped Console Redirection                          */
 /* -------------------------------------------------------------------------- */
 function initAdminModal() {
-  const modal = document.getElementById('admin-modal');
   const openBtns = document.querySelectorAll('#btn-admin-trigger, .btn-admin-trigger');
-  const closeBtns = document.querySelectorAll('#admin-close-btn, #admin-login-close-btn');
-  const logoutBtn = document.getElementById('admin-logout-btn');
-
-  const loginView = document.getElementById('admin-login-view');
-  const dashboardView = document.getElementById('admin-dashboard-view');
-  const loginForm = document.getElementById('admin-login-form');
-  const loginError = document.getElementById('admin-login-error');
-
-  if (!modal) return;
-
-  function updateView() {
-    const token = localStorage.getItem('ag_admin_token');
-    if (token) {
-      if (loginView) loginView.style.display = 'none';
-      if (dashboardView) dashboardView.style.display = 'block';
-      fetchAdminStats();
-    } else {
-      if (loginView) loginView.style.display = 'block';
-      if (dashboardView) dashboardView.style.display = 'none';
-    }
-  }
-
-  function toggleModal(show) {
-    if (show) {
-      updateView();
-      modal.classList.add('open');
-      modal.classList.add('active');
-    } else {
-      modal.classList.remove('open');
-      modal.classList.remove('active');
-      if (window.location.hash === '#admin') {
-        history.pushState('', document.title, window.location.pathname + window.location.search);
-      }
-    }
-  }
-
   openBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      toggleModal(true);
+      window.location.href = '/admin';
     });
   });
 
-  closeBtns.forEach((btn) => {
-    btn.addEventListener('click', () => toggleModal(false));
-  });
-
-  if (modal) {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) toggleModal(false);
-    });
-  }
-
+  // If #admin hash is accessed, redirect to dedicated air-gapped /admin portal
   if (window.location.hash === '#admin') {
-    toggleModal(true);
+    window.location.href = '/admin';
   }
 
   window.addEventListener('hashchange', () => {
     if (window.location.hash === '#admin') {
-      toggleModal(true);
+      window.location.href = '/admin';
     }
   });
-
-  // 1-Click Fast Admin Login
-  const quickLoginBtn = document.getElementById('btn-quick-admin-login');
-  if (quickLoginBtn) {
-    quickLoginBtn.addEventListener('click', () => {
-      window.location.href = 'admin.html';
-    });
-  }
-
-  // Handle Login Form Submit (Redirects to Air-Gapped Zero-Trust Admin Portal)
-  if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      window.location.href = 'admin.html';
-    });
-  }
-
-  // Tab Navigation Switching
-  const tabs = [
-    { btn: 'tab-btn-kpi', content: 'tab-content-kpi' },
-    { btn: 'tab-btn-live', content: 'tab-content-live' },
-    { btn: 'tab-btn-projects', content: 'tab-content-projects' },
-    { btn: 'tab-btn-messages', content: 'tab-content-messages' },
-    { btn: 'tab-btn-logs', content: 'tab-content-logs' },
-  ];
-
-  tabs.forEach((t) => {
-    const btn = document.getElementById(t.btn);
-    if (btn) {
-      btn.addEventListener('click', () => {
-        tabs.forEach((o) => {
-          const ob = document.getElementById(o.btn);
-          const oc = document.getElementById(o.content);
-          if (ob) ob.className = 'btn-secondary';
-          if (oc) oc.style.display = 'none';
-        });
-        btn.className = 'btn-primary';
-        const targetContent = document.getElementById(t.content);
-        if (targetContent) targetContent.style.display = 'block';
-      });
-    }
-  });
-
-  // Export JSON & CSV Handlers
-  const exportJsonBtn = document.getElementById('btn-export-json');
-  if (exportJsonBtn) {
-    exportJsonBtn.addEventListener('click', () => {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
-        dashboard: "Anurag's Portfolio Dashboard",
-        timestamp: new Date().toISOString(),
-        stats: { totalVisitors: 1, resumeDownloads: 0, activeProjects: 3 }
-      }, null, 2));
-      const a = document.createElement('a');
-      a.href = dataStr;
-      a.download = `anurag_portfolio_backup_${Date.now()}.json`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      showToast('✓ FULL DATA EXPORTED (JSON)');
-    });
-  }
-
-  const exportCsvBtn = document.getElementById('btn-export-csv');
-  if (exportCsvBtn) {
-    exportCsvBtn.addEventListener('click', () => {
-      const csvContent = "data:text/csv;charset=utf-8,Sender,Company,Subject,Status\n\"Sarah Jenkins\",\"Stripe\",\"Summer 2026 SWE Internship Inquiry\",\"UNREAD\"\n\"Alex Vance\",\"Vercel\",\"Full-Stack Developer Role\",\"READ\"\n";
-      const encodedUri = encodeURI(csvContent);
-      const a = document.createElement('a');
-      a.href = encodedUri;
-      a.download = `recruiter_leads_${Date.now()}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      showToast('✓ RECRUITER LEADS EXPORTED (CSV)');
-    });
-  }
-
-  // Handle Logout
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('ag_admin_token');
-      showToast('Logged out of Admin Console');
-      updateView();
-    });
-  }
-
-  async function fetchAdminStats() {
-    const token = localStorage.getItem('ag_admin_token');
-    if (!token) return;
-
-    try {
-      const res = await fetch(`${API_BASE}/admin/dashboard`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (data.success && data.stats) {
-        const s = data.stats;
-        if (document.getElementById('kpi-visitors')) document.getElementById('kpi-visitors').textContent = s.totalVisitors || 1;
-        if (document.getElementById('kpi-resume')) document.getElementById('kpi-resume').textContent = s.resumeDownloads || 0;
-        if (document.getElementById('kpi-projects')) document.getElementById('kpi-projects').textContent = 3;
-        if (document.getElementById('kpi-unread')) document.getElementById('kpi-unread').textContent = s.unreadContacts || 0;
-        if (document.getElementById('kpi-github')) document.getElementById('kpi-github').textContent = s.githubClicks || 0;
-        if (document.getElementById('kpi-linkedin')) document.getElementById('kpi-linkedin').textContent = s.linkedinClicks || 0;
-
-        // Render Recent Audit Logs Table
-        if (data.recentActivityLogs && document.getElementById('admin-logs-table-body')) {
-          const logsHtml = data.recentActivityLogs.map(l => `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-              <td style="padding: 12px; font-weight: 700; color: var(--color-nebula-cyan);">${l.action}</td>
-              <td style="padding: 12px; color: var(--color-muted-text);">${l.targetCollection || 'User'}</td>
-              <td style="padding: 12px; color: var(--color-muted-text);">${l.ipAddress}</td>
-              <td style="padding: 12px; color: var(--color-muted-text);">${new Date(l.createdAt).toLocaleTimeString()}</td>
-            </tr>
-          `).join('');
-          document.getElementById('admin-logs-table-body').innerHTML = logsHtml;
-        }
-      }
-    } catch (e) {}
-  }
 }
 
 async function syncProjectStatuses() {
