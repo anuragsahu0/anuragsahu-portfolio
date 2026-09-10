@@ -1,0 +1,49 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/sw.js",
+      "headers": {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+      },
+      "dest": "/sw.js"
+    },
+    { "src": "/AI-FINANCE-CONTROLLER", "dest": "/AI-FINANCE-CONTROLLER.html" },
+    { "src": "/ai-finance-controller", "dest": "/AI-FINANCE-CONTROLLER.html" },
+    { "src": "/AI-FINANCE%20CONTROLLER", "dest": "/AI-FINANCE-CONTROLLER.html" },
+    { "src": "/api/(.*)", "dest": "/api/index.js" },
+    {
+      "src": "/admin(.*)",
+      "headers": {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0"
+      },
+      "dest": "/admin.html"
+    },
+    {
+      "src": "/mobile-admin(.*)",
+      "headers": {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0"
+      },
+      "dest": "/admin.html"
+    },
+    { "src": "/mobile", "dest": "/mobile.html" },
+    { "src": "/mobile.html", "dest": "/mobile.html" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}

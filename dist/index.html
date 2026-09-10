@@ -29,8 +29,10 @@
   <!-- Preload Critical Hero Image & Font Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="/assets/anurag-portrait-sm-C-W7-uIh.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
-  <link rel="preload" as="image" href="/assets/anurag-portrait-DfFGw3Wq.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/anurag-portrait-sm.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/anurag-portrait.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
+  <link rel="preload" as="style" href="styles.css?v=20260830_fast">
+  <link rel="stylesheet" href="styles.css?v=20260830_fast">
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
   <noscript>
@@ -84,8 +86,6 @@
       pointer-events: none !important;
     }
   </style>
-  <script type="module" crossorigin src="/assets/main-Dd0c0rzE.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-CDMytokG.css">
 </head>
 <body>
   <!-- Reset scroll to top immediately on load to prevent stuck gaps -->
@@ -448,9 +448,9 @@
             
             <div class="portrait-inner-frame" style="width: 100%; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #070400;">
               <picture>
-                <source srcSet="/assets/anurag-portrait-sm-C-W7-uIh.webp" media="(max-width: 768px)" type="image/webp">
-                <source srcSet="/assets/anurag-portrait-DfFGw3Wq.webp" type="image/webp">
-                <img src="/assets/anurag-portrait-DLHbwdZ1.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" fetchpriority="high" loading="eager" decoding="async" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;">
+                <source srcSet="assets/anurag-portrait-sm.webp" media="(max-width: 768px)" type="image/webp">
+                <source srcSet="assets/anurag-portrait.webp" type="image/webp">
+                <img src="assets/anurag-portrait.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" fetchpriority="high" loading="eager" decoding="async" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;">
               </picture>
             </div>
 
@@ -1097,8 +1097,8 @@
           <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
             <div style="width: 64px; height: 75px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.4); padding: 2px; overflow: hidden; flex-shrink: 0;">
               <picture>
-                <source srcSet="/assets/anurag-portrait-sm-C-W7-uIh.webp" type="image/webp">
-                <img src="/assets/anurag-portrait-sm-DT872AeT.jpg" alt="Professional portrait of Anurag Sahu." width="64" height="75" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                <source srcSet="assets/anurag-portrait-sm.webp" type="image/webp">
+                <img src="assets/anurag-portrait-sm.jpg" alt="Professional portrait of Anurag Sahu." width="64" height="75" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
               </picture>
             </div>
             <div>
@@ -1203,6 +1203,7 @@
     </div>
   </footer>
 
+  <script src="app.js?v=20260829_p2_completed" type="module"></script>
   <script>
     function initIcons() {
       if (window.lucide) {
