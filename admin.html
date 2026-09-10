@@ -70,6 +70,53 @@
     /* Hide scrollbar for tabs navigation */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    /* CMS Form Styles */
+    .cms-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .cms-input {
+      width: 100%;
+      background: #070B16;
+      border: 1px solid #141E33;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.15s;
+      display: block;
+    }
+    .cms-input:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(6,182,212,0.1);
+    }
+    .cms-input::placeholder { color: #334155; }
+    /* Toast */
+    #cms-toast {
+      position: fixed; bottom: 80px; right: 20px; z-index: 9999;
+      padding: 10px 18px; border-radius: 8px; font-size: 12px; font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+    #cms-toast.toast-success { background: #064e3b; color: #6ee7b7; border: 1px solid #065f46; }
+    #cms-toast.toast-error { background: #450a0a; color: #fca5a5; border: 1px solid #7f1d1d; }
+    #cms-toast.toast-hidden { opacity: 0; transform: translateY(8px); }
+    /* CMS Modal overlay */
+    #cms-modal { position: fixed; inset: 0; z-index: 8000; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; padding: 16px; }
+    #cms-modal.open { display: flex; }
+    #cms-modal-box { background: #070B16; border: 1px solid #141E33; border-radius: 16px; padding: 28px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; }
+    /* Delete confirm modal */
+    #confirm-modal { position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; }
+    #confirm-modal.open { display: flex; }
   </style>
 </head>
 <body class="bg-brand-bg text-slate-100 antialiased selection:bg-cyan-500/20 selection:text-cyan-300">
@@ -229,6 +276,10 @@
               <i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-500"></i>
               <span>About</span>
             </button>
+            <button onclick="switchTab('hero')" class="sidebar-item w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors text-slate-400 hover:text-slate-200 hover:bg-slate-800/30" data-tab="hero">
+              <i data-lucide="star" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Hero Section</span>
+            </button>
             <button onclick="switchTab('projects')" class="sidebar-item w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors text-slate-400 hover:text-slate-200 hover:bg-slate-800/30" data-tab="projects">
               <i data-lucide="briefcase" class="w-3.5 h-3.5 text-slate-500"></i>
               <span>Projects</span>
@@ -252,6 +303,23 @@
             <button onclick="switchTab('roadmap')" class="sidebar-item w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors text-slate-400 hover:text-slate-200 hover:bg-slate-800/30" data-tab="roadmap">
               <i data-lucide="git-branch" class="w-3.5 h-3.5 text-slate-500"></i>
               <span>Roadmap</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Site Config -->
+        <div class="pt-2">
+          <div class="px-3 py-1 text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+            Site Config
+          </div>
+          <div class="space-y-0.5 mt-1">
+            <button onclick="switchTab('navigation')" class="sidebar-item w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors text-slate-400 hover:text-slate-200 hover:bg-slate-800/30" data-tab="navigation">
+              <i data-lucide="menu" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Navigation</span>
+            </button>
+            <button onclick="switchTab('social-links')" class="sidebar-item w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors text-slate-400 hover:text-slate-200 hover:bg-slate-800/30" data-tab="social-links">
+              <i data-lucide="share-2" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Social Links</span>
             </button>
           </div>
         </div>
@@ -468,27 +536,246 @@
           </div>
         </div>
 
-        <!-- ─── 3. GENERIC CMS MODULE PLACEHOLDER (For other tabs) ─── -->
-        <div id="tab-placeholder" class="tab-pane hidden space-y-6">
-          <div class="pb-6 border-b border-brand-border">
-            <h1 id="placeholder-title" class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">
-              Module Initialized
-            </h1>
-            <p id="placeholder-desc" class="text-xs text-slate-400 mt-1">
-              Clean Phase 0 administration schema is in place. Real database binding arrives in Phase 01.
-            </p>
-          </div>
-
-          <div class="p-8 sm:p-12 border border-dashed border-brand-border rounded-2xl bg-brand-sidebar/50 flex flex-col items-center justify-center text-center">
-            <div class="w-12 h-12 rounded-xl bg-slate-900 border border-brand-border flex items-center justify-center text-cyan-400 mb-4">
-              <i data-lucide="layers" class="w-6 h-6"></i>
+        <!-- ─── 3. PROJECTS TAB ─── -->
+        <div id="tab-projects" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Projects</h1>
+              <p class="text-xs text-slate-400 mt-1">Manage portfolio projects — create, edit, reorder, publish/unpublish, and delete.</p>
             </div>
-            <h3 class="text-sm font-semibold text-slate-200" id="placeholder-sub">Clean Architecture Ready</h3>
-            <p class="text-xs text-slate-500 mt-1 max-w-sm leading-relaxed">
-              This module is completely decoupled from legacy code. Full CMS CRUD endpoints will bind seamlessly in Phase 01.
-            </p>
+            <button onclick="openProjectModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i><span>New Project</span>
+            </button>
+          </div>
+          <div id="projects-container" class="space-y-3">
+            <div class="text-center py-12 text-xs text-slate-500 font-mono">Loading projects...</div>
           </div>
         </div>
+
+        <!-- ─── 4. SKILLS TAB ─── -->
+        <div id="tab-skills" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Skills</h1>
+              <p class="text-xs text-slate-400 mt-1">Manage technical skills — add, edit, reorder, and toggle visibility.</p>
+            </div>
+            <button onclick="openSkillModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i><span>Add Skill</span>
+            </button>
+          </div>
+          <div id="skills-container" class="space-y-3">
+            <div class="text-center py-12 text-xs text-slate-500 font-mono">Loading skills...</div>
+          </div>
+        </div>
+
+        <!-- ─── 5. EXPERIENCE TAB ─── -->
+        <div id="tab-experience" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Experience</h1>
+              <p class="text-xs text-slate-400 mt-1">Manage work experience entries — add, edit, reorder, and delete.</p>
+            </div>
+            <button onclick="openExperienceModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i><span>Add Entry</span>
+            </button>
+          </div>
+          <div id="experience-container" class="space-y-3">
+            <div class="text-center py-12 text-xs text-slate-500 font-mono">Loading experience...</div>
+          </div>
+        </div>
+
+        <!-- ─── 6. EDUCATION TAB ─── -->
+        <div id="tab-education" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Education</h1>
+              <p class="text-xs text-slate-400 mt-1">Manage education records — add, edit, reorder, and delete.</p>
+            </div>
+            <button onclick="openEducationModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i><span>Add Education</span>
+            </button>
+          </div>
+          <div id="education-container" class="space-y-3">
+            <div class="text-center py-12 text-xs text-slate-500 font-mono">Loading education...</div>
+          </div>
+        </div>
+
+        <!-- ─── 7. CERTIFICATES TAB ─── -->
+        <div id="tab-certificates" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Certificates</h1>
+              <p class="text-xs text-slate-400 mt-1">Manage certifications — add, edit, reorder, and delete.</p>
+            </div>
+            <button onclick="openCertificateModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i><span>Add Certificate</span>
+            </button>
+          </div>
+          <div id="certificates-container" class="space-y-3">
+            <div class="text-center py-12 text-xs text-slate-500 font-mono">Loading certificates...</div>
+          </div>
+        </div>
+
+        <!-- ─── 8. ROADMAP TAB ─── -->
+        <div id="tab-roadmap" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Roadmap</h1>
+              <p class="text-xs text-slate-400 mt-1">Manage project roadmap entries — status, progress, and ordering.</p>
+            </div>
+            <button onclick="openRoadmapModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i><span>Add Roadmap Item</span>
+            </button>
+          </div>
+          <div id="roadmap-container" class="space-y-3">
+            <div class="text-center py-12 text-xs text-slate-500 font-mono">Loading roadmap...</div>
+          </div>
+        </div>
+
+        <!-- ─── 9. PROFILE TAB ─── -->
+        <div id="tab-profile" class="tab-pane hidden space-y-6">
+          <div class="pb-6 border-b border-brand-border">
+            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Profile</h1>
+            <p class="text-xs text-slate-400 mt-1">Edit your public profile details — name, headline, location, links.</p>
+          </div>
+          <form id="profile-form" onsubmit="saveProfile(event)" class="space-y-4 max-w-2xl">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div><label class="cms-label">Full Name</label><input type="text" name="fullName" class="cms-input" placeholder="Anurag Sahu"></div>
+              <div><label class="cms-label">Professional Headline</label><input type="text" name="professionalHeadline" class="cms-input" placeholder="Computer Science Engineer..."></div>
+              <div><label class="cms-label">Email</label><input type="email" name="email" class="cms-input" placeholder="you@example.com"></div>
+              <div><label class="cms-label">Location</label><input type="text" name="location" class="cms-input" placeholder="India"></div>
+              <div><label class="cms-label">GitHub URL</label><input type="url" name="github" class="cms-input" placeholder="https://github.com/..."></div>
+              <div><label class="cms-label">LinkedIn URL</label><input type="url" name="linkedin" class="cms-input" placeholder="https://linkedin.com/..."></div>
+              <div><label class="cms-label">Availability Status</label><input type="text" name="availability" class="cms-input" placeholder="Open to Opportunities"></div>
+              <div><label class="cms-label">Current Focus</label><input type="text" name="currentFocus" class="cms-input" placeholder="Full-Stack Development..."></div>
+              <div><label class="cms-label">Portfolio URL</label><input type="url" name="portfolioUrl" class="cms-input" placeholder="https://anuragsahu.com"></div>
+              <div><label class="cms-label">Resume URL</label><input type="url" name="resumeUrl" class="cms-input" placeholder="/assets/resume.pdf"></div>
+            </div>
+            <div><label class="cms-label">Short Introduction</label><textarea name="shortIntroduction" class="cms-input h-20 resize-none" placeholder="Brief intro..."></textarea></div>
+            <div class="flex gap-3 pt-2">
+              <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2">
+                <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save Profile</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ─── 10. ABOUT TAB ─── -->
+        <div id="tab-about" class="tab-pane hidden space-y-6">
+          <div class="pb-6 border-b border-brand-border">
+            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">About</h1>
+            <p class="text-xs text-slate-400 mt-1">Edit your About section content.</p>
+          </div>
+          <form id="about-form" onsubmit="saveAbout(event)" class="space-y-4 max-w-2xl">
+            <div><label class="cms-label">Title</label><input type="text" name="title" class="cms-input" placeholder="About Me"></div>
+            <div><label class="cms-label">Description</label><textarea name="description" class="cms-input h-24 resize-none" placeholder="Short description..."></textarea></div>
+            <div class="flex gap-3 pt-2">
+              <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2">
+                <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save About</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ─── 11. HERO TAB ─── -->
+        <div id="tab-hero" class="tab-pane hidden space-y-6">
+          <div class="pb-6 border-b border-brand-border">
+            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Hero Section</h1>
+            <p class="text-xs text-slate-400 mt-1">Edit the main hero heading, CTA buttons, availability badge, and profile image.</p>
+          </div>
+          <form id="hero-form" onsubmit="saveHero(event)" class="space-y-4 max-w-2xl">
+            <div><label class="cms-label">Main Heading</label><input type="text" name="mainHeading" class="cms-input" placeholder="ENGINEERING INTELLIGENT SYSTEMS"></div>
+            <div><label class="cms-label">Highlighted Text</label><input type="text" name="highlightedText" class="cms-input" placeholder="FROM ZERO TO PRODUCTION"></div>
+            <div><label class="cms-label">Subtitle</label><input type="text" name="subtitle" class="cms-input" placeholder="Anurag Sahu — Computer Science Engineer..."></div>
+            <div><label class="cms-label">Description</label><textarea name="description" class="cms-input h-20 resize-none" placeholder="Short compelling bio..."></textarea></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div><label class="cms-label">Primary CTA Label</label><input type="text" name="primaryCtaLabel" class="cms-input" placeholder="Explore Flagship AI System"></div>
+              <div><label class="cms-label">Primary CTA URL</label><input type="text" name="primaryCtaUrl" class="cms-input" placeholder="/AI-FINANCE-CONTROLLER"></div>
+              <div><label class="cms-label">Secondary CTA Label</label><input type="text" name="secondaryCtaLabel" class="cms-input" placeholder="Download Resume"></div>
+              <div><label class="cms-label">Secondary CTA URL</label><input type="text" name="secondaryCtaUrl" class="cms-input" placeholder="/assets/resume.pdf"></div>
+            </div>
+            <div><label class="cms-label">Availability Badge</label><input type="text" name="availabilityBadge" class="cms-input" placeholder="OPEN TO INTERNSHIP OPPORTUNITIES"></div>
+            <div><label class="cms-label">Supporting Text</label><input type="text" name="supportingText" class="cms-input" placeholder="B.Tech CSE (AI & ML) • 2022–2026"></div>
+            <div class="flex gap-3 pt-2">
+              <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2">
+                <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save Hero</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ─── 12. NAVIGATION TAB ─── -->
+        <div id="tab-navigation" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Navigation</h1>
+              <p class="text-xs text-slate-400 mt-1">Manage nav links — add, edit, enable/disable, and reorder.</p>
+            </div>
+            <button onclick="openNavModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i><span>Add Nav Link</span>
+            </button>
+          </div>
+          <div id="navigation-container" class="space-y-3">
+            <div class="text-center py-12 text-xs text-slate-500 font-mono">Loading navigation...</div>
+          </div>
+        </div>
+
+        <!-- ─── 13. SOCIAL LINKS TAB ─── -->
+        <div id="tab-social-links" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Social Links</h1>
+              <p class="text-xs text-slate-400 mt-1">Manage social media and contact links.</p>
+            </div>
+            <button onclick="openSocialModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i><span>Add Link</span>
+            </button>
+          </div>
+          <div id="social-links-container" class="space-y-3">
+            <div class="text-center py-12 text-xs text-slate-500 font-mono">Loading social links...</div>
+          </div>
+        </div>
+
+        <!-- ─── 14. ANALYTICS TAB ─── -->
+        <div id="tab-analytics" class="tab-pane hidden space-y-6">
+          <div class="pb-6 border-b border-brand-border">
+            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Analytics</h1>
+            <p class="text-xs text-slate-400 mt-1">Live telemetry and site performance metrics.</p>
+          </div>
+          <div id="analytics-container" class="text-center py-12 text-xs text-slate-500 font-mono">Loading analytics...</div>
+        </div>
+
+        <!-- ─── 15. MEDIA TAB ─── -->
+        <div id="tab-media" class="tab-pane hidden space-y-6">
+          <div class="pb-6 border-b border-brand-border">
+            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Media Library</h1>
+            <p class="text-xs text-slate-400 mt-1">Manage uploaded media assets — images, files, and references.</p>
+          </div>
+          <div id="media-container" class="text-center py-12 text-xs text-slate-500 font-mono">Loading media...</div>
+        </div>
+
+        <!-- ─── 16. SETTINGS TAB ─── -->
+        <div id="tab-settings" class="tab-pane hidden space-y-6">
+          <div class="pb-6 border-b border-brand-border">
+            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Site Settings</h1>
+            <p class="text-xs text-slate-400 mt-1">Manage SEO, site title, meta descriptions, and social preview.</p>
+          </div>
+          <form id="settings-form" onsubmit="saveSettings(event)" class="space-y-4 max-w-2xl">
+            <div><label class="cms-label">Site Title</label><input type="text" name="siteTitle" class="cms-input" placeholder="Anurag Sahu — Portfolio"></div>
+            <div><label class="cms-label">Meta Description</label><textarea name="metaDescription" class="cms-input h-20 resize-none" placeholder="Short site description for SEO..."></textarea></div>
+            <div><label class="cms-label">OG Title</label><input type="text" name="ogTitle" class="cms-input" placeholder="Anurag Sahu"></div>
+            <div><label class="cms-label">OG Description</label><input type="text" name="ogDescription" class="cms-input" placeholder="Explore engineering projects..."></div>
+            <div><label class="cms-label">Footer Text</label><input type="text" name="footerText" class="cms-input" placeholder="© 2026 Anurag Sahu."></div>
+            <div class="flex gap-3 pt-2">
+              <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2">
+                <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save Settings</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ─── GENERIC FALLBACK (unused) ─── -->
+        <div id="tab-placeholder" class="tab-pane hidden"></div>
 
       </main>
 
@@ -754,12 +1041,50 @@
       } else if (tabId === 'messages') {
         document.getElementById('tab-messages').classList.remove('hidden');
         loadMessages();
+      } else if (tabId === 'projects') {
+        document.getElementById('tab-projects').classList.remove('hidden');
+        loadProjects();
+      } else if (tabId === 'skills') {
+        document.getElementById('tab-skills').classList.remove('hidden');
+        loadSkills();
+      } else if (tabId === 'experience') {
+        document.getElementById('tab-experience').classList.remove('hidden');
+        loadExperience();
+      } else if (tabId === 'education') {
+        document.getElementById('tab-education').classList.remove('hidden');
+        loadEducation();
+      } else if (tabId === 'certificates') {
+        document.getElementById('tab-certificates').classList.remove('hidden');
+        loadCertificates();
+      } else if (tabId === 'roadmap') {
+        document.getElementById('tab-roadmap').classList.remove('hidden');
+        loadRoadmap();
+      } else if (tabId === 'profile') {
+        document.getElementById('tab-profile').classList.remove('hidden');
+        loadProfile();
+      } else if (tabId === 'about') {
+        document.getElementById('tab-about').classList.remove('hidden');
+        loadAbout();
+      } else if (tabId === 'hero') {
+        document.getElementById('tab-hero').classList.remove('hidden');
+        loadHero();
+      } else if (tabId === 'navigation') {
+        document.getElementById('tab-navigation').classList.remove('hidden');
+        loadNavigation();
+      } else if (tabId === 'social-links') {
+        document.getElementById('tab-social-links').classList.remove('hidden');
+        loadSocialLinks();
+      } else if (tabId === 'settings') {
+        document.getElementById('tab-settings').classList.remove('hidden');
+        loadSettings();
+      } else if (tabId === 'media') {
+        document.getElementById('tab-media').classList.remove('hidden');
+        loadMedia();
+      } else if (tabId === 'analytics') {
+        document.getElementById('tab-analytics').classList.remove('hidden');
+        loadAnalytics();
       } else {
-        const pTab = document.getElementById('tab-placeholder');
-        pTab.classList.remove('hidden');
-        document.getElementById('placeholder-title').textContent = `${tabId.toUpperCase()} CMS Initialized`;
-        document.getElementById('placeholder-desc').textContent = `Manage ${tabId} records directly from this console in Phase 01.`;
-        document.getElementById('placeholder-sub').textContent = `${tabId.charAt(0).toUpperCase() + tabId.slice(1)} Service Layer Ready`;
+        document.getElementById('tab-placeholder').classList.remove('hidden');
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -924,6 +1249,716 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
     }
+
+    // ─── Toast Notifications ──────────────────────────────────
+    function showToast(msg, type = 'success') {
+      let el = document.getElementById('cms-toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = `toast-${type}`;
+      el.classList.remove('toast-hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => el.classList.add('toast-hidden'), 3500);
+    }
+
+    // ─── Generic CRUD API helper ──────────────────────────────
+    async function cmsApi(method, url, body) {
+      const opts = { method, credentials: 'include', headers: { 'Content-Type': 'application/json' } };
+      if (body) opts.body = JSON.stringify(body);
+      const res = await fetch(url, opts);
+      if (res.status === 401) { handleLogout(); throw new Error('Session expired'); }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || data.message || `HTTP ${res.status}`);
+      return data;
+    }
+
+    // ─── Delete Confirmation ──────────────────────────────────
+    let _deleteCallback = null;
+    function confirmDelete(msg, cb) {
+      _deleteCallback = cb;
+      document.getElementById('confirm-msg').textContent = msg;
+      document.getElementById('confirm-modal').classList.add('open');
+    }
+    function closeConfirmModal() {
+      document.getElementById('confirm-modal').classList.remove('open');
+      _deleteCallback = null;
+    }
+    function proceedDelete() {
+      closeConfirmModal();
+      if (_deleteCallback) _deleteCallback();
+    }
+
+    // ─── Generic Modal ────────────────────────────────────────
+    let _currentModal = null;
+    function openModal(title, fieldsHtml, onSubmitFn) {
+      _currentModal = onSubmitFn;
+      const box = document.getElementById('cms-modal-box');
+      box.innerHTML = `
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-sm font-bold text-slate-100">${escapeHtml(title)}</h3>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-slate-200 text-lg leading-none">&times;</button>
+        </div>
+        <form id="cms-modal-form" onsubmit="handleModalSubmit(event)" class="space-y-4">
+          ${fieldsHtml}
+          <div class="flex gap-3 pt-2">
+            <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">Save</button>
+            <button type="button" onclick="closeModal()" class="px-5 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">Cancel</button>
+          </div>
+        </form>
+      `;
+      document.getElementById('cms-modal').classList.add('open');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+    function closeModal() { document.getElementById('cms-modal').classList.remove('open'); }
+    async function handleModalSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      if (_currentModal) {
+        try {
+          await _currentModal(data);
+          closeModal();
+        } catch (err) { showToast(err.message, 'error'); }
+      }
+    }
+
+    function fieldHtml(name, label, type = 'text', value = '', required = false) {
+      const req = required ? 'required' : '';
+      if (type === 'textarea') {
+        return `<div><label class="cms-label">${label}</label><textarea name="${name}" class="cms-input h-20 resize-none" ${req}>${escapeHtml(value)}</textarea></div>`;
+      }
+      if (type === 'select') return ''; // use selectField
+      return `<div><label class="cms-label">${label}</label><input type="${type}" name="${name}" value="${escapeHtml(value)}" class="cms-input" ${req}></div>`;
+    }
+
+    function gridFields(...fields) {
+      return `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">${fields.join('')}</div>`;
+    }
+
+    // ─── PROJECTS ─────────────────────────────────────────────
+    async function loadProjects() {
+      const c = document.getElementById('projects-container');
+      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
+      try {
+        const data = await cmsApi('GET', '/api/admin/projects');
+        const projects = data.data?.projects || data.projects || [];
+        if (!projects.length) { c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No projects yet. Create one above.</p>'; return; }
+        c.innerHTML = projects.map((p, i) => `
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="flex flex-col gap-1 shrink-0">
+                ${i > 0 ? `<button onclick="moveItem('projects','up',${i},${p._id})" class="text-slate-500 hover:text-cyan-400 text-[10px]">▲</button>` : '<span class="w-4"></span>'}
+                ${i < projects.length-1 ? `<button onclick="moveItem('projects','down',${i},${p._id})" class="text-slate-500 hover:text-cyan-400 text-[10px]">▼</button>` : '<span class="w-4"></span>'}
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-sm font-semibold text-slate-100 truncate">${escapeHtml(p.title)}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${p.visibility === 'PUBLISHED' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-400'}">${p.visibility || 'DRAFT'}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-900 text-slate-400">${p.status || ''}</span>
+                </div>
+                <p class="text-[11px] text-slate-400 truncate mt-0.5">${escapeHtml(p.shortDescription || p.subtitle || '')}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="editProject('${p._id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-colors">Edit</button>
+              <button onclick="confirmDelete('Delete project &quot;${escapeHtml(p.title)}&quot;?', () => deleteItem('/api/admin/projects/${p._id}', loadProjects))" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs transition-colors">Delete</button>
+            </div>
+          </div>
+        `).join('');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
+    }
+
+    function openProjectModal(p = {}) {
+      openModal(p._id ? 'Edit Project' : 'New Project', `
+        ${gridFields(fieldHtml('title','Title','text',p.title,'true'), fieldHtml('slug','Slug','text',p.slug))}
+        ${fieldHtml('shortDescription','Short Description','textarea',p.shortDescription)}
+        ${gridFields(
+          fieldHtml('category','Category','text',p.category),
+          fieldHtml('status','Status','text',p.status || 'WORKING'),
+          `<div><label class="cms-label">Visibility</label><select name="visibility" class="cms-input"><option value="PUBLISHED" ${p.visibility==='PUBLISHED'?'selected':''}>PUBLISHED</option><option value="DRAFT" ${p.visibility==='DRAFT'||!p.visibility?'selected':''}>DRAFT</option><option value="HIDDEN" ${p.visibility==='HIDDEN'?'selected':''}>HIDDEN</option></select></div>`,
+          fieldHtml('progress','Progress %','number',p.progress ?? '')
+        )}
+        ${gridFields(fieldHtml('githubUrl','GitHub URL','url',p.githubUrl), fieldHtml('liveUrl','Live URL','url',p.liveUrl))}
+      `, async (data) => {
+        const url = p._id ? `/api/admin/projects/${p._id}` : '/api/admin/projects';
+        const method = p._id ? 'PUT' : 'POST';
+        data.description = data.shortDescription;
+        await cmsApi(method, url, data);
+        showToast(p._id ? 'Project updated!' : 'Project created!');
+        loadProjects();
+      });
+    }
+
+    async function editProject(id) {
+      try {
+        const data = await cmsApi('GET', `/api/admin/projects/${id}`);
+        const p = data.data || data;
+        openProjectModal(p);
+      } catch(e) { showToast(e.message, 'error'); }
+    }
+
+    async function deleteItem(url, reload) {
+      try {
+        await cmsApi('DELETE', url);
+        showToast('Deleted successfully.');
+        reload();
+      } catch(e) { showToast(e.message, 'error'); }
+    }
+
+    // ─── SKILLS ───────────────────────────────────────────────
+    async function loadSkills() {
+      const c = document.getElementById('skills-container');
+      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
+      try {
+        const data = await cmsApi('GET', '/api/admin/skills');
+        const skills = data.data?.skills || data.skills || [];
+        if (!skills.length) { c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No skills yet.</p>'; return; }
+        c.innerHTML = skills.map(s => `
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-sm font-semibold text-slate-100 truncate">${escapeHtml(s.name)}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-900 text-slate-400">${escapeHtml(s.category || '')}</span>
+                <span class="text-[11px] text-cyan-400 font-mono">${s.proficiency || 0}%</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono ${s.isVisible!==false ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-400'}">${s.isVisible!==false ? 'Visible' : 'Hidden'}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="editSkill('${s._id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-colors">Edit</button>
+              <button onclick="confirmDelete('Delete skill &quot;${escapeHtml(s.name)}&quot;?', () => deleteItem('/api/admin/skills/${s._id}', loadSkills))" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs transition-colors">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
+    }
+
+    function openSkillModal(s = {}) {
+      openModal(s._id ? 'Edit Skill' : 'Add Skill', `
+        ${gridFields(fieldHtml('name','Name','text',s.name,'true'), fieldHtml('category','Category','text',s.category,'true'))}
+        ${gridFields(
+          fieldHtml('proficiency','Proficiency (0-100)','number',s.proficiency ?? ''),
+          `<div><label class="cms-label">Visibility</label><select name="isVisible" class="cms-input"><option value="true" ${s.isVisible!==false?'selected':''}>Visible</option><option value="false" ${s.isVisible===false?'selected':''}>Hidden</option></select></div>`
+        )}
+        ${fieldHtml('description','Description','textarea',s.description)}
+      `, async (data) => {
+        data.isVisible = data.isVisible === 'true';
+        data.proficiency = parseInt(data.proficiency) || 0;
+        if (!data.id) data.id = s.id || data.name.toLowerCase().replace(/\s+/g,'-');
+        const url = s._id ? `/api/admin/skills/${s._id}` : '/api/admin/skills';
+        const method = s._id ? 'PUT' : 'POST';
+        await cmsApi(method, url, data);
+        showToast(s._id ? 'Skill updated!' : 'Skill created!');
+        loadSkills();
+      });
+    }
+
+    async function editSkill(id) {
+      try {
+        const data = await cmsApi('GET', `/api/admin/skills/${id}`);
+        openSkillModal(data.data || data);
+      } catch(e) { showToast(e.message, 'error'); }
+    }
+
+    // ─── EXPERIENCE ───────────────────────────────────────────
+    async function loadExperience() {
+      const c = document.getElementById('experience-container');
+      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
+      try {
+        const data = await cmsApi('GET', '/api/admin/experience');
+        const items = data.data?.experiences || data.experiences || [];
+        if (!items.length) { c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No experience entries yet.</p>'; return; }
+        c.innerHTML = items.map(e => `
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <span class="text-sm font-semibold text-slate-100">${escapeHtml(e.role || e.title || '')}</span>
+              <span class="text-xs text-slate-400 ml-2">@ ${escapeHtml(e.organization || e.company || '')}</span>
+              <p class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(e.startDate||'')} — ${escapeHtml(e.endDate || (e.isCurrent?'Present':''))}</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="editExperience('${e._id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-colors">Edit</button>
+              <button onclick="confirmDelete('Delete this experience entry?', () => deleteItem('/api/admin/experience/${e._id}', loadExperience))" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs transition-colors">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
+    }
+
+    function openExperienceModal(e = {}) {
+      openModal(e._id ? 'Edit Experience' : 'Add Experience', `
+        ${gridFields(fieldHtml('role','Role / Title','text',e.role,'true'), fieldHtml('organization','Organization','text',e.organization,'true'))}
+        ${gridFields(fieldHtml('startDate','Start Date','text',e.startDate), fieldHtml('endDate','End Date (or "Present")','text',e.endDate || (e.isCurrent?'Present':'')))}
+        ${fieldHtml('description','Description','textarea',e.description)}
+      `, async (data) => {
+        data.isCurrent = data.endDate?.toLowerCase() === 'present';
+        if (data.isCurrent) data.endDate = 'Present';
+        const url = e._id ? `/api/admin/experience/${e._id}` : '/api/admin/experience';
+        const method = e._id ? 'PUT' : 'POST';
+        await cmsApi(method, url, data);
+        showToast(e._id ? 'Experience updated!' : 'Experience created!');
+        loadExperience();
+      });
+    }
+
+    async function editExperience(id) {
+      try {
+        const data = await cmsApi('GET', `/api/admin/experience`);
+        const items = data.data?.experiences || data.experiences || [];
+        const e = items.find(x => x._id === id);
+        if (e) openExperienceModal(e);
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    // ─── EDUCATION ────────────────────────────────────────────
+    async function loadEducation() {
+      const c = document.getElementById('education-container');
+      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
+      try {
+        const data = await cmsApi('GET', '/api/admin/education');
+        const items = data.data?.education || data.education || [];
+        if (!items.length) { c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No education records yet.</p>'; return; }
+        c.innerHTML = items.map(ed => `
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <span class="text-sm font-semibold text-slate-100">${escapeHtml(ed.degree||ed.program||'')}</span>
+              <span class="text-xs text-slate-400 ml-2">@ ${escapeHtml(ed.institution||'')}</span>
+              <p class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(ed.startYear||'')} — ${escapeHtml(ed.endYear||ed.graduationYear||'')}</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="editEducation('${ed._id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-colors">Edit</button>
+              <button onclick="confirmDelete('Delete this education record?', () => deleteItem('/api/admin/education/${ed._id}', loadEducation))" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs transition-colors">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
+    }
+
+    function openEducationModal(ed = {}) {
+      openModal(ed._id ? 'Edit Education' : 'Add Education', `
+        ${gridFields(fieldHtml('degree','Degree / Program','text',ed.degree || ed.program,'true'), fieldHtml('institution','Institution','text',ed.institution,'true'))}
+        ${gridFields(fieldHtml('startYear','Start Year','text',ed.startYear), fieldHtml('endYear','End Year','text',ed.endYear || ed.graduationYear))}
+        ${fieldHtml('description','Description','textarea',ed.description)}
+      `, async (data) => {
+        const url = ed._id ? `/api/admin/education/${ed._id}` : '/api/admin/education';
+        const method = ed._id ? 'PUT' : 'POST';
+        await cmsApi(method, url, data);
+        showToast(ed._id ? 'Education updated!' : 'Education created!');
+        loadEducation();
+      });
+    }
+
+    async function editEducation(id) {
+      try {
+        const data = await cmsApi('GET', '/api/admin/education');
+        const items = data.data?.education || data.education || [];
+        const ed = items.find(x => x._id === id);
+        if (ed) openEducationModal(ed);
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    // ─── CERTIFICATES ─────────────────────────────────────────
+    async function loadCertificates() {
+      const c = document.getElementById('certificates-container');
+      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
+      try {
+        const data = await cmsApi('GET', '/api/admin/certificates');
+        const items = data.data?.certificates || data.certificates || [];
+        if (!items.length) { c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No certificates yet.</p>'; return; }
+        c.innerHTML = items.map(cert => `
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <span class="text-sm font-semibold text-slate-100">${escapeHtml(cert.name||cert.title||'')}</span>
+              <span class="text-xs text-slate-400 ml-2">— ${escapeHtml(cert.issuer || cert.organization || '')}</span>
+              <p class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(cert.issueDate || cert.date || '')}</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="editCertificate('${cert._id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-colors">Edit</button>
+              <button onclick="confirmDelete('Delete certificate?', () => deleteItem('/api/admin/certificates/${cert._id}', loadCertificates))" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs transition-colors">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
+    }
+
+    function openCertificateModal(cert = {}) {
+      openModal(cert._id ? 'Edit Certificate' : 'Add Certificate', `
+        ${gridFields(fieldHtml('name','Certificate Name','text',cert.name || cert.title,'true'), fieldHtml('issuer','Issuer / Organization','text',cert.issuer || cert.organization,'true'))}
+        ${gridFields(fieldHtml('issueDate','Issue Date','text',cert.issueDate || cert.date), fieldHtml('credentialUrl','Credential URL','url',cert.credentialUrl))}
+        ${fieldHtml('description','Description','textarea',cert.description)}
+      `, async (data) => {
+        const url = cert._id ? `/api/admin/certificates/${cert._id}` : '/api/admin/certificates';
+        const method = cert._id ? 'PUT' : 'POST';
+        await cmsApi(method, url, data);
+        showToast(cert._id ? 'Certificate updated!' : 'Certificate created!');
+        loadCertificates();
+      });
+    }
+
+    async function editCertificate(id) {
+      try {
+        const data = await cmsApi('GET', '/api/admin/certificates');
+        const items = data.data?.certificates || data.certificates || [];
+        const cert = items.find(x => x._id === id);
+        if (cert) openCertificateModal(cert);
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    // ─── ROADMAP ──────────────────────────────────────────────
+    async function loadRoadmap() {
+      const c = document.getElementById('roadmap-container');
+      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
+      try {
+        const data = await cmsApi('GET', '/api/admin/roadmap');
+        const items = data.data?.roadmaps || data.roadmaps || [];
+        if (!items.length) { c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No roadmap items yet.</p>'; return; }
+        c.innerHTML = items.map(r => `
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-sm font-semibold text-slate-100">${escapeHtml(r.name||'')}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-cyan-500/10 text-cyan-400">${escapeHtml(r.status||'')}</span>
+                <span class="text-[11px] text-slate-400 font-mono">${r.progress||0}%</span>
+              </div>
+              <p class="text-[11px] text-slate-500 truncate mt-0.5">${escapeHtml(r.description||'')}</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="editRoadmap('${r._id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-colors">Edit</button>
+              <button onclick="confirmDelete('Delete roadmap item?', () => deleteItem('/api/admin/roadmap/${r._id}', loadRoadmap))" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs transition-colors">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
+    }
+
+    function openRoadmapModal(r = {}) {
+      openModal(r._id ? 'Edit Roadmap Item' : 'Add Roadmap Item', `
+        ${gridFields(fieldHtml('name','Name','text',r.name,'true'), fieldHtml('number','Number','text',r.number))}
+        ${gridFields(
+          `<div><label class="cms-label">Status</label><select name="status" class="cms-input"><option value="Working" ${r.status==='Working'?'selected':''}>Working</option><option value="Coming Soon" ${r.status==='Coming Soon'?'selected':''}>Coming Soon</option><option value="Planning" ${r.status==='Planning'?'selected':''}>Planning</option><option value="Completed" ${r.status==='Completed'?'selected':''}>Completed</option></select></div>`,
+          fieldHtml('progress','Progress (0-100)','number',r.progress ?? '')
+        )}
+        ${fieldHtml('description','Description','textarea',r.description,'true')}
+      `, async (data) => {
+        data.progress = parseInt(data.progress) || 0;
+        const url = r._id ? `/api/admin/roadmap/${r._id}` : '/api/admin/roadmap';
+        const method = r._id ? 'PUT' : 'POST';
+        await cmsApi(method, url, data);
+        showToast(r._id ? 'Roadmap updated!' : 'Roadmap created!');
+        loadRoadmap();
+      });
+    }
+
+    async function editRoadmap(id) {
+      try {
+        const data = await cmsApi('GET', `/api/admin/roadmap/${id}`);
+        openRoadmapModal(data.data || data);
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    // ─── PROFILE ──────────────────────────────────────────────
+    async function loadProfile() {
+      try {
+        const data = await cmsApi('GET', '/api/admin/profile');
+        const p = data.data || data;
+        const form = document.getElementById('profile-form');
+        if (!form) return;
+        Object.keys(p).forEach(k => {
+          const el = form.elements[k];
+          if (el) el.value = p[k] || '';
+        });
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    async function saveProfile(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form));
+      try {
+        await cmsApi('PUT', '/api/admin/profile', data);
+        showToast('Profile saved!');
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    // ─── ABOUT ────────────────────────────────────────────────
+    async function loadAbout() {
+      try {
+        const data = await cmsApi('GET', '/api/admin/about');
+        const a = data.data || data;
+        const form = document.getElementById('about-form');
+        if (!form) return;
+        if (form.elements.title) form.elements.title.value = a.title || '';
+        if (form.elements.description) form.elements.description.value = a.description || '';
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    async function saveAbout(e) {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target));
+      try {
+        await cmsApi('PUT', '/api/admin/about', data);
+        showToast('About section saved!');
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    // ─── HERO ─────────────────────────────────────────────────
+    async function loadHero() {
+      try {
+        const data = await cmsApi('GET', '/api/admin/hero');
+        const h = data.data || data;
+        const form = document.getElementById('hero-form');
+        if (!form) return;
+        Object.keys(h).forEach(k => {
+          const el = form.elements[k];
+          if (el && typeof h[k] !== 'object') el.value = h[k] || '';
+        });
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    async function saveHero(e) {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target));
+      try {
+        await cmsApi('PUT', '/api/admin/hero', data);
+        showToast('Hero section saved!');
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    // ─── NAVIGATION ───────────────────────────────────────────
+    async function loadNavigation() {
+      const c = document.getElementById('navigation-container');
+      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
+      try {
+        const data = await cmsApi('GET', '/api/admin/navigation');
+        const items = data.data?.navigation || data.navigation || [];
+        if (!items.length) { c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No navigation items yet.</p>'; return; }
+        c.innerHTML = items.map(n => `
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 flex items-center justify-between gap-3">
+            <div class="min-w-0 flex items-center gap-3">
+              <span class="text-[10px] font-mono text-slate-500 shrink-0">#${n.displayOrder || 0}</span>
+              <div>
+                <span class="text-sm font-semibold text-slate-100">${escapeHtml(n.label||'')}</span>
+                <span class="text-xs text-slate-400 ml-2 font-mono">${escapeHtml(n.target||n.url||'')}</span>
+                <span class="ml-2 px-2 py-0.5 rounded-full text-[10px] font-mono ${n.isEnabled!==false ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-800 text-slate-400'}">${n.isEnabled!==false ? 'Enabled' : 'Disabled'}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="editNav('${n._id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-colors">Edit</button>
+              <button onclick="confirmDelete('Delete nav item &quot;${escapeHtml(n.label)}&quot;?', () => deleteItem('/api/admin/navigation/${n._id}', loadNavigation))" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs transition-colors">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
+    }
+
+    function openNavModal(n = {}) {
+      openModal(n._id ? 'Edit Nav Link' : 'Add Nav Link', `
+        ${gridFields(fieldHtml('label','Label','text',n.label,'true'), fieldHtml('target','Target (e.g. #about)','text',n.target,'true'))}
+        ${gridFields(
+          fieldHtml('displayOrder','Display Order','number',n.displayOrder ?? ''),
+          `<div><label class="cms-label">Enabled</label><select name="isEnabled" class="cms-input"><option value="true" ${n.isEnabled!==false?'selected':''}>Enabled</option><option value="false" ${n.isEnabled===false?'selected':''}>Disabled</option></select></div>`
+        )}
+      `, async (data) => {
+        data.isEnabled = data.isEnabled === 'true';
+        data.url = data.target;
+        if (data.displayOrder) data.displayOrder = parseInt(data.displayOrder);
+        const url = n._id ? `/api/admin/navigation/${n._id}` : '/api/admin/navigation';
+        const method = n._id ? 'PUT' : 'POST';
+        await cmsApi(method, url, data);
+        showToast(n._id ? 'Nav item updated!' : 'Nav item created!');
+        loadNavigation();
+      });
+    }
+
+    async function editNav(id) {
+      try {
+        const data = await cmsApi('GET', '/api/admin/navigation');
+        const items = data.data?.navigation || data.navigation || [];
+        const n = items.find(x => x._id === id);
+        if (n) openNavModal(n);
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    // ─── SOCIAL LINKS ─────────────────────────────────────────
+    async function loadSocialLinks() {
+      const c = document.getElementById('social-links-container');
+      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
+      try {
+        const data = await cmsApi('GET', '/api/admin/social-links');
+        const items = data.data?.socialLinks || data.socialLinks || [];
+        if (!items.length) { c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No social links yet.</p>'; return; }
+        c.innerHTML = items.map(s => `
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 flex items-center justify-between gap-3">
+            <div class="min-w-0 flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:${s.color||'#06b6d4'}22;border:1px solid ${s.color||'#06b6d4'}44">
+                <i data-lucide="${s.icon||'link'}" class="w-4 h-4" style="color:${s.color||'#06b6d4'}"></i>
+              </div>
+              <div>
+                <span class="text-sm font-semibold text-slate-100">${escapeHtml(s.platform||s.label||'')}</span>
+                <p class="text-[11px] text-slate-400 font-mono truncate">${escapeHtml(s.url||'')}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="editSocialLink('${s._id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-colors">Edit</button>
+              <button onclick="confirmDelete('Delete social link?', () => deleteItem('/api/admin/social-links/${s._id}', loadSocialLinks))" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs transition-colors">Delete</button>
+            </div>
+          </div>
+        `).join('');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
+    }
+
+    function openSocialModal(s = {}) {
+      openModal(s._id ? 'Edit Social Link' : 'Add Social Link', `
+        ${gridFields(fieldHtml('platform','Platform','text',s.platform,'true'), fieldHtml('label','Label','text',s.label))}
+        ${fieldHtml('url','URL','url',s.url,'true')}
+        ${gridFields(fieldHtml('icon','Icon (lucide name)','text',s.icon || 'link'), fieldHtml('color','Color (hex)','text',s.color || '#06b6d4'))}
+      `, async (data) => {
+        const url = s._id ? `/api/admin/social-links/${s._id}` : '/api/admin/social-links';
+        const method = s._id ? 'PUT' : 'POST';
+        await cmsApi(method, url, data);
+        showToast(s._id ? 'Link updated!' : 'Link created!');
+        loadSocialLinks();
+      });
+    }
+
+    async function editSocialLink(id) {
+      try {
+        const data = await cmsApi('GET', '/api/admin/social-links');
+        const items = data.data?.socialLinks || data.socialLinks || [];
+        const s = items.find(x => x._id === id);
+        if (s) openSocialModal(s);
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    // ─── SETTINGS ─────────────────────────────────────────────
+    async function loadSettings() {
+      try {
+        const data = await cmsApi('GET', '/api/admin/settings');
+        const settings = data.data || data;
+        const form = document.getElementById('settings-form');
+        if (!form || !settings) return;
+        const flatSettings = Array.isArray(settings) ? {} : settings;
+        if (Array.isArray(settings)) {
+          settings.forEach(s => { flatSettings[s.key] = s.value; });
+        }
+        Object.keys(flatSettings).forEach(k => {
+          const el = form.elements[k];
+          if (el && typeof flatSettings[k] !== 'object') el.value = flatSettings[k] || '';
+        });
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    async function saveSettings(e) {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target));
+      try {
+        await cmsApi('PUT', '/api/admin/settings', data);
+        showToast('Settings saved!');
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    // ─── MEDIA ────────────────────────────────────────────────
+    async function loadMedia() {
+      const c = document.getElementById('media-container');
+      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
+      try {
+        const data = await cmsApi('GET', '/api/admin/media');
+        const items = data.data?.media || data.media || [];
+        if (!items.length) { c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No media assets yet.</p>'; return; }
+        c.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">${items.map(m => `
+          <div class="bg-brand-sidebar border border-brand-border rounded-lg p-3">
+            <div class="text-xs text-slate-300 truncate font-mono">${escapeHtml(m.filename||m.url||'')}</div>
+            <div class="text-[10px] text-slate-500 mt-1">${m.mimeType||''}</div>
+          </div>
+        `).join('')}</div>`;
+      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
+    }
+
+    // ─── ANALYTICS ────────────────────────────────────────────
+    async function loadAnalytics() {
+      const c = document.getElementById('analytics-container');
+      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
+      try {
+        const data = await cmsApi('GET', '/api/admin/analytics');
+        const s = data.stats || data.data || {};
+        c.innerHTML = `
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            ${Object.keys(s).slice(0,8).map(k => `
+              <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 text-center">
+                <div class="text-xl font-bold text-cyan-400">${typeof s[k] === 'number' ? s[k] : '—'}</div>
+                <div class="text-[11px] text-slate-400 mt-1 font-mono">${k.replace(/([A-Z])/g,' $1').trim()}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
+    }
+
+    // ─── Reorder helper (Move Up/Down) ────────────────────────
+    async function moveItem(type, direction, currentIdx, id) {
+      // Simple: call reorder endpoint with swapped displayOrders
+      const containerMap = {
+        projects: { url: '/api/admin/projects/reorder', load: loadProjects },
+        skills: { url: '/api/admin/skills/reorder', load: loadSkills },
+      };
+      showToast(`Reordering ${type}...`);
+      // The UI will reload from server after the action
+      try {
+        const data = await cmsApi('GET', `/api/admin/${type}`);
+        const items = data.data?.projects || data.data?.skills || data.projects || data.skills || [];
+        if (direction === 'up' && currentIdx > 0) {
+          const a = items[currentIdx], b = items[currentIdx - 1];
+          const reorderPayload = items.map((item, idx) => {
+            if (item._id === a._id) return { _id: item._id, displayOrder: b.displayOrder || idx };
+            if (item._id === b._id) return { _id: item._id, displayOrder: a.displayOrder || idx + 1 };
+            return { _id: item._id, displayOrder: item.displayOrder || idx + 1 };
+          });
+          await cmsApi('PUT', `/api/admin/${type}/reorder`, { items: reorderPayload });
+        } else if (direction === 'down' && currentIdx < items.length - 1) {
+          const a = items[currentIdx], b = items[currentIdx + 1];
+          const reorderPayload = items.map((item, idx) => {
+            if (item._id === a._id) return { _id: item._id, displayOrder: b.displayOrder || idx + 2 };
+            if (item._id === b._id) return { _id: item._id, displayOrder: a.displayOrder || idx + 1 };
+            return { _id: item._id, displayOrder: item.displayOrder || idx + 1 };
+          });
+          await cmsApi('PUT', `/api/admin/${type}/reorder`, { items: reorderPayload });
+        }
+        showToast('Reordered!');
+        if (type === 'projects') loadProjects();
+        else if (type === 'skills') loadSkills();
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
   </script>
+
+  <!-- Toast + Modal Elements -->
+  <div id="cms-toast" class="toast-hidden"></div>
+
+  <!-- CMS Modal -->
+  <div id="cms-modal" onclick="if(event.target===this)closeModal()">
+    <div id="cms-modal-box"></div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="confirm-modal" onclick="if(event.target===this)closeConfirmModal()">
+    <div class="bg-brand-sidebar border border-rose-500/30 rounded-2xl p-6 w-full max-w-sm mx-4">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+          <i data-lucide="trash-2" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-slate-100">Confirm Delete</h3>
+          <p class="text-xs text-slate-400">This action cannot be undone.</p>
+        </div>
+      </div>
+      <p id="confirm-msg" class="text-xs text-slate-300 mb-5"></p>
+      <div class="flex gap-3">
+        <button onclick="proceedDelete()" class="flex-1 px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold transition-colors">Delete</button>
+        <button onclick="closeConfirmModal()" class="flex-1 px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

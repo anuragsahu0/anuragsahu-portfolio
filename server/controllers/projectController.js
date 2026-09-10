@@ -443,6 +443,154 @@ const deleteProject = async (req, res, next) => {
   }
 };
 
+/**
+ * PUT /api/admin/projects/reorder
+ */
+const reorderProjects = async (req, res, next) => {
+  try {
+    const { items } = req.body;
+    if (!Array.isArray(items)) {
+      return sendError(res, 'Invalid items array.', 'VALIDATION_ERROR', 400);
+    }
+
+    try {
+      if (Project.db && Project.db.readyState === 1) {
+        const bulkOps = items.map((item, idx) => {
+          const id = typeof item === 'object' ? (item._id || item.id) : item;
+          const order = typeof item === 'object' && item.displayOrder !== undefined ? item.displayOrder : idx + 1;
+          const filter = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { $or: [{ slug: id }, { id }] };
+          return {
+            updateOne: {
+              filter,
+              update: { $set: { displayOrder: order } },
+            },
+          };
+        });
+        await Project.bulkWrite(bulkOps);
+      }
+    } catch (dbErr) {}
+
+    items.forEach((item, idx) => {
+      const id = typeof item === 'object' ? (item._id || item.id) : item;
+      const order = typeof item === 'object' && item.displayOrder !== undefined ? item.displayOrder : idx + 1;
+      const found = FALLBACK_PROJECTS.find((p) => p._id === id || p.slug === id || p.id === id);
+      if (found) found.displayOrder = order;
+    });
+    FALLBACK_PROJECTS.sort((a, b) => a.displayOrder - b.displayOrder);
+
+    try {
+      await logActivity('PROJECT_REORDERED', 'Project', { count: items.length }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, { message: 'Projects reordered successfully.' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * POST /api/admin/projects/:id/duplicate
+ */
+const duplicateProject = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let source = null;
+
+    try {
+      if (Project.db && Project.db.readyState === 1) {
+        const query = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { $or: [{ slug: id }, { id }] };
+        source = await Project.findOne(query).lean();
+      }
+    } catch (dbErr) {}
+
+    if (!source) {
+      source = FALLBACK_PROJECTS.find((p) => p._id === id || p.slug === id || p.id === id);
+    }
+
+    if (!source) {
+      return sendError(res, 'Project not found.', 'NOT_FOUND', 404);
+    }
+
+    const newSlug = `${source.slug || source.id}-copy-${Date.now().toString().slice(-4)}`;
+    const newTitle = `${source.title} (Copy)`;
+
+    const { _id, createdAt, updatedAt, __v, ...cloneData } = source;
+    const duplicatedPayload = {
+      ...cloneData,
+      title: newTitle,
+      slug: newSlug,
+      id: newSlug,
+      visibility: 'DRAFT',
+      displayOrder: (source.displayOrder || 0) + 1,
+    };
+
+    let newDoc = null;
+    try {
+      if (Project.db && Project.db.readyState === 1) {
+        newDoc = await Project.create(duplicatedPayload);
+      }
+    } catch (dbErr) {}
+
+    if (!newDoc) {
+      newDoc = {
+        _id: `proj-${Date.now()}`,
+        ...duplicatedPayload,
+        createdAt: new Date(),
+      };
+      FALLBACK_PROJECTS.push(newDoc);
+    }
+
+    try {
+      await logActivity('PROJECT_DUPLICATED', 'Project', { sourceId: id, newId: newDoc._id, title: newDoc.title }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, newDoc, 201);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * PATCH /api/admin/projects/:id/status
+ */
+const updateProjectStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { status, visibility } = req.body;
+    const updates = {};
+    if (status) updates.status = status;
+    if (visibility) updates.visibility = visibility;
+
+    let project = null;
+    try {
+      if (Project.db && Project.db.readyState === 1) {
+        const query = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { $or: [{ slug: id }, { id }] };
+        project = await Project.findOneAndUpdate(query, updates, { new: true, runValidators: true });
+      }
+    } catch (dbErr) {}
+
+    if (!project) {
+      const p = FALLBACK_PROJECTS.find((item) => item._id === id || item.slug === id || item.id === id);
+      if (p) {
+        Object.assign(p, updates);
+        project = p;
+      }
+    }
+
+    if (!project) {
+      return sendError(res, 'Project not found.', 'NOT_FOUND', 404);
+    }
+
+    try {
+      await logActivity('PROJECT_STATUS_UPDATED', 'Project', { id, status: project.status, visibility: project.visibility }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, project);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getPublicProjects,
   getPublicProjectBySlug,
@@ -451,6 +599,9 @@ module.exports = {
   createProject,
   updateProject,
   deleteProject,
+  reorderProjects,
+  duplicateProject,
+  updateProjectStatus,
   // legacy alias
   getAllProjects: getPublicProjects,
 };

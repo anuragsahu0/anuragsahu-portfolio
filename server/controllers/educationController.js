@@ -178,12 +178,61 @@ const deleteEducation = async (req, res, next) => {
   }
 };
 
+/**
+ * PUT /api/admin/education/reorder
+ */
+const reorderEducation = async (req, res, next) => {
+  try {
+    const { items } = req.body;
+    if (!Array.isArray(items)) {
+      return sendError(res, 'Invalid items array.', 'VALIDATION_ERROR', 400);
+    }
+
+    try {
+      if (Education.db && Education.db.readyState === 1) {
+        const bulkOps = items.map((item, idx) => {
+          const id = typeof item === 'object' ? (item._id || item.id) : item;
+          const order = typeof item === 'object' && item.displayOrder !== undefined ? item.displayOrder : idx + 1;
+          const filter = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { id };
+          return {
+            updateOne: {
+              filter,
+              update: { $set: { displayOrder: order, order } },
+            },
+          };
+        });
+        await Education.bulkWrite(bulkOps);
+      }
+    } catch (dbErr) {}
+
+    items.forEach((item, idx) => {
+      const id = typeof item === 'object' ? (item._id || item.id) : item;
+      const order = typeof item === 'object' && item.displayOrder !== undefined ? item.displayOrder : idx + 1;
+      const found = FALLBACK_EDUCATION.find((e) => e._id === id || e.id === id);
+      if (found) {
+        found.displayOrder = order;
+        found.order = order;
+      }
+    });
+    FALLBACK_EDUCATION.sort((a, b) => (a.displayOrder || a.order) - (b.displayOrder || b.order));
+
+    try {
+      await logActivity('EDUCATION_REORDERED', 'Education', { count: items.length }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, { message: 'Education records reordered successfully.' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getPublicEducation,
   getAdminEducation,
   createEducation,
   updateEducation,
   deleteEducation,
+  reorderEducation,
   // legacy alias
   getAll: getAdminEducation,
   create: createEducation,

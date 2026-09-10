@@ -67,6 +67,40 @@ const ProfileSchema = new mongoose.Schema(
       trim: true,
       default: '/assets/anurag-sahu-resume.pdf',
     },
+    displayName: {
+      type: String,
+      trim: true,
+      default: 'Anurag Sahu',
+    },
+    phone: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    currentEducation: {
+      type: String,
+      trim: true,
+      default: 'B.Tech in Computer Science & Engineering (AI & ML)',
+    },
+    institution: {
+      type: String,
+      trim: true,
+      default: 'Bansal Institute of Science and Technology',
+    },
+    graduationYear: {
+      type: String,
+      trim: true,
+      default: '2026',
+    },
+    cgpa: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    isVisible: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

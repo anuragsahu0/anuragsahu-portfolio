@@ -218,6 +218,51 @@ const deleteSkill = async (req, res, next) => {
   }
 };
 
+/**
+ * PUT /api/admin/skills/reorder
+ */
+const reorderSkills = async (req, res, next) => {
+  try {
+    const { items } = req.body;
+    if (!Array.isArray(items)) {
+      return sendError(res, 'Invalid items array.', 'VALIDATION_ERROR', 400);
+    }
+
+    try {
+      if (Skill.db && Skill.db.readyState === 1) {
+        const bulkOps = items.map((item, idx) => {
+          const id = typeof item === 'object' ? (item._id || item.id) : item;
+          const order = typeof item === 'object' && item.displayOrder !== undefined ? item.displayOrder : idx + 1;
+          const filter = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { id };
+          return {
+            updateOne: {
+              filter,
+              update: { $set: { displayOrder: order } },
+            },
+          };
+        });
+        await Skill.bulkWrite(bulkOps);
+      }
+    } catch (dbErr) {}
+
+    items.forEach((item, idx) => {
+      const id = typeof item === 'object' ? (item._id || item.id) : item;
+      const order = typeof item === 'object' && item.displayOrder !== undefined ? item.displayOrder : idx + 1;
+      const found = FALLBACK_SKILLS.find((s) => s._id === id || s.id === id);
+      if (found) found.displayOrder = order;
+    });
+    FALLBACK_SKILLS.sort((a, b) => a.displayOrder - b.displayOrder);
+
+    try {
+      await logActivity('SKILL_REORDERED', 'Skill', { count: items.length }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, { message: 'Skills reordered successfully.' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getPublicSkills,
   getAdminSkills,
@@ -225,6 +270,7 @@ module.exports = {
   createSkill,
   updateSkill,
   deleteSkill,
+  reorderSkills,
   // legacy alias
   getAll: getAdminSkills,
   getOne: getSkillById,

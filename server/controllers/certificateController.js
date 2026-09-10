@@ -170,10 +170,56 @@ const deleteCertificate = async (req, res, next) => {
   }
 };
 
+/**
+ * PUT /api/admin/certificates/reorder
+ */
+const reorderCertificates = async (req, res, next) => {
+  try {
+    const { items } = req.body;
+    if (!Array.isArray(items)) {
+      return sendError(res, 'Invalid items array.', 'VALIDATION_ERROR', 400);
+    }
+
+    try {
+      if (Certificate.db && Certificate.db.readyState === 1) {
+        const bulkOps = items.map((item, idx) => {
+          const id = typeof item === 'object' ? (item._id || item.id) : item;
+          const order = typeof item === 'object' && item.displayOrder !== undefined ? item.displayOrder : idx + 1;
+          const filter = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { id };
+          return {
+            updateOne: {
+              filter,
+              update: { $set: { displayOrder: order } },
+            },
+          };
+        });
+        await Certificate.bulkWrite(bulkOps);
+      }
+    } catch (dbErr) {}
+
+    items.forEach((item, idx) => {
+      const id = typeof item === 'object' ? (item._id || item.id) : item;
+      const order = typeof item === 'object' && item.displayOrder !== undefined ? item.displayOrder : idx + 1;
+      const found = FALLBACK_CERTIFICATES.find((c) => c._id === id || c.id === id);
+      if (found) found.displayOrder = order;
+    });
+    FALLBACK_CERTIFICATES.sort((a, b) => a.displayOrder - b.displayOrder);
+
+    try {
+      await logActivity('CERTIFICATES_REORDERED', 'Certificate', { count: items.length }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, { message: 'Certificates reordered successfully.' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getPublicCertificates,
   getAdminCertificates,
   createCertificate,
   updateCertificate,
   deleteCertificate,
+  reorderCertificates,
 };

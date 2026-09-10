@@ -153,10 +153,55 @@ const deleteExperience = async (req, res, next) => {
   }
 };
 
+/**
+ * PUT /api/admin/experience/reorder
+ */
+const reorderExperience = async (req, res, next) => {
+  try {
+    const { items } = req.body;
+    if (!Array.isArray(items)) {
+      return sendError(res, 'Invalid items array.', 'VALIDATION_ERROR', 400);
+    }
+
+    try {
+      if (Experience.db && Experience.db.readyState === 1) {
+        const bulkOps = items.map((item, idx) => {
+          const id = typeof item === 'object' ? (item._id || item.id) : item;
+          const order = typeof item === 'object' && item.displayOrder !== undefined ? item.displayOrder : idx + 1;
+          return {
+            updateOne: {
+              filter: { _id: id },
+              update: { $set: { displayOrder: order } },
+            },
+          };
+        });
+        await Experience.bulkWrite(bulkOps);
+      }
+    } catch (dbErr) {}
+
+    items.forEach((item, idx) => {
+      const id = typeof item === 'object' ? (item._id || item.id) : item;
+      const order = typeof item === 'object' && item.displayOrder !== undefined ? item.displayOrder : idx + 1;
+      const found = FALLBACK_EXPERIENCES.find((e) => e._id === id);
+      if (found) found.displayOrder = order;
+    });
+    FALLBACK_EXPERIENCES.sort((a, b) => a.displayOrder - b.displayOrder);
+
+    try {
+      await logActivity('EXPERIENCE_REORDERED', 'Experience', { count: items.length }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, { message: 'Experience records reordered successfully.' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getPublicExperience,
   getAdminExperience,
   createExperience,
   updateExperience,
   deleteExperience,
+  reorderExperience,
 };

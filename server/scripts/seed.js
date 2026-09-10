@@ -545,8 +545,56 @@ async function seed() {
   });
   console.log('✓ Activity log created.');
 
+  // 14. Hero
+  console.log('🦸 Seeding Hero section...');
+  const Hero = require('../models/Hero');
+  await Hero.deleteMany({});
+  await Hero.create({
+    mainHeading: 'ENGINEERING INTELLIGENT SYSTEMS',
+    highlightedText: 'FROM ZERO TO PRODUCTION',
+    subtitle: 'Anurag Sahu — Computer Science Engineer & Full-Stack Developer',
+    description:
+      'Passionate about building production-grade full-stack platforms, deterministic financial engines, and modern distributed systems.',
+    primaryCtaLabel: 'Explore Flagship AI System',
+    primaryCtaUrl: '/AI-FINANCE-CONTROLLER',
+    secondaryCtaLabel: 'Download Resume',
+    secondaryCtaUrl: '/assets/anurag-sahu-resume.pdf',
+    profileImage: '/assets/anurag-portrait-sm.webp',
+    availabilityBadge: 'OPEN TO INTERNSHIP OPPORTUNITIES',
+    supportingText: 'B.Tech CSE (AI & ML) • 2022–2026',
+    isVisible: true,
+  });
+  console.log('✓ Hero seeded.');
+
+  // 15. Navigation
+  console.log('🧭 Seeding Navigation items...');
+  const Navigation = require('../models/Navigation');
+  await Navigation.deleteMany({});
+  await Navigation.insertMany([
+    { label: 'About', target: '#about', url: '#about', displayOrder: 1, isEnabled: true },
+    { label: 'Projects', target: '#projects', url: '#projects', displayOrder: 2, isEnabled: true },
+    { label: 'Skills', target: '#skills', url: '#skills', displayOrder: 3, isEnabled: true },
+    { label: 'Experience', target: '#experience', url: '#experience', displayOrder: 4, isEnabled: true },
+    { label: 'Education', target: '#education', url: '#education', displayOrder: 5, isEnabled: true },
+    { label: 'Roadmap', target: '#roadmap', url: '#roadmap', displayOrder: 6, isEnabled: true },
+    { label: 'Contact', target: '#contact', url: '#contact', displayOrder: 7, isEnabled: true },
+  ]);
+  console.log('✓ Navigation seeded.');
+
+  // 16. Social Links
+  console.log('🔗 Seeding Social Links...');
+  const SocialLink = require('../models/SocialLink');
+  await SocialLink.deleteMany({});
+  await SocialLink.insertMany([
+    { platform: 'GitHub', label: 'GitHub', url: 'https://github.com/anuragsahu0', icon: 'github', color: '#00f5ff', order: 1, isActive: true },
+    { platform: 'LinkedIn', label: 'LinkedIn', url: 'https://linkedin.com/in/anuragsahu0', icon: 'linkedin', color: '#00b4d8', order: 2, isActive: true },
+    { platform: 'Email', label: 'Email', url: 'mailto:shivasahu0612@gmail.com', icon: 'mail', color: '#ff6b6b', order: 3, isActive: true },
+    { platform: 'Portfolio', label: 'Website', url: 'https://anuragsahu.com', icon: 'globe', color: '#10b981', order: 4, isActive: true },
+  ]);
+  console.log('✓ Social Links seeded.');
+
   console.log('\n==================================================');
-  console.log('✅ ALL 15 CMS ENTITIES SEEDED SUCCESSFULLY WITH AUTHENTIC DATA');
+  console.log('✅ ALL 16 CMS ENTITIES SEEDED SUCCESSFULLY WITH AUTHENTIC DATA');
   console.log('==================================================\n');
 
   await mongoose.disconnect();
