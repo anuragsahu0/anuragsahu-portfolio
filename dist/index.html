@@ -1216,23 +1216,13 @@
     }
     initIcons();
 
-    // Direct Admin Modal Trigger Handler
-    // Direct Admin Trigger Handler: Redirects to secure air-gapped /admin page
-    const adminBtn = document.getElementById('btn-admin-trigger');
-    if (adminBtn) {
-      adminBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.location.href = '/admin';
-      });
-    }
-
-    // Auto redirect if URL has #admin
+    // Strip obsolete #admin hash from URL if accessed
     if (window.location.hash === '#admin') {
-      window.location.href = '/admin';
+      history.replaceState(null, '', window.location.pathname + window.location.search);
     }
     window.addEventListener('hashchange', () => {
       if (window.location.hash === '#admin') {
-        window.location.href = '/admin';
+        history.replaceState(null, '', window.location.pathname + window.location.search);
       }
     });
   </script>

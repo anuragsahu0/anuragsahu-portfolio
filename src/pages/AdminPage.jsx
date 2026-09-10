@@ -718,7 +718,7 @@ export function AdminPage() {
                       ) : (
                         <tr>
                           <td className="py-3 px-3 font-bold text-starlight">127.0.0.1 (Current Session)</td>
-                          <td className="py-3 px-3 text-nebula-cyan font-bold">/#admin</td>
+                          <td className="py-3 px-3 text-nebula-cyan font-bold">/admin</td>
                           <td className="py-3 px-3 text-muted">Chrome / Safari</td>
                           <td className="py-3 px-3 text-muted">macOS</td>
                           <td className="py-3 px-3 text-muted">Desktop</td>

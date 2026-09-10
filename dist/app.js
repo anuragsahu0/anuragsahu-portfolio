@@ -340,29 +340,6 @@ function copyEmail() {
   sendTelemetry('email_copied', { email: 'shivasahu0612@gmail.com' });
 }
 
-/* -------------------------------------------------------------------------- */
-/* 4. Admin Routing & Air-Gapped Console Redirection                          */
-/* -------------------------------------------------------------------------- */
-function initAdminModal() {
-  const openBtns = document.querySelectorAll('#btn-admin-trigger, .btn-admin-trigger');
-  openBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = '/admin';
-    });
-  });
-
-  // If #admin hash is accessed, redirect to dedicated air-gapped /admin portal
-  if (window.location.hash === '#admin') {
-    window.location.href = '/admin';
-  }
-
-  window.addEventListener('hashchange', () => {
-    if (window.location.hash === '#admin') {
-      window.location.href = '/admin';
-    }
-  });
-}
 
 async function syncProjectStatuses() {
   localStorage.setItem('ag_proj_status_01', 'Completed');
@@ -454,7 +431,6 @@ function bootApp() {
   if (typeof initParticleBackground === 'function') initParticleBackground();
   initCLI();
   initLiveTelemetryTracking();
-  initAdminModal();
   syncProjectStatuses();
   setInterval(syncProjectStatuses, 1000);
   initScrollProgress();
