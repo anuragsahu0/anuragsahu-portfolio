@@ -877,35 +877,48 @@
         }
 
         const newMsg = {
-          id: 'msg_' + Date.now(),
+          id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
           fullName: name,
           email: email,
-          company: 'Mobile Inquiry',
-          subject: `Mobile App Contact Inquiry from ${name}`,
+          company: 'Mobile Direct Inquiry',
+          subject: `📱 Mobile Inquiry from ${name}`,
           message: msg,
           status: 'unread',
           createdAt: new Date().toISOString()
         };
 
-        // 1. Local Storage
-        const existingMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || '[]');
-        existingMsgs.unshift(newMsg);
-        localStorage.setItem('ag_admin_messages', JSON.stringify(existingMsgs));
-
-        // 2. Global Cloud Inbox Store Sync
+        // 1. Local Storage (both keys for instant cross-tab sync)
         try {
-          fetch('https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261')
+          const existingMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || localStorage.getItem('anuragsahu_contact_messages') || '[]');
+          existingMsgs.unshift(newMsg);
+          localStorage.setItem('ag_admin_messages', JSON.stringify(existingMsgs));
+          localStorage.setItem('anuragsahu_contact_messages', JSON.stringify(existingMsgs));
+        } catch (e) {}
+
+        // 2. Real-Time Cloud Inbox Sync
+        const MESSAGES_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a067127101a08ba1833767b4';
+        try {
+          fetch(MESSAGES_ENDPOINT)
             .then(res => res.json())
-            .then(store => {
-              const s = store || { messages: [], settings: {} };
-              if (!s.messages) s.messages = [];
-              s.messages.unshift(newMsg);
-              return fetch('https://jsonblob.com/api/jsonBlob/019fe1ec-02f6-78f8-a2ea-698a3b504261', {
+            .then(json => {
+              const mData = json && json.data ? json.data : { messages: [] };
+              mData.messages = mData.messages || [];
+              mData.messages.unshift(newMsg);
+              return fetch(MESSAGES_ENDPOINT, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(s)
+                body: JSON.stringify({
+                  name: 'anurag_portfolio_inbox_v1',
+                  data: mData
+                })
               });
             }).catch(() => {});
+        } catch (e) {}
+
+        // 3. Instant 0ms Cross-Tab Sync
+        try {
+          const bc = new BroadcastChannel('anurag_portfolio_realtime');
+          bc.postMessage({ type: 'new_message', message: newMsg });
         } catch (e) {}
 
         // 3. Primary Express Backend Dispatch (/api/contact)
@@ -1028,6 +1041,53 @@
         }
       });
     }
+
+    const TELEMETRY_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a067127101a08ba1848d67b5';
+    function startMobileTelemetry() {
+      let sessId = sessionStorage.getItem('as_visitor_sess');
+      if (!sessId) {
+        sessId = 'sess_m_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+        sessionStorage.setItem('as_visitor_sess', sessId);
+      }
+
+      async function ping() {
+        try {
+          const res = await fetch(TELEMETRY_ENDPOINT);
+          if (!res.ok) return;
+          const json = await res.json();
+          const data = json && json.data ? json.data : {};
+
+          if (!data.sessions) data.sessions = {};
+          const prevTotal = parseInt(data.totalVisitors, 10) || 1420;
+          if (!sessionStorage.getItem('as_page_counted')) {
+            data.totalVisitors = prevTotal + 1;
+            sessionStorage.setItem('as_page_counted', 'true');
+          }
+
+          data.sessions[sessId] = {
+            id: sessId,
+            device: 'Mobile WebApp (Touch PWA)',
+            path: '/mobile',
+            entryTime: new Date().toLocaleTimeString(),
+            lastSeen: Date.now(),
+            status: 'ONLINE'
+          };
+
+          await fetch(TELEMETRY_ENDPOINT, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: 'anurag_portfolio_telemetry_v1',
+              data
+            })
+          });
+        } catch (e) {}
+      }
+
+      ping();
+      setInterval(ping, 15000);
+    }
+    startMobileTelemetry();
 
     syncMobileProjectBadges();
     setInterval(syncMobileProjectBadges, 2000);

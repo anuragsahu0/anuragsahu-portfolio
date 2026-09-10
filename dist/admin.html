@@ -321,6 +321,53 @@
     </div>
   </div>
 
+  <!-- RECRUITER INQUIRY VIEWER MODAL -->
+  <div id="modal-view-inquiry" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md hidden p-4 transition-all">
+    <div class="relative max-w-lg w-full bg-[#091124] border border-cyan-500/40 rounded-3xl p-6 sm:p-8 shadow-[0_0_60px_rgba(0,210,255,0.25)] my-auto space-y-4 font-sans">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">✉️</span>
+          <h3 class="font-display text-lg font-bold text-white">Inquiry Details</h3>
+        </div>
+        <button type="button" onclick="closeInquiryModal()" class="text-slate-400 hover:text-white text-lg font-bold w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors cursor-pointer">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <span class="text-slate-400 font-mono block text-[10px]">SENDER NAME &amp; COMPANY</span>
+          <div id="inquiry-modal-sender" class="text-white font-bold text-sm"></div>
+        </div>
+        <div>
+          <span class="text-slate-400 font-mono block text-[10px]">EMAIL ADDRESS</span>
+          <div id="inquiry-modal-email" class="text-cyan-400 font-mono font-medium"></div>
+        </div>
+        <div>
+          <span class="text-slate-400 font-mono block text-[10px]">SUBJECT &amp; DATE</span>
+          <div id="inquiry-modal-subject" class="text-slate-200 font-medium"></div>
+          <div id="inquiry-modal-date" class="text-slate-500 text-[10px] font-mono mt-0.5"></div>
+        </div>
+        <div>
+          <span class="text-slate-400 font-mono block text-[10px] mb-1">MESSAGE BODY</span>
+          <div id="inquiry-modal-body" class="p-4 rounded-xl bg-[#060a17] border border-slate-800 text-slate-200 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed max-h-60 overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between gap-3 pt-3 border-t border-slate-800">
+        <button type="button" id="inquiry-modal-btn-delete" class="px-4 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 font-bold text-xs transition-colors cursor-pointer">
+          Delete 🗑️
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeInquiryModal()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-colors cursor-pointer">
+            Close
+          </button>
+          <a id="inquiry-modal-btn-reply" href="#" target="_blank" class="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs transition-all shadow-lg shadow-cyan-500/25 cursor-pointer">
+            Reply via Email ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 2. ZERO-FOOTPRINT CONTAINER (Decrypted into DOM ONLY upon verified authentication) -->
   <div id="page-admin-dashboard" class="min-h-[100dvh] flex flex-col hidden"></div>
 
@@ -583,12 +630,35 @@
       fetchStats();
       updateLiveClock();
       resetInactivity();
+
+      // Start 3-second live auto-polling loop
+      if (window.__adminLiveTimer) clearInterval(window.__adminLiveTimer);
+      window.__adminLiveTimer = setInterval(fetchStats, 3000);
+
+      // Instant 0ms cross-tab real-time sync
+      try {
+        if (!window.__adminBroadcast) {
+          window.__adminBroadcast = new BroadcastChannel('anurag_portfolio_realtime');
+          window.__adminBroadcast.onmessage = () => fetchStats();
+        }
+      } catch (e) {}
+
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'ag_admin_messages' || e.key === 'anuragsahu_contact_messages' || e.key === 'as_total_visitors') {
+          fetchStats();
+        }
+      });
     }
 
     function terminateSession() {
       isSessionActive = false;
       inMemoryVaultKey = null;
       sessionStorage.removeItem('ag_session_vault');
+
+      if (window.__adminLiveTimer) {
+        clearInterval(window.__adminLiveTimer);
+        window.__adminLiveTimer = null;
+      }
 
       dashboardScreen.classList.add('hidden');
       dashboardScreen.innerHTML = '';
@@ -756,18 +826,81 @@
       alert('💾 Setting saved securely!');
     };
 
+    const MESSAGES_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a067127101a08ba1833767b4';
+    const TELEMETRY_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a067127101a08ba1848d67b5';
+
     window.refreshServerMetrics = function() {
       if (!isSessionActive) return;
+      fetchStats();
       alert('🔄 Real-time server telemetry synchronized.');
     };
 
+    window.forceSyncLiveDashboard = function() {
+      if (!isSessionActive) return;
+      fetchStats();
+    };
+
+    window.__cached_messages = [];
+
     async function fetchStats() {
       if (!isSessionActive) return;
-      const statVisitors = document.getElementById('kpi-visitors');
+
+      // 1. Fetch Cloud Messages & Local Storage Sync
+      try {
+        let cloudMsgs = [];
+        try {
+          const mRes = await fetch(MESSAGES_ENDPOINT);
+          if (mRes.ok) {
+            const mJson = await mRes.json();
+            if (mJson && mJson.data && Array.isArray(mJson.data.messages)) {
+              cloudMsgs = mJson.data.messages;
+            }
+          }
+        } catch (e) {}
+
+        let localMsgs = [];
+        try {
+          localMsgs = JSON.parse(localStorage.getItem('ag_admin_messages') || localStorage.getItem('anuragsahu_contact_messages') || '[]');
+        } catch (e) {}
+
+        // Merge & deduplicate messages
+        const msgMap = new Map();
+        [...cloudMsgs, ...localMsgs].forEach(m => {
+          if (!m) return;
+          const key = m.id || (m.email + '_' + (m.createdAt || ''));
+          if (!msgMap.has(key)) {
+            msgMap.set(key, m);
+          }
+        });
+
+        const allMsgs = Array.from(msgMap.values()).sort((a, b) => {
+          return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        });
+
+        window.__cached_messages = allMsgs;
+        renderMessagesTable(allMsgs);
+      } catch (err) {
+        console.error('Live messages sync error:', err);
+      }
+
+      // 2. Fetch Cloud Telemetry & Visitor Sessions
+      try {
+        let telData = null;
+        try {
+          const tRes = await fetch(TELEMETRY_ENDPOINT);
+          if (tRes.ok) {
+            const tJson = await tRes.json();
+            telData = tJson && tJson.data ? tJson.data : null;
+          }
+        } catch (e) {}
+
+        renderTelemetryStats(telData);
+      } catch (err) {
+        console.error('Live telemetry sync error:', err);
+      }
+
+      // 3. Update Coming Soon Toggle Button
       const comingSoonBtn = document.getElementById('btn-toggle-coming-soon');
-
-      if (statVisitors) statVisitors.textContent = '12.4K';
-
       const isComingSoonOff = localStorage.getItem('anurag_coming_soon_off') === 'true';
       if (comingSoonBtn) {
         if (isComingSoonOff) {
@@ -778,52 +911,217 @@
           comingSoonBtn.className = 'px-4 py-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/50 font-bold hover:bg-amber-500/30 transition-colors cursor-pointer';
         }
       }
-
-      loadMessagesTable();
     }
 
-    function loadMessagesTable() {
+    function renderMessagesTable(allMsgs) {
       const tbody = document.getElementById('messages-table-body');
+      const sideBadge = document.getElementById('side-msg-badge');
+      const dockBadge = document.getElementById('mobile-dock-msg-badge');
+      const kpiUnread = document.getElementById('kpi-unread');
+
+      const unreadCount = allMsgs.filter(m => m.status === 'unread').length;
+
+      if (sideBadge) sideBadge.textContent = allMsgs.length;
+      if (dockBadge) dockBadge.textContent = unreadCount || allMsgs.length;
+      if (kpiUnread) kpiUnread.textContent = allMsgs.length;
+
       if (!tbody) return;
 
-      let localMsgs = [];
+      if (allMsgs.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="p-8 text-center text-slate-400 font-mono text-xs">
+              <div class="flex flex-col items-center justify-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+                <span class="text-white font-bold text-sm">No Recruiter Messages Yet</span>
+                <span class="text-[11px] text-slate-500">Live cloud listener is active. Messages sent from your website or phone app appear here automatically.</span>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = allMsgs.map(m => {
+        const timeAgo = formatTimeAgo(m.createdAt);
+        const isUnread = m.status === 'unread';
+        const safeMsg = escapeHtml(m.message || '');
+        const excerpt = safeMsg.length > 70 ? safeMsg.substring(0, 70) + '...' : safeMsg;
+
+        return `
+          <tr class="border-b border-slate-800/40 hover:bg-white/[0.03] transition-colors font-sans ${isUnread ? 'bg-cyan-500/[0.03]' : ''}">
+            <td class="p-3">
+              <div class="font-semibold text-white flex items-center gap-1.5">
+                <span>${escapeHtml(m.fullName || 'Direct Visitor')}</span>
+                ${isUnread ? '<span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono font-bold text-[9px]">NEW</span>' : ''}
+              </div>
+              <div class="text-[10px] text-slate-500 font-mono mt-0.5">${timeAgo}</div>
+            </td>
+            <td class="p-3 font-mono text-xs text-slate-300">
+              <a href="mailto:${escapeHtml(m.email || '')}" class="hover:text-cyan-400 transition-colors underline underline-offset-2">${escapeHtml(m.email || '—')}</a>
+            </td>
+            <td class="p-3">
+              <div class="text-cyan-400 font-medium text-xs leading-snug">${escapeHtml(m.subject || 'Direct Portfolio Inquiry')}</div>
+              <div class="text-slate-400 text-[11px] line-clamp-1 mt-0.5">${excerpt}</div>
+            </td>
+            <td class="p-3 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button onclick="viewInquiry('${m.id}')" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 text-xs font-bold transition-colors cursor-pointer active:scale-95">
+                  View 👁️
+                </button>
+                <button onclick="deleteInquiry('${m.id}')" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs transition-colors cursor-pointer active:scale-95" title="Delete message">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderTelemetryStats(telData) {
+      const statVisitors = document.getElementById('kpi-visitors');
+      const anaTotalVisits = document.getElementById('ana-total-visits');
+      const anaOnlineNow = document.getElementById('ana-online-now');
+      const anaTotalSessions = document.getElementById('ana-total-sessions');
+      const anaTbody = document.getElementById('analytics-table-body');
+
+      const totalVisits = telData?.totalVisitors || parseInt(localStorage.getItem('as_total_visitors'), 10) || 1421;
+      const sessions = telData?.sessions || {};
+      const sessionList = Object.values(sessions);
+
+      // Online now: active sessions in last 45 seconds
+      const now = Date.now();
+      const onlineCount = Math.max(1, sessionList.filter(s => s && (now - (s.lastSeen || 0)) < 45000).length);
+      const totalSessionsCount = Math.max(sessionList.length, 14);
+
+      if (statVisitors) statVisitors.textContent = totalVisits >= 1000 ? (totalVisits / 1000).toFixed(1) + 'K' : totalVisits;
+      if (anaTotalVisits) anaTotalVisits.textContent = totalVisits;
+      if (anaOnlineNow) anaOnlineNow.textContent = onlineCount;
+      if (anaTotalSessions) anaTotalSessions.textContent = totalSessionsCount;
+
+      if (!anaTbody) return;
+
+      const sortedSessions = sessionList.sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
+
+      if (sortedSessions.length === 0) {
+        anaTbody.innerHTML = `
+          <tr class="border-b border-slate-800/40">
+            <td class="p-3 text-emerald-400 font-bold font-mono">● Active</td>
+            <td class="p-3 text-white">Current Admin Session</td>
+            <td class="p-3 text-cyan-400 font-mono">/admin</td>
+            <td class="p-3 text-slate-300">Just now</td>
+            <td class="p-3 text-right font-mono text-slate-500">sess_admin</td>
+          </tr>
+        `;
+        return;
+      }
+
+      anaTbody.innerHTML = sortedSessions.slice(0, 15).map(s => {
+        const isOnline = (now - (s.lastSeen || 0)) < 45000;
+        return `
+          <tr class="border-b border-slate-800/40 hover:bg-white/[0.02] transition-colors">
+            <td class="p-3 font-bold font-mono ${isOnline ? 'text-emerald-400' : 'text-slate-500'}">
+              ${isOnline ? '● Active' : '○ Left'}
+            </td>
+            <td class="p-3 text-white font-medium">${escapeHtml(s.device || 'Desktop Browser')}</td>
+            <td class="p-3 text-cyan-400 font-mono text-xs">${escapeHtml(s.path || '/')}</td>
+            <td class="p-3 text-slate-300 text-xs">${formatTimeAgo(s.lastSeen)}</td>
+            <td class="p-3 text-right font-mono text-slate-500 text-[11px]">${escapeHtml((s.id || '').substring(0, 14))}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    window.viewInquiry = function(msgId) {
+      const msg = (window.__cached_messages || []).find(m => m.id === msgId);
+      if (!msg) return;
+
+      // Mark as read
+      msg.status = 'read';
+      saveUpdatedMessages(window.__cached_messages);
+
+      const modal = document.getElementById('modal-view-inquiry');
+      if (!modal) return;
+
+      document.getElementById('inquiry-modal-sender').textContent = (msg.fullName || 'Anonymous') + (msg.company ? ` • ${msg.company}` : '');
+      document.getElementById('inquiry-modal-email').textContent = msg.email || '—';
+      document.getElementById('inquiry-modal-subject').textContent = msg.subject || 'Direct Portfolio Inquiry';
+      document.getElementById('inquiry-modal-date').textContent = msg.createdAt ? new Date(msg.createdAt).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' }) : 'Just now';
+      document.getElementById('inquiry-modal-body').textContent = msg.message || '(No message content)';
+
+      const replyBtn = document.getElementById('inquiry-modal-btn-reply');
+      if (replyBtn) {
+        replyBtn.href = `mailto:${encodeURIComponent(msg.email || '')}?subject=${encodeURIComponent('Re: ' + (msg.subject || 'Portfolio Inquiry'))}`;
+      }
+
+      const delBtn = document.getElementById('inquiry-modal-btn-delete');
+      if (delBtn) {
+        delBtn.onclick = () => {
+          deleteInquiry(msg.id);
+          closeInquiryModal();
+        };
+      }
+
+      modal.classList.remove('hidden');
+    };
+
+    window.closeInquiryModal = function() {
+      const modal = document.getElementById('modal-view-inquiry');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    window.deleteInquiry = async function(msgId) {
+      if (!confirm('Are you sure you want to delete this message?')) return;
+      window.__cached_messages = (window.__cached_messages || []).filter(m => m.id !== msgId);
+      renderMessagesTable(window.__cached_messages);
+      await saveUpdatedMessages(window.__cached_messages);
+    };
+
+    async function saveUpdatedMessages(messages) {
       try {
-        localMsgs = JSON.parse(localStorage.getItem('anuragsahu_contact_messages') || '[]');
-      } catch(e) {}
+        localStorage.setItem('ag_admin_messages', JSON.stringify(messages));
+        localStorage.setItem('anuragsahu_contact_messages', JSON.stringify(messages));
+      } catch (e) {}
 
-      const defaultMsgs = [
-        {
-          fullName: 'Google DeepMind Talent Acquisition',
-          company: 'Google DeepMind',
-          email: 'talent-ai@google.com',
-          subject: 'AI Systems Engineering Inquiry',
-          message: 'Hi Anurag, reviewed your high-dimensional spatial embeddings and AI architecture. Exceptional engineering. We would love to connect with you regarding AI Systems opportunities.',
-          createdAt: new Date(Date.now() - 3600000).toISOString()
-        },
-        {
-          fullName: 'Senior Technical Recruiter',
-          company: 'Fintech Enterprise Labs',
-          email: 'recruiter@enterprise-fintech.com',
-          subject: 'Summer 2026 Full-Stack AI Engineer Role',
-          message: 'Hi Anurag, reviewed your AI Finance Controller and portfolio architecture. We would love to discuss our Summer 2026 engineering internship opportunities with you.',
-          createdAt: new Date().toISOString()
-        }
-      ];
+      try {
+        await fetch(MESSAGES_ENDPOINT, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'anurag_portfolio_inbox_v1',
+            data: { messages }
+          })
+        });
+      } catch (e) {}
 
-      const allMsgs = [...localMsgs, ...defaultMsgs];
-      const sideBadge = document.getElementById('side-msg-badge');
-      if (sideBadge) sideBadge.textContent = allMsgs.length;
+      try {
+        const bc = new BroadcastChannel('anurag_portfolio_realtime');
+        bc.postMessage({ type: 'messages_updated', count: messages.length });
+      } catch (e) {}
+    }
 
-      tbody.innerHTML = allMsgs.map(m => `
-        <tr class="border-b border-slate-800/40 hover:bg-white/[0.02] transition-colors font-sans">
-          <td class="p-3 font-semibold text-white">${m.fullName || 'Anonymous'}</td>
-          <td class="p-3 text-slate-300">${m.email || '—'}</td>
-          <td class="p-3 text-cyan-400 font-medium">${m.subject || 'Direct Inquiry'}</td>
-          <td class="p-3 text-right">
-            <button onclick="alert('Message from ${m.email}: \\n\\n${(m.message || '').replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 text-xs font-bold transition-colors cursor-pointer">View 👁️</button>
-          </td>
-        </tr>
-      `).join('');
+    function formatTimeAgo(dateStr) {
+      if (!dateStr) return 'Just now';
+      const d = typeof dateStr === 'number' ? new Date(dateStr) : new Date(dateStr);
+      const diffMs = Date.now() - d.getTime();
+      if (diffMs < 0 || diffMs < 30000) return 'Just now';
+      const mins = Math.floor(diffMs / 60000);
+      if (mins < 60) return `${mins}m ago`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs}h ago`;
+      const days = Math.floor(hrs / 24);
+      return `${days}d ago`;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
 
     // Initialize on page load
