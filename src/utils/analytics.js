@@ -18,9 +18,9 @@ export const initAnalytics = () => {
     document.head.appendChild(script);
 
     window.dataLayer = window.dataLayer || [];
-    function gtag() {
+    const gtag = function () {
       window.dataLayer.push(arguments);
-    }
+    };
     gtag('js', new Date());
     gtag('config', gaId);
   }

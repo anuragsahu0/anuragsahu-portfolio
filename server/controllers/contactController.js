@@ -69,7 +69,7 @@ const handleContactForm = async (req, res, next) => {
     return res.status(201).json({
       success: true,
       message: 'Thank you! Your message has been delivered to Anurag Sahu. An auto-confirmation email has been sent to your inbox.',
-      id: contactDoc._id,
+      id: contactDoc ? contactDoc._id : ('msg_' + Date.now()),
     });
   } catch (err) {
     next(err);

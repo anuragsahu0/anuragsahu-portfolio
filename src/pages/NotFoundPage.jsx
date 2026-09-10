@@ -25,7 +25,7 @@ export const NotFoundPage = () => {
           <span className="text-xs text-nebula-cyan font-bold uppercase tracking-widest">[ ERROR_CODE: 404 ]</span>
           <h1 className="text-3xl font-display font-extrabold text-starlight">Trajectory Lost</h1>
           <p className="text-xs text-muted leading-relaxed font-body">
-            The requested telemetry coordinate does not exist in Anurag Sahu's Anti Gravity environment.
+            The requested coordinate does not exist in Anurag Sahu&apos;s portfolio space.
           </p>
         </div>
 

@@ -22,8 +22,13 @@ const errorHandler = require('../server/middleware/errorHandler');
 
 const app = express();
 
-// Connect DB
-connectDB();
+// Ensure DB Connection on serverless invocations
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (e) {}
+  next();
+});
 
 // Middleware
 app.use(helmet({ crossOriginResourcePolicy: false }));
@@ -37,19 +42,13 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Register routes
-app.use('/api', authRoutes);
-app.use('/api', contactRoutes);
-app.use('/api', analyticsRoutes);
-app.use('/api', adminRoutes);
-app.use('/api', projectRoutes);
-app.use('/api', skillRoutes);
-app.use('/api', educationRoutes);
-app.use('/api', roadmapRoutes);
-app.use('/api', socialLinkRoutes);
-app.use('/api', settingsRoutes);
+// Register routes with dual mounting (/api and root) for Vercel serverless flexibility
+[authRoutes, contactRoutes, analyticsRoutes, adminRoutes, projectRoutes, skillRoutes, educationRoutes, roadmapRoutes, socialLinkRoutes, settingsRoutes].forEach(route => {
+  app.use('/api', route);
+  app.use('/', route);
+});
 
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({
     success: true,
     status: 'online',

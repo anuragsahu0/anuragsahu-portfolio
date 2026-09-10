@@ -1,6 +1,17 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    }
+  ],
   "routes": [
     {
       "src": "/sw.js",
@@ -32,6 +43,7 @@
       "dest": "/admin.html"
     },
     { "src": "/mobile", "dest": "/mobile.html" },
-    { "src": "/mobile.html", "dest": "/mobile.html" }
+    { "src": "/mobile.html", "dest": "/mobile.html" },
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }

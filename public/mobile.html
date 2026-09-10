@@ -895,24 +895,24 @@
           localStorage.setItem('anuragsahu_contact_messages', JSON.stringify(existingMsgs));
         } catch (e) {}
 
-        // 2. Real-Time Cloud Inbox Sync
-        const MESSAGES_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a067127101a08ba1833767b4';
+        // 2. Real-Time Cloud Serverless API Delivery (MongoDB Atlas)
         try {
-          fetch(MESSAGES_ENDPOINT)
-            .then(res => res.json())
-            .then(json => {
-              const mData = json && json.data ? json.data : { messages: [] };
-              mData.messages = mData.messages || [];
-              mData.messages.unshift(newMsg);
-              return fetch(MESSAGES_ENDPOINT, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  name: 'anurag_portfolio_inbox_v1',
-                  data: mData
-                })
-              });
-            }).catch(() => {});
+          fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fullName: name,
+              email: email,
+              company: 'Mobile Direct Contact',
+              subject: `📩 Mobile Inquiry from ${name}`,
+              message: msg
+            })
+          })
+          .then(res => res.json())
+          .then(json => {
+            if (json && json.id) newMsg.id = json.id;
+          })
+          .catch(() => {});
         } catch (e) {}
 
         // 3. Instant 0ms Cross-Tab Sync
@@ -1042,7 +1042,6 @@
       });
     }
 
-    const TELEMETRY_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a067127101a08ba1848d67b5';
     function startMobileTelemetry() {
       let sessId = sessionStorage.getItem('as_visitor_sess');
       if (!sessId) {
@@ -1052,40 +1051,20 @@
 
       async function ping() {
         try {
-          const res = await fetch(TELEMETRY_ENDPOINT);
-          if (!res.ok) return;
-          const json = await res.json();
-          const data = json && json.data ? json.data : {};
-
-          if (!data.sessions) data.sessions = {};
-          const prevTotal = parseInt(data.totalVisitors, 10) || 1420;
-          if (!sessionStorage.getItem('as_page_counted')) {
-            data.totalVisitors = prevTotal + 1;
-            sessionStorage.setItem('as_page_counted', 'true');
-          }
-
-          data.sessions[sessId] = {
-            id: sessId,
-            device: 'Mobile WebApp (Touch PWA)',
-            path: '/mobile',
-            entryTime: new Date().toLocaleTimeString(),
-            lastSeen: Date.now(),
-            status: 'ONLINE'
-          };
-
-          await fetch(TELEMETRY_ENDPOINT, {
-            method: 'PUT',
+          await fetch('/api/analytics/track', {
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              name: 'anurag_portfolio_telemetry_v1',
-              data
+              type: 'heartbeat',
+              path: '/mobile',
+              metadata: { device: 'Mobile WebApp (Touch PWA)', sessId }
             })
           });
         } catch (e) {}
       }
 
       ping();
-      setInterval(ping, 15000);
+      setInterval(ping, 25000);
     }
     startMobileTelemetry();
 

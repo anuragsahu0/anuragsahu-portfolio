@@ -46,9 +46,6 @@ function initLiveTelemetryTracking() {
   });
 }
 
-const MESSAGES_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a067127101a08ba1833767b4';
-const TELEMETRY_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a067127101a08ba1848d67b5';
-
 function detectVisitorDevice() {
   const ua = navigator.userAgent || '';
   let device = 'Desktop PC';
@@ -74,93 +71,48 @@ function startVisitorHeartbeat() {
   }
 
   const deviceLabel = detectVisitorDevice();
-  const entryTimeStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
   async function ping() {
     try {
-      const res = await fetch(TELEMETRY_ENDPOINT);
-      if (!res.ok) return;
-      const json = await res.json();
-      const data = json && json.data ? json.data : {};
-
-      if (!data.sessions) data.sessions = {};
-      const totalSessions = Object.keys(data.sessions).length;
-      const prevTotal = parseInt(data.totalVisitors, 10) || totalSessions || 1420;
-
-      if (!sessionStorage.getItem('as_page_counted')) {
-        data.totalVisitors = Math.max(prevTotal + 1, totalSessions + 1, 1421);
-        sessionStorage.setItem('as_page_counted', 'true');
-      } else {
-        data.totalVisitors = Math.max(prevTotal, 1420);
-      }
-      localStorage.setItem('as_total_visitors', data.totalVisitors);
-
-      // Record current session
-      data.sessions[sessId] = {
-        id: sessId,
-        device: deviceLabel,
-        path: window.location.pathname || '/',
-        entryTime: data.sessions[sessId]?.entryTime || entryTimeStr,
-        lastSeen: Date.now(),
-        status: 'ONLINE'
-      };
-
-      // Prune sessions older than 5 minutes
-      const now = Date.now();
-      Object.keys(data.sessions).forEach(sid => {
-        const s = data.sessions[sid];
-        if (s && now - (s.lastSeen || 0) > 300000) {
-          delete data.sessions[sid];
-        }
-      });
-
-      await fetch(TELEMETRY_ENDPOINT, {
-        method: 'PUT',
+      const res = await fetch('/api/analytics/track', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: 'anurag_portfolio_telemetry_v1',
-          data
+          type: 'heartbeat',
+          path: window.location.pathname || '/',
+          metadata: { device: deviceLabel, sessId }
         })
       });
-
-      // Broadcast real-time pulse
-      try {
-        const bc = new BroadcastChannel('anurag_portfolio_realtime');
-        bc.postMessage({ type: 'telemetry_updated', totalVisitors: data.totalVisitors });
-      } catch (e) {}
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.activeUsersCount) {
+          try {
+            const bc = new BroadcastChannel('anurag_portfolio_realtime');
+            bc.postMessage({ type: 'telemetry_updated', activeUsers: json.activeUsersCount });
+          } catch (e) {}
+        }
+      }
     } catch (e) {}
   }
 
   ping();
-  setInterval(ping, 15000);
+  setInterval(ping, 25000);
 }
 
 function sendTelemetry(type, metadata = {}) {
   try {
-    fetch(TELEMETRY_ENDPOINT)
-      .then(r => r.json())
-      .then(json => {
-        const data = json && json.data ? json.data : {};
-        data.activityLog = data.activityLog || [];
-        data.activityLog.unshift({
-          id: 'act_' + Date.now(),
-          type,
-          path: window.location.pathname,
-          device: detectVisitorDevice(),
-          metadata,
-          time: new Date().toISOString()
-        });
-        if (data.activityLog.length > 30) data.activityLog = data.activityLog.slice(0, 30);
-
-        fetch(TELEMETRY_ENDPOINT, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: 'anurag_portfolio_telemetry_v1',
-            data
-          })
-        }).catch(() => {});
-      }).catch(() => {});
+    fetch('/api/analytics/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type,
+        path: window.location.pathname || '/',
+        metadata: {
+          ...metadata,
+          device: detectVisitorDevice()
+        }
+      })
+    }).catch(() => {});
   } catch (e) {}
 }
 
@@ -613,36 +565,31 @@ function initContactForm() {
       localStorage.setItem('anuragsahu_contact_messages', JSON.stringify(existingMsgs));
     } catch (e) {}
 
-    // 2. Real-Time Cloud Inbox Sync (Guarantees message appears in Admin Panel on ALL devices instantly)
+    // 2. Real-Time Cloud Serverless API Delivery (MongoDB Atlas)
     try {
-      fetch(MESSAGES_ENDPOINT)
-        .then(res => res.json())
-        .then(json => {
-          const mData = json && json.data ? json.data : { messages: [] };
-          mData.messages = mData.messages || [];
-          mData.messages.unshift(newMsg);
-          return fetch(MESSAGES_ENDPOINT, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: 'anurag_portfolio_inbox_v1',
-              data: mData
-            })
-          });
+      fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName,
+          email,
+          company: 'Direct Inquiry',
+          subject: `📩 Portfolio Inquiry from ${fullName}`,
+          message
         })
-        .then(() => {
-          // Log activity in telemetry
-          sendTelemetry('contact_submit', { sender: fullName, email });
-        })
-        .catch(() => {});
+      })
+      .then(res => res.json())
+      .then(json => {
+        if (json && json.id) newMsg.id = json.id;
+        sendTelemetry('contact_submission', { sender: fullName, email });
+      })
+      .catch(() => {});
     } catch (e) {}
 
     // 3. Instant 0ms Cross-Tab Real-Time Sync
     try {
       const bc = new BroadcastChannel('anurag_portfolio_realtime');
       bc.postMessage({ type: 'new_message', message: newMsg });
-    } catch (e) {}
-      }).catch(() => {});
     } catch (e) {}
 
     // 4. Instant Admin Email Delivery to shivasahu0612@gmail.com & Visitor Auto-Reply

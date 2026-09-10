@@ -27,7 +27,7 @@ export const AboutMeCard = () => {
       {/* Narrative Paragraphs */}
       <div className="space-y-4 text-sm md:text-base text-muted leading-relaxed font-body text-left">
         <p>
-          Hi, I'm <strong className="text-starlight font-bold">Anurag Sahu</strong>, a B.Tech student in <strong className="text-nebula-cyan font-bold">Computer Science & Engineering (AI & ML)</strong> at <strong className="text-starlight font-semibold">Maharana Pratap Institute of Professional Studies</strong>.
+          Hi, I&apos;m <strong className="text-starlight font-bold">Anurag Sahu</strong>, a B.Tech student in <strong className="text-nebula-cyan font-bold">Computer Science & Engineering (AI & ML)</strong> at <strong className="text-starlight font-semibold">Maharana Pratap Institute of Professional Studies</strong>.
         </p>
 
         <p>
@@ -43,7 +43,7 @@ export const AboutMeCard = () => {
         </p>
 
         <p>
-          I'm actively seeking opportunities to contribute, grow as a developer, and deliver meaningful software that creates real-world impact.
+          I&apos;m actively seeking opportunities to contribute, grow as a developer, and deliver meaningful software that creates real-world impact.
         </p>
       </div>
 

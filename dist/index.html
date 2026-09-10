@@ -29,10 +29,8 @@
   <!-- Preload Critical Hero Image & Font Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="assets/anurag-portrait-sm.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
-  <link rel="preload" as="image" href="assets/anurag-portrait.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
-  <link rel="preload" as="style" href="styles.css?v=20260830_fast">
-  <link rel="stylesheet" href="styles.css?v=20260830_fast">
+  <link rel="preload" as="image" href="/assets/anurag-portrait-sm-C-W7-uIh.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
+  <link rel="preload" as="image" href="/assets/anurag-portrait-DfFGw3Wq.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
   <noscript>
@@ -86,6 +84,8 @@
       pointer-events: none !important;
     }
   </style>
+  <script type="module" crossorigin src="/assets/main-Dd0c0rzE.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-CDMytokG.css">
 </head>
 <body>
   <!-- Reset scroll to top immediately on load to prevent stuck gaps -->
@@ -448,9 +448,9 @@
             
             <div class="portrait-inner-frame" style="width: 100%; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #070400;">
               <picture>
-                <source srcSet="assets/anurag-portrait-sm.webp" media="(max-width: 768px)" type="image/webp">
-                <source srcSet="assets/anurag-portrait.webp" type="image/webp">
-                <img src="assets/anurag-portrait.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" fetchpriority="high" loading="eager" decoding="async" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;">
+                <source srcSet="/assets/anurag-portrait-sm-C-W7-uIh.webp" media="(max-width: 768px)" type="image/webp">
+                <source srcSet="/assets/anurag-portrait-DfFGw3Wq.webp" type="image/webp">
+                <img src="/assets/anurag-portrait-DLHbwdZ1.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" fetchpriority="high" loading="eager" decoding="async" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;">
               </picture>
             </div>
 
@@ -1097,8 +1097,8 @@
           <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
             <div style="width: 64px; height: 75px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.4); padding: 2px; overflow: hidden; flex-shrink: 0;">
               <picture>
-                <source srcSet="assets/anurag-portrait-sm.webp" type="image/webp">
-                <img src="assets/anurag-portrait-sm.jpg" alt="Professional portrait of Anurag Sahu." width="64" height="75" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                <source srcSet="/assets/anurag-portrait-sm-C-W7-uIh.webp" type="image/webp">
+                <img src="/assets/anurag-portrait-sm-DT872AeT.jpg" alt="Professional portrait of Anurag Sahu." width="64" height="75" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
               </picture>
             </div>
             <div>
@@ -1203,7 +1203,6 @@
     </div>
   </footer>
 
-  <script src="app.js?v=20260829_p2_completed" type="module"></script>
   <script>
     function initIcons() {
       if (window.lucide) {
@@ -1235,134 +1234,138 @@
     const canvas = document.getElementById('bg-canvas');
     if (!canvas) return;
 
-    const isMobile = window.innerWidth < 768;
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'low-power' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 80;
-
-    // === ROYAL GOLD STAR FIELD ===
-    const starCount = isMobile ? 250 : 1200;
-    const starPositions = new Float32Array(starCount * 3);
-    const starColors = new Float32Array(starCount * 3);
-
-    // Gold color palette
-    const goldPalette = [
-      [1.0, 0.75, 0.15],  // #fbbf24 Royal Gold
-      [0.85, 0.47, 0.03],  // #d97706 Deep Amber
-      [0.96, 0.62, 0.07],  // #f59e0b Warm Gold
-      [0.99, 0.90, 0.54],  // #fde68a Light Gold
-      [1.0, 0.85, 0.70],   // Pale gold-white
-    ];
-
-    for (let i = 0; i < starCount; i++) {
-      starPositions[i * 3]     = (Math.random() - 0.5) * 300;
-      starPositions[i * 3 + 1] = (Math.random() - 0.5) * 200;
-      starPositions[i * 3 + 2] = (Math.random() - 0.5) * 200;
-      const col = goldPalette[Math.floor(Math.random() * goldPalette.length)];
-      starColors[i * 3]     = col[0];
-      starColors[i * 3 + 1] = col[1];
-      starColors[i * 3 + 2] = col[2];
-    }
-
-    const starGeo = new THREE.BufferGeometry();
-    starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-    starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
-
-    const starMat = new THREE.PointsMaterial({
-      size: 0.7,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.75,
-      sizeAttenuation: true,
-    });
-
-    const stars = new THREE.Points(starGeo, starMat);
-    scene.add(stars);
-
-    // === LARGE GOLD FLOATING DUST PARTICLES ===
-    const dustCount = isMobile ? 25 : 120;
-    const dustPositions = new Float32Array(dustCount * 3);
-    for (let i = 0; i < dustCount; i++) {
-      dustPositions[i * 3]     = (Math.random() - 0.5) * 180;
-      dustPositions[i * 3 + 1] = (Math.random() - 0.5) * 130;
-      dustPositions[i * 3 + 2] = (Math.random() - 0.5) * 50;
-    }
-    const dustGeo = new THREE.BufferGeometry();
-    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-    const dustMat = new THREE.PointsMaterial({
-      size: 1.8,
-      color: 0xfbbf24,
-      transparent: true,
-      opacity: 0.45,
-      sizeAttenuation: true,
-    });
-    const dust = new THREE.Points(dustGeo, dustMat);
-    scene.add(dust);
-
-    // === AMBIENT GOLD ORB (Sphere) ===
-    const orbGeo = new THREE.SphereGeometry(12, 16, 16);
-    const orbMat = new THREE.MeshBasicMaterial({
-      color: 0xd97706,
-      transparent: true,
-      opacity: 0.04,
-      wireframe: false,
-    });
-    const orb = new THREE.Mesh(orbGeo, orbMat);
-    orb.position.set(-60, 30, -60);
-    scene.add(orb);
-
-    // Parallax mouse tracking
-    let mouseX = 0, mouseY = 0;
-    document.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouseY = -(e.clientY / window.innerHeight - 0.5) * 2;
-    }, { passive: true });
-
-    let animFrame;
-    let t = 0;
-
-    function animate() {
-      animFrame = requestAnimationFrame(animate);
-      t += 0.003;
-
-      // Slow rotation of star field
-      stars.rotation.y = t * 0.04;
-      stars.rotation.x = t * 0.015;
-
-      // Dust gentle float
-      dust.rotation.y = t * 0.07;
-      dust.rotation.z = Math.sin(t) * 0.05;
-
-      // Orb gentle pulse
-      orb.scale.setScalar(1 + Math.sin(t * 1.5) * 0.05);
-
-      // Camera parallax follow mouse
-      camera.position.x += (mouseX * 8 - camera.position.x) * 0.02;
-      camera.position.y += (mouseY * 5 - camera.position.y) * 0.02;
-      camera.lookAt(scene.position);
-
-      renderer.render(scene, camera);
-    }
-
-    animate();
-
-    // Resize handler
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+    try {
+      const isMobile = window.innerWidth < 768;
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'low-power' });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       renderer.setSize(window.innerWidth, window.innerHeight);
-    }, { passive: true });
+      renderer.setClearColor(0x000000, 0);
 
-    // Pause when tab not visible
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) cancelAnimationFrame(animFrame);
-      else animate();
-    });
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 80;
+
+      // === ROYAL GOLD STAR FIELD ===
+      const starCount = isMobile ? 250 : 1200;
+      const starPositions = new Float32Array(starCount * 3);
+      const starColors = new Float32Array(starCount * 3);
+
+      // Gold color palette
+      const goldPalette = [
+        [1.0, 0.75, 0.15],  // #fbbf24 Royal Gold
+        [0.85, 0.47, 0.03],  // #d97706 Deep Amber
+        [0.96, 0.62, 0.07],  // #f59e0b Warm Gold
+        [0.99, 0.90, 0.54],  // #fde68a Light Gold
+        [1.0, 0.85, 0.70],   // Pale gold-white
+      ];
+
+      for (let i = 0; i < starCount; i++) {
+        starPositions[i * 3]     = (Math.random() - 0.5) * 300;
+        starPositions[i * 3 + 1] = (Math.random() - 0.5) * 200;
+        starPositions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+        const col = goldPalette[Math.floor(Math.random() * goldPalette.length)];
+        starColors[i * 3]     = col[0];
+        starColors[i * 3 + 1] = col[1];
+        starColors[i * 3 + 2] = col[2];
+      }
+
+      const starGeo = new THREE.BufferGeometry();
+      starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+      starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+
+      const starMat = new THREE.PointsMaterial({
+        size: 0.7,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.75,
+        sizeAttenuation: true,
+      });
+
+      const stars = new THREE.Points(starGeo, starMat);
+      scene.add(stars);
+
+      // === LARGE GOLD FLOATING DUST PARTICLES ===
+      const dustCount = isMobile ? 25 : 120;
+      const dustPositions = new Float32Array(dustCount * 3);
+      for (let i = 0; i < dustCount; i++) {
+        dustPositions[i * 3]     = (Math.random() - 0.5) * 180;
+        dustPositions[i * 3 + 1] = (Math.random() - 0.5) * 130;
+        dustPositions[i * 3 + 2] = (Math.random() - 0.5) * 50;
+      }
+      const dustGeo = new THREE.BufferGeometry();
+      dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+      const dustMat = new THREE.PointsMaterial({
+        size: 1.8,
+        color: 0xfbbf24,
+        transparent: true,
+        opacity: 0.45,
+        sizeAttenuation: true,
+      });
+      const dust = new THREE.Points(dustGeo, dustMat);
+      scene.add(dust);
+
+      // === AMBIENT GOLD ORB (Sphere) ===
+      const orbGeo = new THREE.SphereGeometry(12, 16, 16);
+      const orbMat = new THREE.MeshBasicMaterial({
+        color: 0xd97706,
+        transparent: true,
+        opacity: 0.04,
+        wireframe: false,
+      });
+      const orb = new THREE.Mesh(orbGeo, orbMat);
+      orb.position.set(-60, 30, -60);
+      scene.add(orb);
+
+      // Parallax mouse tracking
+      let mouseX = 0, mouseY = 0;
+      document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = -(e.clientY / window.innerHeight - 0.5) * 2;
+      }, { passive: true });
+
+      let animFrame;
+      let t = 0;
+
+      function animate() {
+        animFrame = requestAnimationFrame(animate);
+        t += 0.003;
+
+        // Slow rotation of star field
+        stars.rotation.y = t * 0.04;
+        stars.rotation.x = t * 0.015;
+
+        // Dust gentle float
+        dust.rotation.y = t * 0.07;
+        dust.rotation.z = Math.sin(t) * 0.05;
+
+        // Orb gentle pulse
+        orb.scale.setScalar(1 + Math.sin(t * 1.5) * 0.05);
+
+        // Camera parallax follow mouse
+        camera.position.x += (mouseX * 8 - camera.position.x) * 0.02;
+        camera.position.y += (mouseY * 5 - camera.position.y) * 0.02;
+        camera.lookAt(scene.position);
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      // Resize handler
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }, { passive: true });
+
+      // Pause when tab not visible
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) cancelAnimationFrame(animFrame);
+        else animate();
+      });
+    } catch (e) {
+      console.warn('WebGL init skipped:', e.message);
+    }
   }
 
   // Defer execution to idle time so FCP and LCP are 100% instantaneous

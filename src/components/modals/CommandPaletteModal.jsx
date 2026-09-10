@@ -3,19 +3,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, X, Code2, FileText, Mail, Github, Linkedin, HelpCircle, ShieldAlert } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { SITE_CONFIG } from '@/constants/config';
-import { AdminDashboardModal } from '@/components/admin/AdminDashboardModal';
 
 /**
  * CommandPaletteModal Component (Ctrl + K)
- * Interactive telemetry terminal overlay with 'admin' dashboard trigger.
+ * Interactive telemetry terminal overlay with 'admin' redirect trigger.
  */
 export const CommandPaletteModal = ({ isOpen, onClose, onCopyEmail, onToggleTheme }) => {
   const [inputVal, setInputVal] = useState('');
   const [logs, setLogs] = useState([
     { text: `[INITIALIZING ${SITE_CONFIG.name.toUpperCase()} TELEMETRY CLI PROTOCOL...]`, type: 'info' },
-    { text: "Type 'help' to list available commands or 'admin' for telemetry stats.", type: 'cyan' },
+    { text: "Type 'help' to list available commands or 'admin' to open Control Center.", type: 'cyan' },
   ]);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -23,7 +21,7 @@ export const CommandPaletteModal = ({ isOpen, onClose, onCopyEmail, onToggleThem
     }
   }, [isOpen]);
 
-  if (!isOpen && !isAdminOpen) return null;
+  if (!isOpen) return null;
 
   const handleCommand = (e) => {
     if (e.key === 'Enter') {
@@ -49,8 +47,10 @@ export const CommandPaletteModal = ({ isOpen, onClose, onCopyEmail, onToggleThem
           });
           break;
         case 'admin':
-          setIsAdminOpen(true);
-          newLogs.push({ text: '⚡ Launching Telemetry Admin Dashboard...', type: 'cyan' });
+          newLogs.push({ text: '⚡ Navigating to Anurag Sahu Control Center (/admin)...', type: 'cyan' });
+          setTimeout(() => {
+            window.location.href = '/admin';
+          }, 400);
           break;
         case 'resume':
           newLogs.push({ text: 'Downloading ATS Resume PDF...', type: 'cyan' });
@@ -109,8 +109,9 @@ export const CommandPaletteModal = ({ isOpen, onClose, onCopyEmail, onToggleThem
                   </div>
                   <div className="flex items-center gap-3">
                     <button
-                      onClick={() => setIsAdminOpen(true)}
+                      onClick={() => { window.location.href = '/admin'; }}
                       className="px-2 py-0.5 rounded bg-nebula-cyan/10 border border-nebula-cyan/30 text-nebula-cyan font-bold hover:bg-nebula-cyan/20 transition-colors flex items-center gap-1"
+                      title="Open Anurag Sahu Control Center"
                     >
                       <ShieldAlert className="w-3 h-3" />
                       <span>Admin</span>
@@ -155,12 +156,6 @@ export const CommandPaletteModal = ({ isOpen, onClose, onCopyEmail, onToggleThem
           </div>
         )}
       </AnimatePresence>
-
-      {/* Embedded Telemetry Admin Dashboard Modal */}
-      <AdminDashboardModal
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-      />
     </>
   );
 };

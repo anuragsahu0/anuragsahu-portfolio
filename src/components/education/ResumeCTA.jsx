@@ -45,7 +45,7 @@ export const ResumeCTA = ({ onCopyEmail }) => {
 
       <div className="max-w-xl mx-auto space-y-2">
         <h3 className="text-2xl sm:text-3xl font-display font-extrabold text-starlight">
-          Ready to review {SITE_CONFIG.shortName}'s full candidacy?
+          Ready to review {SITE_CONFIG.shortName}&apos;s full candidacy?
         </h3>
         <p className="text-muted text-sm leading-relaxed font-body">
           Download the latest ATS-ready resume PDF, inspect source code on GitHub, or initiate direct email correspondence.

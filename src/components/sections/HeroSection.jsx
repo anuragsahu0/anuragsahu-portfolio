@@ -76,7 +76,7 @@ export const HeroSection = ({ isRecruiterMode, onCopyEmail }) => {
             variants={slideUp}
             className="text-muted text-base md:text-lg leading-relaxed max-w-xl"
           >
-            Hi, I'm <strong className="text-starlight font-semibold">{SITE_CONFIG.shortName}</strong> — a Computer Science sophomore specializing in Artificial Intelligence & Machine Learning. I build clean, performant full-stack web applications and love exploring practical ML models.
+            Hi, I&apos;m <strong className="text-starlight font-semibold">{SITE_CONFIG.shortName}</strong> — a Computer Science sophomore specializing in Artificial Intelligence & Machine Learning. I build clean, performant full-stack web applications and love exploring practical ML models.
           </motion.p>
 
           {/* Magnetic Action Buttons */}
@@ -146,17 +146,6 @@ export const HeroSection = ({ isRecruiterMode, onCopyEmail }) => {
           <HeroPortraitCard />
         </motion.div>
       </motion.div>
-
-              <div className="flex items-center justify-between text-xs font-mono text-muted pt-1 border-t border-gravity-amber/20">
-                <span className="text-emerald-400">✓ Open for Summer 2026 SWE & AI/ML Internship Opportunities</span>
-                <button onClick={() => window.open(SITE_CONFIG.resumeUrl, '_blank')} className="text-gravity-amber hover:underline font-semibold">
-                  Download Resume PDF →
-                </button>
-              </div>
-            </GlassCard>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 };
