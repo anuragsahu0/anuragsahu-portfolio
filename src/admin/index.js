@@ -32,6 +32,10 @@ export * from './components/ErrorState';
 export * from './components/StatusBadge';
 export * from './components/Pagination';
 export * from './components/ChartContainer';
+export * from './components/Breadcrumb';
+export * from './components/Search';
+export * from './components/NotificationButton';
+export * from './components/AdminProfile';
 
 // Pages
 export * from './pages/AdminLoginPage';
@@ -54,6 +58,12 @@ export * from './pages/ActivityPage';
 // Services & Hooks
 export * from './services/adminApi';
 export * from './services/authService';
+export * from './services/apiClient';
+export * from './services/projectService';
+export * from './services/profileService';
+export * from './services/analyticsService';
+export * from './services/messageService';
+export * from './services/settingsService';
 export * from './hooks/useAdminAuth';
 export * from './hooks/useAdminData';
 
