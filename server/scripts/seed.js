@@ -1,234 +1,558 @@
-require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
-
+require('dotenv').config({ path: require('path').join(__dirname, '../../server/.env') });
 const mongoose = require('mongoose');
+
+// Models
 const User = require('../models/User');
+const Profile = require('../models/Profile');
+const About = require('../models/About');
 const Project = require('../models/Project');
 const Skill = require('../models/Skill');
+const Experience = require('../models/Experience');
 const Education = require('../models/Education');
+const Certificate = require('../models/Certificate');
 const Roadmap = require('../models/Roadmap');
-const SocialLink = require('../models/SocialLink');
+const Media = require('../models/Media');
 const Settings = require('../models/Settings');
+const Notification = require('../models/Notification');
+const ActivityLog = require('../models/ActivityLog');
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/anti_gravity_portfolio';
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'anuragsahu';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@anuragsahu.dev').toLowerCase();
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'ABCDEF123';
 
-// ─── Seed Data ──────────────────────────────────────────────
-
-const USERS = [{ email: ADMIN_EMAIL, password: ADMIN_PASSWORD, role: 'admin' }];
-
-const PROJECTS = [
-  {
-    id: 'ai-finance-controller',
-    title: 'AI Finance Controller',
-    subtitle: 'Autonomous Financial Operations, Multi-Way Reconciliation & Audit Platform.',
-    category: 'enterprise',
-    categoryLabel: 'Autonomous AI & Fintech',
-    badge: 'FLAGSHIP AI FINTECH',
-    tagline: 'Autonomous enterprise financial operations platform with multi-source ingestion, reconciliation, tax intelligence & Finance Copilot.',
-    description: 'Autonomous enterprise financial operations platform featuring multi-source data ingestion, deterministic multi-way reconciliation engine, GST/VAT tax intelligence, statistical anomaly detection 2.0 (+178% surge detection), controlled settlement automation with Four-Eyes authorization, and Finance Copilot.',
-    github: 'https://github.com/anuragsahu0/ai-finance-controller',
-    demo: 'https://anuragsahu.com/AI-FINANCE-CONTROLLER',
-    image: '/assets/project-portfolio.webp',
-    metrics: [
-      { label: 'Status', value: '100%', change: 'Live & Operational' },
-      { label: 'Reconciliation', value: 'Multi-Way Engine', change: 'Deterministic' },
-      { label: 'Tax & Anomaly', value: 'Active', change: 'GST/VAT Matching' },
-      { label: 'Governance', value: 'Four-Eyes', change: 'Strict Dual Auth' },
-    ],
-    techStack: ['Next.js 14', 'FastAPI', 'Python', 'PostgreSQL', 'Alembic', 'Tailwind CSS', 'Docker', 'AI Copilot'],
-    recruiterHighlights: [
-      'Built multi-way deterministic reconciliation pipeline comparing real bank statements and ledger entries.',
-      'Implemented automated GST/VAT tax matching and statistical anomaly detection (+178% volume surges).',
-      'Designed controlled settlement engine enforcing Four-Eyes principle preventing self-approval.',
-    ],
-    architecture: {
-      frontend: 'Next.js 14 App Router with Tailwind CSS and responsive executive finance consoles.',
-      backend: 'FastAPI Python asynchronous service with SQLAlchemy ORM and Alembic migrations.',
-    },
-    timeline: [
-      { phase: 'Phase 1: Ingestion & Reconciliation', detail: 'Deterministic multi-way matching engine.' },
-      { phase: 'Phase 2: Tax & Anomaly Detection', detail: 'GST/VAT intelligence and surge baselines.' },
-      { phase: 'Phase 3: Four-Eyes Governance', detail: 'Strict dual authorization settlement gate.' },
-      { phase: 'Phase 4: Copilot & Forecasting', detail: 'Grounded reasoning agent & 7-day cash flow.' },
-    ],
-    isFeatured: true,
-    order: 1,
-  },
-  {
-    id: 'restaurant-management-system',
-    title: 'Restaurant Management System',
-    subtitle: 'Multi-tenant POS, kitchen order display, and automated billing engine.',
-    category: 'enterprise',
-    categoryLabel: 'Enterprise System',
-    badge: 'COMING SOON',
-    tagline: 'Multi-tenant restaurant operations platform with live WebSocket KDS.',
-    description: 'A complete multi-tenant restaurant management platform with authentication, real-time kitchen order display (KDS), inventory control, billing, and analytics.',
-    github: 'https://github.com/anuragsahu0',
-    demo: '#',
-    image: '/assets/project-portfolio.webp',
-    metrics: [
-      { label: 'Status', value: 'Planned', change: 'Coming Soon' },
-      { label: 'Architecture', value: 'Multi-Tenant', change: 'Microservices' },
-      { label: 'Real-Time', value: 'WebSockets', change: 'Live KDS' },
-      { label: 'Database', value: 'PostgreSQL', change: 'Relational' },
-    ],
-    techStack: ['Node.js', 'PostgreSQL', 'Redis', 'WebSockets', 'React'],
-    recruiterHighlights: [
-      'Multi-tenant POS and kitchen order display.',
-      'JWT Authentication & Multi-Role User Access Control.',
-      'Inventory Stock Tracking & Digital Invoice Billing Generation.',
-    ],
-    architecture: {
-      frontend: 'React + Tailwind CSS POS interface.',
-      backend: 'Node.js + Express + WebSockets on PostgreSQL.',
-    },
-    timeline: [
-      { phase: 'Phase 1: Architecture Design', detail: 'Schema & RBAC modeling.' },
-      { phase: 'Phase 2: POS & KDS', detail: 'WebSocket real-time event pipeline.' },
-    ],
-    isFeatured: false,
-    order: 2,
-  },
-  {
-    id: 'smart-college-erp',
-    title: 'Smart College ERP',
-    subtitle: 'Student attendance, examination results & fee collection gateway.',
-    category: 'academic',
-    categoryLabel: 'Academic ERP',
-    badge: 'COMING SOON',
-    tagline: 'End-to-end college ERP management system.',
-    description: 'An end-to-end college management ERP platform featuring student attendance tracking, examination result portal, fee collection gateway, and automated performance analytics.',
-    github: 'https://github.com/anuragsahu0',
-    demo: '#',
-    image: '/assets/project-portfolio.webp',
-    metrics: [
-      { label: 'Status', value: 'Planned', change: 'Coming Soon' },
-      { label: 'Modules', value: 'Attendance/Fees', change: 'Full Lifecycle' },
-      { label: 'Auth', value: 'RBAC', change: 'Student/Faculty/Admin' },
-      { label: 'Database', value: 'MongoDB', change: 'Mongoose' },
-    ],
-    techStack: ['React', 'Express', 'MongoDB', 'Node.js', 'Tailwind CSS'],
-    recruiterHighlights: [
-      'Student Attendance & Bio-metric Sync System.',
-      'Examination Result Portal & Grade Sheet Publisher.',
-      'Online Fee Collection Gateway & Financial Accounting Module.',
-    ],
-    architecture: {
-      frontend: 'React single page portal for students and faculty.',
-      backend: 'Express.js REST APIs with MongoDB.',
-    },
-    timeline: [
-      { phase: 'Phase 1: Portal & Auth', detail: 'Role-based access system.' },
-      { phase: 'Phase 2: Modules', detail: 'Attendance, grading & payments.' },
-    ],
-    isFeatured: false,
-    order: 3,
-  },
-];
-
-const SKILLS = [
-  { id: 'react', name: 'React.js 18', category: 'frontend', status: 'Building Projects With', proficiency: 92, icon: 'Atom', practicalUsage: 'Used in Portfolio, interactive AI sandbox tools, and dynamic dashboards.', highlights: ['Custom Hooks & Context API', 'Framer Motion Animations', 'Component Architecture', 'Performance Optimization'], levelLabel: 'Advanced Student Level', order: 1 },
-  { id: 'tailwind', name: 'Tailwind CSS', category: 'frontend', status: 'Building Projects With', proficiency: 95, icon: 'Palette', practicalUsage: 'Designed obsidian glassmorphism design tokens and dynamic responsive layouts.', highlights: ['Custom Utility Classes', 'Responsive Grid Systems', 'Dark Theme Tokens', 'Glassmorphism Effects'], levelLabel: 'Advanced Student Level', order: 2 },
-  { id: 'javascript-es6', name: 'JavaScript (ES6+)', category: 'frontend', status: 'Building Projects With', proficiency: 90, icon: 'Code2', practicalUsage: 'Asynchronous event loops, DOM manipulation, state management, and modern ESNext features.', highlights: ['Async/Await & Promises', 'ES6 Modules & Closures', 'DOM Manipulation', 'Event Loop Concepts'], levelLabel: 'Advanced Student Level', order: 3 },
-  { id: 'nodejs', name: 'Node.js', category: 'backend', status: 'Building Projects With', proficiency: 86, icon: 'Server', practicalUsage: 'Built REST API gateways, event-driven web servers, and asynchronous middleware pipelines.', highlights: ['Express Middleware', 'REST API Architecture', 'JWT Authentication', 'Asynchronous I/O'], levelLabel: 'Intermediate Student Level', order: 4 },
-  { id: 'express', name: 'Express.js', category: 'backend', status: 'Building Projects With', proficiency: 88, icon: 'Cpu', practicalUsage: 'Developed backend API endpoints for portfolio contact submissions and telemetry analytics.', highlights: ['Custom Route Handlers', 'Input Validation', 'Error Handling', 'CORS & Security Headers'], levelLabel: 'Intermediate Student Level', order: 5 },
-  { id: 'fastapi', name: 'FastAPI', category: 'backend', status: 'Building Projects With', proficiency: 82, icon: 'Zap', practicalUsage: 'High-performance Python web framework for GNN inference models and real-time streaming APIs.', highlights: ['Pydantic Schemas', 'Asynchronous Endpoints', 'WebSocket Streaming', 'Automatic OpenAPI Docs'], levelLabel: 'Intermediate Student Level', order: 6 },
-  { id: 'pytorch', name: 'PyTorch', category: 'aiml', status: 'Building Projects With', proficiency: 80, icon: 'Bot', practicalUsage: 'Built Graph Neural Networks, tensor operations, and model loss optimization curves.', highlights: ['Custom Neural Layers', 'Tensor Manipulations', 'Graph Neural Networks (GNN)', 'Model Evaluation'], levelLabel: 'Academic Focus', order: 7 },
-  { id: 'python-ml', name: 'Python (NumPy / SciPy)', category: 'aiml', status: 'Building Projects With', proficiency: 88, icon: 'Terminal', practicalUsage: 'Data preprocessing, matrix operations, physics RK4 integration, and data science scripts.', highlights: ['NumPy Vectorization', 'Pandas Analysis', 'Matplotlib Visualization', 'Scientific Computing'], levelLabel: 'Academic Focus', order: 8 },
-  { id: 'scikit-learn', name: 'Scikit-Learn', category: 'aiml', status: 'Learning', proficiency: 75, icon: 'Sparkles', practicalUsage: 'Applied linear regression, decision trees, random forests, and feature scaling techniques.', highlights: ['Model Training', 'Feature Extraction', 'Cross-Validation', 'Evaluation Metrics'], levelLabel: 'Active Coursework', order: 9 },
-  { id: 'postgresql', name: 'PostgreSQL', category: 'databases', status: 'Building Projects With', proficiency: 84, icon: 'Database', practicalUsage: 'Relational database schema modeling, indexing, foreign keys, and SQL query optimization.', highlights: ['Relational Schema Design', 'SQL Queries & Joins', 'Indexing Strategies', 'ACID Transactions'], levelLabel: 'Intermediate Student Level', order: 10 },
-  { id: 'mongodb', name: 'MongoDB / Mongoose', category: 'databases', status: 'Building Projects With', proficiency: 85, icon: 'FileCode', practicalUsage: 'NoSQL document storage for contact messages, telemetry tracking, and unstructured JSON logs.', highlights: ['Document Modeling', 'Aggregation Pipeline', 'Mongoose Schemas', 'CRUD Operations'], levelLabel: 'Intermediate Student Level', order: 11 },
-  { id: 'cpp', name: 'C++', category: 'languages', status: 'Building Projects With', proficiency: 85, icon: 'Terminal', practicalUsage: 'Used in OOP coursework, DSA problem solving, and low-latency systems.', highlights: ['OOP & Encapsulation', 'Pointers & Memory Control', 'STL Algorithms & Vectors', 'Class Polymorphism'], levelLabel: 'Core CS Foundation', order: 12 },
-  { id: 'git', name: 'Git & GitHub', category: 'tools', status: 'Building Projects With', proficiency: 90, icon: 'GitBranch', practicalUsage: 'Version control, feature branching, PR reviews, and GitHub Actions CI/CD workflows.', highlights: ['Branching Strategies', 'PR Workflows', 'Commit History Hygiene', 'GitHub Actions Basics'], levelLabel: 'Daily Engineering Standard', order: 13 },
-  { id: 'docker', name: 'Docker Containerization', category: 'tools', status: 'Learning', proficiency: 72, icon: 'Box', practicalUsage: 'Containerized multi-stage Docker builds for Vite React frontend and Express Node.js backend.', highlights: ['Multi-Stage Dockerfiles', 'Container Networking', 'Environment Configuration', 'Image Optimization'], levelLabel: 'Active Skill Expansion', order: 14 },
-];
-
-const EDUCATION = [
-  { id: 'btech-cse-aiml', type: 'degree', institution: 'Maharana Pratap Institute of Professional Studies', degree: 'B.Tech in Computer Science & Engineering (AI & ML)', duration: '2024 — 2028 (Expected)', currentStatus: 'Second Year Student (CGPA: 9.2 / 10.0)', location: 'India', relevantCoursework: ['Data Structures & Algorithms', 'Object-Oriented Programming (C++)', 'Database Management Systems', 'Operating Systems & System Logic', 'Linear Algebra & Applied ML'], highlights: ['Ranked top 5% in academic coursework', 'Lead Student Coordinator for Tech & AI Student Chapter', 'Organized college-level hackathons and coding contests'], order: 1 },
-  { id: 'senior-secondary', type: 'degree', institution: 'Higher Secondary Education (CBSE / State Board)', degree: 'Senior Secondary Schooling (Class XII - PCM)', duration: '2022 — 2024', currentStatus: 'Completed with Distinction', location: 'India', relevantCoursework: ['Physics', 'Chemistry', 'Mathematics', 'Computer Science (Python)'], highlights: ['Scored 90%+ in Mathematics & Computer Science', 'Built first Python automation scripts in high school'], order: 2 },
-  { id: 'cert-python', type: 'certification', degree: 'Python for Data Science & AI', platform: 'Coursera / IBM', status: 'Completed', date: '2025', credentialUrl: 'https://coursera.org/verify/credential-placeholder', order: 3 },
-  { id: 'cert-fullstack', type: 'certification', degree: 'Full-Stack Web Engineering', platform: 'freeCodeCamp / Udemy', status: 'Completed', date: '2025', credentialUrl: 'https://freecodecamp.org/certification/placeholder', order: 4 },
-  { id: 'cert-pytorch', type: 'certification', degree: 'Deep Learning with PyTorch', platform: 'Udacity / DeepLearning.AI', status: 'In Progress', date: 'Expected Q2 2026', credentialUrl: '#', order: 5 },
-];
-
-const ROADMAP = [
-  { number: '01', name: 'Portfolio', subtitle: 'Production-ready personal platform & developer telemetry dashboard.', status: 'Completed', statusVariant: 'emerald', statusSymbol: '🟢', progress: 100, progressLabel: 'Completed', lastUpdated: 'Updated Q1 2026', description: 'Building a premium production-ready portfolio with React 18, Node.js, Express backend API, modern glassmorphism design system, and recruiter-focused experience.', currentFocus: ['Nodemailer Contact Form Integration', 'Telemetry Admin Dashboard & Real-Time Analytics', 'Vercel & Docker Multi-Platform Public Deployment'], plannedModules: ['Interactive WebGL Anti-Gravity Particle Canvas', 'Centralized Candidate Data Store', 'Product-Grade Case Study Modals & Metrics'], technologies: ['React 18', 'Node.js', 'Express', 'Tailwind CSS', 'Framer Motion', 'MongoDB'], category: 'Full-Stack Web & Telemetry', order: 1 },
-  { number: '02', name: 'AI Finance Controller', subtitle: 'Autonomous Financial Operations, Multi-Way Reconciliation & Audit Platform.', status: 'Completed', statusVariant: 'emerald', statusSymbol: '🟢', progress: 100, progressLabel: 'Live & Operational', lastUpdated: 'Updated Q3 2026', description: 'Autonomous enterprise financial operations platform featuring multi-source data ingestion, deterministic reconciliation engine, GST/VAT tax intelligence, statistical anomaly detection 2.0 (+178% surge detection), controlled settlement automation with Four-Eyes authorization, and Finance Copilot.', currentFocus: ['Deterministic Multi-Way Matching', 'Four-Eyes Dual Authorization Engine', 'Real-Time Event Processing & Anomaly Baselines'], plannedModules: ['Predictive 7-Day Cash Flow Forecast', 'Specialized Logical Agents & Copilot 2.0', 'Continuous Financial Operations Monitoring'], technologies: ['Next.js 14', 'FastAPI', 'Python', 'PostgreSQL', 'Alembic', 'Docker'], category: 'Autonomous AI & Fintech', order: 2 },
-];
-
-const SOCIAL_LINKS = [
-  { platform: 'github', label: 'GitHub', url: 'https://github.com/anuragsahu0', icon: 'github', color: '#06b6d4', order: 1 },
-  { platform: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/in/anurag-sahu-5a46b9360/', icon: 'linkedin', color: '#8b5cf6', order: 2 },
-  { platform: 'email', label: 'Email', url: 'mailto:shivasahu0612@gmail.com', icon: 'mail', color: '#10b981', order: 3 },
-];
-
-const SETTINGS = [
-  { key: 'site_name', value: 'Anurag Sahu Portfolio', description: 'Site display name' },
-  { key: 'candidate_name', value: 'Anurag Sahu', description: 'Candidate full name' },
-  { key: 'candidate_email', value: 'shivasahu0612@gmail.com', description: 'Primary contact email' },
-  { key: 'candidate_institution', value: 'Maharana Pratap Institute of Professional Studies', description: 'College / University name' },
-  { key: 'availability_status', value: 'Open for Summer 2026 Internships', description: 'Current availability status' },
-  { key: 'github_url', value: 'https://github.com/anuragsahu0', description: 'GitHub profile URL' },
-  { key: 'linkedin_url', value: 'https://www.linkedin.com/in/anurag-sahu-5a46b9360/', description: 'LinkedIn profile URL' },
-  { key: 'hero_tagline', value: 'Building modern full-stack web applications and practical AI solutions.', description: 'Hero section main tagline' },
-  { key: 'about_subtitle', value: 'Passionate about building modern web experiences and continuously growing as a software developer.', description: 'About Me section subtitle' },
-];
-
-// ─── Seed Function ──────────────────────────────────────────
 async function seed() {
-  try {
-    await mongoose.connect(MONGODB_URI);
-    console.log('\n🍃 Connected to MongoDB:', MONGODB_URI);
+  console.log('🌱 Connecting to database for authentic portfolio seeding...');
+  await mongoose.connect(MONGODB_URI);
+  console.log('🍃 Connected to MongoDB.');
 
-    // Clear all collections
-    console.log('\n🗑️  Clearing existing data...');
-    await Promise.all([
-      User.deleteMany({}),
-      Project.deleteMany({}),
-      Skill.deleteMany({}),
-      Education.deleteMany({}),
-      Roadmap.deleteMany({}),
-      SocialLink.deleteMany({}),
-      Settings.deleteMany({}),
-    ]);
+  // 1. Admin User
+  console.log('👤 Seeding Admin User...');
+  await User.deleteMany({ email: { $in: [ADMIN_EMAIL, 'admin@anuragsahu.dev', 'anuragsahu'] } });
+  const adminUser = new User({
+    name: 'Anurag Sahu',
+    email: ADMIN_EMAIL,
+    password: ADMIN_PASSWORD,
+    role: 'admin',
+    isActive: true,
+  });
+  await adminUser.save();
+  console.log(`✓ Admin User created: ${ADMIN_EMAIL}`);
 
-    // Insert data
-    console.log('\n📦 Seeding database...');
-    await User.insertMany(USERS);
-    console.log(`  ✓ ${USERS.length} admin user(s) created`);
+  // 2. Profile
+  console.log('📋 Seeding Profile...');
+  await Profile.deleteMany({});
+  await Profile.create({
+    fullName: 'Anurag Sahu',
+    professionalHeadline: 'Computer Science Engineer & Full-Stack Developer',
+    shortIntroduction: 'Passionate about building modern web experiences and continuously growing as a software developer.',
+    profileImage: '/assets/anurag-portrait-sm.webp',
+    secondaryImage: '/assets/anurag-portrait-sm.jpg',
+    location: 'India',
+    availability: 'Open to Internship Opportunities',
+    currentFocus: 'Full-Stack Development & Autonomous AI Systems',
+    email: 'shivasahu0612@gmail.com',
+    github: 'https://github.com/anuragsahu0',
+    linkedin: 'https://linkedin.com/in/anuragsahu0',
+    portfolioUrl: 'https://anuragsahu.com',
+    resumeUrl: '/assets/anurag-sahu-resume.pdf',
+  });
+  console.log('✓ Profile seeded.');
 
-    await Project.insertMany(PROJECTS);
-    console.log(`  ✓ ${PROJECTS.length} projects seeded`);
+  // 3. About
+  console.log('📖 Seeding About narrative...');
+  await About.deleteMany({});
+  await About.create({
+    title: 'About Me',
+    description: 'Passionate about building modern web experiences and continuously growing as a software developer.',
+    personalNarrative: [
+      {
+        id: 'p1',
+        text: "Hi, I'm Anurag Sahu, a B.Tech student in Computer Science & Engineering (AI & ML) at Maharana Pratap Institute of Professional Studies.",
+        highlightWords: ['Anurag Sahu', 'Computer Science & Engineering (AI & ML)', 'Maharana Pratap Institute of Professional Studies'],
+      },
+      {
+        id: 'p2',
+        text: 'I am passionate about building modern, scalable web applications and continuously improving my problem-solving skills.',
+        highlightWords: ['modern, scalable web applications'],
+      },
+      {
+        id: 'p3',
+        text: 'My current focus is Full-Stack Development, where I work with both frontend and backend technologies to create responsive, efficient, and user-centric solutions.',
+        highlightWords: ['Full-Stack Development'],
+      },
+      {
+        id: 'p4',
+        text: 'I enjoy learning new technologies, taking on challenging projects, and writing clean, maintainable code.',
+        highlightWords: ['clean, maintainable code'],
+      },
+      {
+        id: 'p5',
+        text: "I'm actively seeking opportunities to contribute, grow as a developer, and deliver meaningful software that creates real-world impact.",
+        highlightWords: ['real-world impact'],
+      },
+    ],
+    learningJourney: 'B.Tech CSE (AI & ML) with rigorous coursework in algorithms, database design, and deep learning neural architectures.',
+    engineeringValues: [
+      { title: 'Deterministic Engineering', description: 'Writing robust, testable, and maintainable software systems.', icon: 'ShieldCheck' },
+      { title: 'Performance Optimization', description: 'Architecting high-speed, lightweight experiences with sub-second response times.', icon: 'Zap' },
+      { title: 'Production Reliability', description: 'Zero compromise on security, validation, and fault-tolerant architecture.', icon: 'Cpu' },
+    ],
+    currentFocus: 'Full-Stack Development with React, Node.js, Express, and Modern Cloud Microservices.',
+    goals: ['Excel in Software Engineering', 'Ship Enterprise-Grade Systems', 'Master Scalable Distributed Architecture'],
+    interests: ['Autonomous AI Systems', 'Modern Web Infrastructure', 'Fintech & Multi-Way Reconciliation', 'High-Performance APIs'],
+    displayOrder: 1,
+    isPublished: true,
+  });
+  console.log('✓ About narrative seeded.');
 
-    await Skill.insertMany(SKILLS);
-    console.log(`  ✓ ${SKILLS.length} skills seeded`);
+  // 4. Projects (Authentic 3 projects)
+  console.log('🚀 Seeding Projects...');
+  await Project.deleteMany({});
+  await Project.create([
+    {
+      id: 'ai-finance-controller',
+      slug: 'ai-finance-controller',
+      title: 'AI Finance Controller',
+      subtitle: 'Autonomous Financial Operations, Multi-Way Reconciliation & Audit Platform.',
+      shortDescription: 'Autonomous enterprise financial operations platform with multi-source ingestion, reconciliation, tax intelligence & Finance Copilot.',
+      description: 'Autonomous enterprise financial operations platform featuring multi-source data ingestion, deterministic multi-way reconciliation engine, GST/VAT tax intelligence, statistical anomaly detection 2.0 (+178% surge detection), controlled settlement automation with Four-Eyes authorization, and Finance Copilot.',
+      category: 'enterprise',
+      categoryLabel: 'Autonomous AI & Fintech',
+      badge: 'FLAGSHIP AI FINTECH',
+      tagline: 'Autonomous enterprise financial operations platform with multi-source ingestion, reconciliation, tax intelligence & Finance Copilot.',
+      status: 'COMPLETED',
+      progress: 100,
+      githubUrl: 'https://github.com/anuragsahu0/ai-finance-controller',
+      liveUrl: 'https://anuragsahu.com/AI-FINANCE-CONTROLLER',
+      thumbnail: '/assets/project-portfolio.webp',
+      gallery: [],
+      technologies: ['Next.js 14', 'FastAPI', 'Python', 'PostgreSQL', 'Alembic', 'Tailwind CSS', 'Docker', 'AI Copilot'],
+      featured: true,
+      visibility: 'PUBLISHED',
+      displayOrder: 1,
+      metrics: [
+        { label: 'Platform Status', value: '100%', change: '🟢 Live & Operational' },
+        { label: 'Reconciliation', value: 'Multi-Way Engine', change: 'Deterministic' },
+        { label: 'Tax & Anomaly', value: 'Active', change: 'GST/VAT Matching' },
+        { label: 'Governance', value: 'Four-Eyes', change: 'Strict Dual Authorization' },
+      ],
+      techStack: ['Next.js 14', 'FastAPI', 'Python', 'PostgreSQL', 'Alembic', 'Tailwind CSS', 'Docker'],
+      recruiterHighlights: [
+        'Built multi-way deterministic reconciliation pipeline comparing real bank statements, ledger entries, and payment feeds.',
+        'Implemented automated GST/VAT tax matching and statistical anomaly detection flagging volume surges with UNUSUAL tag.',
+        'Designed controlled settlement engine enforcing Four-Eyes principle preventing self-approval of payouts.',
+        'Integrated Finance Copilot with specialized logical agents citing verified database records and PII masking.',
+      ],
+      architecture: {
+        frontend: 'Next.js 14 App Router with Tailwind CSS, Lucide icons, and responsive executive finance consoles.',
+        backend: 'FastAPI Python asynchronous service with SQLAlchemy ORM, Alembic migrations, and security middlewares.',
+      },
+      timeline: [
+        { phase: 'Phase 1-4: Foundation & Ingestion', detail: 'Multi-source CSV/Excel parsing & schemas.' },
+        { phase: 'Phase 5: Reconciliation Engine', detail: 'Deterministic multi-way matching & scores.' },
+        { phase: 'Phase 6-8: Tax, Risk & Settlement', detail: 'Four-Eyes approval & tax discrepancy engine.' },
+        { phase: 'Phase 9-10: Monitoring & Intelligence', detail: 'Event bus, 7-day cash flow forecast & Copilot.' },
+      ],
+    },
+    {
+      id: 'restaurant-management-system',
+      slug: 'restaurant-management-system',
+      title: 'Restaurant Management System',
+      subtitle: 'Multi-tenant POS, kitchen order display, and automated billing engine.',
+      shortDescription: 'Multi-tenant restaurant operations platform with live WebSocket KDS.',
+      description: 'A complete multi-tenant restaurant management platform with authentication, real-time kitchen order display (KDS), inventory control, billing, and analytics.',
+      category: 'enterprise',
+      categoryLabel: 'Enterprise System',
+      badge: 'COMING SOON',
+      tagline: 'Multi-tenant restaurant operations platform with live WebSocket KDS.',
+      status: 'COMING_SOON',
+      progress: 15,
+      githubUrl: 'https://github.com/anuragsahu0/restaurant-management-system',
+      liveUrl: '#',
+      thumbnail: '/assets/project-portfolio.webp',
+      gallery: [],
+      technologies: ['Node.js', 'Express', 'React', 'PostgreSQL', 'Redis', 'WebSockets', 'Tailwind CSS', 'JWT'],
+      featured: false,
+      visibility: 'PUBLISHED',
+      displayOrder: 2,
+      metrics: [
+        { label: 'Phase', value: '15%', change: 'Coming Soon' },
+        { label: 'Auth', value: 'RBAC', change: 'JWT + Multi-Tenant' },
+        { label: 'Real-Time', value: 'WebSockets', change: 'KDS Display' },
+        { label: 'DB', value: 'PostgreSQL', change: 'Relational + Redis' },
+      ],
+      techStack: ['Node.js', 'Express', 'React', 'PostgreSQL', 'Redis', 'WebSockets'],
+      recruiterHighlights: [
+        'Designed PostgreSQL ERD schema for multi-tenant restaurant inventory.',
+        'Specified real-time WebSocket KDS architecture.',
+        'Planned JWT RBAC separating Admin, Chef, Cashier, Waiter roles.',
+      ],
+      architecture: {
+        frontend: 'React SPA with glassmorphism POS interface and live KDS.',
+        backend: 'Node.js + Express REST & WebSocket server with PostgreSQL + Redis.',
+      },
+      timeline: [
+        { phase: 'Phase 1: ERD Schema', detail: 'PostgreSQL relational modeling.' },
+        { phase: 'Phase 2: Auth + RBAC', detail: 'JWT + role-based middleware.' },
+        { phase: 'Phase 3: POS + KDS', detail: 'WebSocket order pipeline.' },
+        { phase: 'Phase 4: Billing', detail: 'Invoice generation + analytics.' },
+      ],
+    },
+    {
+      id: 'portfolio',
+      slug: 'portfolio',
+      title: 'Personal Portfolio & Control Center',
+      subtitle: 'Production-ready personal platform & developer telemetry dashboard.',
+      shortDescription: 'Production-ready personal platform built with React, Express, MongoDB, and telemetry dashboard.',
+      description: 'A full-stack personal platform built with modern architecture, REST APIs, MongoDB Mongoose models, and an administrative control center.',
+      category: 'fullstack',
+      categoryLabel: 'Full-Stack Web & Telemetry',
+      badge: 'FLAGSHIP PROJECT',
+      tagline: 'Building a premium production-ready portfolio with React 18, Node.js, Express backend API, modern glassmorphism design system.',
+      status: 'WORKING',
+      progress: 95,
+      githubUrl: 'https://github.com/anuragsahu0/portfolio',
+      liveUrl: 'https://anuragsahu.com',
+      thumbnail: '/assets/project-portfolio.webp',
+      gallery: [],
+      technologies: ['React 18', 'Node.js', 'Express', 'Tailwind CSS', 'Framer Motion', 'MongoDB'],
+      featured: true,
+      visibility: 'PUBLISHED',
+      displayOrder: 3,
+      metrics: [
+        { label: 'Completion', value: '95%', change: 'Working' },
+        { label: 'Backend', value: 'Express.js', change: 'Node.js + REST' },
+        { label: 'Database', value: 'MongoDB', change: 'Mongoose' },
+        { label: 'Security', value: 'JWT + CSP', change: 'Production' },
+      ],
+      techStack: ['React 18', 'Node.js', 'Express', 'Tailwind CSS', 'Framer Motion', 'MongoDB'],
+      recruiterHighlights: [
+        'Engineered secure Control Center with JWT Bearer authentication.',
+        'Designed glassmorphism design system with responsive obsidian theme.',
+        'Constructed RESTful API endpoints for content and telemetry.',
+      ],
+      architecture: {
+        frontend: 'React 18 + Vite with Tailwind CSS and Framer Motion.',
+        backend: 'Node.js + Express.js API with CORS, helmet, and rate limiting.',
+      },
+      timeline: [
+        { phase: 'Phase 1: Design System', detail: 'Glassmorphism design tokens.' },
+        { phase: 'Phase 2: Full-Stack API', detail: 'Contact form + REST endpoints.' },
+        { phase: 'Phase 3: Admin Panel', detail: 'JWT auth + real telemetry.' },
+        { phase: 'Phase 4: Deployment', detail: 'Vercel, Docker & CI/CD.' },
+      ],
+    },
+  ]);
+  console.log('✓ Projects seeded.');
 
-    await Education.insertMany(EDUCATION);
-    console.log(`  ✓ ${EDUCATION.length} education records seeded`);
+  // 5. Skills (Authentic 14 skills)
+  console.log('⚡ Seeding Skills...');
+  await Skill.deleteMany({});
+  await Skill.create([
+    { name: 'React.js 18', category: 'Frontend', proficiency: 92, icon: 'Atom', description: 'Used in personal portfolio, interactive sandboxes, and modern component systems.', displayOrder: 1, isVisible: true },
+    { name: 'Tailwind CSS', category: 'Frontend', proficiency: 95, icon: 'Palette', description: 'Obsidian glassmorphism design tokens, micro-interactions, and mobile viewports.', displayOrder: 2, isVisible: true },
+    { name: 'JavaScript (ES6+)', category: 'Frontend', proficiency: 90, icon: 'Code2', description: 'Async/await event loops, closures, DOM manipulation, and modern web standards.', displayOrder: 3, isVisible: true },
+    { name: 'Node.js', category: 'Backend', proficiency: 86, icon: 'Server', description: 'Event-driven web servers, REST API gateways, and asynchronous pipelines.', displayOrder: 4, isVisible: true },
+    { name: 'Express.js', category: 'Backend', proficiency: 88, icon: 'Cpu', description: 'Custom middlewares, rate limiting, JWT authentication, and structured error handling.', displayOrder: 5, isVisible: true },
+    { name: 'FastAPI', category: 'Backend', proficiency: 82, icon: 'Zap', description: 'High-performance asynchronous Python REST APIs and model inference endpoints.', displayOrder: 6, isVisible: true },
+    { name: 'PyTorch', category: 'AI/ML', proficiency: 80, icon: 'Bot', description: 'Graph neural networks, tensor operations, and model loss optimization pipelines.', displayOrder: 7, isVisible: true },
+    { name: 'Python (NumPy / SciPy)', category: 'AI/ML', proficiency: 88, icon: 'Terminal', description: 'Scientific computing, data vectorization, and machine learning pipelines.', displayOrder: 8, isVisible: true },
+    { name: 'MongoDB / Mongoose', category: 'Database', proficiency: 85, icon: 'Database', description: 'Document schemas, aggregation pipelines, replica sets, and indexing.', displayOrder: 9, isVisible: true },
+    { name: 'PostgreSQL', category: 'Database', proficiency: 82, icon: 'Boxes', description: 'Relational data modeling, foreign keys, ACID compliance, and SQL optimization.', displayOrder: 10, isVisible: true },
+    { name: 'Git & GitHub', category: 'Tools', proficiency: 90, icon: 'GitBranch', description: 'Version control, atomic commits, pull requests, and CI/CD pipelines.', displayOrder: 11, isVisible: true },
+    { name: 'Docker', category: 'Tools', proficiency: 75, icon: 'Container', description: 'Multi-stage container builds, microservices, and deployment isolation.', displayOrder: 12, isVisible: true },
+    { name: 'Postman', category: 'Tools', proficiency: 88, icon: 'Send', description: 'Automated API testing suites, environment variables, and mock servers.', displayOrder: 13, isVisible: true },
+    { name: 'Linux / Bash', category: 'Tools', proficiency: 80, icon: 'TerminalSquare', description: 'Shell scripting, server automation, process managers, and deployment.', displayOrder: 14, isVisible: true },
+  ]);
+  console.log('✓ Skills seeded.');
 
-    await Roadmap.insertMany(ROADMAP);
-    console.log(`  ✓ ${ROADMAP.length} roadmap entries seeded`);
+  // 6. Experience
+  console.log('💼 Seeding Experience...');
+  await Experience.deleteMany({});
+  await Experience.create([
+    {
+      organization: 'Maharana Pratap Institute of Professional Studies',
+      role: 'Lead Student Technical Coordinator (AI & Web)',
+      description: 'Leading student technical chapter, organizing collegiate hackathons, coordinating full-stack workshops, and architecting internal tools.',
+      technologies: ['React', 'Node.js', 'FastAPI', 'Git', 'MongoDB'],
+      achievements: [
+        'Organized multi-college hackathons and technical symposiums for 200+ students.',
+        'Conducted hands-on sessions on modern web development and Git workflows.',
+      ],
+      startDate: 'Aug 2024',
+      endDate: 'Present',
+      isCurrent: true,
+      displayOrder: 1,
+      isVisible: true,
+    },
+  ]);
+  console.log('✓ Experience seeded.');
 
-    await SocialLink.insertMany(SOCIAL_LINKS);
-    console.log(`  ✓ ${SOCIAL_LINKS.length} social links seeded`);
+  // 7. Education
+  console.log('🎓 Seeding Education...');
+  await Education.deleteMany({});
+  await Education.create([
+    {
+      institution: 'Maharana Pratap Institute of Professional Studies',
+      degree: 'B.Tech in Computer Science & Engineering (AI & ML)',
+      specialization: 'Artificial Intelligence & Machine Learning',
+      startYear: '2024',
+      endYear: '2028',
+      cgpa: '9.2 / 10.0',
+      description: 'Specializing in core computer science, deep learning foundations, and full-stack software architecture.',
+      relevantCoursework: [
+        'Data Structures & Algorithms',
+        'Object-Oriented Programming (C++)',
+        'Database Management Systems',
+        'Operating Systems',
+        'Artificial Intelligence & Machine Learning',
+      ],
+      highlights: [
+        'Ranked top 5% in academic coursework',
+        'Lead Student Coordinator for Tech & AI Student Chapter',
+        'Organized collegiate hackathons and coding symposiums',
+      ],
+      displayOrder: 1,
+      isVisible: true,
+    },
+    {
+      institution: 'Higher Secondary Education (CBSE / State Board)',
+      degree: 'Senior Secondary Schooling (Class XII - PCM)',
+      specialization: 'Physics, Chemistry, Mathematics & Computer Science',
+      startYear: '2022',
+      endYear: '2024',
+      cgpa: '90%+',
+      description: 'Completed secondary education with distinction in Mathematics and Computer Science (Python).',
+      relevantCoursework: ['Physics', 'Chemistry', 'Mathematics', 'Computer Science (Python)'],
+      highlights: [
+        'Scored 90%+ in Mathematics & Computer Science',
+        'Developed foundational Python automation programs in high school',
+      ],
+      displayOrder: 2,
+      isVisible: true,
+    },
+  ]);
+  console.log('✓ Education seeded.');
 
-    await Settings.insertMany(SETTINGS);
-    console.log(`  ✓ ${SETTINGS.length} settings seeded`);
+  // 8. Certificates
+  console.log('📜 Seeding Certificates...');
+  await Certificate.deleteMany({});
+  await Certificate.create([
+    {
+      title: 'Python for Data Science & AI',
+      issuer: 'Coursera / IBM',
+      issueDate: '2025',
+      credentialUrl: 'https://coursera.org/verify/credential-placeholder',
+      image: '',
+      description: 'Data analysis, NumPy, Pandas vectorization, and foundational machine learning techniques.',
+      displayOrder: 1,
+      isVisible: true,
+    },
+    {
+      title: 'Full-Stack Web Engineering',
+      issuer: 'freeCodeCamp / Udemy',
+      issueDate: '2025',
+      credentialUrl: 'https://freecodecamp.org/certification/placeholder',
+      image: '',
+      description: 'Modern frontend design patterns, asynchronous JavaScript, Node.js API development, and MongoDB integration.',
+      displayOrder: 2,
+      isVisible: true,
+    },
+    {
+      title: 'Deep Learning with PyTorch',
+      issuer: 'Udacity / DeepLearning.AI',
+      issueDate: '2026',
+      credentialUrl: '',
+      image: '',
+      description: 'Neural network layer architecture, tensor mathematics, backpropagation, and loss optimization.',
+      displayOrder: 3,
+      isVisible: true,
+    },
+  ]);
+  console.log('✓ Certificates seeded.');
 
-    console.log('\n✅ DATABASE SEEDED SUCCESSFULLY!');
-    console.log(`\n   Admin Login:`);
-    console.log(`   Email:    ${ADMIN_EMAIL}`);
-    console.log(`   Password: ${ADMIN_PASSWORD}`);
-    console.log(`   Endpoint: POST http://localhost:5001/api/auth/login`);
-    console.log('\n   Run: npm run dev (to start the server)');
-    console.log('==================================================\n');
+  // 9. Roadmap
+  console.log('🗺️ Seeding Roadmap...');
+  await Roadmap.deleteMany({});
+  await Roadmap.create([
+    {
+      title: 'Personal Portfolio & Control Center',
+      number: '01',
+      name: 'Portfolio',
+      subtitle: 'Production-ready personal platform & developer telemetry dashboard.',
+      status: 'WORKING',
+      statusVariant: 'cyan',
+      statusSymbol: '🟢',
+      progress: 85,
+      progressLabel: 'Working • 85% Completed',
+      lastUpdated: 'Updated Q1 2026',
+      description: 'Building a premium production-ready portfolio with React 18, Node.js, Express backend API, modern glassmorphism design system, and recruiter-focused fast-track telemetry.',
+      currentFocus: [
+        'Nodemailer Contact Form Integration',
+        'Telemetry Admin Dashboard & Real-Time Analytics',
+        'Vercel & Docker Multi-Platform Public Deployment',
+      ],
+      plannedModules: [
+        'Interactive WebGL Anti-Gravity Particle Canvas',
+        'Centralized Candidate Data Store (Anurag Sahu)',
+        'Product-Grade Case Study Modals & Metrics',
+      ],
+      technologies: ['React 18', 'Node.js', 'Express', 'Tailwind CSS', 'Framer Motion', 'MongoDB'],
+      category: 'Full-Stack Web & Telemetry',
+      displayOrder: 1,
+      isVisible: true,
+    },
+    {
+      title: 'Meoww Racing Game',
+      number: '02',
+      name: 'Meoww Racing Game',
+      subtitle: 'Interactive 2D/3D arcade cat racing game with HTML5 Canvas physics engine.',
+      status: 'COMING_SOON',
+      statusVariant: 'amber',
+      statusSymbol: '🟡',
+      progress: 15,
+      progressLabel: 'Planning • 15% Completed',
+      lastUpdated: 'Planned Q2 2026',
+      description: 'An action-packed arcade racing game featuring feline racers, nitro boosters, dynamic obstacle courses, and high score leaderboards.',
+      currentFocus: [
+        'Database Schema Design & ERD Modeling',
+        'Physics Engine Collision Detection & Vector Math',
+        'Custom Sprite Sheet Animation Pipeline',
+      ],
+      plannedModules: [
+        'Canvas 2D Physics Loop with Variable Delta Timing',
+        'Audio Synthesizer for Engine Sound FX',
+        'Local Storage & Cloud Leaderboard Sync',
+      ],
+      technologies: ['HTML5 Canvas', 'JavaScript ES6+', 'WebGL', 'Tailwind CSS'],
+      category: 'Game Engineering & Simulation',
+      displayOrder: 2,
+      isVisible: true,
+    },
+    {
+      title: 'Autonomous Financial Reconciliation Engine',
+      number: '03',
+      name: 'AI Finance Controller',
+      subtitle: 'High-throughput deterministic reconciliation engine with GST/VAT matching.',
+      status: 'PLANNING',
+      statusVariant: 'purple',
+      statusSymbol: '🟣',
+      progress: 30,
+      progressLabel: 'Architecture Phase • 30%',
+      lastUpdated: 'Q2 2026',
+      description: 'Autonomous financial reconciliation system handling multi-source transaction feeds, rule-based settlement engines, and anomaly detection.',
+      currentFocus: [
+        'Deterministic Matching Pipeline',
+        'Four-Eyes Authorization Enforcement',
+        'Anomaly Flagging Algorithm',
+      ],
+      plannedModules: [
+        'FastAPI Microservice with Asynchronous Processing',
+        'Multi-Format Bank Statement Ingestion',
+        'Audit Trail Verification & PII Protection',
+      ],
+      technologies: ['FastAPI', 'Python', 'PostgreSQL', 'Docker', 'Redis'],
+      category: 'Fintech & Autonomous AI',
+      displayOrder: 3,
+      isVisible: true,
+    },
+  ]);
+  console.log('✓ Roadmap seeded.');
 
-    process.exit(0);
-  } catch (err) {
-    console.error('\n❌ SEED ERROR:', err.message);
-    process.exit(1);
-  }
+  // 10. Media
+  console.log('🖼️ Seeding Media Metadata...');
+  await Media.deleteMany({});
+  await Media.create([
+    {
+      fileName: 'anurag-portrait-sm.webp',
+      url: '/assets/anurag-portrait-sm.webp',
+      type: 'image',
+      mimeType: 'image/webp',
+      size: 9246,
+      altText: 'Anurag Sahu Portrait WebP',
+      category: 'PROFILE',
+    },
+    {
+      fileName: 'anurag-portrait-sm.jpg',
+      url: '/assets/anurag-portrait-sm.jpg',
+      type: 'image',
+      mimeType: 'image/jpeg',
+      size: 15995,
+      altText: 'Anurag Sahu Portrait JPEG',
+      category: 'PROFILE',
+    },
+    {
+      fileName: 'anurag-sahu-resume.pdf',
+      url: '/assets/anurag-sahu-resume.pdf',
+      type: 'document',
+      mimeType: 'application/pdf',
+      size: 85200,
+      altText: 'Anurag Sahu Curriculum Vitae PDF',
+      category: 'RESUME',
+    },
+    {
+      fileName: 'project-portfolio.webp',
+      url: '/assets/project-portfolio.webp',
+      type: 'image',
+      mimeType: 'image/webp',
+      size: 47155,
+      altText: 'Portfolio Project Preview',
+      category: 'PROJECT',
+    },
+  ]);
+  console.log('✓ Media metadata seeded.');
+
+  // 11. Settings
+  console.log('⚙️ Seeding Settings...');
+  await Settings.deleteMany({});
+  await Settings.create({
+    singletonId: 'global',
+    siteName: 'Anurag Sahu',
+    portfolioUrl: 'https://anuragsahu.com',
+    contactEmail: 'shivasahu0612@gmail.com',
+    github: 'https://github.com/anuragsahu0',
+    linkedin: 'https://linkedin.com/in/anuragsahu0',
+    resumeUrl: '/assets/anurag-sahu-resume.pdf',
+    availability: 'Open to Internship Opportunities',
+    seoTitle: 'Anurag Sahu — Computer Science Engineer & Full-Stack Developer',
+    seoDescription: 'Personal portfolio and engineering telemetry showcase for Anurag Sahu.',
+    ogTitle: 'Anurag Sahu — Control Center & Developer Portfolio',
+    ogDescription: 'Explore engineering projects, interactive systems, and live telemetry.',
+    ogImage: '/assets/anurag-portrait-sm.jpg',
+    footerText: '© 2026 Anurag Sahu. Engineered for performance and scale.',
+  });
+  console.log('✓ Settings seeded.');
+
+  // 12. Notification
+  console.log('🔔 Seeding initial System Notification...');
+  await Notification.deleteMany({});
+  await Notification.create({
+    type: 'SYSTEM',
+    title: 'Control Center v2.0 Online',
+    message: 'Anurag Sahu Control Center CMS backend architecture is fully operational.',
+    isRead: false,
+  });
+  console.log('✓ Notification seeded.');
+
+  // 13. Activity Log
+  console.log('📝 Seeding initial Activity Log...');
+  await ActivityLog.create({
+    adminId: 'admin',
+    adminEmail: ADMIN_EMAIL,
+    action: 'DATABASE_SEEDED',
+    resourceType: 'System',
+    description: 'Authentic Anurag Sahu portfolio data migrated into CMS models.',
+  });
+  console.log('✓ Activity log created.');
+
+  console.log('\n==================================================');
+  console.log('✅ ALL 15 CMS ENTITIES SEEDED SUCCESSFULLY WITH AUTHENTIC DATA');
+  console.log('==================================================\n');
+
+  await mongoose.disconnect();
 }
 
-seed();
+seed().catch((err) => {
+  console.error('❌ Seeding failed:', err.message);
+  process.exit(1);
+});

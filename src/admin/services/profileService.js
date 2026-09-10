@@ -5,15 +5,11 @@ import { apiClient } from './apiClient';
  */
 export const profileService = {
   async getProfile() {
-    return apiClient.get('/settings');
+    return apiClient.get('/admin/profile');
   },
 
   async updateProfile(profileData) {
-    return apiClient.put('/admin/settings', {
-      key: 'profile',
-      value: profileData,
-      description: 'Public profile configuration',
-    });
+    return apiClient.put('/admin/profile', profileData);
   },
 
   async getSocialLinks() {

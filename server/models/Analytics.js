@@ -7,19 +7,37 @@ const AnalyticsSchema = new mongoose.Schema(
       required: true,
       enum: [
         'page_view',
+        'project_view',
         'resume_download',
-        'project_click',
         'github_click',
         'linkedin_click',
         'contact_submission',
       ],
+      index: true,
     },
-    path: { type: String, default: '/' },
-    metadata: { type: Object, default: {} },
-    ipAddress: { type: String, default: '' },
-    userAgent: { type: String, default: '' },
+    path: {
+      type: String,
+      default: '/',
+    },
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
+    ipAddress: {
+      type: String,
+      default: '',
+    },
+    userAgent: {
+      type: String,
+      default: '',
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
+
+AnalyticsSchema.index({ type: 1, createdAt: -1 });
+AnalyticsSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.models.Analytics || mongoose.model('Analytics', AnalyticsSchema);

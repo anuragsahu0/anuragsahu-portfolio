@@ -1,76 +1,109 @@
 const Settings = require('../models/Settings');
+const { sendSuccess, sendError } = require('../utils/apiResponse');
+const { logActivity } = require('./adminController');
 
-const GLOBAL_CLOUD_ID = 'ff8081819f7e10ae019fc83569456a67';
-const GLOBAL_CLOUD_URL = `https://api.restful-api.dev/objects/${GLOBAL_CLOUD_ID}`;
-
-// Global memory cache
-const globalSettingsCache = {
-  'ag_proj_status_01': 'Completed',
-  'ag_proj_status_02': 'Coming Soon',
-  'ag_proj_status_03': 'Coming Soon',
+const DEFAULT_SETTINGS = {
+  siteName: 'Anurag Sahu',
+  portfolioUrl: 'https://anuragsahu.com',
+  contactEmail: 'shivasahu0612@gmail.com',
+  github: 'https://github.com/anuragsahu0',
+  linkedin: 'https://linkedin.com/in/anuragsahu0',
+  resumeUrl: '/assets/anurag-sahu-resume.pdf',
+  availability: 'Open to Internship Opportunities',
+  seoTitle: 'Anurag Sahu — Computer Science Engineer & Full-Stack Developer',
+  seoDescription: 'Personal portfolio and engineering telemetry showcase for Anurag Sahu.',
+  ogTitle: 'Anurag Sahu — Control Center & Developer Portfolio',
+  ogDescription: 'Explore engineering projects, interactive systems, and live telemetry.',
+  ogImage: '/assets/anurag-portrait-sm.jpg',
+  footerText: '© 2026 Anurag Sahu. Engineered for performance and scale.',
 };
 
-const getAll = async (req, res, next) => {
+/**
+ * GET /api/public/settings
+ * Safe public configuration only (no sensitive backend settings)
+ */
+const getPublicSettings = async (req, res, next) => {
   try {
-    const settingsMap = { ...globalSettingsCache };
-
-    // Fetch from global cloud storage
+    let settings = null;
     try {
-      const cloudRes = await fetch(GLOBAL_CLOUD_URL);
-      const cloudData = await cloudRes.json();
-      if (cloudData && cloudData.data) {
-        Object.assign(settingsMap, cloudData.data);
-        Object.assign(globalSettingsCache, cloudData.data);
+      if (Settings.db && Settings.db.readyState === 1) {
+        settings = await Settings.findOne({ singletonId: 'global' }).lean();
       }
-    } catch (cErr) {}
-
-    // Fallback to MongoDB
-    try {
-      const dbSettings = await Settings.find();
-      dbSettings.forEach((s) => { settingsMap[s.key] = s.value; });
     } catch (dbErr) {}
 
-    return res.status(200).json({ success: true, settings: settingsMap });
-  } catch (err) {
-    return res.status(200).json({ success: true, settings: globalSettingsCache });
-  }
-};
+    const source = settings || DEFAULT_SETTINGS;
+    const publicSafe = {
+      siteName: source.siteName,
+      portfolioUrl: source.portfolioUrl,
+      availability: source.availability,
+      seoTitle: source.seoTitle,
+      seoDescription: source.seoDescription,
+      ogTitle: source.ogTitle,
+      ogDescription: source.ogDescription,
+      ogImage: source.ogImage,
+      footerText: source.footerText,
+      github: source.github,
+      linkedin: source.linkedin,
+      resumeUrl: source.resumeUrl,
+    };
 
-const upsert = async (req, res, next) => {
-  try {
-    const { key, value, description } = req.body;
-    if (!key || value === undefined) {
-      return res.status(400).json({ success: false, message: 'key and value are required.' });
-    }
-
-    // 1. Update memory cache
-    globalSettingsCache[key] = value;
-
-    // 2. Persist to global cloud storage
-    try {
-      await fetch(GLOBAL_CLOUD_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'Anurag Portfolio Global Settings',
-          data: globalSettingsCache
-        })
-      });
-    } catch (cErr) {}
-
-    // 3. Persist to MongoDB
-    try {
-      await Settings.findOneAndUpdate(
-        { key },
-        { key, value, description: description || '' },
-        { new: true, upsert: true, runValidators: true }
-      );
-    } catch (dbErr) {}
-
-    return res.status(200).json({ success: true, key, value, settings: globalSettingsCache });
+    return sendSuccess(res, publicSafe);
   } catch (err) {
     next(err);
   }
 };
 
-module.exports = { getAll, upsert };
+/**
+ * GET /api/admin/settings
+ */
+const getAdminSettings = async (req, res, next) => {
+  try {
+    let settings = null;
+    try {
+      if (Settings.db && Settings.db.readyState === 1) {
+        settings = await Settings.findOne({ singletonId: 'global' }).lean();
+      }
+    } catch (dbErr) {}
+
+    return sendSuccess(res, settings || DEFAULT_SETTINGS);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * PUT/PATCH /api/admin/settings
+ */
+const updateSettings = async (req, res, next) => {
+  try {
+    const updates = req.body;
+    let settings = null;
+
+    try {
+      if (Settings.db && Settings.db.readyState === 1) {
+        settings = await Settings.findOneAndUpdate(
+          { singletonId: 'global' },
+          { ...updates, singletonId: 'global' },
+          { new: true, upsert: true, runValidators: true }
+        );
+      }
+    } catch (dbErr) {}
+
+    try {
+      await logActivity('SETTINGS_UPDATED', 'Settings', { updatedKeys: Object.keys(updates) }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, settings || { ...DEFAULT_SETTINGS, ...updates });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  getPublicSettings,
+  getAdminSettings,
+  updateSettings,
+  // legacy alias
+  getAll: getAdminSettings,
+  upsert: updateSettings,
+};

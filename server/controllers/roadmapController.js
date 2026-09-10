@@ -1,17 +1,22 @@
 const Roadmap = require('../models/Roadmap');
+const { sendSuccess, sendError } = require('../utils/apiResponse');
+const { logActivity } = require('./adminController');
 
 const FALLBACK_ROADMAP = [
   {
+    _id: 'rd-1',
+    id: 'portfolio',
+    title: 'Personal Portfolio & Control Center',
     number: '01',
     name: 'Portfolio',
     subtitle: 'Production-ready personal platform & developer telemetry dashboard.',
-    status: 'Completed',
-    statusVariant: 'emerald',
+    status: 'WORKING',
+    statusVariant: 'cyan',
     statusSymbol: '🟢',
-    progress: 100,
-    progressLabel: 'Completed',
+    progress: 85,
+    progressLabel: 'Working • 85% Completed',
     lastUpdated: 'Updated Q1 2026',
-    description: 'Building a premium production-ready portfolio with React 18, Node.js, Express backend API, modern glassmorphism design system, and recruiter-focused experience.',
+    description: 'Building a premium production-ready portfolio with React 18, Node.js, Express backend API, modern glassmorphism design system, and recruiter-focused fast-track telemetry.',
     currentFocus: [
       'Nodemailer Contact Form Integration',
       'Telemetry Admin Dashboard & Real-Time Analytics',
@@ -19,129 +24,253 @@ const FALLBACK_ROADMAP = [
     ],
     plannedModules: [
       'Interactive WebGL Anti-Gravity Particle Canvas',
-      'Centralized Candidate Data Store',
+      'Centralized Candidate Data Store (Anurag Sahu)',
       'Product-Grade Case Study Modals & Metrics',
     ],
     technologies: ['React 18', 'Node.js', 'Express', 'Tailwind CSS', 'Framer Motion', 'MongoDB'],
     category: 'Full-Stack Web & Telemetry',
+    displayOrder: 1,
+    isVisible: true,
   },
   {
+    _id: 'rd-2',
+    id: 'meoww-racing-game',
+    title: 'Meoww Racing Game',
     number: '02',
-    name: 'Restaurant Management System',
-    subtitle: 'End-to-end POS, inventory control, billing, and real-time order processing platform.',
-    status: 'Coming Soon',
+    name: 'Meoww Racing Game',
+    subtitle: 'Interactive 2D/3D arcade cat racing game with HTML5 Canvas physics engine.',
+    status: 'COMING_SOON',
     statusVariant: 'amber',
     statusSymbol: '🟡',
-    progress: 0,
-    progressLabel: 'Coming Soon',
+    progress: 15,
+    progressLabel: 'Planning • 15% Completed',
     lastUpdated: 'Planned Q2 2026',
-    description: 'A complete multi-tenant restaurant management platform with role-based authentication, real-time kitchen order display (KDS), automated inventory tracking, invoice billing, and revenue analytics.',
+    description: 'An action-packed arcade racing game featuring feline racers, nitro boosters, dynamic obstacle courses, and high score leaderboards.',
     currentFocus: [
       'Database Schema Design & ERD Modeling',
-      'Role-Based Access Control (RBAC) System',
-      'POS & Invoice Billing Module Specifications',
+      'Physics Engine Collision Detection & Vector Math',
+      'Custom Sprite Sheet Animation Pipeline',
     ],
     plannedModules: [
-      'JWT Authentication & Multi-Role User Management',
-      'Real-Time Kitchen Order Display via WebSockets',
-      'Inventory Stock Tracking & Automatic Low-Stock Alerts',
-      'Automated Billing & Digital Receipt Generation',
-      'Manager Analytics Dashboard (Revenue & Popular Dishes)',
+      'Canvas 2D Physics Loop with Variable Delta Timing',
+      'Audio Synthesizer for Engine Sound FX',
+      'Local Storage & Cloud Leaderboard Sync',
     ],
-    technologies: ['Node.js', 'Express', 'React', 'PostgreSQL', 'Redis', 'WebSockets', 'Tailwind CSS'],
-    category: 'Enterprise Full-Stack System',
+    technologies: ['HTML5 Canvas', 'JavaScript ES6+', 'WebGL', 'Tailwind CSS'],
+    category: 'Game Engineering & Simulation',
+    displayOrder: 2,
+    isVisible: true,
   },
   {
+    _id: 'rd-3',
+    id: 'ai-finance-platform',
+    title: 'Autonomous Financial Reconciliation Engine',
     number: '03',
-    name: 'Smart College ERP',
-    subtitle: 'End-to-end college management ERP platform featuring student & faculty portals.',
-    status: 'Coming Soon',
-    statusVariant: 'amber',
-    statusSymbol: '🟡',
-    progress: 0,
-    progressLabel: 'Coming Soon',
-    lastUpdated: 'Planned Q3 2026',
-    description: 'An end-to-end college management ERP platform featuring student attendance tracking, examination result portal, fee collection gateway, faculty schedule manager, and automated performance analytics.',
+    name: 'AI Finance Controller',
+    subtitle: 'High-throughput deterministic reconciliation engine with GST/VAT matching.',
+    status: 'PLANNING',
+    statusVariant: 'purple',
+    statusSymbol: '🟣',
+    progress: 30,
+    progressLabel: 'Architecture Phase • 30%',
+    lastUpdated: 'Q2 2026',
+    description: 'Autonomous financial reconciliation system handling multi-source transaction feeds, rule-based settlement engines, and anomaly detection.',
     currentFocus: [
-      'Multi-Role Student, Faculty & Admin Portal (RBAC)',
-      'Attendance Tracking & Automated Percentage Calculation',
-      'Online Examination Result Publishing & Digital Fee Gateway',
+      'Deterministic Matching Pipeline',
+      'Four-Eyes Authorization Enforcement',
+      'Anomaly Flagging Algorithm',
     ],
     plannedModules: [
-      'JWT Authentication & Multi-Role User Management',
-      'Automated Attendance & Grading Pipeline',
-      'Fee Collection Gateway & Digital Receipts',
-      'Faculty Schedule & Timetable Scheduling Engine',
+      'FastAPI Microservice with Asynchronous Processing',
+      'Multi-Format Bank Statement Ingestion',
+      'Audit Trail Verification & PII Protection',
     ],
-    technologies: ['Node.js', 'Express', 'React', 'MongoDB', 'Tailwind CSS'],
-    category: 'Academic ERP System',
+    technologies: ['FastAPI', 'Python', 'PostgreSQL', 'Docker', 'Redis'],
+    category: 'Fintech & Autonomous AI',
+    displayOrder: 3,
+    isVisible: true,
   },
 ];
 
-const getAll = async (req, res, next) => {
+const getPublicRoadmap = async (req, res, next) => {
   try {
-    const projects = await Roadmap.find({ isActive: true }).sort({ order: 1 });
-    return res.status(200).json({ success: true, count: projects.length, roadmap: projects, source: 'database' });
-  } catch (err) {
-    console.warn('[Roadmap] DB unavailable, serving fallback data');
-    return res.status(200).json({ success: true, count: FALLBACK_ROADMAP.length, roadmap: FALLBACK_ROADMAP, source: 'fallback' });
-  }
-};
+    let roadmap = [];
+    try {
+      if (Roadmap.db && Roadmap.db.readyState === 1) {
+        roadmap = await Roadmap.find({ isVisible: true }).sort({ displayOrder: 1 }).lean();
+      }
+    } catch (dbErr) {}
 
-const getOne = async (req, res, next) => {
-  try {
-    const project = await Roadmap.findById(req.params.id);
-    if (!project) return res.status(404).json({ success: false, message: 'Roadmap project not found.' });
-    return res.status(200).json({ success: true, project });
-  } catch (err) {
-    next(err);
-  }
-};
-
-const create = async (req, res, next) => {
-  try {
-    const project = await Roadmap.create(req.body);
-    return res.status(201).json({ success: true, project });
-  } catch (err) {
-    next(err);
-  }
-};
-
-const update = async (req, res, next) => {
-  try {
-    const { status, number, name } = req.body;
-    
-    // Update in memory FALLBACK_ROADMAP
-    const target = FALLBACK_ROADMAP.find((item) => item.number === req.params.id || item.number === number || item.name.toLowerCase() === (name || '').toLowerCase());
-    if (target && status) {
-      target.status = status;
-      target.statusSymbol = status === 'Completed' ? '🟢' : '🟡';
-      target.statusVariant = status === 'Completed' ? 'emerald' : 'amber';
-      target.progressLabel = status;
-      target.progress = status === 'Completed' ? 100 : 0;
+    if (!roadmap || roadmap.length === 0) {
+      roadmap = FALLBACK_ROADMAP.filter((r) => r.isVisible);
     }
+
+    return sendSuccess(res, { count: roadmap.length, roadmap });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getAdminRoadmap = async (req, res, next) => {
+  try {
+    let roadmap = [];
+    try {
+      if (Roadmap.db && Roadmap.db.readyState === 1) {
+        roadmap = await Roadmap.find().sort({ displayOrder: 1 }).lean();
+      }
+    } catch (dbErr) {}
+
+    if (!roadmap || roadmap.length === 0) {
+      roadmap = FALLBACK_ROADMAP;
+    }
+
+    return sendSuccess(res, { count: roadmap.length, roadmap });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getRoadmapById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let item = null;
 
     try {
       if (Roadmap.db && Roadmap.db.readyState === 1) {
-        const project = await Roadmap.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-        if (project) return res.status(200).json({ success: true, project });
+        if (id.match(/^[0-9a-fA-F]{24}$/)) {
+          item = await Roadmap.findById(id);
+        } else {
+          item = await Roadmap.findOne({ $or: [{ id }, { number: id }] });
+        }
       }
+    } catch (dbErr) {}
+
+    if (!item) {
+      item = FALLBACK_ROADMAP.find((r) => r._id === id || r.id === id || r.number === id);
+    }
+
+    if (!item) {
+      return sendError(res, 'Roadmap project not found.', 'NOT_FOUND', 404);
+    }
+
+    return sendSuccess(res, item);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const createRoadmap = async (req, res, next) => {
+  try {
+    const { title, description } = req.body;
+    if (!title || !description) {
+      return sendError(res, 'Title and description are required.', 'VALIDATION_ERROR', 422);
+    }
+
+    let item = null;
+    try {
+      if (Roadmap.db && Roadmap.db.readyState === 1) {
+        item = await Roadmap.create(req.body);
+      }
+    } catch (dbErr) {}
+
+    if (!item) {
+      item = {
+        _id: `rd-${Date.now()}`,
+        id: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        ...req.body,
+        createdAt: new Date(),
+      };
+      FALLBACK_ROADMAP.push(item);
+    }
+
+    try {
+      await logActivity('ROADMAP_CREATED', 'Roadmap', { title: item.title, status: item.status }, req);
     } catch (e) {}
 
-    return res.status(200).json({ success: true, message: 'Status updated successfully', project: target });
+    return sendSuccess(res, item, 201);
   } catch (err) {
     next(err);
   }
 };
 
-const remove = async (req, res, next) => {
+const updateRoadmap = async (req, res, next) => {
   try {
-    const project = await Roadmap.findByIdAndDelete(req.params.id);
-    if (!project) return res.status(404).json({ success: false, message: 'Roadmap project not found.' });
-    return res.status(200).json({ success: true, message: 'Roadmap project deleted.' });
+    const { id } = req.params;
+    let item = null;
+
+    try {
+      if (Roadmap.db && Roadmap.db.readyState === 1) {
+        const query = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { id };
+        item = await Roadmap.findOneAndUpdate(query, req.body, { new: true, runValidators: true });
+      }
+    } catch (dbErr) {}
+
+    if (!item) {
+      const idx = FALLBACK_ROADMAP.findIndex((r) => r._id === id || r.id === id);
+      if (idx !== -1) {
+        FALLBACK_ROADMAP[idx] = { ...FALLBACK_ROADMAP[idx], ...req.body, updatedAt: new Date() };
+        item = FALLBACK_ROADMAP[idx];
+      }
+    }
+
+    if (!item) {
+      return sendError(res, 'Roadmap project not found.', 'NOT_FOUND', 404);
+    }
+
+    try {
+      await logActivity('ROADMAP_UPDATED', 'Roadmap', { id, title: item.title }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, item);
   } catch (err) {
     next(err);
   }
 };
 
-module.exports = { getAll, getOne, create, update, remove };
+const deleteRoadmap = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let deleted = null;
+
+    try {
+      if (Roadmap.db && Roadmap.db.readyState === 1) {
+        const query = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { id };
+        deleted = await Roadmap.findOneAndDelete(query);
+      }
+    } catch (dbErr) {}
+
+    if (!deleted) {
+      const idx = FALLBACK_ROADMAP.findIndex((r) => r._id === id || r.id === id);
+      if (idx !== -1) {
+        deleted = FALLBACK_ROADMAP.splice(idx, 1)[0];
+      }
+    }
+
+    if (!deleted) {
+      return sendError(res, 'Roadmap project not found.', 'NOT_FOUND', 404);
+    }
+
+    try {
+      await logActivity('ROADMAP_DELETED', 'Roadmap', { id }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, { message: 'Roadmap project deleted.', id });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  getPublicRoadmap,
+  getAdminRoadmap,
+  getRoadmapById,
+  createRoadmap,
+  updateRoadmap,
+  deleteRoadmap,
+  // legacy alias
+  getAll: getAdminRoadmap,
+  getOne: getRoadmapById,
+  create: createRoadmap,
+  update: updateRoadmap,
+  remove: deleteRoadmap,
+};

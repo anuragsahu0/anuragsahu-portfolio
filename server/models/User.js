@@ -3,6 +3,11 @@ const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      default: 'Anurag Sahu',
+      trim: true,
+    },
     email: {
       type: String,
       required: [true, 'Email is required'],
@@ -10,6 +15,7 @@ const UserSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email'],
+      index: true,
     },
     password: {
       type: String,
@@ -19,22 +25,31 @@ const UserSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['admin', 'viewer'],
+      enum: ['admin', 'editor', 'viewer'],
       default: 'admin',
     },
-    lastLogin: { type: Date },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    lastLoginAt: {
+      type: Date,
+      default: null,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-// Hash password before saving
+// Pre-save bcrypt hash
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-// Compare password
+// Compare password method
 UserSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };

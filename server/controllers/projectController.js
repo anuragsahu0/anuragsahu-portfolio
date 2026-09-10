@@ -1,111 +1,456 @@
 const Project = require('../models/Project');
+const { sendSuccess, sendError } = require('../utils/apiResponse');
+const { logActivity } = require('./adminController');
 
-// Static fallback data when MongoDB is unavailable
+// In-memory fallback if DB is offline
 const FALLBACK_PROJECTS = [
   {
-    id: 'portfolio',
-    title: 'Portfolio',
-    subtitle: 'Production-ready personal platform & developer telemetry dashboard.',
-    category: 'fullstack',
-    categoryLabel: 'Full-Stack Web & Telemetry',
-    badge: 'FLAGSHIP PROJECT',
-    description: 'A full-stack personal platform built with React 18, Node.js, Express backend REST APIs, MongoDB, and glassmorphism design system.',
-    github: 'https://github.com/anuragsahu0/portfolio',
-    demo: 'https://anuragsahu.vercel.app',
-    techStack: ['React 18', 'Node.js', 'Express', 'Tailwind CSS', 'Framer Motion', 'MongoDB'],
-    isFeatured: true,
-    order: 1,
-    metrics: [
-      { label: 'Status', value: 'Completed', change: 'Live' },
-      { label: 'Backend', value: 'Express.js', change: 'Node.js + REST' },
-    ],
-  },
-  {
+    _id: 'proj-1',
     id: 'ai-finance-controller',
+    slug: 'ai-finance-controller',
     title: 'AI Finance Controller',
     subtitle: 'Autonomous Financial Operations, Multi-Way Reconciliation & Audit Platform.',
+    shortDescription: 'Autonomous enterprise financial operations platform with multi-source ingestion, reconciliation, tax intelligence & Finance Copilot.',
+    description: 'Autonomous enterprise financial operations platform featuring multi-source data ingestion, deterministic multi-way reconciliation engine, GST/VAT tax intelligence, statistical anomaly detection 2.0 (+178% surge detection), controlled settlement automation with Four-Eyes authorization, and Finance Copilot.',
     category: 'enterprise',
     categoryLabel: 'Autonomous AI & Fintech',
     badge: 'FLAGSHIP AI FINTECH',
-    description: 'Autonomous enterprise financial operations platform featuring multi-source data ingestion, deterministic reconciliation engine, GST/VAT tax intelligence, anomaly detection 2.0, controlled settlement automation with Four-Eyes authorization, and Finance Copilot.',
-    github: 'https://github.com/anuragsahu0/ai-finance-controller',
-    demo: 'https://anuragsahu.com/AI-FINANCE-CONTROLLER',
-    techStack: ['Next.js 14', 'FastAPI', 'Python', 'PostgreSQL', 'Tailwind CSS', 'Docker', 'AI Copilot'],
-    isFeatured: true,
-    order: 2,
+    tagline: 'Autonomous enterprise financial operations platform with multi-source ingestion, reconciliation, tax intelligence & Finance Copilot.',
+    status: 'COMPLETED',
+    progress: 100,
+    githubUrl: 'https://github.com/anuragsahu0/ai-finance-controller',
+    liveUrl: 'https://anuragsahu.com/AI-FINANCE-CONTROLLER',
+    thumbnail: '/assets/project-portfolio.webp',
+    gallery: [],
+    technologies: ['Next.js 14', 'FastAPI', 'Python', 'PostgreSQL', 'Alembic', 'Tailwind CSS', 'Docker', 'AI Copilot'],
+    featured: true,
+    visibility: 'PUBLISHED',
+    displayOrder: 1,
     metrics: [
-      { label: 'Status', value: 'Live & Operational', change: '100% Production' },
+      { label: 'Platform Status', value: '100%', change: '🟢 Live & Operational' },
       { label: 'Reconciliation', value: 'Multi-Way Engine', change: 'Deterministic' },
+      { label: 'Tax & Anomaly', value: 'Active', change: 'GST/VAT Matching' },
+      { label: 'Governance', value: 'Four-Eyes', change: 'Strict Dual Authorization' },
+    ],
+    techStack: ['Next.js 14', 'FastAPI', 'Python', 'PostgreSQL', 'Alembic', 'Tailwind CSS', 'Docker'],
+    recruiterHighlights: [
+      'Built multi-way deterministic reconciliation pipeline comparing real bank statements, ledger entries, and payment feeds.',
+      'Implemented automated GST/VAT tax matching and statistical anomaly detection flagging volume surges with UNUSUAL tag.',
+      'Designed controlled settlement engine enforcing Four-Eyes principle preventing self-approval of payouts.',
+      'Integrated Finance Copilot with specialized logical agents citing verified database records and PII masking.',
+    ],
+    architecture: {
+      frontend: 'Next.js 14 App Router with Tailwind CSS, Lucide icons, and responsive executive finance consoles.',
+      backend: 'FastAPI Python asynchronous service with SQLAlchemy ORM, Alembic migrations, and security middlewares.',
+    },
+    timeline: [
+      { phase: 'Phase 1-4: Foundation & Ingestion', detail: 'Multi-source CSV/Excel parsing & schemas.' },
+      { phase: 'Phase 5: Reconciliation Engine', detail: 'Deterministic multi-way matching & scores.' },
+      { phase: 'Phase 6-8: Tax, Risk & Settlement', detail: 'Four-Eyes approval & tax discrepancy engine.' },
+      { phase: 'Phase 9-10: Monitoring & Intelligence', detail: 'Event bus, 7-day cash flow forecast & Copilot.' },
     ],
   },
   {
-    id: 'smart-college-erp',
-    title: 'Smart College ERP',
-    subtitle: 'Comprehensive academic ERP platform featuring student, faculty, and examination portals.',
+    _id: 'proj-2',
+    id: 'restaurant-management-system',
+    slug: 'restaurant-management-system',
+    title: 'Restaurant Management System',
+    subtitle: 'Multi-tenant POS, kitchen order display, and automated billing engine.',
+    shortDescription: 'Multi-tenant restaurant operations platform with live WebSocket KDS.',
+    description: 'A complete multi-tenant restaurant management platform with authentication, real-time kitchen order display (KDS), inventory control, billing, and analytics.',
     category: 'enterprise',
-    categoryLabel: 'Academic ERP System',
-    badge: 'PLANNED ACADEMIC ERP',
-    description: 'An end-to-end college management ERP platform featuring student attendance tracking, examination result portal, fee collection gateway, faculty schedule manager, and automated performance analytics.',
-    github: 'https://github.com/anuragsahu0/smart-college-erp',
-    demo: '#',
-    techStack: ['React 18', 'Node.js', 'Express', 'MongoDB', 'Tailwind CSS'],
-    isFeatured: false,
-    order: 3,
+    categoryLabel: 'Enterprise System',
+    badge: 'COMING SOON',
+    tagline: 'Multi-tenant restaurant operations platform with live WebSocket KDS.',
+    status: 'COMING_SOON',
+    progress: 15,
+    githubUrl: 'https://github.com/anuragsahu0/restaurant-management-system',
+    liveUrl: '#',
+    thumbnail: '/assets/project-portfolio.webp',
+    gallery: [],
+    technologies: ['Node.js', 'Express', 'React', 'PostgreSQL', 'Redis', 'WebSockets', 'Tailwind CSS', 'JWT'],
+    featured: false,
+    visibility: 'PUBLISHED',
+    displayOrder: 2,
     metrics: [
-      { label: 'Status', value: 'Coming Soon', change: 'Planning' },
-      { label: 'Modules', value: 'Academic ERP', change: 'Attendance + Fees' },
+      { label: 'Phase', value: '15%', change: 'Coming Soon' },
+      { label: 'Auth', value: 'RBAC', change: 'JWT + Multi-Tenant' },
+      { label: 'Real-Time', value: 'WebSockets', change: 'KDS Display' },
+      { label: 'DB', value: 'PostgreSQL', change: 'Relational + Redis' },
+    ],
+    techStack: ['Node.js', 'Express', 'React', 'PostgreSQL', 'Redis', 'WebSockets'],
+    recruiterHighlights: [
+      'Designed PostgreSQL ERD schema for multi-tenant restaurant inventory.',
+      'Specified real-time WebSocket KDS architecture.',
+      'Planned JWT RBAC separating Admin, Chef, Cashier, Waiter roles.',
+    ],
+    architecture: {
+      frontend: 'React SPA with glassmorphism POS interface and live KDS.',
+      backend: 'Node.js + Express REST & WebSocket server with PostgreSQL + Redis.',
+    },
+    timeline: [
+      { phase: 'Phase 1: ERD Schema', detail: 'PostgreSQL relational modeling.' },
+      { phase: 'Phase 2: Auth + RBAC', detail: 'JWT + role-based middleware.' },
+      { phase: 'Phase 3: POS + KDS', detail: 'WebSocket order pipeline.' },
+      { phase: 'Phase 4: Billing', detail: 'Invoice generation + analytics.' },
+    ],
+  },
+  {
+    _id: 'proj-3',
+    id: 'portfolio',
+    slug: 'portfolio',
+    title: 'Personal Portfolio & Control Center',
+    subtitle: 'Production-ready personal platform & developer telemetry dashboard.',
+    shortDescription: 'Production-ready personal platform built with React, Express, MongoDB, and telemetry dashboard.',
+    description: 'A full-stack personal platform built with modern architecture, REST APIs, MongoDB Mongoose models, and an administrative control center.',
+    category: 'fullstack',
+    categoryLabel: 'Full-Stack Web & Telemetry',
+    badge: 'FLAGSHIP PROJECT',
+    tagline: 'Building a premium production-ready portfolio with React 18, Node.js, Express backend API, modern glassmorphism design system.',
+    status: 'WORKING',
+    progress: 95,
+    githubUrl: 'https://github.com/anuragsahu0/portfolio',
+    liveUrl: 'https://anuragsahu.com',
+    thumbnail: '/assets/project-portfolio.webp',
+    gallery: [],
+    technologies: ['React 18', 'Node.js', 'Express', 'Tailwind CSS', 'Framer Motion', 'MongoDB'],
+    featured: true,
+    visibility: 'PUBLISHED',
+    displayOrder: 3,
+    metrics: [
+      { label: 'Completion', value: '95%', change: 'Working' },
+      { label: 'Backend', value: 'Express.js', change: 'Node.js + REST' },
+      { label: 'Database', value: 'MongoDB', change: 'Mongoose' },
+      { label: 'Security', value: 'JWT + CSP', change: 'Production' },
+    ],
+    techStack: ['React 18', 'Node.js', 'Express', 'Tailwind CSS', 'Framer Motion', 'MongoDB'],
+    recruiterHighlights: [
+      'Engineered secure Control Center with JWT Bearer authentication.',
+      'Designed glassmorphism design system with responsive obsidian theme.',
+      'Constructed RESTful API endpoints for content and telemetry.',
+    ],
+    architecture: {
+      frontend: 'React 18 + Vite with Tailwind CSS and Framer Motion.',
+      backend: 'Node.js + Express.js API with CORS, helmet, and rate limiting.',
+    },
+    timeline: [
+      { phase: 'Phase 1: Design System', detail: 'Glassmorphism design tokens.' },
+      { phase: 'Phase 2: Full-Stack API', detail: 'Contact form + REST endpoints.' },
+      { phase: 'Phase 3: Admin Panel', detail: 'JWT auth + real telemetry.' },
+      { phase: 'Phase 4: Deployment', detail: 'Vercel, Docker & CI/CD.' },
     ],
   },
 ];
 
-const getAllProjects = async (req, res, next) => {
+/**
+ * GET /api/public/projects
+ * Returns only PUBLISHED projects sorted by displayOrder
+ */
+const getPublicProjects = async (req, res, next) => {
   try {
-    const projects = await Project.find({ isActive: true }).sort({ order: 1, isFeatured: -1 });
-    return res.status(200).json({ success: true, count: projects.length, projects, source: 'database' });
+    let projects = [];
+    try {
+      if (Project.db && Project.db.readyState === 1) {
+        projects = await Project.find({ visibility: 'PUBLISHED' })
+          .sort({ displayOrder: 1, createdAt: -1 })
+          .lean();
+      }
+    } catch (dbErr) {}
+
+    if (!projects || projects.length === 0) {
+      projects = FALLBACK_PROJECTS.filter((p) => p.visibility === 'PUBLISHED');
+    }
+
+    return sendSuccess(res, { count: projects.length, projects });
   } catch (err) {
-    // Graceful fallback to static data
-    console.warn('[Projects] DB unavailable, serving static fallback data');
-    return res.status(200).json({ success: true, count: FALLBACK_PROJECTS.length, projects: FALLBACK_PROJECTS, source: 'fallback' });
+    next(err);
   }
 };
 
+/**
+ * GET /api/public/projects/:slug
+ */
+const getPublicProjectBySlug = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    let project = null;
+
+    try {
+      if (Project.db && Project.db.readyState === 1) {
+        project = await Project.findOne({
+          $or: [{ slug }, { id: slug }],
+          visibility: 'PUBLISHED',
+        }).lean();
+      }
+    } catch (dbErr) {}
+
+    if (!project) {
+      project = FALLBACK_PROJECTS.find(
+        (p) => (p.slug === slug || p.id === slug) && p.visibility === 'PUBLISHED'
+      );
+    }
+
+    if (!project) {
+      return sendError(res, 'Project not found.', 'NOT_FOUND', 404);
+    }
+
+    return sendSuccess(res, project);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * GET /api/admin/projects
+ * Paginated, filtered list for Admin Control Center
+ */
+const getAdminProjects = async (req, res, next) => {
+  try {
+    const { status, visibility, category, search, page = 1, limit = 50 } = req.query;
+    const filter = {};
+
+    if (status && status !== 'ALL') filter.status = status;
+    if (visibility && visibility !== 'ALL') filter.visibility = visibility;
+    if (category && category !== 'ALL') filter.category = category;
+
+    if (search && search.trim()) {
+      filter.$or = [
+        { title: { $regex: search.trim(), $options: 'i' } },
+        { slug: { $regex: search.trim(), $options: 'i' } },
+        { description: { $regex: search.trim(), $options: 'i' } },
+      ];
+    }
+
+    let projects = [];
+    let total = 0;
+
+    try {
+      if (Project.db && Project.db.readyState === 1) {
+        const skip = (Number(page) - 1) * Number(limit);
+        [projects, total] = await Promise.all([
+          Project.find(filter)
+            .sort({ displayOrder: 1, createdAt: -1 })
+            .skip(skip)
+            .limit(Number(limit))
+            .lean(),
+          Project.countDocuments(filter),
+        ]);
+      }
+    } catch (dbErr) {}
+
+    if (!projects || projects.length === 0) {
+      projects = FALLBACK_PROJECTS;
+      total = projects.length;
+    }
+
+    return sendSuccess(res, {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      projects,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * GET /api/admin/projects/:id
+ */
 const getProjectById = async (req, res, next) => {
   try {
-    const project = await Project.findOne({ id: req.params.id });
+    const { id } = req.params;
+    let project = null;
+
+    try {
+      if (Project.db && Project.db.readyState === 1) {
+        if (id.match(/^[0-9a-fA-F]{24}$/)) {
+          project = await Project.findById(id);
+        } else {
+          project = await Project.findOne({ $or: [{ slug: id }, { id }] });
+        }
+      }
+    } catch (dbErr) {}
+
     if (!project) {
-      const fallback = FALLBACK_PROJECTS.find(p => p.id === req.params.id);
-      if (fallback) return res.status(200).json({ success: true, project: fallback, source: 'fallback' });
-      return res.status(404).json({ success: false, message: 'Project not found.' });
+      project = FALLBACK_PROJECTS.find((p) => p._id === id || p.slug === id || p.id === id);
     }
-    return res.status(200).json({ success: true, project, source: 'database' });
+
+    if (!project) {
+      return sendError(res, 'Project not found.', 'NOT_FOUND', 404);
+    }
+
+    return sendSuccess(res, project);
   } catch (err) {
-    const fallback = FALLBACK_PROJECTS.find(p => p.id === req.params.id);
-    if (fallback) return res.status(200).json({ success: true, project: fallback, source: 'fallback' });
-    return res.status(404).json({ success: false, message: 'Project not found.' });
+    next(err);
   }
 };
 
+/**
+ * POST /api/admin/projects
+ */
 const createProject = async (req, res, next) => {
   try {
-    const project = await Project.create(req.body);
-    return res.status(201).json({ success: true, project });
-  } catch (err) { next(err); }
+    const { title, slug, description } = req.body;
+
+    if (!title || !title.trim()) {
+      return sendError(res, 'Project title is required.', 'VALIDATION_ERROR', 422);
+    }
+    if (!description || !description.trim()) {
+      return sendError(res, 'Project description is required.', 'VALIDATION_ERROR', 422);
+    }
+
+    const cleanSlug = (slug || title).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
+
+    try {
+      if (Project.db && Project.db.readyState === 1) {
+        const existing = await Project.findOne({ slug: cleanSlug });
+        if (existing) {
+          return sendError(res, `A project with slug "${cleanSlug}" already exists.`, 'DUPLICATE_SLUG', 409);
+        }
+
+        const project = await Project.create({
+          ...req.body,
+          slug: cleanSlug,
+          id: cleanSlug,
+        });
+
+        try {
+          await logActivity('PROJECT_CREATED', 'Project', { title: project.title, slug: project.slug }, req);
+        } catch (e) {}
+
+        return sendSuccess(res, project, 201);
+      }
+    } catch (dbErr) {
+      if (dbErr.code === 11000) {
+        return sendError(res, `A project with slug "${cleanSlug}" already exists.`, 'DUPLICATE_SLUG', 409);
+      }
+    }
+
+    // In-memory duplicate check
+    const existingMemory = FALLBACK_PROJECTS.find((p) => p.slug === cleanSlug || p.id === cleanSlug);
+    if (existingMemory) {
+      return sendError(res, `A project with slug "${cleanSlug}" already exists.`, 'DUPLICATE_SLUG', 409);
+    }
+
+    // In-memory create
+    const newProject = {
+      _id: `proj-${Date.now()}`,
+      id: cleanSlug,
+      slug: cleanSlug,
+      ...req.body,
+      createdAt: new Date(),
+    };
+    FALLBACK_PROJECTS.push(newProject);
+    return sendSuccess(res, newProject, 201);
+  } catch (err) {
+    next(err);
+  }
 };
 
+/**
+ * PUT/PATCH /api/admin/projects/:id
+ */
 const updateProject = async (req, res, next) => {
   try {
-    const project = await Project.findOneAndUpdate({ id: req.params.id }, req.body, { new: true, runValidators: true });
-    if (!project) return res.status(404).json({ success: false, message: 'Project not found.' });
-    return res.status(200).json({ success: true, project });
-  } catch (err) { next(err); }
+    const { id } = req.params;
+    const updates = req.body;
+
+    if (updates.slug) {
+      updates.slug = updates.slug.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
+      updates.id = updates.slug;
+    }
+
+    let project = null;
+
+    try {
+      if (Project.db && Project.db.readyState === 1) {
+        // Verify duplicate slug if slug is changing
+        if (updates.slug) {
+          const existing = await Project.findOne({
+            slug: updates.slug,
+            _id: { $ne: id },
+          });
+          if (existing) {
+            return sendError(res, `Slug "${updates.slug}" is already taken by another project.`, 'DUPLICATE_SLUG', 409);
+          }
+        }
+
+        const query = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { $or: [{ slug: id }, { id }] };
+        project = await Project.findOneAndUpdate(query, updates, { new: true, runValidators: true });
+      }
+    } catch (dbErr) {
+      if (dbErr.code === 11000) {
+        return sendError(res, `Slug "${updates.slug}" is already taken.`, 'DUPLICATE_SLUG', 409);
+      }
+    }
+
+    if (!project) {
+      const idx = FALLBACK_PROJECTS.findIndex((p) => p._id === id || p.slug === id || p.id === id);
+      if (idx !== -1) {
+        FALLBACK_PROJECTS[idx] = { ...FALLBACK_PROJECTS[idx], ...updates, updatedAt: new Date() };
+        project = FALLBACK_PROJECTS[idx];
+      }
+    }
+
+    if (!project) {
+      return sendError(res, 'Project not found.', 'NOT_FOUND', 404);
+    }
+
+    try {
+      await logActivity('PROJECT_UPDATED', 'Project', { id, title: project.title }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, project);
+  } catch (err) {
+    next(err);
+  }
 };
 
+/**
+ * DELETE /api/admin/projects/:id
+ */
 const deleteProject = async (req, res, next) => {
   try {
-    const project = await Project.findOneAndDelete({ id: req.params.id });
-    if (!project) return res.status(404).json({ success: false, message: 'Project not found.' });
-    return res.status(200).json({ success: true, message: 'Project deleted.' });
-  } catch (err) { next(err); }
+    const { id } = req.params;
+    let deleted = null;
+
+    try {
+      if (Project.db && Project.db.readyState === 1) {
+        const query = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { $or: [{ slug: id }, { id }] };
+        deleted = await Project.findOneAndDelete(query);
+      }
+    } catch (dbErr) {}
+
+    if (!deleted) {
+      const idx = FALLBACK_PROJECTS.findIndex((p) => p._id === id || p.slug === id || p.id === id);
+      if (idx !== -1) {
+        deleted = FALLBACK_PROJECTS.splice(idx, 1)[0];
+      }
+    }
+
+    if (!deleted) {
+      return sendError(res, 'Project not found.', 'NOT_FOUND', 404);
+    }
+
+    try {
+      await logActivity('PROJECT_DELETED', 'Project', { id, title: deleted.title }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, { message: 'Project deleted successfully.', id });
+  } catch (err) {
+    next(err);
+  }
 };
 
-module.exports = { getAllProjects, getProjectById, createProject, updateProject, deleteProject };
+module.exports = {
+  getPublicProjects,
+  getPublicProjectBySlug,
+  getAdminProjects,
+  getProjectById,
+  createProject,
+  updateProject,
+  deleteProject,
+  // legacy alias
+  getAllProjects: getPublicProjects,
+};

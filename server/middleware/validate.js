@@ -1,18 +1,18 @@
 const { validationResult } = require('express-validator');
+const { sendError } = require('../utils/apiResponse');
 
 /**
  * Validation Middleware
- * Runs express-validator checks and returns 400 if any fail.
- * Usage: add this as the last middleware in a route's validator chain.
+ * Runs express-validator checks and returns 422 if any fail with standardized error schema.
  */
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({
-      success: false,
-      message: 'Validation failed.',
-      errors: errors.array().map((e) => ({ field: e.path, message: e.msg })),
-    });
+    const errorList = errors.array().map((e) => ({
+      field: e.path || e.param,
+      message: e.msg,
+    }));
+    return sendError(res, 'Validation failed.', 'VALIDATION_ERROR', 422, errorList);
   }
   next();
 };

@@ -16,7 +16,9 @@ const connectDB = async () => {
 
   const mongoURI = process.env.MONGODB_URI;
   if (!mongoURI) {
-    console.log('⚠️  MONGODB CONNECTION NOTICE: MONGODB_URI not set. Running in static-fallback mode.');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('ℹ️ MONGODB NOTICE: MONGODB_URI not set. Running in lightweight fallback mode.');
+    }
     return null;
   }
 
@@ -29,7 +31,9 @@ const connectDB = async () => {
       family: 4,
     };
     cached.promise = mongoose.connect(mongoURI, opts).then((m) => {
-      console.log(`🍃 MONGODB CONNECTED: ${m.connection.host}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`🍃 MONGODB CONNECTED: host=${m.connection.host}`);
+      }
       return m;
     });
   }
@@ -39,10 +43,18 @@ const connectDB = async () => {
     return cached.conn;
   } catch (err) {
     cached.promise = null;
-    console.log(`⚠️  MONGODB CONNECTION ERROR: ${err.message}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('⚠️ MONGODB CONNECTION ERROR:', err.message);
+    }
     return null;
   }
 };
 
+const isDbConnected = () => {
+  return Boolean(mongoose.connection && mongoose.connection.readyState === 1);
+};
+
 module.exports = connectDB;
+module.exports.connectDB = connectDB;
+module.exports.isDbConnected = isDbConnected;
 

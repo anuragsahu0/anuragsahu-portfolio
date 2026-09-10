@@ -1,85 +1,192 @@
 const Education = require('../models/Education');
+const { sendSuccess, sendError } = require('../utils/apiResponse');
+const { logActivity } = require('./adminController');
 
 const FALLBACK_EDUCATION = [
   {
-    id: 'btech-cse-aiml',
-    type: 'degree',
+    _id: 'edu-1',
     institution: 'Maharana Pratap Institute of Professional Studies',
     degree: 'B.Tech in Computer Science & Engineering (AI & ML)',
-    duration: '2024 — 2028 (Expected)',
-    currentStatus: 'Second Year Student (CGPA: 9.2 / 10.0)',
-    location: 'India',
+    specialization: 'Artificial Intelligence & Machine Learning',
+    startYear: '2024',
+    endYear: '2028',
+    cgpa: '9.2 / 10.0',
+    description: 'Specializing in core computer science, deep learning foundations, and full-stack software architecture.',
     relevantCoursework: [
       'Data Structures & Algorithms',
       'Object-Oriented Programming (C++)',
       'Database Management Systems',
-      'Operating Systems & System Logic',
-      'Linear Algebra & Applied ML',
+      'Operating Systems',
+      'Artificial Intelligence & Machine Learning',
     ],
     highlights: [
       'Ranked top 5% in academic coursework',
       'Lead Student Coordinator for Tech & AI Student Chapter',
-      'Organized college-level hackathons and coding contests',
+      'Organized collegiate hackathons and coding symposiums',
     ],
+    displayOrder: 1,
+    isVisible: true,
   },
   {
-    id: 'senior-secondary',
-    type: 'degree',
+    _id: 'edu-2',
     institution: 'Higher Secondary Education (CBSE / State Board)',
     degree: 'Senior Secondary Schooling (Class XII - PCM)',
-    duration: '2022 — 2024',
-    currentStatus: 'Completed with Distinction',
-    location: 'India',
+    specialization: 'Physics, Chemistry, Mathematics & Computer Science',
+    startYear: '2022',
+    endYear: '2024',
+    cgpa: '90%+',
+    description: 'Completed secondary education with distinction in Mathematics and Computer Science (Python).',
     relevantCoursework: ['Physics', 'Chemistry', 'Mathematics', 'Computer Science (Python)'],
     highlights: [
       'Scored 90%+ in Mathematics & Computer Science',
-      'Built first Python automation scripts in high school',
+      'Developed foundational Python automation programs in high school',
     ],
+    displayOrder: 2,
+    isVisible: true,
   },
 ];
 
-const getAll = async (req, res, next) => {
+const getPublicEducation = async (req, res, next) => {
   try {
-    const { type } = req.query;
-    const filter = { isActive: true };
-    if (type) filter.type = type;
-    const records = await Education.find(filter).sort({ order: 1 });
-    return res.status(200).json({ success: true, count: records.length, education: records, source: 'database' });
-  } catch (err) {
-    console.warn('[Education] DB unavailable, serving fallback data');
-    let fallback = FALLBACK_EDUCATION;
-    if (req.query.type) fallback = FALLBACK_EDUCATION.filter((e) => e.type === req.query.type);
-    return res.status(200).json({ success: true, count: fallback.length, education: fallback, source: 'fallback' });
-  }
-};
+    let records = [];
+    try {
+      if (Education.db && Education.db.readyState === 1) {
+        records = await Education.find({ isVisible: true }).sort({ displayOrder: 1 }).lean();
+      }
+    } catch (dbErr) {}
 
-const create = async (req, res, next) => {
-  try {
-    const record = await Education.create(req.body);
-    return res.status(201).json({ success: true, education: record });
+    if (!records || records.length === 0) {
+      records = FALLBACK_EDUCATION.filter((e) => e.isVisible);
+    }
+
+    return sendSuccess(res, { count: records.length, education: records });
   } catch (err) {
     next(err);
   }
 };
 
-const update = async (req, res, next) => {
+const getAdminEducation = async (req, res, next) => {
   try {
-    const record = await Education.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    if (!record) return res.status(404).json({ success: false, message: 'Education record not found.' });
-    return res.status(200).json({ success: true, education: record });
+    let records = [];
+    try {
+      if (Education.db && Education.db.readyState === 1) {
+        records = await Education.find().sort({ displayOrder: 1 }).lean();
+      }
+    } catch (dbErr) {}
+
+    if (!records || records.length === 0) {
+      records = FALLBACK_EDUCATION;
+    }
+
+    return sendSuccess(res, { count: records.length, education: records });
   } catch (err) {
     next(err);
   }
 };
 
-const remove = async (req, res, next) => {
+const createEducation = async (req, res, next) => {
   try {
-    const record = await Education.findByIdAndDelete(req.params.id);
-    if (!record) return res.status(404).json({ success: false, message: 'Education record not found.' });
-    return res.status(200).json({ success: true, message: 'Education record deleted.' });
+    const { institution, degree } = req.body;
+    if (!institution || !degree) {
+      return sendError(res, 'Institution and degree are required.', 'VALIDATION_ERROR', 422);
+    }
+
+    let record = null;
+    try {
+      if (Education.db && Education.db.readyState === 1) {
+        record = await Education.create(req.body);
+      }
+    } catch (dbErr) {}
+
+    if (!record) {
+      record = { _id: `edu-${Date.now()}`, ...req.body, createdAt: new Date() };
+      FALLBACK_EDUCATION.push(record);
+    }
+
+    try {
+      await logActivity('EDUCATION_CREATED', 'Education', { institution: record.institution, degree: record.degree }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, record, 201);
   } catch (err) {
     next(err);
   }
 };
 
-module.exports = { getAll, create, update, remove };
+const updateEducation = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let record = null;
+
+    try {
+      if (Education.db && Education.db.readyState === 1) {
+        record = await Education.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+      }
+    } catch (dbErr) {}
+
+    if (!record) {
+      const idx = FALLBACK_EDUCATION.findIndex((e) => e._id === id);
+      if (idx !== -1) {
+        FALLBACK_EDUCATION[idx] = { ...FALLBACK_EDUCATION[idx], ...req.body, updatedAt: new Date() };
+        record = FALLBACK_EDUCATION[idx];
+      }
+    }
+
+    if (!record) {
+      return sendError(res, 'Education record not found.', 'NOT_FOUND', 404);
+    }
+
+    try {
+      await logActivity('EDUCATION_UPDATED', 'Education', { id, institution: record.institution }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, record);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteEducation = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let deleted = null;
+
+    try {
+      if (Education.db && Education.db.readyState === 1) {
+        deleted = await Education.findByIdAndDelete(id);
+      }
+    } catch (dbErr) {}
+
+    if (!deleted) {
+      const idx = FALLBACK_EDUCATION.findIndex((e) => e._id === id);
+      if (idx !== -1) {
+        deleted = FALLBACK_EDUCATION.splice(idx, 1)[0];
+      }
+    }
+
+    if (!deleted) {
+      return sendError(res, 'Education record not found.', 'NOT_FOUND', 404);
+    }
+
+    try {
+      await logActivity('EDUCATION_DELETED', 'Education', { id }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, { message: 'Education record deleted.', id });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  getPublicEducation,
+  getAdminEducation,
+  createEducation,
+  updateEducation,
+  deleteEducation,
+  // legacy alias
+  getAll: getAdminEducation,
+  create: createEducation,
+  update: updateEducation,
+  remove: deleteEducation,
+};

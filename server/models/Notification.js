@@ -2,18 +2,44 @@ const mongoose = require('mongoose');
 
 const NotificationSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, trim: true },
-    message: { type: String, required: true, trim: true },
     type: {
       type: String,
-      enum: ['message', 'project', 'system', 'milestone', 'error'],
-      default: 'system',
+      enum: ['NEW_MESSAGE', 'SYSTEM', 'CONTENT_UPDATE', 'ERROR', 'message', 'project', 'system', 'milestone', 'error'],
+      default: 'SYSTEM',
+      index: true,
     },
-    isRead: { type: Boolean, default: false },
-    link: { type: String, default: '' },
-    meta: { type: mongoose.Schema.Types.Mixed },
+    title: {
+      type: String,
+      required: [true, 'Notification title is required'],
+      trim: true,
+    },
+    message: {
+      type: String,
+      required: [true, 'Notification message is required'],
+      trim: true,
+    },
+    isRead: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    relatedResource: {
+      resourceType: { type: String, default: '' },
+      resourceId: { type: String, default: '' },
+    },
+    link: {
+      type: String,
+      default: '',
+    },
+    meta: {
+      type: mongoose.Schema.Types.Mixed,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
+
+NotificationSchema.index({ isRead: 1, createdAt: -1 });
 
 module.exports = mongoose.models.Notification || mongoose.model('Notification', NotificationSchema);

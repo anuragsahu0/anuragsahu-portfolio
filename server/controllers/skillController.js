@@ -1,66 +1,234 @@
 const Skill = require('../models/Skill');
+const { sendSuccess, sendError } = require('../utils/apiResponse');
+const { logActivity } = require('./adminController');
 
 const FALLBACK_SKILLS = [
-  { id: 'react', name: 'React.js 18', category: 'frontend', status: 'Building Projects With', proficiency: 92, icon: 'Atom', levelLabel: 'Advanced Student Level', highlights: ['Custom Hooks & Context API', 'Framer Motion Animations', 'Component Architecture'] },
-  { id: 'tailwind', name: 'Tailwind CSS', category: 'frontend', status: 'Building Projects With', proficiency: 95, icon: 'Palette', levelLabel: 'Advanced Student Level', highlights: ['Custom Utility Classes', 'Responsive Grid Systems', 'Dark Theme Tokens'] },
-  { id: 'javascript-es6', name: 'JavaScript (ES6+)', category: 'frontend', status: 'Building Projects With', proficiency: 90, icon: 'Code2', levelLabel: 'Advanced Student Level', highlights: ['Async/Await & Promises', 'ES6 Modules & Closures', 'DOM Manipulation'] },
-  { id: 'nodejs', name: 'Node.js', category: 'backend', status: 'Building Projects With', proficiency: 86, icon: 'Server', levelLabel: 'Intermediate Student Level', highlights: ['Express Middleware', 'REST API Architecture', 'JWT Authentication'] },
-  { id: 'express', name: 'Express.js', category: 'backend', status: 'Building Projects With', proficiency: 88, icon: 'Cpu', levelLabel: 'Intermediate Student Level', highlights: ['Custom Route Handlers', 'Input Validation', 'Error Handling'] },
-  { id: 'pytorch', name: 'PyTorch', category: 'aiml', status: 'Building Projects With', proficiency: 80, icon: 'Bot', levelLabel: 'Academic Focus', highlights: ['Custom Neural Layers', 'Tensor Manipulations', 'Graph Neural Networks'] },
-  { id: 'python-ml', name: 'Python (NumPy / SciPy)', category: 'aiml', status: 'Building Projects With', proficiency: 88, icon: 'Terminal', levelLabel: 'Academic Focus', highlights: ['NumPy Vectorization', 'Pandas Analysis', 'Scientific Computing'] },
-  { id: 'mongodb', name: 'MongoDB / Mongoose', category: 'databases', status: 'Building Projects With', proficiency: 85, icon: 'FileCode', levelLabel: 'Intermediate Student Level', highlights: ['Document Modeling', 'Aggregation Pipeline', 'CRUD Operations'] },
-  { id: 'postgresql', name: 'PostgreSQL', category: 'databases', status: 'Building Projects With', proficiency: 84, icon: 'Database', levelLabel: 'Intermediate Student Level', highlights: ['Relational Schema Design', 'SQL Queries & Joins', 'ACID Transactions'] },
-  { id: 'cpp', name: 'C++', category: 'languages', status: 'Building Projects With', proficiency: 85, icon: 'Terminal', levelLabel: 'Core CS Foundation', highlights: ['OOP & Encapsulation', 'Pointers & Memory Control', 'STL Algorithms'] },
-  { id: 'git', name: 'Git & GitHub', category: 'tools', status: 'Building Projects With', proficiency: 90, icon: 'GitBranch', levelLabel: 'Daily Engineering Standard', highlights: ['Branching Strategies', 'PR Workflows', 'GitHub Actions Basics'] },
-  { id: 'docker', name: 'Docker', category: 'tools', status: 'Learning', proficiency: 72, icon: 'Box', levelLabel: 'Active Skill Expansion', highlights: ['Multi-Stage Dockerfiles', 'Container Networking', 'Image Optimization'] },
+  { _id: 'sk-1', name: 'React.js 18', category: 'Frontend', proficiency: 92, icon: 'Atom', description: 'Used in personal portfolio, interactive sandboxes, and modern component systems.', displayOrder: 1, isVisible: true },
+  { _id: 'sk-2', name: 'Tailwind CSS', category: 'Frontend', proficiency: 95, icon: 'Palette', description: 'Obsidian glassmorphism design tokens, micro-interactions, and mobile viewports.', displayOrder: 2, isVisible: true },
+  { _id: 'sk-3', name: 'JavaScript (ES6+)', category: 'Frontend', proficiency: 90, icon: 'Code2', description: 'Async/await event loops, closures, DOM manipulation, and modern web standards.', displayOrder: 3, isVisible: true },
+  { _id: 'sk-4', name: 'Node.js', category: 'Backend', proficiency: 86, icon: 'Server', description: 'Event-driven web servers, REST API gateways, and asynchronous pipelines.', displayOrder: 4, isVisible: true },
+  { _id: 'sk-5', name: 'Express.js', category: 'Backend', proficiency: 88, icon: 'Cpu', description: 'Custom middlewares, rate limiting, JWT authentication, and structured error handling.', displayOrder: 5, isVisible: true },
+  { _id: 'sk-6', name: 'FastAPI', category: 'Backend', proficiency: 82, icon: 'Zap', description: 'High-performance asynchronous Python REST APIs and model inference endpoints.', displayOrder: 6, isVisible: true },
+  { _id: 'sk-7', name: 'PyTorch', category: 'AI/ML', proficiency: 80, icon: 'Bot', description: 'Graph neural networks, tensor operations, and model loss optimization pipelines.', displayOrder: 7, isVisible: true },
+  { _id: 'sk-8', name: 'Python (NumPy / SciPy)', category: 'AI/ML', proficiency: 88, icon: 'Terminal', description: 'Scientific computing, data vectorization, and machine learning pipelines.', displayOrder: 8, isVisible: true },
+  { _id: 'sk-9', name: 'MongoDB / Mongoose', category: 'Database', proficiency: 85, icon: 'Database', description: 'Document schemas, aggregation pipelines, replica sets, and indexing.', displayOrder: 9, isVisible: true },
+  { _id: 'sk-10', name: 'PostgreSQL', category: 'Database', proficiency: 82, icon: 'Boxes', description: 'Relational data modeling, foreign keys, ACID compliance, and SQL optimization.', displayOrder: 10, isVisible: true },
+  { _id: 'sk-11', name: 'Git & GitHub', category: 'Tools', proficiency: 90, icon: 'GitBranch', description: 'Version control, atomic commits, pull requests, and CI/CD pipelines.', displayOrder: 11, isVisible: true },
+  { _id: 'sk-12', name: 'Docker', category: 'Tools', proficiency: 75, icon: 'Container', description: 'Multi-stage container builds, microservices, and deployment isolation.', displayOrder: 12, isVisible: true },
+  { _id: 'sk-13', name: 'Postman', category: 'Tools', proficiency: 88, icon: 'Send', description: 'Automated API testing suites, environment variables, and mock servers.', displayOrder: 13, isVisible: true },
+  { _id: 'sk-14', name: 'Linux / Bash', category: 'Tools', proficiency: 80, icon: 'TerminalSquare', description: 'Shell scripting, server automation, process managers, and deployment.', displayOrder: 14, isVisible: true },
 ];
 
-const getAll = async (req, res, next) => {
+/**
+ * GET /api/public/skills
+ */
+const getPublicSkills = async (req, res, next) => {
   try {
     const { category } = req.query;
-    const filter = { isActive: true };
-    if (category && category !== 'all') filter.category = category;
-    const skills = await Skill.find(filter).sort({ order: 1 });
-    return res.status(200).json({ success: true, count: skills.length, skills, source: 'database' });
-  } catch (err) {
-    console.warn('[Skills] DB unavailable, serving static fallback');
-    let fallback = FALLBACK_SKILLS;
-    if (req.query.category && req.query.category !== 'all') {
-      fallback = FALLBACK_SKILLS.filter(s => s.category === req.query.category);
+    const filter = { isVisible: true };
+    if (category && category !== 'ALL') filter.category = category;
+
+    let skills = [];
+    try {
+      if (Skill.db && Skill.db.readyState === 1) {
+        skills = await Skill.find(filter).sort({ category: 1, displayOrder: 1 }).lean();
+      }
+    } catch (dbErr) {}
+
+    if (!skills || skills.length === 0) {
+      skills = FALLBACK_SKILLS.filter(
+        (s) => s.isVisible && (!category || category === 'ALL' || s.category.toLowerCase() === category.toLowerCase())
+      );
     }
-    return res.status(200).json({ success: true, count: fallback.length, skills: fallback, source: 'fallback' });
+
+    return sendSuccess(res, { count: skills.length, skills });
+  } catch (err) {
+    next(err);
   }
 };
 
-const getOne = async (req, res, next) => {
+/**
+ * GET /api/admin/skills
+ */
+const getAdminSkills = async (req, res, next) => {
   try {
-    const skill = await Skill.findById(req.params.id);
-    if (!skill) return res.status(404).json({ success: false, message: 'Skill not found.' });
-    return res.status(200).json({ success: true, skill });
-  } catch (err) { next(err); }
+    const { category } = req.query;
+    const filter = {};
+    if (category && category !== 'ALL') filter.category = category;
+
+    let skills = [];
+    try {
+      if (Skill.db && Skill.db.readyState === 1) {
+        skills = await Skill.find(filter).sort({ displayOrder: 1, createdAt: 1 }).lean();
+      }
+    } catch (dbErr) {}
+
+    if (!skills || skills.length === 0) {
+      skills = FALLBACK_SKILLS;
+    }
+
+    return sendSuccess(res, { count: skills.length, skills });
+  } catch (err) {
+    next(err);
+  }
 };
 
-const create = async (req, res, next) => {
+/**
+ * GET /api/admin/skills/:id
+ */
+const getSkillById = async (req, res, next) => {
   try {
-    const skill = await Skill.create(req.body);
-    return res.status(201).json({ success: true, skill });
-  } catch (err) { next(err); }
+    const { id } = req.params;
+    let skill = null;
+
+    try {
+      if (Skill.db && Skill.db.readyState === 1) {
+        if (id.match(/^[0-9a-fA-F]{24}$/)) {
+          skill = await Skill.findById(id);
+        } else {
+          skill = await Skill.findOne({ id });
+        }
+      }
+    } catch (dbErr) {}
+
+    if (!skill) {
+      skill = FALLBACK_SKILLS.find((s) => s._id === id || s.id === id);
+    }
+
+    if (!skill) {
+      return sendError(res, 'Skill not found.', 'NOT_FOUND', 404);
+    }
+
+    return sendSuccess(res, skill);
+  } catch (err) {
+    next(err);
+  }
 };
 
-const update = async (req, res, next) => {
+/**
+ * POST /api/admin/skills
+ */
+const createSkill = async (req, res, next) => {
   try {
-    const skill = await Skill.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    if (!skill) return res.status(404).json({ success: false, message: 'Skill not found.' });
-    return res.status(200).json({ success: true, skill });
-  } catch (err) { next(err); }
+    const { name, category } = req.body;
+    if (!name || !name.trim()) {
+      return sendError(res, 'Skill name is required.', 'VALIDATION_ERROR', 422);
+    }
+    if (!category || !category.trim()) {
+      return sendError(res, 'Skill category is required.', 'VALIDATION_ERROR', 422);
+    }
+
+    let skill = null;
+    try {
+      if (Skill.db && Skill.db.readyState === 1) {
+        skill = await Skill.create(req.body);
+      }
+    } catch (dbErr) {}
+
+    if (!skill) {
+      skill = {
+        _id: `sk-${Date.now()}`,
+        id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        ...req.body,
+        createdAt: new Date(),
+      };
+      FALLBACK_SKILLS.push(skill);
+    }
+
+    try {
+      await logActivity('SKILL_CREATED', 'Skill', { name: skill.name, category: skill.category }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, skill, 201);
+  } catch (err) {
+    next(err);
+  }
 };
 
-const remove = async (req, res, next) => {
+/**
+ * PUT/PATCH /api/admin/skills/:id
+ */
+const updateSkill = async (req, res, next) => {
   try {
-    const skill = await Skill.findByIdAndDelete(req.params.id);
-    if (!skill) return res.status(404).json({ success: false, message: 'Skill not found.' });
-    return res.status(200).json({ success: true, message: 'Skill deleted.' });
-  } catch (err) { next(err); }
+    const { id } = req.params;
+    let skill = null;
+
+    try {
+      if (Skill.db && Skill.db.readyState === 1) {
+        const query = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { id };
+        skill = await Skill.findOneAndUpdate(query, req.body, { new: true, runValidators: true });
+      }
+    } catch (dbErr) {}
+
+    if (!skill) {
+      const idx = FALLBACK_SKILLS.findIndex((s) => s._id === id || s.id === id);
+      if (idx !== -1) {
+        FALLBACK_SKILLS[idx] = { ...FALLBACK_SKILLS[idx], ...req.body, updatedAt: new Date() };
+        skill = FALLBACK_SKILLS[idx];
+      }
+    }
+
+    if (!skill) {
+      return sendError(res, 'Skill not found.', 'NOT_FOUND', 404);
+    }
+
+    try {
+      await logActivity('SKILL_UPDATED', 'Skill', { id, name: skill.name }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, skill);
+  } catch (err) {
+    next(err);
+  }
 };
 
-module.exports = { getAll, getOne, create, update, remove };
+/**
+ * DELETE /api/admin/skills/:id
+ */
+const deleteSkill = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let deleted = null;
+
+    try {
+      if (Skill.db && Skill.db.readyState === 1) {
+        const query = id.match(/^[0-9a-fA-F]{24}$/) ? { _id: id } : { id };
+        deleted = await Skill.findOneAndDelete(query);
+      }
+    } catch (dbErr) {}
+
+    if (!deleted) {
+      const idx = FALLBACK_SKILLS.findIndex((s) => s._id === id || s.id === id);
+      if (idx !== -1) {
+        deleted = FALLBACK_SKILLS.splice(idx, 1)[0];
+      }
+    }
+
+    if (!deleted) {
+      return sendError(res, 'Skill not found.', 'NOT_FOUND', 404);
+    }
+
+    try {
+      await logActivity('SKILL_DELETED', 'Skill', { id, name: deleted.name }, req);
+    } catch (e) {}
+
+    return sendSuccess(res, { message: 'Skill deleted successfully.', id });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  getPublicSkills,
+  getAdminSkills,
+  getSkillById,
+  createSkill,
+  updateSkill,
+  deleteSkill,
+  // legacy alias
+  getAll: getAdminSkills,
+  getOne: getSkillById,
+  create: createSkill,
+  update: updateSkill,
+  remove: deleteSkill,
+};
