@@ -1,6 +1,12 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "crons": [
+    {
+      "path": "/api/internal/scheduler/run",
+      "schedule": "* * * * *"
+    }
+  ],
   "builds": [
     {
       "src": "api/index.js",

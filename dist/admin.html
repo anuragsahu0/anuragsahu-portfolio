@@ -154,7 +154,7 @@
     #cms-toast.toast-hidden { opacity: 0; transform: translateY(8px); }
 
     /* Responsive Modal System: Bottom Sheet on Mobile (<640px), Centered Modal on Desktop (>=640px) */
-    #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal, #revision-history-modal, #revision-compare-modal, #restore-confirm-modal, #publish-confirm-modal, #conflict-modal, #preview-modal {
+    #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal, #revision-history-modal, #revision-compare-modal, #restore-confirm-modal, #publish-confirm-modal, #conflict-modal, #preview-modal, #schedule-action-modal, #schedule-details-modal, #bulk-schedule-modal {
       position: fixed;
       inset: 0;
       z-index: 8500;
@@ -165,7 +165,7 @@
       justify-content: center;
       padding: 0;
     }
-    #cms-modal.open, #confirm-modal.open, #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open, #revision-history-modal.open, #revision-compare-modal.open, #restore-confirm-modal.open, #publish-confirm-modal.open, #conflict-modal.open, #preview-modal.open {
+    #cms-modal.open, #confirm-modal.open, #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open, #revision-history-modal.open, #revision-compare-modal.open, #restore-confirm-modal.open, #publish-confirm-modal.open, #conflict-modal.open, #preview-modal.open, #schedule-action-modal.open, #schedule-details-modal.open, #bulk-schedule-modal.open {
       display: flex;
     }
     @media (min-width: 640px) {
@@ -188,7 +188,10 @@
     #restore-confirm-modal > div,
     #publish-confirm-modal > div,
     #conflict-modal > div,
-    #preview-modal > div {
+    #preview-modal > div,
+    #schedule-action-modal > div,
+    #schedule-details-modal > div,
+    #bulk-schedule-modal > div {
       background: #070B16;
       border: 1px solid #141E33;
       border-top-left-radius: 20px;
@@ -229,6 +232,9 @@
       #restore-confirm-modal > div { max-width: 440px; }
       #publish-confirm-modal > div { max-width: 480px; }
       #conflict-modal > div { max-width: 480px; }
+      #schedule-action-modal > div { max-width: 580px; }
+      #schedule-details-modal > div { max-width: 640px; }
+      #bulk-schedule-modal > div { max-width: 600px; }
       #preview-modal > div { max-width: 1040px; width: 95vw; height: 90vh; height: 90dvh; padding: 0; overflow: hidden; display: flex; flex-direction: column; }
       .diff-badge-added { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
       .diff-badge-removed { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
@@ -477,6 +483,11 @@
               <i data-lucide="bell" class="w-4 h-4 text-slate-500"></i>
               <span>Notifications</span>
               <span id="sidebar-notif-badge" class="hidden ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-cyan-500/20 text-cyan-300 font-bold">0</span>
+            </button>
+            <button onclick="switchTab('scheduled')" class="sidebar-item w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/40" data-tab="scheduled">
+              <i data-lucide="clock" class="w-4 h-4 text-slate-500"></i>
+              <span>Scheduled Actions</span>
+              <span id="scheduled-badge" class="hidden ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-500/20 text-amber-300 font-bold">0</span>
             </button>
             <button onclick="switchTab('activity')" class="sidebar-item w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/40" data-tab="activity">
               <i data-lucide="history" class="w-4 h-4 text-slate-500"></i>
@@ -1124,6 +1135,9 @@
               <button type="button" onclick="openRevisionHistory('Profile', 'global', 'Profile Details')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
                 <i data-lucide="history" class="w-3.5 h-3.5"></i><span>History</span>
               </button>
+              <button type="button" onclick="openScheduleModal('Profile', 'global', 'Profile Details')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
+                <i data-lucide="calendar-clock" class="w-3.5 h-3.5"></i><span>Schedule</span>
+              </button>
               <button type="button" onclick="triggerPreview('Profile', 'global', document.getElementById('profile-form'))" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
                 <i data-lucide="eye" class="w-3.5 h-3.5"></i><span>Preview</span>
               </button>
@@ -1168,6 +1182,9 @@
               <button type="button" onclick="openRevisionHistory('About', 'global', 'About Section')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
                 <i data-lucide="history" class="w-3.5 h-3.5"></i><span>History</span>
               </button>
+              <button type="button" onclick="openScheduleModal('About', 'global', 'About Section')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
+                <i data-lucide="calendar-clock" class="w-3.5 h-3.5"></i><span>Schedule</span>
+              </button>
               <button type="button" onclick="triggerPreview('About', 'global', document.getElementById('about-form'))" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
                 <i data-lucide="eye" class="w-3.5 h-3.5"></i><span>Preview</span>
               </button>
@@ -1200,6 +1217,9 @@
             <div class="flex items-center gap-2">
               <button type="button" onclick="openRevisionHistory('Hero', 'global', 'Hero Section')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
                 <i data-lucide="history" class="w-3.5 h-3.5"></i><span>History</span>
+              </button>
+              <button type="button" onclick="openScheduleModal('Hero', 'global', 'Hero Section')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
+                <i data-lucide="calendar-clock" class="w-3.5 h-3.5"></i><span>Schedule</span>
               </button>
               <button type="button" onclick="triggerPreview('Hero', 'global', document.getElementById('hero-form'))" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
                 <i data-lucide="eye" class="w-3.5 h-3.5"></i><span>Preview</span>
@@ -1969,6 +1989,226 @@
           </div>
         </div>
 
+        <!-- ─── PHASE 12: SCHEDULED ACTIONS & AUTOMATION ─── -->
+        <div id="tab-scheduled" class="tab-pane hidden space-y-6">
+          <!-- Header & Automation Health -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-brand-border">
+            <div>
+              <div class="flex items-center gap-3">
+                <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">
+                  Scheduled Actions & Content Automation
+                </h1>
+                <span id="scheduler-health-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span id="scheduler-health-text">Scheduler Operational</span>
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">
+                Timezone-aware content scheduling, automated publishing, revisions, and safe rollback workflows.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="triggerSchedulerRunNow()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-sidebar border border-brand-border text-slate-300 hover:text-cyan-300 hover:border-cyan-500/40 text-xs font-medium transition-colors" title="Execute due schedules immediately">
+                <i data-lucide="play" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>Run Due Now</span>
+              </button>
+              <button onclick="openBulkScheduleModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-sidebar border border-brand-border text-slate-300 hover:text-cyan-300 hover:border-cyan-500/40 text-xs font-medium transition-colors">
+                <i data-lucide="layers" class="w-3.5 h-3.5 text-slate-400"></i>
+                <span>Bulk Schedule</span>
+              </button>
+              <button onclick="openScheduleModal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-lg shadow-cyan-600/20 transition-all">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>Schedule Action</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Summary Metric Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Upcoming</span>
+              <p id="stat-sched-upcoming" class="text-2xl sm:text-3xl font-bold font-mono text-cyan-400 mt-2">0</p>
+              <p class="text-[11px] text-slate-500 mt-1 font-mono">Queued Actions</p>
+            </div>
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Next Action</span>
+              <p id="stat-sched-next" class="text-sm font-bold font-mono text-amber-300 mt-3 truncate">None Scheduled</p>
+              <p id="stat-sched-next-time" class="text-[11px] text-slate-500 mt-1 font-mono truncate">—</p>
+            </div>
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Failed</span>
+              <p id="stat-sched-failed" class="text-2xl sm:text-3xl font-bold font-mono text-slate-100 mt-2">0</p>
+              <p id="stat-sched-failed-sub" class="text-[11px] text-slate-500 mt-1 font-mono">Requires Attention</p>
+            </div>
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Completed</span>
+              <p id="stat-sched-completed" class="text-2xl sm:text-3xl font-bold font-mono text-emerald-400 mt-2">0</p>
+              <p class="text-[11px] text-slate-500 mt-1 font-mono">Executed Lifetime</p>
+            </div>
+          </div>
+
+          <!-- Controls, View Modes & Filters -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 space-y-3">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              <!-- Status Tabs -->
+              <div class="flex items-center gap-1 p-1 bg-slate-900/80 rounded-lg border border-brand-border/60 overflow-x-auto text-xs">
+                <button onclick="setScheduleStatusFilter('UPCOMING')" id="sched-tab-upcoming" class="px-3 py-1.5 rounded-md font-medium transition-colors bg-cyan-600 text-white font-semibold">
+                  Upcoming
+                </button>
+                <button onclick="setScheduleStatusFilter('ALL')" id="sched-tab-all" class="px-3 py-1.5 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200">
+                  All
+                </button>
+                <button onclick="setScheduleStatusFilter('COMPLETED')" id="sched-tab-completed" class="px-3 py-1.5 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200">
+                  Completed
+                </button>
+                <button onclick="setScheduleStatusFilter('FAILED')" id="sched-tab-failed" class="px-3 py-1.5 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200">
+                  Failed
+                </button>
+                <button onclick="setScheduleStatusFilter('CANCELLED')" id="sched-tab-cancelled" class="px-3 py-1.5 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200">
+                  Cancelled
+                </button>
+              </div>
+
+              <!-- View Mode Toggle: List vs Calendar -->
+              <div class="flex items-center gap-2">
+                <div class="flex items-center p-1 bg-slate-900/80 rounded-lg border border-brand-border/60 text-xs">
+                  <button onclick="setScheduleViewMode('list')" id="sched-view-list-btn" class="flex items-center gap-1.5 px-3 py-1 rounded-md font-medium transition-colors bg-slate-800 text-cyan-300 font-semibold">
+                    <i data-lucide="list" class="w-3.5 h-3.5"></i>
+                    <span>List</span>
+                  </button>
+                  <button onclick="setScheduleViewMode('calendar')" id="sched-view-cal-btn" class="flex items-center gap-1.5 px-3 py-1 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                    <span>Calendar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detailed Filters -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-2 border-t border-brand-border/40 text-xs">
+              <!-- Search Input -->
+              <div class="relative">
+                <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                <input type="text" id="sched-search-input" oninput="debounceScheduleSearch()" placeholder="Search content title or notes..." class="w-full bg-slate-900/80 border border-brand-border rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50">
+              </div>
+
+              <!-- Entity Filter -->
+              <select id="sched-entity-filter" onchange="applyScheduleFilters()" class="bg-slate-900/80 border border-brand-border rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500/50">
+                <option value="ALL">All Entities</option>
+                <option value="Project">Projects</option>
+                <option value="Hero">Hero Section</option>
+                <option value="Profile">Profile</option>
+                <option value="About">About</option>
+                <option value="Skill">Skills</option>
+                <option value="Experience">Experience</option>
+                <option value="Education">Education</option>
+                <option value="Certificate">Certificates</option>
+                <option value="Roadmap">Roadmap</option>
+                <option value="SocialLink">Social Links</option>
+                <option value="Navigation">Navigation</option>
+                <option value="SEO">SEO & Meta</option>
+                <option value="Settings">Site Settings</option>
+                <option value="Resume">Resume</option>
+              </select>
+
+              <!-- Action Type Filter -->
+              <select id="sched-action-filter" onchange="applyScheduleFilters()" class="bg-slate-900/80 border border-brand-border rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500/50">
+                <option value="ALL">All Actions</option>
+                <option value="PUBLISH">Publish</option>
+                <option value="UNPUBLISH">Unpublish</option>
+                <option value="ACTIVATE_REVISION">Activate Revision</option>
+                <option value="DEACTIVATE">Deactivate</option>
+                <option value="RESUME_ACTIVATE">Resume Activate</option>
+                <option value="RESUME_DEACTIVATE">Resume Deactivate</option>
+              </select>
+
+              <!-- Timezone Selector -->
+              <select id="sched-tz-select" onchange="changeScheduleTimezone()" class="bg-slate-900/80 border border-brand-border rounded-lg px-3 py-1.5 text-xs text-amber-300 font-mono focus:outline-none focus:border-cyan-500/50">
+                <option value="Asia/Kolkata">Asia/Kolkata (IST +05:30)</option>
+                <option value="UTC">UTC (+00:00)</option>
+                <option value="America/New_York">America/New_York (EST/EDT)</option>
+                <option value="Europe/London">Europe/London (GMT/BST)</option>
+                <option value="Asia/Tokyo">Asia/Tokyo (JST +09:00)</option>
+                <option value="Australia/Sydney">Australia/Sydney (AEST)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- LIST VIEW CONTAINER -->
+          <div id="scheduled-list-container" class="space-y-4">
+            <!-- Desktop Table -->
+            <div class="hidden md:block bg-brand-sidebar border border-brand-border rounded-xl overflow-hidden shadow-xl">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-300">
+                  <thead class="bg-slate-900/80 border-b border-brand-border text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+                    <tr>
+                      <th class="py-3 px-4">Content / Entity</th>
+                      <th class="py-3 px-4">Action</th>
+                      <th class="py-3 px-4">Target Revision</th>
+                      <th class="py-3 px-4">Scheduled Execution</th>
+                      <th class="py-3 px-4">Status</th>
+                      <th class="py-3 px-4 text-right">Operations</th>
+                    </tr>
+                  </thead>
+                  <tbody id="scheduled-table-body" class="divide-y divide-brand-border">
+                    <tr>
+                      <td colspan="6" class="py-12 text-center text-slate-500 font-mono">Loading scheduled actions...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Mobile Cards List -->
+            <div id="scheduled-mobile-cards" class="md:hidden space-y-3">
+              <div class="py-12 text-center text-slate-500 font-mono text-xs">Loading scheduled actions...</div>
+            </div>
+
+            <!-- Pagination -->
+            <div id="scheduled-pagination" class="flex items-center justify-between pt-4 border-t border-brand-border text-xs text-slate-400">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- CALENDAR VIEW CONTAINER -->
+          <div id="scheduled-calendar-container" class="hidden space-y-4">
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 sm:p-5">
+              <!-- Calendar Header -->
+              <div class="flex items-center justify-between mb-4 pb-3 border-b border-brand-border">
+                <div class="flex items-center gap-3">
+                  <h2 id="calendar-month-year" class="text-sm sm:text-base font-bold text-slate-100 font-display">
+                    September 2026
+                  </h2>
+                  <span id="calendar-event-count" class="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded-full">0 Actions</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button onclick="navigateCalendar(-1)" class="p-1.5 rounded-lg bg-slate-900 border border-brand-border text-slate-300 hover:text-cyan-300 transition-colors" title="Previous Month">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                  </button>
+                  <button onclick="navigateCalendar(0)" class="px-2.5 py-1 text-xs rounded-lg bg-slate-900 border border-brand-border text-slate-300 hover:text-cyan-300 transition-colors">
+                    Today
+                  </button>
+                  <button onclick="navigateCalendar(1)" class="p-1.5 rounded-lg bg-slate-900 border border-brand-border text-slate-300 hover:text-cyan-300 transition-colors" title="Next Month">
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Calendar Month Grid -->
+              <div id="calendar-grid-wrapper" class="space-y-1">
+                <!-- Day Names -->
+                <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-mono text-slate-500 py-1 font-semibold uppercase">
+                  <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                </div>
+                <!-- Day Cells -->
+                <div id="calendar-cells" class="grid grid-cols-7 gap-1">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- ─── GENERIC FALLBACK (unused) ─── -->
         <div id="tab-placeholder" class="tab-pane hidden"></div>
 
@@ -2104,6 +2344,11 @@
                 <i data-lucide="bell" class="w-4 h-4 text-slate-500"></i>
                 <span>Notifications</span>
                 <span id="drawer-notif-badge" class="hidden ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-cyan-500/20 text-cyan-300 font-bold">0</span>
+              </button>
+              <button onclick="switchTab('scheduled'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="scheduled">
+                <i data-lucide="clock" class="w-4 h-4 text-slate-500"></i>
+                <span>Scheduled Actions</span>
+                <span id="drawer-scheduled-badge" class="hidden ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-500/20 text-amber-300 font-bold">0</span>
               </button>
               <button onclick="switchTab('activity'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="activity">
                 <i data-lucide="history" class="w-4 h-4 text-slate-500"></i>
@@ -2242,6 +2487,9 @@
           if (typeof closePublishConfirmModal === 'function') closePublishConfirmModal();
           if (typeof closeConflictModal === 'function') closeConflictModal();
           if (typeof closePreviewModal === 'function') closePreviewModal();
+          if (typeof closeScheduleActionModal === 'function') closeScheduleActionModal();
+          if (typeof closeScheduleDetailsModal === 'function') closeScheduleDetailsModal();
+          if (typeof closeBulkScheduleModal === 'function') closeBulkScheduleModal();
         }
       });
 
@@ -2425,6 +2673,7 @@
         messages: 'Contact Inquiries & Communications',
         notifications: 'System & Security Notifications',
         activity: 'Audit Log & Operator Events',
+        scheduled: 'Scheduled Actions & Content Automation',
       };
       if (title) title.textContent = titleMap[tabId] || `${tabId} Management Console`;
 
@@ -2488,6 +2737,9 @@
       } else if (tabId === 'activity') {
         document.getElementById('tab-activity').classList.remove('hidden');
         loadActivityLogs();
+      } else if (tabId === 'scheduled') {
+        document.getElementById('tab-scheduled').classList.remove('hidden');
+        loadSchedules();
       } else {
         document.getElementById('tab-placeholder').classList.remove('hidden');
       }
@@ -3875,6 +4127,9 @@
               <button type="button" onclick="openRevisionHistory('${meta.entityType}', '${meta.entityId}', '${escapeHtml(meta.itemTitle || title)}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-medium flex items-center gap-1.5 transition-colors" title="Version History">
                 <i data-lucide="history" class="w-3.5 h-3.5"></i> History
               </button>
+              <button type="button" onclick="openScheduleModal('${meta.entityType}', '${meta.entityId}', '${escapeHtml(meta.itemTitle || title)}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-400 text-xs font-medium flex items-center gap-1.5 transition-colors" title="Schedule Action">
+                <i data-lucide="calendar-clock" class="w-3.5 h-3.5"></i> Schedule
+              </button>
               <button type="button" onclick="triggerPreview('${meta.entityType}', '${meta.entityId}', document.getElementById('cms-modal-form'))" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-medium flex items-center gap-1.5 transition-colors" title="Live Preview">
                 <i data-lucide="eye" class="w-3.5 h-3.5"></i> Preview
               </button>
@@ -4931,6 +5186,9 @@
                       <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                     </a>
                     ${!isActive ? `
+                      <button onclick="openScheduleModal('Resume', '${r._id}', '${escapeHtml(r.version + ' - ' + (r.title || 'Resume'))}', '', 'RESUME_ACTIVATE')" class="px-2.5 py-1 rounded-lg bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white text-[11px] font-semibold transition-colors flex items-center gap-1" title="Schedule Activation">
+                        <i data-lucide="calendar-clock" class="w-3 h-3"></i> Schedule
+                      </button>
                       <button onclick="handleActivateResume('${r._id}', '${escapeHtml(r.version)}')" class="px-2.5 py-1 rounded-lg bg-cyan-600/20 hover:bg-cyan-600 text-cyan-300 hover:text-white text-[11px] font-semibold transition-colors">
                         Activate
                       </button>
@@ -4975,6 +5233,9 @@
                       <i data-lucide="eye" class="w-3.5 h-3.5"></i><span>Preview PDF</span>
                     </a>
                     ${!isActive ? `
+                      <button onclick="openScheduleModal('Resume', '${r._id}', '${escapeHtml(r.version + ' - ' + (r.title || 'Resume'))}', '', 'RESUME_ACTIVATE')" class="py-2 px-3 rounded-lg bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 min-h-[38px]">
+                        <i data-lucide="calendar-clock" class="w-3.5 h-3.5"></i><span>Schedule</span>
+                      </button>
                       <button onclick="handleActivateResume('${r._id}', '${escapeHtml(r.version)}')" class="flex-1 py-2 px-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors min-h-[38px]">
                         Activate
                       </button>
@@ -5514,6 +5775,9 @@
                   Compare
                 </button>
                 ${!isLatest ? `
+                  <button onclick="closeRevisionHistoryModal(); openScheduleModal('${entityType}', '${entityId}', 'Revision v${rev.version}', ${rev.version}, 'ACTIVATE_REVISION')" class="px-2.5 py-1 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 transition-colors">
+                    Schedule
+                  </button>
                   <button onclick="confirmRestoreRevision('${entityType}', '${entityId}', ${rev.version})" class="px-2.5 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition-colors">
                     Restore
                   </button>
@@ -5764,6 +6028,810 @@
       } else {
         container.classList.add('preview-viewport-desktop');
         if (btnDesktop) { btnDesktop.classList.add('bg-cyan-600', 'text-white'); btnDesktop.classList.remove('bg-slate-800', 'text-slate-400'); }
+      }
+    }
+
+    // ─── PHASE 12: AUTOMATION & SCHEDULER ENGINE ─────────────
+    let _currentScheduleFilter = 'UPCOMING';
+    let _currentScheduleViewMode = 'list';
+    let _currentScheduleTz = 'Asia/Kolkata';
+    let _currentCalendarMonth = new Date().getMonth() + 1;
+    let _currentCalendarYear = new Date().getFullYear();
+    let _scheduleDebounceTimer = null;
+
+    async function loadSchedules() {
+      const tableBody = document.getElementById('scheduled-table-body');
+      const mobileCards = document.getElementById('scheduled-mobile-cards');
+      const entitySelect = document.getElementById('sched-entity-filter');
+      const actionSelect = document.getElementById('sched-action-filter');
+      const searchInput = document.getElementById('sched-search-input');
+
+      const entityVal = entitySelect ? entitySelect.value : 'ALL';
+      const actionVal = actionSelect ? actionSelect.value : 'ALL';
+      const searchVal = searchInput ? searchInput.value : '';
+
+      try {
+        const [schedRes, healthRes] = await Promise.allSettled([
+          fetch(`/api/admin/schedules?status=${encodeURIComponent(_currentScheduleFilter)}&entityType=${encodeURIComponent(entityVal)}&actionType=${encodeURIComponent(actionVal)}&search=${encodeURIComponent(searchVal)}&timezone=${encodeURIComponent(_currentScheduleTz)}`, { credentials: 'include' }),
+          fetch('/api/admin/schedules/health', { credentials: 'include' })
+        ]);
+
+        if (healthRes.status === 'fulfilled' && healthRes.value.ok) {
+          const healthData = await healthRes.value.json();
+          if (healthData.success) {
+            updateSchedulerHealthUI(healthData.data);
+          }
+        }
+
+        if (schedRes.status === 'fulfilled' && schedRes.value.ok) {
+          const resData = await schedRes.value.json();
+          const items = (resData.data && resData.data.schedules) ? resData.data.schedules : [];
+          renderSchedulesTable(items);
+          renderMobileScheduleCards(items);
+          renderSchedulePagination(resData.data);
+        } else {
+          if (tableBody) tableBody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-500 font-mono">No scheduled actions found.</td></tr>';
+          if (mobileCards) mobileCards.innerHTML = '<div class="p-6 text-center text-slate-500 font-mono text-xs">No scheduled actions found.</div>';
+        }
+      } catch (err) {
+        if (tableBody) tableBody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-400 font-mono">Error loading schedules: ${escapeHtml(err.message)}</td></tr>`;
+      }
+
+      if (_currentScheduleViewMode === 'calendar') {
+        loadCalendar();
+      }
+    }
+
+    function updateSchedulerHealthUI(health) {
+      const pill = document.getElementById('scheduler-health-pill');
+      const text = document.getElementById('scheduler-health-text');
+      const statUpcoming = document.getElementById('stat-sched-upcoming');
+      const statFailed = document.getElementById('stat-sched-failed');
+      const statCompleted = document.getElementById('stat-sched-completed');
+
+      if (statUpcoming && health.counts) statUpcoming.textContent = health.counts.upcoming || 0;
+      if (statFailed && health.counts) {
+        statFailed.textContent = health.counts.failed || 0;
+        statFailed.className = health.counts.failed > 0
+          ? 'text-2xl sm:text-3xl font-bold font-mono text-rose-400 mt-2'
+          : 'text-2xl sm:text-3xl font-bold font-mono text-slate-100 mt-2';
+      }
+      if (statCompleted && health.counts) statCompleted.textContent = health.counts.completed || 0;
+
+      if (pill && text) {
+        if (health.isHealthy) {
+          pill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5';
+          text.textContent = 'Scheduler Operational';
+        } else {
+          pill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center gap-1.5';
+          text.textContent = 'Attention Required';
+        }
+      }
+    }
+
+    function renderSchedulesTable(items) {
+      const tableBody = document.getElementById('scheduled-table-body');
+      if (!tableBody) return;
+
+      if (!items || items.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-12 text-center">
+              <div class="flex flex-col items-center justify-center gap-2 text-slate-500">
+                <i data-lucide="calendar-check" class="w-8 h-8 text-slate-600"></i>
+                <span class="font-mono text-xs">No scheduled actions matching current filter.</span>
+                <button onclick="openScheduleModal()" class="mt-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-medium">
+                  + Schedule An Action
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
+      }
+
+      tableBody.innerHTML = items.map(item => {
+        const actionBadge = getActionBadgeHtml(item.actionType);
+        const statusBadge = getStatusBadgeHtml(item.status);
+        const timeStr = item.timeDetails ? `${item.timeDetails.datePart}, ${item.timeDetails.timePart} ${item.timeDetails.tzAbbrev}` : new Date(item.scheduledFor).toLocaleString();
+        const revLabel = item.revisionVersion ? `v${item.revisionVersion}` : 'Latest';
+
+        return `
+          <tr class="hover:bg-slate-900/40 transition-colors">
+            <td class="py-3 px-4">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-slate-200">${escapeHtml(item.entityTitle || item.entityId)}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-800 text-slate-400 border border-slate-700/60">${escapeHtml(item.entityType)}</span>
+              </div>
+              ${item.notes ? `<p class="text-[11px] text-slate-500 mt-0.5 truncate max-w-xs">${escapeHtml(item.notes)}</p>` : ''}
+            </td>
+            <td class="py-3 px-4">${actionBadge}</td>
+            <td class="py-3 px-4">
+              <span class="font-mono text-[11px] text-slate-300">${revLabel}</span>
+            </td>
+            <td class="py-3 px-4 font-mono text-slate-300">${escapeHtml(timeStr)}</td>
+            <td class="py-3 px-4">${statusBadge}</td>
+            <td class="py-3 px-4 text-right">
+              <div class="inline-flex items-center gap-1.5">
+                <button onclick="openScheduleDetailsModal('${item._id}')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition-colors" title="View Details">
+                  Details
+                </button>
+                ${item.status === 'SCHEDULED' ? `
+                  <button onclick="cancelScheduleAction('${item._id}')" class="px-2 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-[11px] font-medium transition-colors">
+                    Cancel
+                  </button>
+                ` : ''}
+                ${(item.status === 'FAILED' || item.status === 'FAILED_PERMANENTLY' || item.status === 'CANCELLED') ? `
+                  <button onclick="retryScheduleAction('${item._id}')" class="px-2 py-1 rounded bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-[11px] font-medium transition-colors">
+                    Retry
+                  </button>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function renderMobileScheduleCards(items) {
+      const container = document.getElementById('scheduled-mobile-cards');
+      if (!container) return;
+
+      if (!items || items.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center bg-brand-sidebar border border-brand-border rounded-xl">
+            <p class="text-xs text-slate-500 font-mono">No scheduled actions for this filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const actionBadge = getActionBadgeHtml(item.actionType);
+        const statusBadge = getStatusBadgeHtml(item.status);
+        const timeStr = item.timeDetails ? `${item.timeDetails.datePart}, ${item.timeDetails.timePart} ${item.timeDetails.tzAbbrev}` : new Date(item.scheduledFor).toLocaleString();
+
+        return `
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-800 text-slate-400 border border-slate-700/60">${escapeHtml(item.entityType)}</span>
+                <h4 class="text-sm font-bold text-slate-200 mt-1">${escapeHtml(item.entityTitle || item.entityId)}</h4>
+              </div>
+              <div>${statusBadge}</div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs py-2 border-y border-brand-border/40 font-mono">
+              <span class="text-slate-500">Action:</span>
+              <div>${actionBadge}</div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-slate-500">Execution:</span>
+              <span class="text-slate-200 font-medium">${escapeHtml(timeStr)}</span>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-2">
+              <button onclick="openScheduleDetailsModal('${item._id}')" class="flex-1 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium text-center">
+                Details
+              </button>
+              ${item.status === 'SCHEDULED' ? `
+                <button onclick="cancelScheduleAction('${item._id}')" class="py-1.5 px-3 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/30 text-xs font-medium">
+                  Cancel
+                </button>
+              ` : ''}
+              ${(item.status === 'FAILED' || item.status === 'FAILED_PERMANENTLY' || item.status === 'CANCELLED') ? `
+                <button onclick="retryScheduleAction('${item._id}')" class="py-1.5 px-3 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-medium">
+                  Retry
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderSchedulePagination(data) {
+      const container = document.getElementById('scheduled-pagination');
+      if (!container) return;
+      if (!data || !data.total) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = `
+        <span class="font-mono text-slate-400">Showing ${data.count} of ${data.total} scheduled action(s)</span>
+        <span class="font-mono text-slate-500 text-[11px]">Timezone: ${_currentScheduleTz}</span>
+      `;
+    }
+
+    function getActionBadgeHtml(action) {
+      switch (action) {
+        case 'PUBLISH':
+          return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">PUBLISH</span>';
+        case 'UNPUBLISH':
+          return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">UNPUBLISH</span>';
+        case 'ACTIVATE_REVISION':
+          return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">ACTIVATE REV</span>';
+        case 'RESUME_ACTIVATE':
+          return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">RESUME ACTIVE</span>';
+        case 'RESUME_DEACTIVATE':
+        case 'DEACTIVATE':
+          return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">DEACTIVATE</span>';
+        default:
+          return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-slate-800 text-slate-400 border border-slate-700">${escapeHtml(action)}</span>`;
+      }
+    }
+
+    function getStatusBadgeHtml(status) {
+      switch (status) {
+        case 'SCHEDULED':
+          return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>Scheduled</span>';
+        case 'PROCESSING':
+          return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/30"><span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>Processing</span>';
+        case 'COMPLETED':
+          return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Completed</span>';
+        case 'FAILED':
+        case 'FAILED_PERMANENTLY':
+          return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-rose-500/10 text-rose-300 border border-rose-500/30"><span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>Failed</span>';
+        case 'CANCELLED':
+          return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-slate-800 text-slate-400 border border-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>Cancelled</span>';
+        default:
+          return `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-800 text-slate-400">${escapeHtml(status)}</span>`;
+      }
+    }
+
+    function setScheduleStatusFilter(status) {
+      _currentScheduleFilter = status;
+      ['UPCOMING', 'ALL', 'COMPLETED', 'FAILED', 'CANCELLED'].forEach(s => {
+        const btn = document.getElementById(`sched-tab-${s.toLowerCase()}`);
+        if (btn) {
+          if (s === status) {
+            btn.className = 'px-3 py-1.5 rounded-md font-medium transition-colors bg-cyan-600 text-white font-semibold';
+          } else {
+            btn.className = 'px-3 py-1.5 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200';
+          }
+        }
+      });
+      loadSchedules();
+    }
+
+    function setScheduleViewMode(mode) {
+      _currentScheduleViewMode = mode;
+      const listContainer = document.getElementById('scheduled-list-container');
+      const calContainer = document.getElementById('scheduled-calendar-container');
+      const btnList = document.getElementById('sched-view-list-btn');
+      const btnCal = document.getElementById('sched-view-cal-btn');
+
+      if (mode === 'calendar') {
+        if (listContainer) listContainer.classList.add('hidden');
+        if (calContainer) calContainer.classList.remove('hidden');
+        if (btnCal) { btnCal.className = 'flex items-center gap-1.5 px-3 py-1 rounded-md font-medium transition-colors bg-slate-800 text-cyan-300 font-semibold'; }
+        if (btnList) { btnList.className = 'flex items-center gap-1.5 px-3 py-1 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200'; }
+        loadCalendar();
+      } else {
+        if (listContainer) listContainer.classList.remove('hidden');
+        if (calContainer) calContainer.classList.add('hidden');
+        if (btnList) { btnList.className = 'flex items-center gap-1.5 px-3 py-1 rounded-md font-medium transition-colors bg-slate-800 text-cyan-300 font-semibold'; }
+        if (btnCal) { btnCal.className = 'flex items-center gap-1.5 px-3 py-1 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200'; }
+        loadSchedules();
+      }
+    }
+
+    function changeScheduleTimezone() {
+      const select = document.getElementById('sched-tz-select');
+      if (select) _currentScheduleTz = select.value;
+      loadSchedules();
+    }
+
+    function applyScheduleFilters() {
+      loadSchedules();
+    }
+
+    function debounceScheduleSearch() {
+      clearTimeout(_scheduleDebounceTimer);
+      _scheduleDebounceTimer = setTimeout(() => {
+        loadSchedules();
+      }, 350);
+    }
+
+    // ─── CALENDAR RENDERING ENGINE ────────────────────────────
+    async function loadCalendar() {
+      const cellsContainer = document.getElementById('calendar-cells');
+      const monthYearHeader = document.getElementById('calendar-month-year');
+      const eventCountLabel = document.getElementById('calendar-event-count');
+
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      if (monthYearHeader) {
+        monthYearHeader.textContent = `${monthNames[_currentCalendarMonth - 1]} ${_currentCalendarYear}`;
+      }
+
+      try {
+        const res = await fetch(`/api/admin/schedules/calendar?year=${_currentCalendarYear}&month=${_currentCalendarMonth}&timezone=${encodeURIComponent(_currentScheduleTz)}`, { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to load calendar');
+        const data = await res.json();
+        const events = (data.data && data.data.events) ? data.data.events : [];
+
+        if (eventCountLabel) eventCountLabel.textContent = `${events.length} Action(s)`;
+
+        // Map events by date YYYY-MM-DD
+        const eventsByDate = {};
+        events.forEach(ev => {
+          if (!eventsByDate[ev.date]) eventsByDate[ev.date] = [];
+          eventsByDate[ev.date].push(ev);
+        });
+
+        // Days in month calculation
+        const firstDay = new Date(Date.UTC(_currentCalendarYear, _currentCalendarMonth - 1, 1)).getUTCDay();
+        const totalDays = new Date(Date.UTC(_currentCalendarYear, _currentCalendarMonth, 0)).getUTCDate();
+
+        let cellsHtml = '';
+
+        // Empty padding cells before 1st of month
+        for (let i = 0; i < firstDay; i++) {
+          cellsHtml += '<div class="min-h-[70px] sm:min-h-[90px] p-1.5 rounded-lg bg-slate-950/30 border border-brand-border/30 opacity-40"></div>';
+        }
+
+        // Active days
+        for (let d = 1; d <= totalDays; d++) {
+          const dateStr = `${_currentCalendarYear}-${String(_currentCalendarMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          const dayEvents = eventsByDate[dateStr] || [];
+
+          cellsHtml += `
+            <div class="min-h-[70px] sm:min-h-[90px] p-1.5 rounded-lg bg-slate-900/60 border border-brand-border/60 hover:border-cyan-500/40 transition-colors flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-mono font-semibold ${dayEvents.length ? 'text-cyan-300' : 'text-slate-400'}">${d}</span>
+                ${dayEvents.length ? `<span class="text-[9px] font-mono px-1 rounded bg-cyan-500/20 text-cyan-300 font-bold">${dayEvents.length}</span>` : ''}
+              </div>
+              <div class="space-y-1 mt-1 overflow-y-auto max-h-14">
+                ${dayEvents.slice(0, 3).map(ev => `
+                  <div onclick="openScheduleDetailsModal('${ev.id}')" class="px-1.5 py-0.5 rounded text-[10px] font-mono truncate cursor-pointer transition-colors ${ev.actionType === 'PUBLISH' ? 'bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30' : 'bg-amber-500/20 text-amber-300 hover:bg-amber-500/30'}" title="${escapeHtml(ev.title)}">
+                    ${ev.actionType === 'PUBLISH' ? '🚀' : '⏸️'} ${escapeHtml(ev.entityType)}
+                  </div>
+                `).join('')}
+                ${dayEvents.length > 3 ? `<div class="text-[9px] text-slate-500 font-mono">+${dayEvents.length - 3} more</div>` : ''}
+              </div>
+            </div>
+          `;
+        }
+
+        if (cellsContainer) cellsContainer.innerHTML = cellsHtml;
+      } catch (e) {
+        if (cellsContainer) cellsContainer.innerHTML = `<div class="col-span-7 py-8 text-center text-slate-500 font-mono text-xs">Failed to load calendar events.</div>`;
+      }
+    }
+
+    function navigateCalendar(offset) {
+      if (offset === 0) {
+        _currentCalendarMonth = new Date().getMonth() + 1;
+        _currentCalendarYear = new Date().getFullYear();
+      } else {
+        _currentCalendarMonth += offset;
+        if (_currentCalendarMonth > 12) {
+          _currentCalendarMonth = 1;
+          _currentCalendarYear++;
+        } else if (_currentCalendarMonth < 1) {
+          _currentCalendarMonth = 12;
+          _currentCalendarYear--;
+        }
+      }
+      loadCalendar();
+    }
+
+    // ─── SCHEDULE MODAL ACTIONS ───────────────────────────────
+    function openScheduleModal(entityType = 'Project', entityId = '', entityTitle = '', revisionVersion = '', defaultAction = 'PUBLISH') {
+      const modal = document.getElementById('schedule-action-modal');
+      const form = document.getElementById('schedule-action-form');
+      if (form) form.reset();
+
+      document.getElementById('sched-form-id').value = '';
+      document.getElementById('sched-form-entity-id').value = entityId;
+      document.getElementById('sched-form-entity-type').value = entityType;
+      document.getElementById('sched-form-action-type').value = defaultAction;
+      document.getElementById('sched-form-entity-title').value = entityTitle || `${entityType} ${entityId}`;
+      document.getElementById('sched-form-revision').value = revisionVersion || '';
+      document.getElementById('sched-form-tz').value = _currentScheduleTz;
+
+      // Default execution date: tomorrow at 10:00 AM
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const yyyy = tomorrow.getFullYear();
+      const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+      const dd = String(tomorrow.getDate()).padStart(2, '0');
+
+      document.getElementById('sched-form-date').value = `${yyyy}-${mm}-${dd}`;
+      document.getElementById('sched-form-time').value = '10:00';
+
+      const warningBox = document.getElementById('sched-form-conflict-warning');
+      if (warningBox) warningBox.classList.add('hidden');
+      const forceCb = document.getElementById('sched-form-force-cb');
+      if (forceCb) forceCb.checked = false;
+
+      updateScheduleFormSummary();
+      ['sched-form-action-type', 'sched-form-entity-title', 'sched-form-revision', 'sched-form-date', 'sched-form-time', 'sched-form-tz'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.oninput = updateScheduleFormSummary;
+      });
+
+      if (modal) modal.classList.add('open');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeScheduleActionModal() {
+      const modal = document.getElementById('schedule-action-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function onSchedEntityTypeChange() {
+      const type = document.getElementById('sched-form-entity-type').value;
+      const titleInput = document.getElementById('sched-form-entity-title');
+      if (['Hero', 'Profile', 'About', 'Settings', 'SEO'].includes(type)) {
+        document.getElementById('sched-form-entity-id').value = type.toLowerCase();
+        if (titleInput) titleInput.value = `${type} Section`;
+      }
+      updateScheduleFormSummary();
+    }
+
+    function updateScheduleFormSummary() {
+      const action = document.getElementById('sched-form-action-type').value;
+      const title = document.getElementById('sched-form-entity-title').value || 'Content';
+      const rev = document.getElementById('sched-form-revision').value;
+      const date = document.getElementById('sched-form-date').value;
+      const time = document.getElementById('sched-form-time').value;
+      const tz = document.getElementById('sched-form-tz').value;
+      const summaryEl = document.getElementById('sched-form-summary-text');
+
+      if (summaryEl) {
+        summaryEl.textContent = `Action: [${action}] on "${title}" ${rev ? `(Revision v${rev})` : ''} at ${date || 'YYYY-MM-DD'} ${time || 'HH:mm'} ${tz}`;
+      }
+    }
+
+    async function submitScheduleAction(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('sched-form-submit-btn');
+      const warningBox = document.getElementById('sched-form-conflict-warning');
+      const warningMsg = document.getElementById('sched-form-conflict-msg');
+      const forceCb = document.getElementById('sched-form-force-cb');
+
+      const id = document.getElementById('sched-form-id').value;
+      const entityType = document.getElementById('sched-form-entity-type').value;
+      const entityId = document.getElementById('sched-form-entity-id').value || document.getElementById('sched-form-entity-title').value.toLowerCase().replace(/\s+/g, '-');
+      const entityTitle = document.getElementById('sched-form-entity-title').value;
+      const actionType = document.getElementById('sched-form-action-type').value;
+      const revisionVersion = document.getElementById('sched-form-revision').value;
+      const scheduledDate = document.getElementById('sched-form-date').value;
+      const scheduledTime = document.getElementById('sched-form-time').value;
+      const timezone = document.getElementById('sched-form-tz').value;
+      const notes = document.getElementById('sched-form-notes').value;
+      const force = forceCb ? forceCb.checked : false;
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Committing Schedule...';
+      }
+
+      try {
+        const method = id ? 'PATCH' : 'POST';
+        const endpoint = id ? `/api/admin/schedules/${id}` : '/api/admin/schedules';
+
+        const res = await fetch(endpoint, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            entityType,
+            entityId,
+            entityTitle,
+            actionType,
+            revisionVersion: revisionVersion ? Number(revisionVersion) : null,
+            scheduledDate,
+            scheduledTime,
+            timezone,
+            notes,
+            force,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (res.status === 409) {
+          // Schedule Conflict detected
+          if (warningBox && warningMsg) {
+            warningBox.classList.remove('hidden');
+            const warnings = (data.error && data.error.warnings) ? data.error.warnings : [];
+            warningMsg.innerHTML = warnings.map(w => `• ${escapeHtml(w.message)}`).join('<br>');
+          }
+          showToast('Schedule conflict detected. Please review warnings.', 'warning');
+          return;
+        }
+
+        if (!res.ok) {
+          throw new Error(data.message || (data.error && data.error.message) || 'Failed to create schedule');
+        }
+
+        showToast(id ? 'Schedule updated successfully!' : 'Action scheduled successfully!', 'success');
+        closeScheduleActionModal();
+        loadSchedules();
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Confirm & Schedule Action';
+        }
+      }
+    }
+
+    async function openScheduleDetailsModal(id) {
+      const modal = document.getElementById('schedule-details-modal');
+      const content = document.getElementById('sched-details-content');
+      const actions = document.getElementById('sched-details-actions');
+      const idLabel = document.getElementById('sched-details-id-label');
+
+      if (idLabel) idLabel.textContent = `ID: ${id}`;
+      if (content) content.innerHTML = '<p class="text-slate-500 py-6 text-center font-mono">Loading schedule details...</p>';
+      if (actions) actions.innerHTML = '';
+      if (modal) modal.classList.add('open');
+
+      try {
+        const res = await fetch(`/api/admin/schedules/${id}?timezone=${encodeURIComponent(_currentScheduleTz)}`, { credentials: 'include' });
+        if (!res.ok) throw new Error('Schedule not found');
+        const data = await res.json();
+        const s = data.data.schedule;
+
+        const actionBadge = getActionBadgeHtml(s.actionType);
+        const statusBadge = getStatusBadgeHtml(s.status);
+        const timeStr = s.timeDetails ? `${s.timeDetails.datePart}, ${s.timeDetails.timePart} ${s.timeDetails.tzAbbrev}` : new Date(s.scheduledFor).toLocaleString();
+
+        if (content) {
+          content.innerHTML = `
+            <div class="grid grid-cols-2 gap-3 p-3.5 bg-slate-900/80 border border-brand-border rounded-xl">
+              <div>
+                <span class="text-[10px] font-mono text-slate-500 uppercase">Entity / Content</span>
+                <p class="font-bold text-slate-200 mt-0.5">${escapeHtml(s.entityTitle || s.entityId)}</p>
+                <span class="text-[11px] text-slate-400 font-mono">${escapeHtml(s.entityType)}</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-mono text-slate-500 uppercase">Status</span>
+                <div class="mt-1">${statusBadge}</div>
+              </div>
+            </div>
+
+            <div class="space-y-2 p-3.5 bg-slate-900/80 border border-brand-border rounded-xl font-mono text-xs">
+              <div class="flex justify-between"><span class="text-slate-500">Action:</span> <span>${actionBadge}</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Target Revision:</span> <span class="text-cyan-400">${s.revisionVersion ? `v${s.revisionVersion}` : 'Latest Published'}</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Scheduled Time:</span> <span class="text-slate-200">${escapeHtml(timeStr)}</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Timezone:</span> <span class="text-amber-300">${escapeHtml(s.timezone || _currentScheduleTz)}</span></div>
+              ${s.executedAt ? `<div class="flex justify-between"><span class="text-slate-500">Executed At:</span> <span class="text-emerald-400">${new Date(s.executedAt).toLocaleString()}</span></div>` : ''}
+              <div class="flex justify-between"><span class="text-slate-500">Retries:</span> <span class="text-slate-300">${s.retryCount} / ${s.maxRetries}</span></div>
+            </div>
+
+            ${s.failureReason ? `
+              <div class="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300">
+                <span class="text-[10px] font-mono font-bold uppercase">Failure Reason:</span>
+                <p class="text-xs mt-1">${escapeHtml(s.failureReason)}</p>
+              </div>
+            ` : ''}
+
+            ${s.notes ? `
+              <div class="p-3 bg-slate-900/60 border border-brand-border rounded-xl">
+                <span class="text-[10px] font-mono text-slate-500 uppercase">Notes:</span>
+                <p class="text-xs text-slate-300 mt-1">${escapeHtml(s.notes)}</p>
+              </div>
+            ` : ''}
+          `;
+        }
+
+        if (actions) {
+          actions.innerHTML = `
+            ${s.status === 'SCHEDULED' ? `
+              <button onclick="cancelScheduleAction('${s._id}')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-medium transition-colors">
+                Cancel Schedule
+              </button>
+            ` : ''}
+            ${(s.status === 'FAILED' || s.status === 'FAILED_PERMANENTLY' || s.status === 'CANCELLED') ? `
+              <button onclick="retryScheduleAction('${s._id}', true)" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">
+                Retry Immediately
+              </button>
+            ` : ''}
+            ${(s.status === 'COMPLETED' || s.status === 'CANCELLED') ? `
+              <button onclick="deleteScheduleAction('${s._id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 text-xs font-medium transition-colors">
+                Delete Record
+              </button>
+            ` : ''}
+            <button onclick="closeScheduleDetailsModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+              Close
+            </button>
+          `;
+        }
+      } catch (err) {
+        if (content) content.innerHTML = `<p class="text-rose-400 py-6 text-center font-mono">${escapeHtml(err.message)}</p>`;
+      }
+    }
+
+    function closeScheduleDetailsModal() {
+      const modal = document.getElementById('schedule-details-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    async function cancelScheduleAction(id) {
+      if (!confirm('Are you sure you want to cancel this scheduled action?')) return;
+      try {
+        const res = await fetch(`/api/admin/schedules/${id}/cancel`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ reason: 'Operator cancelled schedule' }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Failed to cancel schedule');
+        showToast('Schedule cancelled.', 'success');
+        closeScheduleDetailsModal();
+        loadSchedules();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function retryScheduleAction(id, runImmediately = true) {
+      try {
+        const res = await fetch(`/api/admin/schedules/${id}/retry`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ runImmediately }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Failed to retry schedule');
+        showToast('Schedule re-queued/executed successfully.', 'success');
+        closeScheduleDetailsModal();
+        loadSchedules();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function deleteScheduleAction(id) {
+      if (!confirm('Delete this historical schedule record?')) return;
+      try {
+        const res = await fetch(`/api/admin/schedules/${id}`, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error('Failed to delete schedule');
+        showToast('Schedule deleted.', 'success');
+        closeScheduleDetailsModal();
+        loadSchedules();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function triggerSchedulerRunNow() {
+      try {
+        showToast('Executing due scheduled actions...', 'info');
+        const res = await fetch('/api/admin/scheduler/run', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Failed to trigger scheduler');
+        const count = data.data?.outcome?.executedCount || 0;
+        showToast(`Scheduler execution finished (${count} action(s) executed).`, 'success');
+        loadSchedules();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ─── BULK SCHEDULE MODAL ACTIONS ──────────────────────────
+    function openBulkScheduleModal() {
+      const modal = document.getElementById('bulk-schedule-modal');
+      const form = document.getElementById('bulk-schedule-form');
+      if (form) form.reset();
+
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const yyyy = tomorrow.getFullYear();
+      const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+      const dd = String(tomorrow.getDate()).padStart(2, '0');
+
+      document.getElementById('bulk-sched-date').value = `${yyyy}-${mm}-${dd}`;
+      document.getElementById('bulk-sched-time').value = '10:00';
+      document.getElementById('bulk-sched-tz').value = _currentScheduleTz;
+
+      loadBulkEntityOptions();
+      if (modal) modal.classList.add('open');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeBulkScheduleModal() {
+      const modal = document.getElementById('bulk-schedule-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    async function loadBulkEntityOptions() {
+      const type = document.getElementById('bulk-sched-entity-type').value;
+      const container = document.getElementById('bulk-sched-items-container');
+      if (!container) return;
+
+      container.innerHTML = '<p class="text-slate-500 py-2 text-center">Loading items...</p>';
+
+      try {
+        let endpoint = '/api/admin/projects';
+        if (type === 'Skill') endpoint = '/api/admin/skills';
+        else if (type === 'Experience') endpoint = '/api/admin/experience';
+        else if (type === 'Certificate') endpoint = '/api/admin/certificates';
+
+        const res = await fetch(endpoint, { credentials: 'include' });
+        const data = await res.json();
+        const items = data.data || data.projects || data.skills || data.experience || data.certificates || [];
+
+        if (!items.length) {
+          container.innerHTML = '<p class="text-slate-500 py-2 text-center">No items available.</p>';
+          return;
+        }
+
+        container.innerHTML = items.map(item => `
+          <label class="flex items-center gap-2 p-1.5 rounded hover:bg-slate-800/50 cursor-pointer">
+            <input type="checkbox" class="bulk-item-cb rounded bg-slate-900 border-slate-700 text-cyan-500" value="${item._id || item.id}" data-title="${escapeHtml(item.title || item.name || item.role)}">
+            <span class="text-xs text-slate-200">${escapeHtml(item.title || item.name || item.role)}</span>
+          </label>
+        `).join('');
+      } catch (e) {
+        container.innerHTML = '<p class="text-rose-400 py-2 text-center">Failed to load items.</p>';
+      }
+    }
+
+    async function submitBulkSchedule(e) {
+      e.preventDefault();
+      const entityType = document.getElementById('bulk-sched-entity-type').value;
+      const actionType = document.getElementById('bulk-sched-action-type').value;
+      const scheduledDate = document.getElementById('bulk-sched-date').value;
+      const scheduledTime = document.getElementById('bulk-sched-time').value;
+      const timezone = document.getElementById('bulk-sched-tz').value;
+
+      const checkedBoxes = Array.from(document.querySelectorAll('.bulk-item-cb:checked'));
+      if (checkedBoxes.length === 0) {
+        showToast('Select at least one item for bulk scheduling.', 'warning');
+        return;
+      }
+
+      const items = checkedBoxes.map(cb => ({
+        entityType,
+        entityId: cb.value,
+        entityTitle: cb.getAttribute('data-title') || `${entityType} ${cb.value}`,
+        actionType,
+      }));
+
+      try {
+        const res = await fetch('/api/admin/schedules/bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            items,
+            actionType,
+            scheduledDate,
+            scheduledTime,
+            timezone,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Bulk schedule failed');
+
+        showToast(`Successfully scheduled ${data.data.createdCount} items!`, 'success');
+        closeBulkScheduleModal();
+        loadSchedules();
+      } catch (err) {
+        showToast(err.message, 'error');
       }
     }
 
@@ -6248,6 +7316,236 @@
           <iframe id="preview-iframe" class="w-full h-full border-0" src="about:blank"></iframe>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Phase 12: Schedule Action Modal -->
+  <div id="schedule-action-modal" onclick="if(event.target===this)closeScheduleActionModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-lg mx-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="clock" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100 font-display">Schedule Content Action</h3>
+            <p class="text-[11px] text-slate-400">Automated publication, unpublication & revision activation</p>
+          </div>
+        </div>
+        <button onclick="closeScheduleActionModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="schedule-action-form" onsubmit="submitScheduleAction(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="sched-form-id" value="">
+        <input type="hidden" id="sched-form-entity-id" value="">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Entity Type</label>
+            <select id="sched-form-entity-type" onchange="onSchedEntityTypeChange()" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+              <option value="Project">Project</option>
+              <option value="Hero">Hero Section</option>
+              <option value="Profile">Profile</option>
+              <option value="About">About Narrative</option>
+              <option value="Skill">Skill</option>
+              <option value="Experience">Experience</option>
+              <option value="Education">Education</option>
+              <option value="Certificate">Certificate</option>
+              <option value="Roadmap">Roadmap Milestone</option>
+              <option value="SocialLink">Social Link</option>
+              <option value="Navigation">Navigation</option>
+              <option value="SEO">SEO Metadata</option>
+              <option value="Settings">Site Settings</option>
+              <option value="Resume">Resume Version</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Action Type</label>
+            <select id="sched-form-action-type" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+              <option value="PUBLISH">Publish Content</option>
+              <option value="UNPUBLISH">Unpublish Content</option>
+              <option value="ACTIVATE_REVISION">Activate Specific Revision</option>
+              <option value="DEACTIVATE">Deactivate Content</option>
+              <option value="RESUME_ACTIVATE">Activate Resume</option>
+              <option value="RESUME_DEACTIVATE">Deactivate Resume</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Target Content Title / ID</label>
+          <input type="text" id="sched-form-entity-title" required placeholder="e.g. Flagship AI System / portfolio" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Target Revision (Optional)</label>
+            <input type="number" id="sched-form-revision" min="1" placeholder="e.g. 14 (leave blank for latest)" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-cyan-500/50">
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Timezone</label>
+            <select id="sched-form-tz" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-amber-300 font-mono focus:outline-none focus:border-cyan-500/50">
+              <option value="Asia/Kolkata">Asia/Kolkata (IST +05:30)</option>
+              <option value="UTC">UTC (+00:00)</option>
+              <option value="America/New_York">America/New_York (EST/EDT)</option>
+              <option value="Europe/London">Europe/London (GMT/BST)</option>
+              <option value="Asia/Tokyo">Asia/Tokyo (JST +09:00)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Execution Date</label>
+            <input type="date" id="sched-form-date" required class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-cyan-500/50">
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Execution Time</label>
+            <input type="time" id="sched-form-time" required class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-cyan-500/50">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Notes / Rationale (Optional)</label>
+          <input type="text" id="sched-form-notes" placeholder="e.g. Launching v2.0 flagship case study alongside LinkedIn post" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+        </div>
+
+        <!-- Live Confirmation Preview Box -->
+        <div class="p-3 rounded-lg bg-slate-900/90 border border-cyan-500/20 text-xs space-y-1">
+          <div class="text-[11px] font-mono text-cyan-400 font-semibold uppercase tracking-wider">Schedule Summary</div>
+          <p id="sched-form-summary-text" class="text-slate-300">Select date and time above to view execution summary.</p>
+        </div>
+
+        <!-- Conflict Warning Container (hidden unless conflict detected) -->
+        <div id="sched-form-conflict-warning" class="hidden p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs space-y-2">
+          <div class="flex items-center gap-2 text-amber-400 font-semibold">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            <span>Schedule Conflict Warning</span>
+          </div>
+          <p id="sched-form-conflict-msg" class="text-amber-200 leading-relaxed"></p>
+          <label class="flex items-center gap-2 pt-1 text-slate-300 cursor-pointer">
+            <input type="checkbox" id="sched-form-force-cb" class="rounded bg-slate-900 border-amber-500 text-cyan-500 focus:ring-0">
+            <span>Force commit and schedule anyway</span>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-brand-border">
+          <button type="button" onclick="closeScheduleActionModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+          <button type="submit" id="sched-form-submit-btn" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-lg shadow-cyan-600/20 transition-all">
+            Confirm & Schedule Action
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Phase 12: Schedule Details Modal -->
+  <div id="schedule-details-modal" onclick="if(event.target===this)closeScheduleDetailsModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-lg mx-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="calendar" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100 font-display">Schedule Details</h3>
+            <p id="sched-details-id-label" class="text-[11px] font-mono text-slate-500"></p>
+          </div>
+        </div>
+        <button onclick="closeScheduleDetailsModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div id="sched-details-content" class="space-y-4 text-xs">
+        <!-- Dynamically rendered -->
+      </div>
+
+      <div id="sched-details-actions" class="flex flex-wrap items-center justify-end gap-2 pt-4 border-t border-brand-border mt-5">
+        <!-- Dynamically rendered buttons (Cancel, Reschedule, Retry, Delete) -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 12: Bulk Schedule Modal -->
+  <div id="bulk-schedule-modal" onclick="if(event.target===this)closeBulkScheduleModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="layers" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100 font-display">Bulk Schedule Actions</h3>
+            <p class="text-[11px] text-slate-400">Schedule multiple entities simultaneously</p>
+          </div>
+        </div>
+        <button onclick="closeBulkScheduleModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="bulk-schedule-form" onsubmit="submitBulkSchedule(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Target Entity Type</label>
+          <select id="bulk-sched-entity-type" onchange="loadBulkEntityOptions()" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+            <option value="Project">Projects</option>
+            <option value="Skill">Skills</option>
+            <option value="Experience">Experience</option>
+            <option value="Certificate">Certificates</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Select Items</label>
+          <div id="bulk-sched-items-container" class="max-h-40 overflow-y-auto p-2 bg-slate-900/80 border border-brand-border rounded-lg space-y-1.5">
+            <!-- Dynamically populated checkboxes -->
+            <p class="text-slate-500 py-2 text-center">Loading items...</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Action Type</label>
+            <select id="bulk-sched-action-type" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+              <option value="PUBLISH">Publish All</option>
+              <option value="UNPUBLISH">Unpublish All</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Timezone</label>
+            <select id="bulk-sched-tz" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-amber-300 font-mono focus:outline-none focus:border-cyan-500/50">
+              <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
+              <option value="UTC">UTC</option>
+              <option value="America/New_York">America/New_York (EST)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Date</label>
+            <input type="date" id="bulk-sched-date" required class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-cyan-500/50">
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Time</label>
+            <input type="time" id="bulk-sched-time" required class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-cyan-500/50">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-brand-border">
+          <button type="button" onclick="closeBulkScheduleModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all">
+            Confirm Bulk Schedule
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 

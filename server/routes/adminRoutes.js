@@ -123,6 +123,19 @@ const {
   generatePreviewToken,
   getPreviewSiteData,
 } = require('../controllers/previewController');
+const {
+  createSchedule,
+  getSchedules,
+  getScheduleById,
+  updateSchedule,
+  cancelSchedule,
+  retrySchedule,
+  deleteSchedule,
+  getCalendarEvents,
+  getSchedulerHealth,
+  runSchedulerNow,
+  bulkSchedule,
+} = require('../controllers/scheduleController');
 
 // All routes here are guarded by JWT Bearer Authentication
 router.use('/admin', verifyToken);
@@ -279,5 +292,19 @@ router.delete('/admin/draft/:entity/:id', discardDraft);
 // ─── Phase 11: Live Preview ─────────────────────────────────
 router.post('/admin/preview/token', generatePreviewToken);
 router.get('/admin/preview/site', getPreviewSiteData);
+
+// ─── Phase 12: Automation & Scheduling ──────────────────────
+router.get('/admin/schedules', getSchedules);
+router.post('/admin/schedules', createSchedule);
+router.post('/admin/schedules/bulk', bulkSchedule);
+router.get('/admin/schedules/calendar', getCalendarEvents);
+router.get('/admin/schedules/health', getSchedulerHealth);
+router.post('/admin/scheduler/run', runSchedulerNow);
+router.get('/admin/schedules/:id', getScheduleById);
+router.patch('/admin/schedules/:id', updateSchedule);
+router.put('/admin/schedules/:id', updateSchedule);
+router.post('/admin/schedules/:id/cancel', cancelSchedule);
+router.post('/admin/schedules/:id/retry', retrySchedule);
+router.delete('/admin/schedules/:id', deleteSchedule);
 
 module.exports = router;

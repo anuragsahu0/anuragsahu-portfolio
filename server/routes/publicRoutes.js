@@ -16,6 +16,7 @@ const { getPublicSettings, getPublicSeo } = require('../controllers/settingsCont
 const { getPublicResume } = require('../controllers/resumeController');
 const { getMediaById } = require('../controllers/mediaController');
 const { getPublicSite, getDynamicSitemap } = require('../controllers/publicController');
+const { runSchedulerNow } = require('../controllers/scheduleController');
 
 // ─── Public Read-Only Portfolio Endpoints ────────────────────────────────────
 // Return only published/visible records, stripping any private metadata or admin fields
@@ -38,5 +39,8 @@ router.get('/public/settings', getPublicSettings);
 router.get('/public/seo', getPublicSeo);
 router.get('/public/resume', getPublicResume);
 router.get('/public/media/:id', getMediaById);
+
+// ─── Internal Scheduler Trigger (Protected by CRON_SECRET) ───────────────────
+router.post('/internal/scheduler/run', runSchedulerNow);
 
 module.exports = router;

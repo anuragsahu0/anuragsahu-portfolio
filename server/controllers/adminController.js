@@ -14,6 +14,7 @@ const Notification = require('../models/Notification');
 const ActivityLog = require('../models/ActivityLog');
 const LoginHistory = require('../models/LoginHistory');
 const Draft = require('../models/Draft');
+const ScheduledAction = require('../models/ScheduledAction');
 const { checkSystemHealth } = require('../services/healthService');
 const { parseUserAgent } = require('./analyticsController');
 
@@ -246,9 +247,28 @@ const getAdminDashboardStats = async (req, res, next) => {
     }
 
     let totalDrafts = 0;
+    let upcomingSchedulesCount = 0;
+    let failedSchedulesCount = 0;
+    let completedSchedulesCount = 0;
+    let nextScheduledAction = null;
+
     try {
       if (Draft.db && Draft.db.readyState === 1) {
         totalDrafts = await Draft.countDocuments();
+      }
+      if (ScheduledAction.db && ScheduledAction.db.readyState === 1) {
+        [upcomingSchedulesCount, failedSchedulesCount, completedSchedulesCount, nextScheduledAction] = await Promise.all([
+          ScheduledAction.countDocuments({ status: 'SCHEDULED' }),
+          ScheduledAction.countDocuments({ status: { $in: ['FAILED', 'FAILED_PERMANENTLY'] } }),
+          ScheduledAction.countDocuments({ status: 'COMPLETED' }),
+          ScheduledAction.findOne({ status: 'SCHEDULED' }).sort({ scheduledFor: 1 }).lean(),
+        ]);
+      } else {
+        const { IN_MEMORY_SCHEDULES } = require('../utils/scheduleStore');
+        upcomingSchedulesCount = IN_MEMORY_SCHEDULES.filter(s => s.status === 'SCHEDULED').length;
+        failedSchedulesCount = IN_MEMORY_SCHEDULES.filter(s => s.status === 'FAILED' || s.status === 'FAILED_PERMANENTLY').length;
+        completedSchedulesCount = IN_MEMORY_SCHEDULES.filter(s => s.status === 'COMPLETED').length;
+        nextScheduledAction = IN_MEMORY_SCHEDULES.filter(s => s.status === 'SCHEDULED').sort((a, b) => new Date(a.scheduledFor) - new Date(b.scheduledFor))[0] || null;
       }
     } catch (e) {}
 
@@ -257,6 +277,17 @@ const getAdminDashboardStats = async (req, res, next) => {
 
     // 3. Dynamic "Needs Attention" Checklist Engine (strictly real conditions)
     const attentionItems = [];
+
+    if (failedSchedulesCount > 0) {
+      attentionItems.push({
+        id: 'failed-schedules',
+        type: 'warning',
+        title: `${failedSchedulesCount} scheduled action(s) failed execution`,
+        tab: 'scheduled',
+        link: '/admin/scheduled',
+        actionText: 'Review Schedules',
+      });
+    }
 
     if (totalDrafts > 0) {
       attentionItems.push({
@@ -379,6 +410,23 @@ const getAdminDashboardStats = async (req, res, next) => {
         activeResumeStatus: activeResume ? `${activeResume.version || 'Active'} (${activeResume.title || 'ATS Resume'})` : 'Missing',
         hasActiveResume: Boolean(activeResume),
         activeDrafts: totalDrafts,
+        upcomingSchedules: upcomingSchedulesCount,
+        failedSchedules: failedSchedulesCount,
+      },
+      scheduledOverview: {
+        upcoming: upcomingSchedulesCount,
+        failed: failedSchedulesCount,
+        completed: completedSchedulesCount,
+        nextAction: nextScheduledAction
+          ? {
+              id: nextScheduledAction._id,
+              entityType: nextScheduledAction.entityType,
+              entityTitle: nextScheduledAction.entityTitle,
+              actionType: nextScheduledAction.actionType,
+              scheduledFor: nextScheduledAction.scheduledFor,
+              timezone: nextScheduledAction.timezone,
+            }
+          : null,
       },
       contentOverview: {
         projects: totalProjects,

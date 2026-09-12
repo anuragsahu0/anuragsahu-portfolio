@@ -152,6 +152,7 @@ app.use('*', (req, res) => {
 app.use(errorHandler);
 
 if (require.main === module) {
+  const { initSchedulerWorker } = require('./services/schedulerService');
   app.listen(PORT, () => {
     console.log(`\n==================================================`);
     console.log(`🚀 ANURAG SAHU CONTROL CENTER & BACKEND CMS ONLINE`);
@@ -160,6 +161,9 @@ if (require.main === module) {
     console.log(`   Public:   http://localhost:${PORT}/api/public/projects`);
     console.log(`   Admin:    http://localhost:${PORT}/api/admin/projects`);
     console.log(`==================================================\n`);
+
+    // Start background scheduler worker
+    initSchedulerWorker({ intervalMs: 30000 });
   });
 }
 

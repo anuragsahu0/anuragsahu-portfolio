@@ -9,14 +9,22 @@ const sendSuccess = (res, data, statusCode = 200) => {
 };
 
 const sendError = (res, message, code = 'ERROR', statusCode = 400, details = null) => {
+  let finalStatus = statusCode;
+  let finalCode = code;
+
+  if (typeof code === 'number') {
+    finalStatus = code;
+    finalCode = code === 404 ? 'NOT_FOUND' : code === 401 ? 'UNAUTHORIZED' : code === 403 ? 'FORBIDDEN' : 'ERROR';
+  }
+
   const errorObj = {
-    code,
+    code: finalCode,
     message,
   };
   if (details) {
     errorObj.details = details;
   }
-  return res.status(statusCode).json({
+  return res.status(finalStatus).json({
     success: false,
     error: errorObj,
   });
