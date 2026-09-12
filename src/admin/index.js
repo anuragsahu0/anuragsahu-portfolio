@@ -66,6 +66,7 @@ export * from './services/messageService';
 export * from './services/settingsService';
 export * from './hooks/useAdminAuth';
 export * from './hooks/useAdminData';
+export * from './hooks/useResponsiveDevice';
 
 // Utils & Types
 export * from './utils/adminFormatters';

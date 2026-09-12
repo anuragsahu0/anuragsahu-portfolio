@@ -53,8 +53,10 @@
       color-scheme: dark;
       --sat: env(safe-area-inset-top, 0px);
       --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+      --sar: env(safe-area-inset-right, 0px);
     }
-    body {
+    html, body {
       background-color: #05070E;
       color: #F1F5F9;
       font-family: 'Inter', system-ui, sans-serif;
@@ -63,9 +65,14 @@
       min-height: 100vh;
       min-height: 100dvh;
       overflow-x: hidden;
+      max-width: 100vw;
+      -webkit-tap-highlight-color: transparent;
     }
     .safe-area-pb {
       padding-bottom: max(0.5rem, var(--sab));
+    }
+    .safe-area-pt {
+      padding-top: max(0.75rem, var(--sat));
     }
     /* Hide scrollbar for tabs navigation */
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -99,27 +106,127 @@
       box-shadow: 0 0 0 2px rgba(6,182,212,0.1);
     }
     .cms-input::placeholder { color: #334155; }
+
+    /* Prevent iOS Safari 16px auto-zoom blowout on input focus */
+    @media (max-width: 640px) {
+      .cms-input, select.cms-input, textarea.cms-input,
+      input.cms-input, input[type="text"], input[type="email"], input[type="password"], input[type="url"], input[type="number"] {
+        font-size: 16px !important;
+      }
+    }
+
+    /* Sticky Mobile Actions for long CMS forms */
+    .sticky-mobile-actions {
+      position: sticky;
+      bottom: calc(3.75rem + var(--sab));
+      z-index: 30;
+      background: rgba(7, 11, 22, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid #141E33;
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    }
+    @media (min-width: 1024px) {
+      .sticky-mobile-actions {
+        position: static;
+        background: transparent;
+        border: none;
+        padding: 8px 0 0 0;
+        box-shadow: none;
+        backdrop-filter: none;
+      }
+    }
+
     /* Toast */
     #cms-toast {
-      position: fixed; bottom: 80px; right: 20px; z-index: 9999;
+      position: fixed; bottom: calc(4.5rem + var(--sab)); right: 20px; z-index: 9999;
       padding: 10px 18px; border-radius: 8px; font-size: 12px; font-weight: 600;
       font-family: 'JetBrains Mono', monospace;
       transition: opacity 0.3s, transform 0.3s;
       pointer-events: none;
     }
+    @media (min-width: 1024px) {
+      #cms-toast { bottom: 24px; }
+    }
     #cms-toast.toast-success { background: #064e3b; color: #6ee7b7; border: 1px solid #065f46; }
     #cms-toast.toast-error { background: #450a0a; color: #fca5a5; border: 1px solid #7f1d1d; }
     #cms-toast.toast-hidden { opacity: 0; transform: translateY(8px); }
-    /* CMS Modal overlay */
-    #cms-modal { position: fixed; inset: 0; z-index: 8000; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; padding: 16px; }
-    #cms-modal.open { display: flex; }
-    #cms-modal-box { background: #070B16; border: 1px solid #141E33; border-radius: 16px; padding: 28px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; }
-    /* Delete confirm modal */
-    #confirm-modal { position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; }
-    #confirm-modal.open { display: flex; }
-    /* Phase 5 & 6 Modals */
-    #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal { position: fixed; inset: 0; z-index: 8500; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; padding: 16px; }
-    #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open { display: flex; }
+
+    /* Responsive Modal System: Bottom Sheet on Mobile (<640px), Centered Modal on Desktop (>=640px) */
+    #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 8500;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+    }
+    #cms-modal.open, #confirm-modal.open, #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open {
+      display: flex;
+    }
+    @media (min-width: 640px) {
+      #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal {
+        align-items: center;
+        padding: 16px;
+      }
+    }
+
+    /* Modal Content Boxes */
+    #cms-modal-box,
+    #confirm-modal > div,
+    #media-upload-modal > div,
+    #media-detail-content,
+    #resume-upload-modal > div,
+    #mediapicker-modal > div,
+    #message-detail-modal > div {
+      background: #070B16;
+      border: 1px solid #141E33;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      width: 100%;
+      max-height: 90vh;
+      max-height: 90dvh;
+      overflow-y: auto;
+      padding: 20px 16px calc(16px + var(--sab));
+      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      margin: 0;
+    }
+    @media (min-width: 640px) {
+      #cms-modal-box,
+      #confirm-modal > div,
+      #media-upload-modal > div,
+      #media-detail-content,
+      #resume-upload-modal > div,
+      #mediapicker-modal > div,
+      #message-detail-modal > div {
+        border-radius: 16px;
+        padding: 24px;
+        max-height: 88vh;
+        margin: auto;
+        animation: modalFadeIn 0.2s ease;
+      }
+      #cms-modal-box { max-width: 560px; }
+      #confirm-modal > div { max-width: 400px; }
+      #media-upload-modal > div { max-width: 520px; }
+      #media-detail-content { max-width: 680px; }
+      #resume-upload-modal > div { max-width: 480px; }
+      #mediapicker-modal > div { max-width: 760px; }
+      #message-detail-modal > div { max-width: 640px; }
+    }
+    @keyframes modalSlideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes modalFadeIn {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body class="bg-brand-bg text-slate-100 antialiased selection:bg-cyan-500/20 selection:text-cyan-300">
@@ -421,7 +528,7 @@
             </button>
 
             <!-- Dropdown Menu -->
-            <div id="topbar-notif-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-[#070B16] border border-brand-border shadow-2xl z-50 overflow-hidden backdrop-blur-xl">
+            <div id="topbar-notif-dropdown" class="hidden absolute right-0 mt-2 w-[calc(100vw-24px)] max-w-sm sm:w-96 rounded-2xl bg-[#070B16] border border-brand-border shadow-2xl z-50 overflow-hidden backdrop-blur-xl">
               <div class="p-3.5 border-b border-brand-border flex items-center justify-between bg-slate-950/60">
                 <div class="flex items-center gap-2">
                   <i data-lucide="bell" class="w-3.5 h-3.5 text-cyan-400"></i>
@@ -1010,8 +1117,8 @@
               <div><label class="cms-label">Resume URL</label><input type="url" name="resumeUrl" class="cms-input" placeholder="/assets/resume.pdf"></div>
             </div>
             <div><label class="cms-label">Short Introduction</label><textarea name="shortIntroduction" class="cms-input h-20 resize-none" placeholder="Brief intro..."></textarea></div>
-            <div class="flex gap-3 pt-2">
-              <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2">
+            <div class="sticky-mobile-actions flex items-center justify-between gap-3">
+              <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
                 <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save Profile</span>
               </button>
             </div>
@@ -1027,8 +1134,8 @@
           <form id="about-form" onsubmit="saveAbout(event)" class="space-y-4 max-w-2xl">
             <div><label class="cms-label">Title</label><input type="text" name="title" class="cms-input" placeholder="About Me"></div>
             <div><label class="cms-label">Description</label><textarea name="description" class="cms-input h-24 resize-none" placeholder="Short description..."></textarea></div>
-            <div class="flex gap-3 pt-2">
-              <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2">
+            <div class="sticky-mobile-actions flex items-center justify-between gap-3">
+              <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
                 <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save About</span>
               </button>
             </div>
@@ -1054,8 +1161,8 @@
             </div>
             <div><label class="cms-label">Availability Badge</label><input type="text" name="availabilityBadge" class="cms-input" placeholder="OPEN TO INTERNSHIP OPPORTUNITIES"></div>
             <div><label class="cms-label">Supporting Text</label><input type="text" name="supportingText" class="cms-input" placeholder="B.Tech CSE (AI & ML) • 2022–2026"></div>
-            <div class="flex gap-3 pt-2">
-              <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2">
+            <div class="sticky-mobile-actions flex items-center justify-between gap-3">
+              <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
                 <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save Hero</span>
               </button>
             </div>
@@ -1333,7 +1440,8 @@
               <h3 class="text-xs font-bold text-slate-300 uppercase font-mono tracking-wider">Version History & Archives</h3>
               <span id="resume-count-tag" class="text-[10px] font-mono text-slate-500">1 version</span>
             </div>
-            <div class="bg-brand-sidebar border border-brand-border rounded-xl overflow-hidden">
+            <!-- Desktop Table -->
+            <div class="hidden md:block bg-brand-sidebar border border-brand-border rounded-xl overflow-hidden">
               <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                   <thead class="bg-slate-900/60 text-[10px] font-mono uppercase text-slate-400 border-b border-brand-border">
@@ -1353,6 +1461,11 @@
                   </tbody>
                 </table>
               </div>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div id="resume-history-mobile-cards" class="md:hidden space-y-3">
+              <div class="py-8 text-center text-slate-500 font-mono text-xs">Loading resume versions...</div>
             </div>
           </div>
         </div>
@@ -1654,7 +1767,7 @@
               </div>
             </div>
 
-            <div class="flex gap-3">
+            <div class="sticky-mobile-actions flex items-center justify-between gap-3">
               <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
                 <i data-lucide="save" class="w-4 h-4"></i><span>Save Global Settings</span>
               </button>
@@ -1758,8 +1871,8 @@
             </div>
           </div>
 
-          <!-- Activity Table -->
-          <div class="bg-brand-sidebar border border-brand-border rounded-xl overflow-hidden shadow-xl">
+          <!-- Activity Desktop Table -->
+          <div class="hidden md:block bg-brand-sidebar border border-brand-border rounded-xl overflow-hidden shadow-xl">
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
                 <thead class="bg-slate-900/80 text-[10px] font-mono uppercase text-slate-400 border-b border-brand-border">
@@ -1779,6 +1892,11 @@
                 </tbody>
               </table>
             </div>
+          </div>
+
+          <!-- Activity Mobile Cards -->
+          <div id="activity-mobile-cards" class="md:hidden space-y-3">
+            <div class="py-12 text-center text-slate-500 font-mono text-xs">Loading activity logs...</div>
           </div>
 
           <!-- Activity Pagination -->
@@ -1813,10 +1931,10 @@
       </nav>
 
       <!-- MOBILE SLIDE-OVER DRAWER -->
-      <div id="mobile-drawer" class="hidden lg:hidden fixed inset-0 z-50 flex">
-        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm" onclick="toggleMobileDrawer(false)"></div>
-        <div class="relative ml-auto w-full max-w-xs bg-brand-sidebar border-l border-brand-border h-full flex flex-col z-10 shadow-2xl">
-          <div class="h-16 px-5 border-b border-brand-border flex items-center justify-between">
+      <div id="mobile-drawer" class="hidden lg:hidden fixed inset-0 z-50 flex" role="dialog" aria-modal="true" aria-label="Admin Navigation Menu">
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="toggleMobileDrawer(false)"></div>
+        <div class="relative ml-auto w-full max-w-[310px] sm:max-w-xs bg-brand-sidebar border-l border-brand-border h-full flex flex-col z-10 shadow-2xl safe-area-pb">
+          <div class="h-16 px-5 border-b border-brand-border flex items-center justify-between shrink-0">
             <div class="flex items-center gap-2">
               <div class="w-7 h-7 rounded-md bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-mono font-bold text-xs">
                 AS
@@ -1825,56 +1943,124 @@
                 CONTROL CENTER
               </span>
             </div>
-            <button onclick="toggleMobileDrawer(false)" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200">
+            <button onclick="toggleMobileDrawer(false)" class="p-2 rounded-lg text-slate-400 hover:text-slate-200" aria-label="Close Navigation">
               <i data-lucide="x" class="w-5 h-5"></i>
             </button>
           </div>
 
-          <div class="flex-1 overflow-y-auto p-4 space-y-1 text-xs">
-            <p class="px-3 py-1 text-[10px] font-mono text-slate-500 uppercase tracking-wider">All Modules</p>
-            <button onclick="switchTab('dashboard'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
-              <i data-lucide="layout-dashboard" class="w-4 h-4 text-cyan-400"></i>
-              <span>Dashboard</span>
-            </button>
-            <button onclick="switchTab('analytics'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
-              <i data-lucide="bar-chart-3" class="w-4 h-4 text-slate-500"></i>
-              <span>Analytics</span>
-            </button>
-            <button onclick="switchTab('profile'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
-              <i data-lucide="user" class="w-4 h-4 text-slate-500"></i>
-              <span>Profile</span>
-            </button>
-            <button onclick="switchTab('about'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
-              <i data-lucide="file-text" class="w-4 h-4 text-slate-500"></i>
-              <span>About</span>
-            </button>
-            <button onclick="switchTab('projects'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
-              <i data-lucide="briefcase" class="w-4 h-4 text-slate-500"></i>
-              <span>Projects</span>
-            </button>
-            <button onclick="switchTab('skills'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
-              <i data-lucide="code-2" class="w-4 h-4 text-slate-500"></i>
-              <span>Skills</span>
-            </button>
-            <button onclick="switchTab('messages'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
-              <i data-lucide="mail" class="w-4 h-4 text-slate-500"></i>
-              <span>Messages</span>
-            </button>
-            <button onclick="switchTab('notifications'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
-              <i data-lucide="bell" class="w-4 h-4 text-slate-500"></i>
-              <span>Notifications</span>
-            </button>
-            <button onclick="switchTab('activity'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
-              <i data-lucide="history" class="w-4 h-4 text-slate-500"></i>
-              <span>Activity Log</span>
-            </button>
-            <button onclick="switchTab('settings'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
-              <i data-lucide="settings" class="w-4 h-4 text-slate-500"></i>
-              <span>Settings</span>
-            </button>
+          <div class="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
+            <!-- Group 1: Core -->
+            <div class="space-y-1">
+              <p class="px-3 py-1 text-[10px] font-mono text-slate-500 uppercase tracking-wider font-semibold">Core Modules</p>
+              <button onclick="switchTab('dashboard'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 font-semibold" data-drawer-tab="dashboard">
+                <i data-lucide="layout-dashboard" class="w-4 h-4 text-cyan-400"></i>
+                <span>Dashboard</span>
+              </button>
+              <button onclick="switchTab('analytics'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="analytics">
+                <i data-lucide="bar-chart-3" class="w-4 h-4 text-slate-500"></i>
+                <span>Analytics</span>
+              </button>
+            </div>
+
+            <!-- Group 2: Content Modules -->
+            <div class="space-y-1">
+              <p class="px-3 py-1 text-[10px] font-mono text-slate-500 uppercase tracking-wider font-semibold">Content Modules</p>
+              <button onclick="switchTab('profile'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="profile">
+                <i data-lucide="user" class="w-4 h-4 text-slate-500"></i>
+                <span>Profile</span>
+              </button>
+              <button onclick="switchTab('about'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="about">
+                <i data-lucide="file-text" class="w-4 h-4 text-slate-500"></i>
+                <span>About</span>
+              </button>
+              <button onclick="switchTab('hero'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="hero">
+                <i data-lucide="star" class="w-4 h-4 text-slate-500"></i>
+                <span>Hero Section</span>
+              </button>
+              <button onclick="switchTab('projects'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="projects">
+                <i data-lucide="briefcase" class="w-4 h-4 text-slate-500"></i>
+                <span>Projects</span>
+              </button>
+              <button onclick="switchTab('skills'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="skills">
+                <i data-lucide="code-2" class="w-4 h-4 text-slate-500"></i>
+                <span>Skills</span>
+              </button>
+              <button onclick="switchTab('experience'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="experience">
+                <i data-lucide="layers" class="w-4 h-4 text-slate-500"></i>
+                <span>Experience</span>
+              </button>
+              <button onclick="switchTab('education'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="education">
+                <i data-lucide="graduation-cap" class="w-4 h-4 text-slate-500"></i>
+                <span>Education</span>
+              </button>
+              <button onclick="switchTab('certificates'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="certificates">
+                <i data-lucide="award" class="w-4 h-4 text-slate-500"></i>
+                <span>Certificates</span>
+              </button>
+              <button onclick="switchTab('roadmap'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="roadmap">
+                <i data-lucide="git-branch" class="w-4 h-4 text-slate-500"></i>
+                <span>Roadmap</span>
+              </button>
+            </div>
+
+            <!-- Group 3: Site Configuration -->
+            <div class="space-y-1">
+              <p class="px-3 py-1 text-[10px] font-mono text-slate-500 uppercase tracking-wider font-semibold">Site Config</p>
+              <button onclick="switchTab('navigation'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="navigation">
+                <i data-lucide="menu" class="w-4 h-4 text-slate-500"></i>
+                <span>Navigation</span>
+              </button>
+              <button onclick="switchTab('social-links'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="social-links">
+                <i data-lucide="share-2" class="w-4 h-4 text-slate-500"></i>
+                <span>Social Links</span>
+              </button>
+              <button onclick="switchTab('resume'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="resume">
+                <i data-lucide="file-check" class="w-4 h-4 text-slate-500"></i>
+                <span>Resume</span>
+              </button>
+              <button onclick="switchTab('seo'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="seo">
+                <i data-lucide="globe" class="w-4 h-4 text-slate-500"></i>
+                <span>SEO & Meta</span>
+              </button>
+            </div>
+
+            <!-- Group 4: Operations & Telemetry -->
+            <div class="space-y-1">
+              <p class="px-3 py-1 text-[10px] font-mono text-slate-500 uppercase tracking-wider font-semibold">Operations</p>
+              <button onclick="switchTab('media'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="media">
+                <i data-lucide="image" class="w-4 h-4 text-slate-500"></i>
+                <span>Media Library</span>
+              </button>
+              <button onclick="switchTab('messages'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="messages">
+                <i data-lucide="mail" class="w-4 h-4 text-slate-500"></i>
+                <span>Messages</span>
+                <span id="drawer-unread-pill" class="hidden ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-cyan-500/20 text-cyan-300 font-bold">0</span>
+              </button>
+              <button onclick="switchTab('notifications'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="notifications">
+                <i data-lucide="bell" class="w-4 h-4 text-slate-500"></i>
+                <span>Notifications</span>
+                <span id="drawer-notif-badge" class="hidden ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-cyan-500/20 text-cyan-300 font-bold">0</span>
+              </button>
+              <button onclick="switchTab('activity'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="activity">
+                <i data-lucide="history" class="w-4 h-4 text-slate-500"></i>
+                <span>Activity Log</span>
+              </button>
+              <button onclick="switchTab('settings'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="settings">
+                <i data-lucide="settings" class="w-4 h-4 text-slate-500"></i>
+                <span>Settings</span>
+              </button>
+            </div>
+
+            <!-- Public Site Link -->
+            <div class="pt-2 border-t border-brand-border/60">
+              <a href="/" target="_blank" rel="noopener noreferrer" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors">
+                <i data-lucide="external-link" class="w-4 h-4 text-slate-500"></i>
+                <span>View Public Portfolio</span>
+              </a>
+            </div>
           </div>
 
-          <div class="p-4 border-t border-brand-border bg-[#04060C]">
+          <div class="p-4 border-t border-brand-border bg-[#04060C] shrink-0">
             <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 transition-colors">
               <i data-lucide="log-out" class="w-4 h-4"></i>
               <span>Sign Out</span>
@@ -1909,8 +2095,92 @@
       sessionStorage.removeItem(USER_KEY);
     }
 
+    // ─── Centralized Device & Capability Detection (Phase 9) ───
+    function getDeviceCapabilities() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const isPhone = w < 768;
+      const isTablet = w >= 768 && w < 1024;
+      const isLaptop = w >= 1024 && w < 1440;
+      const isDesktop = w >= 1440;
+      const isWide = w >= 1920;
+      let breakpoint = 'phone';
+      if (isTablet) breakpoint = 'tablet';
+      else if (isLaptop) breakpoint = 'laptop';
+      else if (isDesktop) breakpoint = 'desktop';
+
+      const isTouch = window.matchMedia('(pointer: coarse)').matches;
+      const isHoverCapable = window.matchMedia('(hover: hover)').matches;
+      const orientation = window.matchMedia('(orientation: landscape)').matches ? 'landscape' : 'portrait';
+
+      return {
+        breakpoint,
+        isPhone,
+        isTablet,
+        isLaptop,
+        isDesktop,
+        isWide,
+        isTouch,
+        isHoverCapable,
+        orientation,
+        width: w,
+        height: h,
+      };
+    }
+
+    function initDeviceAdaptive() {
+      const sync = () => {
+        const d = getDeviceCapabilities();
+        window.AS_DEVICE = d;
+        const root = document.documentElement;
+        root.classList.toggle('is-phone', d.isPhone);
+        root.classList.toggle('is-tablet', d.isTablet);
+        root.classList.toggle('is-laptop', d.isLaptop);
+        root.classList.toggle('is-desktop', d.isDesktop);
+        root.classList.toggle('is-touch', d.isTouch);
+        root.classList.toggle('is-hover-capable', d.isHoverCapable);
+        root.setAttribute('data-device-breakpoint', d.breakpoint);
+
+        // If viewport widened to laptop/desktop, auto-close mobile drawer
+        if (!d.isPhone && !d.isTablet) {
+          toggleMobileDrawer(false);
+        }
+      };
+
+      let resizeTimer = null;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(sync, 50);
+      }, { passive: true });
+
+      const orientationQuery = window.matchMedia('(orientation: portrait)');
+      if (orientationQuery.addEventListener) {
+        orientationQuery.addEventListener('change', sync);
+      } else {
+        orientationQuery.addListener(sync);
+      }
+
+      // Escape key accessibility handler for all drawers, dropdowns, and modals
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          toggleMobileDrawer(false);
+          if (typeof toggleNotificationDropdown === 'function') toggleNotificationDropdown(false);
+          if (typeof closeModal === 'function') closeModal();
+          if (typeof closeConfirmModal === 'function') closeConfirmModal();
+          if (typeof closeUploadMediaModal === 'function') closeUploadMediaModal();
+          if (typeof closeMediaDetailModal === 'function') closeMediaDetailModal();
+          if (typeof closeResumeUploadModal === 'function') closeResumeUploadModal();
+          if (typeof closeMessageDetailModal === 'function') closeMessageDetailModal();
+          if (typeof closeMediaPicker === 'function') closeMediaPicker();
+        }
+      });
+
+      sync();
+    }
+
     // Check auth on load
     window.addEventListener('DOMContentLoaded', () => {
+      initDeviceAdaptive();
       if (typeof lucide !== 'undefined') lucide.createIcons();
       checkAuth();
     });
@@ -2050,11 +2320,43 @@
           : 'mobile-dock-btn flex flex-col items-center justify-center py-1 px-3 rounded-lg text-slate-400';
       });
 
+      // Update mobile drawer active classes
+      document.querySelectorAll('.drawer-item').forEach(el => {
+        const isActive = el.getAttribute('data-drawer-tab') === tabId;
+        if (isActive) {
+          el.className = 'drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 font-semibold';
+        } else {
+          el.className = 'drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40 font-medium';
+        }
+      });
+
       // Update Topbar
       const breadcrumb = document.getElementById('breadcrumb-section');
       const title = document.getElementById('topbar-title');
       if (breadcrumb) breadcrumb.textContent = tabId.toUpperCase();
-      if (title) title.textContent = `${tabId} Management Console`;
+      const titleMap = {
+        dashboard: 'System Overview & Telemetry',
+        analytics: 'Analytics & Traffic Insights',
+        profile: 'Developer Profile & Contact Details',
+        about: 'About Narrative & Academic Records',
+        hero: 'Hero Section & Call-to-Actions',
+        projects: 'Projects & Work Showcase',
+        skills: 'Technical Skills & Proficiency',
+        experience: 'Professional Experience & Roles',
+        education: 'Academic Degrees & Qualifications',
+        certificates: 'Licenses, Accreditations & Certs',
+        roadmap: 'Engineering Roadmap & Active Builds',
+        navigation: 'Navigation Structure & Links',
+        'social-links': 'Social Platforms & Developer Handles',
+        media: 'Media Library & Asset Manager',
+        resume: 'Resume Versions & ATS Downloads',
+        seo: 'SEO Optimization & Metadata',
+        settings: 'Global Settings & Feature Flags',
+        messages: 'Contact Inquiries & Communications',
+        notifications: 'System & Security Notifications',
+        activity: 'Audit Log & Operator Events',
+      };
+      if (title) title.textContent = titleMap[tabId] || `${tabId} Management Console`;
 
       if (tabId === 'dashboard') {
         document.getElementById('tab-dashboard').classList.remove('hidden');
@@ -2195,14 +2497,21 @@
             const unreadContacts = data.summaryCards?.unreadContacts ?? 0;
             const unreadNotifs = data.communicationOverview?.unreadNotifications ?? 0;
             const unreadPill = document.getElementById('unread-pill');
+            const drawerUnreadPill = document.getElementById('drawer-unread-pill');
             if (unreadPill) {
               unreadPill.textContent = unreadContacts;
               if (Number(unreadContacts) > 0) unreadPill.classList.remove('hidden');
               else unreadPill.classList.add('hidden');
             }
+            if (drawerUnreadPill) {
+              drawerUnreadPill.textContent = unreadContacts;
+              if (Number(unreadContacts) > 0) drawerUnreadPill.classList.remove('hidden');
+              else drawerUnreadPill.classList.add('hidden');
+            }
 
             const topNotifBadge = document.getElementById('topbar-notif-badge');
             const sideNotifBadge = document.getElementById('sidebar-notif-badge');
+            const drawerNotifBadge = document.getElementById('drawer-notif-badge');
             const notifDropdownCount = document.getElementById('notif-dropdown-count');
             if (topNotifBadge) {
               topNotifBadge.textContent = unreadNotifs;
@@ -2213,6 +2522,11 @@
               sideNotifBadge.textContent = unreadNotifs;
               if (Number(unreadNotifs) > 0) sideNotifBadge.classList.remove('hidden');
               else sideNotifBadge.classList.add('hidden');
+            }
+            if (drawerNotifBadge) {
+              drawerNotifBadge.textContent = unreadNotifs;
+              if (Number(unreadNotifs) > 0) drawerNotifBadge.classList.remove('hidden');
+              else drawerNotifBadge.classList.add('hidden');
             }
             if (notifDropdownCount) {
               notifDropdownCount.textContent = `${unreadNotifs} unread`;
@@ -3076,6 +3390,7 @@
 
         const topBadge = document.getElementById('topbar-notif-badge');
         const sideBadge = document.getElementById('sidebar-notif-badge');
+        const drawerBadge = document.getElementById('drawer-notif-badge');
         if (topBadge) {
           topBadge.textContent = unreadCount;
           if (unreadCount > 0) topBadge.classList.remove('hidden');
@@ -3085,6 +3400,11 @@
           sideBadge.textContent = unreadCount;
           if (unreadCount > 0) sideBadge.classList.remove('hidden');
           else sideBadge.classList.add('hidden');
+        }
+        if (drawerBadge) {
+          drawerBadge.textContent = unreadCount;
+          if (unreadCount > 0) drawerBadge.classList.remove('hidden');
+          else drawerBadge.classList.add('hidden');
         }
 
         if (items.length === 0) {
@@ -3310,35 +3630,67 @@
 
     function renderActivityLogs(logs) {
       const tbody = document.getElementById('activity-table-body');
-      if (!tbody) return;
+      const mobileCards = document.getElementById('activity-mobile-cards');
 
       if (logs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center text-slate-500 font-mono">No activity events recorded.</td></tr>';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center text-slate-500 font-mono">No activity events recorded.</td></tr>';
+        if (mobileCards) mobileCards.innerHTML = '<div class="py-12 text-center text-slate-500 font-mono text-xs">No activity events recorded.</div>';
         return;
       }
 
-      tbody.innerHTML = logs.map(l => {
-        const action = (l.action || 'EVENT').toUpperCase();
-        let actionColor = 'bg-slate-800 text-slate-300 border-slate-700';
-        if (action.includes('LOGIN')) actionColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
-        else if (action.includes('REPLY')) actionColor = 'bg-purple-500/10 text-purple-400 border-purple-500/20';
-        else if (action.includes('DELETE')) actionColor = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
-        else if (action.includes('UPDATE')) actionColor = 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
-        else if (action.includes('CREATE')) actionColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+      if (tbody) {
+        tbody.innerHTML = logs.map(l => {
+          const action = (l.action || 'EVENT').toUpperCase();
+          let actionColor = 'bg-slate-800 text-slate-300 border-slate-700';
+          if (action.includes('LOGIN')) actionColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+          else if (action.includes('REPLY')) actionColor = 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+          else if (action.includes('DELETE')) actionColor = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+          else if (action.includes('UPDATE')) actionColor = 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
+          else if (action.includes('CREATE')) actionColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
 
-        return `
-          <tr class="hover:bg-slate-900/40 font-mono text-[11px]">
-            <td class="py-3 px-4 text-slate-500 whitespace-nowrap">${new Date(l.createdAt).toLocaleString()}</td>
-            <td class="py-3 px-4">
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${actionColor}">${action}</span>
-            </td>
-            <td class="py-3 px-4 text-slate-300 font-semibold">${escapeHtml(l.resourceType || l.entity || 'SYSTEM')}</td>
-            <td class="py-3 px-4 text-slate-300 max-w-xs sm:max-w-md truncate" title="${escapeHtml(l.description)}">${escapeHtml(l.description)}</td>
-            <td class="py-3 px-4 text-slate-400">${escapeHtml(l.adminEmail || l.performedBy || 'admin')}</td>
-            <td class="py-3 px-4 text-slate-500">${escapeHtml(l.ipAddress || '—')}</td>
-          </tr>
-        `;
-      }).join('');
+          return `
+            <tr class="hover:bg-slate-900/40 font-mono text-[11px]">
+              <td class="py-3 px-4 text-slate-500 whitespace-nowrap">${new Date(l.createdAt).toLocaleString()}</td>
+              <td class="py-3 px-4">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${actionColor}">${action}</span>
+              </td>
+              <td class="py-3 px-4 text-slate-300 font-semibold">${escapeHtml(l.resourceType || l.entity || 'SYSTEM')}</td>
+              <td class="py-3 px-4 text-slate-300 max-w-xs sm:max-w-md truncate" title="${escapeHtml(l.description)}">${escapeHtml(l.description)}</td>
+              <td class="py-3 px-4 text-slate-400">${escapeHtml(l.adminEmail || l.performedBy || 'admin')}</td>
+              <td class="py-3 px-4 text-slate-500">${escapeHtml(l.ipAddress || '—')}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      if (mobileCards) {
+        mobileCards.innerHTML = logs.map(l => {
+          const action = (l.action || 'EVENT').toUpperCase();
+          let actionColor = 'bg-slate-800 text-slate-300 border-slate-700';
+          if (action.includes('LOGIN')) actionColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+          else if (action.includes('REPLY')) actionColor = 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+          else if (action.includes('DELETE')) actionColor = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+          else if (action.includes('UPDATE')) actionColor = 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
+          else if (action.includes('CREATE')) actionColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+
+          return `
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 space-y-2.5 shadow-sm">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border ${actionColor}">${action}</span>
+                  <span class="text-xs font-mono font-semibold text-slate-200">${escapeHtml(l.resourceType || l.entity || 'SYSTEM')}</span>
+                </div>
+                <span class="text-[10px] font-mono text-slate-500">${new Date(l.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed font-sans">${escapeHtml(l.description)}</p>
+              <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-2 border-t border-brand-border/60">
+                <span class="truncate max-w-[170px]">${escapeHtml(l.adminEmail || l.performedBy || 'admin')}</span>
+                <span>IP: ${escapeHtml(l.ipAddress || '—')}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
     }
 
     function renderActivityPagination() {
@@ -4471,6 +4823,49 @@
             `;
           }).join('');
 
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // Mobile Cards
+        const mobileCards = document.getElementById('resume-history-mobile-cards');
+        if (mobileCards) {
+          if (!resumes.length) {
+            mobileCards.innerHTML = '<div class="py-8 text-center text-slate-500 font-mono text-xs">No resume records found.</div>';
+          } else {
+            mobileCards.innerHTML = resumes.map((r) => {
+              const isActive = r.status === 'ACTIVE';
+              const sizeKb = r.size ? `${Math.round(r.size / 1024)} KB` : '—';
+              return `
+                <div class="bg-brand-sidebar border ${isActive ? 'border-emerald-500/40' : 'border-brand-border'} rounded-xl p-4 space-y-3">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                      <span class="font-mono font-bold text-sm ${isActive ? 'text-emerald-400' : 'text-slate-200'}">${escapeHtml(r.version)}</span>
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${isActive ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'}">${r.status || 'ARCHIVED'}</span>
+                    </div>
+                    <span class="text-[11px] font-mono text-slate-500">${sizeKb}</span>
+                  </div>
+                  <div>
+                    <h4 class="text-xs font-semibold text-slate-200">${escapeHtml(r.title || 'Resume')}</h4>
+                    <p class="text-[11px] font-mono text-slate-400 truncate mt-0.5">${escapeHtml(r.fileName)}</p>
+                    ${r.notes ? `<p class="text-[11px] text-slate-500 mt-1">${escapeHtml(r.notes)}</p>` : ''}
+                  </div>
+                  <div class="flex items-center gap-2 pt-2 border-t border-brand-border/60 flex-wrap">
+                    <a href="${escapeHtml(r.url)}" target="_blank" class="flex-1 py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 min-h-[38px]">
+                      <i data-lucide="eye" class="w-3.5 h-3.5"></i><span>Preview PDF</span>
+                    </a>
+                    ${!isActive ? `
+                      <button onclick="handleActivateResume('${r._id}', '${escapeHtml(r.version)}')" class="flex-1 py-2 px-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors min-h-[38px]">
+                        Activate
+                      </button>
+                      <button onclick="handleDeleteResume('${r._id}', '${escapeHtml(r.version)}')" class="p-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition-colors min-h-[38px] min-w-[38px] flex items-center justify-center" title="Delete Archive">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                      </button>
+                    ` : ''}
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
           if (typeof lucide !== 'undefined') lucide.createIcons();
         }
       } catch (err) {
