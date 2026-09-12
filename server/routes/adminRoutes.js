@@ -106,6 +106,8 @@ const {
 } = require('../controllers/notificationController');
 const { getActivityLogs } = require('../controllers/activityLogController');
 const { getAdminDashboardStats } = require('../controllers/adminController');
+const { getAdminHealth } = require('../controllers/adminHealthController');
+const { getAdminAnalytics } = require('../controllers/analyticsController');
 
 // All routes here are guarded by JWT Bearer Authentication
 router.use('/admin', verifyToken);
@@ -243,8 +245,9 @@ router.delete('/admin/notifications/:id', deleteNotification);
 // ─── Activity Audit Log ─────────────────────────────────────
 router.get('/admin/activity', getActivityLogs);
 
-// ─── Telemetry & Dashboard ──────────────────────────────────
+// ─── Telemetry, Dashboard, Health & Analytics ───────────────
 router.get('/admin/dashboard', getAdminDashboardStats);
-router.get('/admin/analytics', getAdminDashboardStats);
+router.get('/admin/health', getAdminHealth);
+router.get('/admin/analytics', getAdminAnalytics);
 
 module.exports = router;

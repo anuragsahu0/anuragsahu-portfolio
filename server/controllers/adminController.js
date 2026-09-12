@@ -1,8 +1,20 @@
 const Contact = require('../models/Contact');
+const Project = require('../models/Project');
+const Skill = require('../models/Skill');
+const Experience = require('../models/Experience');
+const Education = require('../models/Education');
+const Certificate = require('../models/Certificate');
+const Roadmap = require('../models/Roadmap');
+const Media = require('../models/Media');
+const Resume = require('../models/Resume');
+const Settings = require('../models/Settings');
+const Profile = require('../models/Profile');
+const Hero = require('../models/Hero');
 const Notification = require('../models/Notification');
 const ActivityLog = require('../models/ActivityLog');
 const LoginHistory = require('../models/LoginHistory');
-const { memoryEvents, activeSessions, parseUserAgent } = require('./analyticsController');
+const { checkSystemHealth } = require('../services/healthService');
+const { parseUserAgent } = require('./analyticsController');
 
 // Memory fallbacks for offline DB mode
 const memoryLogs = [];
@@ -27,6 +39,7 @@ const logActivity = async (action, targetCollection, details = {}, req = null) =
   };
 
   memoryLogs.push(logEntry);
+  if (memoryLogs.length > 500) memoryLogs.shift();
 
   try {
     if (ActivityLog.db && ActivityLog.db.readyState === 1) {
@@ -54,6 +67,7 @@ const logLoginEvent = async (email, status, req) => {
   };
 
   memoryLoginHistory.push(entry);
+  if (memoryLoginHistory.length > 200) memoryLoginHistory.shift();
 
   try {
     if (LoginHistory.db && LoginHistory.db.readyState === 1) {
@@ -64,89 +78,323 @@ const logLoginEvent = async (email, status, req) => {
 
 /**
  * GET /api/admin/dashboard
- * Aggregated SaaS Command Center Telemetry V2
+ * Real, data-driven Control Center Dashboard
+ * Zero hardcoded scores, zero fake numbers.
  */
 const getAdminDashboardStats = async (req, res, next) => {
   try {
-    let totalContacts = 0;
-    let unreadCount = 0;
+    const isDbConnected = Boolean(Contact.db && Contact.db.readyState === 1);
+
+    // 1. Parallel Database Queries for Content Overview & Project Breakdowns
+    let totalProjects = 0;
+    let publishedProjects = 0;
+    let draftProjects = 0;
+    let featuredProjects = 0;
+    let projectsByStatus = {
+      WORKING: 0,
+      COMPLETED: 0,
+      COMING_SOON: 0,
+      PAUSED: 0,
+      ARCHIVED: 0,
+    };
+    let recentProjects = [];
+
+    let totalSkills = 0;
+    let totalExperience = 0;
+    let totalEducation = 0;
+    let totalCertificates = 0;
+    let totalRoadmap = 0;
+    let totalMedia = 0;
+    let totalMediaBytes = 0;
+    let activeResume = null;
+
+    let contactCounts = {
+      total: 0,
+      unread: 0,
+      replied: 0,
+      archived: 0,
+      spam: 0,
+      failedDeliveries: 0,
+    };
     let unreadNotifications = 0;
     let recentContacts = [];
+    let recentActivity = [];
 
-    try {
-      if (Contact.db && Contact.db.readyState === 1) {
-        const [totalC, unreadC, recentC, unreadN] = await Promise.all([
-          Contact.countDocuments(),
-          Contact.countDocuments({ status: { $in: ['NEW', 'UNREAD', 'unread'] } }),
-          Contact.find().sort({ createdAt: -1 }).limit(10),
+    let seoSettings = null;
+    let profileDoc = null;
+    let heroDoc = null;
+
+    if (isDbConnected) {
+      try {
+        const [
+          projTotal,
+          projPublished,
+          projDraft,
+          projFeatured,
+          projWorking,
+          projCompleted,
+          projComingSoon,
+          projPaused,
+          projArchived,
+          recProjects,
+          skillsCount,
+          expCount,
+          eduCount,
+          certCount,
+          roadmapCount,
+          mediaCount,
+          mediaSizeAgg,
+          currentResume,
+          totalC,
+          unreadC,
+          repliedC,
+          archivedC,
+          spamC,
+          failedEmailC,
+          unreadN,
+          recContacts,
+          recLogs,
+          seoData,
+          profileData,
+          heroData,
+        ] = await Promise.all([
+          Project.countDocuments().catch(() => 0),
+          Project.countDocuments({ visibility: 'PUBLISHED' }).catch(() => 0),
+          Project.countDocuments({ visibility: 'DRAFT' }).catch(() => 0),
+          Project.countDocuments({ featured: true }).catch(() => 0),
+          Project.countDocuments({ status: 'WORKING' }).catch(() => 0),
+          Project.countDocuments({ status: 'COMPLETED' }).catch(() => 0),
+          Project.countDocuments({ status: 'COMING_SOON' }).catch(() => 0),
+          Project.countDocuments({ status: 'PAUSED' }).catch(() => 0),
+          Project.countDocuments({ status: 'ARCHIVED' }).catch(() => 0),
+          Project.find()
+            .sort({ updatedAt: -1, createdAt: -1 })
+            .limit(5)
+            .select('title slug id thumbnail status visibility featured updatedAt')
+            .catch(() => []),
+          Skill.countDocuments({ isActive: true }).catch(() => 0),
+          Experience.countDocuments().catch(() => 0),
+          Education.countDocuments().catch(() => 0),
+          Certificate.countDocuments().catch(() => 0),
+          Roadmap.countDocuments().catch(() => 0),
+          Media.countDocuments().catch(() => 0),
+          Media.aggregate([{ $group: { _id: null, totalBytes: { $sum: '$size' } } }]).catch(() => []),
+          Resume.findOne({ status: 'ACTIVE' }).catch(() => null),
+          Contact.countDocuments().catch(() => 0),
+          Contact.countDocuments({ status: { $in: ['NEW', 'unread', 'UNREAD'] } }).catch(() => 0),
+          Contact.countDocuments({ status: { $in: ['REPLIED', 'replied'] } }).catch(() => 0),
+          Contact.countDocuments({ status: { $in: ['ARCHIVED', 'archived'] } }).catch(() => 0),
+          Contact.countDocuments({ status: { $in: ['SPAM', 'spam'] } }).catch(() => 0),
+          Contact.countDocuments({ emailNotificationStatus: 'FAILED' }).catch(() => 0),
           Notification.countDocuments({ isRead: false }).catch(() => 0),
+          Contact.find()
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .select('name fullName email subject status isRead createdAt')
+            .catch(() => []),
+          ActivityLog.find()
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .select('action resourceType targetCollection adminEmail createdAt details')
+            .catch(() => []),
+          Settings.findOne({ singletonId: 'global' }).catch(() => null),
+          Profile.findOne().catch(() => null),
+          Hero.findOne().catch(() => null),
         ]);
-        totalContacts = totalC;
-        unreadCount = unreadC;
-        recentContacts = recentC;
-        unreadNotifications = unreadN || 0;
-      }
-    } catch (dbErr) {}
 
-    if (recentContacts.length === 0) {
-      recentContacts = [
-        {
-          _id: 'msg-live-1',
-          fullName: 'Live Recruiter Test',
-          email: 'recruiter@tech.com',
-          company: 'Tech Corp',
-          subject: 'Portfolio Telemetry Verification',
-          message: 'Real-time telemetry message system active.',
-          status: 'unread',
-          createdAt: new Date(),
-        },
-      ];
-      totalContacts = recentContacts.length;
-      unreadCount = 1;
+        totalProjects = projTotal;
+        publishedProjects = projPublished;
+        draftProjects = projDraft;
+        featuredProjects = projFeatured;
+        projectsByStatus = {
+          WORKING: projWorking,
+          COMPLETED: projCompleted,
+          COMING_SOON: projComingSoon,
+          PAUSED: projPaused,
+          ARCHIVED: projArchived,
+        };
+        recentProjects = recProjects;
+        totalSkills = skillsCount;
+        totalExperience = expCount;
+        totalEducation = eduCount;
+        totalCertificates = certCount;
+        totalRoadmap = roadmapCount;
+        totalMedia = mediaCount;
+        totalMediaBytes = mediaSizeAgg && mediaSizeAgg[0] ? mediaSizeAgg[0].totalBytes : 0;
+        activeResume = currentResume;
+        contactCounts = {
+          total: totalC,
+          unread: unreadC,
+          replied: repliedC,
+          archived: archivedC,
+          spam: spamC,
+          failedDeliveries: failedEmailC,
+        };
+        unreadNotifications = unreadN;
+        recentContacts = recContacts;
+        recentActivity = recLogs;
+        seoSettings = seoData;
+        profileDoc = profileData;
+        heroDoc = heroData;
+      } catch (dbErr) {
+        console.warn('[Dashboard] Aggregation warning:', dbErr.message);
+      }
+    } else {
+      // Memory fallback for activity logs
+      recentActivity = memoryLogs.slice(-10).reverse();
     }
 
-    const events = memoryEvents || [];
-    const pageViews = events.filter((e) => e.type === 'page_view').length;
-    const resumeDownloads = events.filter((e) => e.type === 'resume_download').length;
-    const projectClicks = events.filter((e) => e.type === 'project_click').length;
-    const githubClicks = events.filter((e) => e.type === 'github_click').length;
-    const linkedinClicks = events.filter((e) => e.type === 'linkedin_click').length;
+    // 2. Real System Health Diagnostic Probes
+    const healthResult = await checkSystemHealth();
 
-    const uniqueIPs = new Set(events.map((e) => e.ipAddress));
+    // 3. Dynamic "Needs Attention" Checklist Engine (strictly real conditions)
+    const attentionItems = [];
 
-    // Active session list
-    const activeVisitors = Array.from(activeSessions.values());
+    if (contactCounts.unread > 0) {
+      attentionItems.push({
+        id: 'unread-messages',
+        type: 'warning',
+        title: `${contactCounts.unread} unread contact inquiry${contactCounts.unread > 1 ? 'ies' : ''} awaiting review`,
+        tab: 'messages',
+        link: '/admin/messages',
+        actionText: 'View Inbox',
+      });
+    }
+
+    if (contactCounts.failedDeliveries > 0) {
+      attentionItems.push({
+        id: 'failed-email-delivery',
+        type: 'warning',
+        title: `${contactCounts.failedDeliveries} contact inquiry notification(s) failed SMTP delivery`,
+        tab: 'messages',
+        link: '/admin/messages',
+        actionText: 'Review Inquiries',
+      });
+    }
+
+    if (!activeResume) {
+      attentionItems.push({
+        id: 'missing-active-resume',
+        type: 'caution',
+        title: 'No active ATS resume PDF designated for public download',
+        tab: 'resume',
+        link: '/admin/resume',
+        actionText: 'Upload Resume',
+      });
+    }
+
+    if (draftProjects > 0) {
+      attentionItems.push({
+        id: 'draft-projects',
+        type: 'info',
+        title: `${draftProjects} project(s) currently saved as draft (not visible on public portfolio)`,
+        tab: 'projects',
+        link: '/admin/projects',
+        actionText: 'Manage Projects',
+      });
+    }
+
+    if (seoSettings) {
+      if (!seoSettings.seoDescription || seoSettings.seoDescription.trim() === '') {
+        attentionItems.push({
+          id: 'missing-seo-description',
+          type: 'info',
+          title: 'Meta description for search engine optimization is empty',
+          tab: 'seo',
+          link: '/admin/seo',
+          actionText: 'Configure SEO',
+        });
+      }
+      if (!seoSettings.ogImage || seoSettings.ogImage.trim() === '') {
+        attentionItems.push({
+          id: 'missing-og-image',
+          type: 'info',
+          title: 'Open Graph social share preview image is not configured',
+          tab: 'seo',
+          link: '/admin/seo',
+          actionText: 'Set OG Image',
+        });
+      }
+    }
+
+    if (healthResult.overallStatus !== 'HEALTHY') {
+      attentionItems.push({
+        id: 'system-degraded',
+        type: 'warning',
+        title: `System service health is currently ${healthResult.overallStatus.toLowerCase()}`,
+        tab: 'dashboard',
+        link: '#system-health-section',
+        actionText: 'View Health',
+      });
+    }
+
+    // 4. Content Health Audit
+    const contentHealth = {
+      profileComplete: Boolean(profileDoc && profileDoc.name && profileDoc.headline),
+      heroComplete: Boolean(heroDoc && heroDoc.headline && heroDoc.primaryCtaText),
+      hasActiveResume: Boolean(activeResume),
+      seoComplete: Boolean(seoSettings && seoSettings.seoTitle && seoSettings.seoDescription && seoSettings.ogImage),
+      publishedProjectsCount: publishedProjects,
+      publishedSkillsCount: totalSkills,
+    };
 
     return res.status(200).json({
       success: true,
       candidate: 'Anurag Sahu',
-      systemHealth: {
-        status: 'Operational',
-        lighthouseScore: 98,
-        performanceScore: 99,
-        accessibilityScore: 100,
-        seoScore: 100,
-        dbStatus: Contact.db && Contact.db.readyState === 1 ? 'Connected (MongoDB Atlas)' : 'Lightweight Fallback Mode',
-        apiLatency: '12ms',
-        uptime: '99.98%',
-      },
+      systemHealth: healthResult,
       stats: {
-        totalVisitors: pageViews || events.length || 1,
-        uniqueVisitors: uniqueIPs.size || 1,
-        activeOnlineUsers: activeVisitors.length || 1,
-        resumeDownloads: resumeDownloads,
-        projectClicks: projectClicks,
-        githubClicks: githubClicks,
-        linkedinClicks: linkedinClicks,
-        contactSubmissions: totalContacts,
-        unreadContacts: unreadCount,
-        unreadNotifications: unreadNotifications,
+        totalProjects,
+        publishedProjects,
+        contactSubmissions: contactCounts.total,
+        unreadContacts: contactCounts.unread,
+        unreadNotifications,
+        totalSkills,
+        totalCertificates,
       },
+      summaryCards: {
+        totalProjects,
+        publishedProjects,
+        unreadContacts: contactCounts.unread,
+        publishedSkills: totalSkills,
+        totalCertificates,
+        activeResumeStatus: activeResume ? `${activeResume.version || 'Active'} (${activeResume.title || 'ATS Resume'})` : 'Missing',
+        hasActiveResume: Boolean(activeResume),
+      },
+      contentOverview: {
+        projects: totalProjects,
+        skills: totalSkills,
+        experience: totalExperience,
+        education: totalEducation,
+        certificates: totalCertificates,
+        roadmap: totalRoadmap,
+        mediaFiles: totalMedia,
+        mediaStorageBytes: totalMediaBytes,
+      },
+      projectOverview: {
+        total: totalProjects,
+        published: publishedProjects,
+        draft: draftProjects,
+        featured: featuredProjects,
+        byStatus: projectsByStatus,
+      },
+      communicationOverview: {
+        total: contactCounts.total,
+        unread: contactCounts.unread,
+        replied: contactCounts.replied,
+        archived: contactCounts.archived,
+        spam: contactCounts.spam,
+        failedDeliveries: contactCounts.failedDeliveries,
+        unreadNotifications,
+      },
+      recentProjects,
       recentContacts,
-      recentEvents: events.slice(-15).reverse(),
-      activeVisitors: activeVisitors.slice(-10),
-      recentActivityLogs: memoryLogs.slice(-10).reverse(),
-      recentLoginHistory: memoryLoginHistory.slice(-10).reverse(),
+      recentActivityLogs: recentActivity,
+      needsAttention: {
+        allGood: attentionItems.length === 0,
+        items: attentionItems,
+      },
+      contentHealth,
+      generatedAt: new Date().toISOString(),
     });
   } catch (err) {
     next(err);
@@ -174,22 +422,6 @@ const getMessages = async (req, res, next) => {
       }
     } catch (dbErr) {}
 
-    if (messages.length === 0) {
-      messages = [
-        {
-          _id: 'msg-live-1',
-          fullName: 'Live Recruiter Test',
-          email: 'recruiter@tech.com',
-          company: 'Tech Corp',
-          subject: 'Portfolio Telemetry Verification',
-          message: 'Real-time telemetry message system active.',
-          status: 'unread',
-          createdAt: new Date(),
-        },
-      ];
-      total = messages.length;
-    }
-
     return res.status(200).json({ success: true, total, page: Number(page), messages });
   } catch (err) {
     next(err);
@@ -206,14 +438,14 @@ const markMessageRead = async (req, res, next) => {
       if (Contact.db && Contact.db.readyState === 1) {
         const message = await Contact.findByIdAndUpdate(
           req.params.id,
-          { status: 'read', readAt: new Date() },
+          { status: 'READ', isRead: true, readAt: new Date() },
           { new: true }
         );
         if (message) return res.status(200).json({ success: true, message });
       }
     } catch (dbErr) {}
 
-    return res.status(200).json({ success: true, message: { _id: req.params.id, status: 'read' } });
+    return res.status(200).json({ success: true, message: { _id: req.params.id, status: 'READ', isRead: true } });
   } catch (err) {
     next(err);
   }
@@ -227,12 +459,12 @@ const archiveMessage = async (req, res, next) => {
     await logActivity('MESSAGE_ARCHIVED', 'Contact', { messageId: req.params.id }, req);
     try {
       if (Contact.db && Contact.db.readyState === 1) {
-        const message = await Contact.findByIdAndUpdate(req.params.id, { status: 'archived' }, { new: true });
+        const message = await Contact.findByIdAndUpdate(req.params.id, { status: 'ARCHIVED' }, { new: true });
         if (message) return res.status(200).json({ success: true, message });
       }
     } catch (dbErr) {}
 
-    return res.status(200).json({ success: true, message: { _id: req.params.id, status: 'archived' } });
+    return res.status(200).json({ success: true, message: { _id: req.params.id, status: 'ARCHIVED' } });
   } catch (err) {
     next(err);
   }
@@ -250,7 +482,7 @@ const getActivityLogs = async (req, res, next) => {
       }
     } catch (e) {}
 
-    return res.status(200).json({ success: true, count: logs.length, logs: logs.reverse() });
+    return res.status(200).json({ success: true, count: logs.length, logs });
   } catch (err) {
     next(err);
   }

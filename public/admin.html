@@ -460,106 +460,369 @@
 
         <!-- ─── 1. DASHBOARD TAB ─── -->
         <div id="tab-dashboard" class="tab-pane space-y-6">
+          <!-- Top Bar -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
             <div>
               <div class="flex items-center gap-2.5">
                 <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">
                   Operational Dashboard
                 </h1>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                  Live Telemetry
+                <span id="dash-health-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span id="dash-health-text">Systems Operational</span>
                 </span>
               </div>
               <p class="text-xs text-slate-400 mt-1">
-                Real-time portfolio telemetry, contact inquiries, and CMS control center.
+                Real-time portfolio telemetry, database content metrics, and system health status.
               </p>
             </div>
-            <button onclick="loadDashboard()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-sidebar border border-brand-border text-slate-300 hover:text-cyan-300 text-xs font-medium transition-colors">
-              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-              <span>Refresh Stats</span>
-            </button>
-          </div>
-
-          <!-- KPI Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5">
-              <span class="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">Total Inquiries</span>
-              <p id="stat-total-contacts" class="text-3xl font-bold font-mono text-slate-100 mt-3">0</p>
-              <p class="text-[11px] text-slate-500 mt-2">Delivered to Anurag Sahu</p>
-            </div>
-            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5">
-              <span class="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">Unread Inquiries</span>
-              <p id="stat-unread-contacts" class="text-3xl font-bold font-mono text-cyan-400 mt-3">0</p>
-              <p class="text-[11px] text-slate-500 mt-2">Awaiting review</p>
-            </div>
-            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5">
-              <span class="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">Backend Engine</span>
-              <p class="text-3xl font-bold font-mono text-emerald-400 mt-3">200 OK</p>
-              <p class="text-[11px] text-slate-500 mt-2">Vercel Serverless Architecture</p>
-            </div>
-            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5">
-              <span class="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">Access Role</span>
-              <p class="text-3xl font-bold font-mono text-purple-400 mt-3">OWNER</p>
-              <p class="text-[11px] text-slate-500 mt-2">JWT Authenticated Session</p>
+            <div class="flex items-center gap-3">
+              <span id="dash-last-updated" class="text-[11px] font-mono text-slate-500 hidden sm:inline">Updated just now</span>
+              <button onclick="loadDashboard()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-sidebar border border-brand-border text-slate-300 hover:text-cyan-300 hover:border-cyan-500/40 text-xs font-medium transition-colors">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                <span>Refresh Stats</span>
+              </button>
             </div>
           </div>
 
-          <!-- Quick Actions -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div onclick="switchTab('messages')" class="p-5 rounded-xl bg-brand-sidebar border border-brand-border hover:border-cyan-500/40 cursor-pointer transition-all flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
-                  <i data-lucide="mail" class="w-5 h-5"></i>
-                </div>
-                <div>
-                  <h3 class="text-sm font-semibold text-slate-200">Review Inquiries</h3>
-                  <p class="text-xs text-slate-500">Read contact submissions</p>
-                </div>
-              </div>
-              <i data-lucide="arrow-right" class="w-4 h-4 text-slate-500"></i>
+          <!-- Real "Needs Attention" Checklist Section -->
+          <div id="dash-attention-section" class="space-y-2">
+            <div id="dash-attention-container"></div>
+          </div>
+
+          <!-- Top Summary Cards (Real Database Metrics) -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div onclick="switchTab('projects')" class="bg-brand-sidebar border border-brand-border hover:border-cyan-500/40 rounded-xl p-4 cursor-pointer transition-all">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Projects</span>
+              <p id="stat-total-projects" class="text-2xl sm:text-3xl font-bold font-mono text-slate-100 mt-2">0</p>
+              <p id="stat-published-projects" class="text-[11px] text-cyan-400 mt-1 font-mono">0 Published</p>
             </div>
-            <div onclick="switchTab('projects')" class="p-5 rounded-xl bg-brand-sidebar border border-brand-border hover:border-cyan-500/40 cursor-pointer transition-all flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
-                  <i data-lucide="briefcase" class="w-5 h-5"></i>
-                </div>
-                <div>
-                  <h3 class="text-sm font-semibold text-slate-200">Manage Projects</h3>
-                  <p class="text-xs text-slate-500">Update featured portfolio work</p>
-                </div>
-              </div>
-              <i data-lucide="arrow-right" class="w-4 h-4 text-slate-500"></i>
+            <div onclick="switchTab('messages')" class="bg-brand-sidebar border border-brand-border hover:border-cyan-500/40 rounded-xl p-4 cursor-pointer transition-all">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Inquiries</span>
+              <p id="stat-unread-contacts" class="text-2xl sm:text-3xl font-bold font-mono text-cyan-400 mt-2">0</p>
+              <p id="stat-total-contacts-sub" class="text-[11px] text-slate-500 mt-1 font-mono">0 Total</p>
             </div>
-            <div onclick="switchTab('settings')" class="p-5 rounded-xl bg-brand-sidebar border border-brand-border hover:border-cyan-500/40 cursor-pointer transition-all flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
-                  <i data-lucide="settings" class="w-5 h-5"></i>
-                </div>
-                <div>
-                  <h3 class="text-sm font-semibold text-slate-200">Site Configuration</h3>
-                  <p class="text-xs text-slate-500">Manage SEO and settings</p>
-                </div>
-              </div>
-              <i data-lucide="arrow-right" class="w-4 h-4 text-slate-500"></i>
+            <div onclick="switchTab('skills')" class="bg-brand-sidebar border border-brand-border hover:border-cyan-500/40 rounded-xl p-4 cursor-pointer transition-all">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Skills</span>
+              <p id="stat-published-skills" class="text-2xl sm:text-3xl font-bold font-mono text-slate-100 mt-2">0</p>
+              <p class="text-[11px] text-slate-500 mt-1 font-mono">Active Stack</p>
+            </div>
+            <div onclick="switchTab('certificates')" class="bg-brand-sidebar border border-brand-border hover:border-cyan-500/40 rounded-xl p-4 cursor-pointer transition-all">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Certificates</span>
+              <p id="stat-total-certs" class="text-2xl sm:text-3xl font-bold font-mono text-slate-100 mt-2">0</p>
+              <p class="text-[11px] text-slate-500 mt-1 font-mono">Verified Records</p>
+            </div>
+            <div onclick="switchTab('resume')" class="bg-brand-sidebar border border-brand-border hover:border-cyan-500/40 rounded-xl p-4 cursor-pointer transition-all">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Active Resume</span>
+              <p id="stat-resume-status" class="text-sm sm:text-base font-bold font-mono text-emerald-400 mt-3 truncate">—</p>
+              <p id="stat-resume-sub" class="text-[11px] text-slate-500 mt-1 font-mono truncate">ATS Resume PDF</p>
+            </div>
+            <div onclick="switchTab('media')" class="bg-brand-sidebar border border-brand-border hover:border-cyan-500/40 rounded-xl p-4 cursor-pointer transition-all">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Media Assets</span>
+              <p id="stat-total-media" class="text-2xl sm:text-3xl font-bold font-mono text-slate-100 mt-2">0</p>
+              <p id="stat-media-storage" class="text-[11px] text-slate-500 mt-1 font-mono">0 KB</p>
             </div>
           </div>
 
-          <!-- Recent Messages Preview -->
-          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5">
-            <div class="flex items-center justify-between pb-4 border-b border-brand-border">
-              <div>
-                <h2 class="text-sm font-bold text-slate-200 font-mono uppercase tracking-wide">
-                  Recent Contact Inquiries
+          <!-- Project Status & Content Overview -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- Project Status Distribution -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 lg:col-span-1 space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-brand-border">
+                <h2 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wide flex items-center gap-2">
+                  <i data-lucide="layers" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Project Status Breakdown</span>
                 </h2>
-                <p class="text-xs text-slate-500 mt-0.5">Live messages submitted by recruiters & collaborators.</p>
+                <span id="stat-featured-count" class="text-[10px] font-mono text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">0 Featured</span>
               </div>
-              <button onclick="switchTab('messages')" class="text-xs text-cyan-400 hover:underline font-mono flex items-center gap-1">
-                <span>View All Inquiries</span>
+              <div class="space-y-2.5" id="project-status-list">
+                <div class="flex items-center justify-between text-xs py-1">
+                  <span class="flex items-center gap-2 text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span> Working
+                  </span>
+                  <span id="proj-stat-working" class="font-mono font-semibold text-slate-200">0</span>
+                </div>
+                <div class="flex items-center justify-between text-xs py-1">
+                  <span class="flex items-center gap-2 text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Completed
+                  </span>
+                  <span id="proj-stat-completed" class="font-mono font-semibold text-slate-200">0</span>
+                </div>
+                <div class="flex items-center justify-between text-xs py-1">
+                  <span class="flex items-center gap-2 text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span> Coming Soon
+                  </span>
+                  <span id="proj-stat-coming_soon" class="font-mono font-semibold text-slate-200">0</span>
+                </div>
+                <div class="flex items-center justify-between text-xs py-1">
+                  <span class="flex items-center gap-2 text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-slate-500"></span> Paused / Archived
+                  </span>
+                  <span id="proj-stat-paused" class="font-mono font-semibold text-slate-200">0</span>
+                </div>
+              </div>
+              <div class="pt-3 border-t border-brand-border flex items-center justify-between">
+                <span class="text-[11px] text-slate-500 font-mono">Draft: <span id="stat-draft-projects" class="text-slate-300">0</span></span>
+                <button onclick="switchTab('projects')" class="text-xs text-cyan-400 hover:underline font-mono">Manage Projects →</button>
+              </div>
+            </div>
+
+            <!-- Content Modules Grid -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 lg:col-span-2 space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-brand-border">
+                <h2 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wide flex items-center gap-2">
+                  <i data-lucide="database" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Content Management Overview</span>
+                </h2>
+                <span class="text-[10px] font-mono text-slate-500">Real Database Records</span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div onclick="switchTab('projects')" class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 hover:border-cyan-500/30 cursor-pointer transition-colors">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400 font-medium">Projects</span>
+                    <i data-lucide="briefcase" class="w-3.5 h-3.5 text-slate-500"></i>
+                  </div>
+                  <p id="co-projects" class="text-xl font-bold font-mono text-slate-100 mt-2">0</p>
+                  <span class="text-[10px] text-cyan-400 hover:underline mt-1 inline-block">Manage →</span>
+                </div>
+                <div onclick="switchTab('skills')" class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 hover:border-cyan-500/30 cursor-pointer transition-colors">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400 font-medium">Skills</span>
+                    <i data-lucide="code" class="w-3.5 h-3.5 text-slate-500"></i>
+                  </div>
+                  <p id="co-skills" class="text-xl font-bold font-mono text-slate-100 mt-2">0</p>
+                  <span class="text-[10px] text-cyan-400 hover:underline mt-1 inline-block">Manage →</span>
+                </div>
+                <div onclick="switchTab('experience')" class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 hover:border-cyan-500/30 cursor-pointer transition-colors">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400 font-medium">Experience</span>
+                    <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-500"></i>
+                  </div>
+                  <p id="co-experience" class="text-xl font-bold font-mono text-slate-100 mt-2">0</p>
+                  <span class="text-[10px] text-cyan-400 hover:underline mt-1 inline-block">Manage →</span>
+                </div>
+                <div onclick="switchTab('education')" class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 hover:border-cyan-500/30 cursor-pointer transition-colors">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400 font-medium">Education</span>
+                    <i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-slate-500"></i>
+                  </div>
+                  <p id="co-education" class="text-xl font-bold font-mono text-slate-100 mt-2">0</p>
+                  <span class="text-[10px] text-cyan-400 hover:underline mt-1 inline-block">Manage →</span>
+                </div>
+                <div onclick="switchTab('certificates')" class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 hover:border-cyan-500/30 cursor-pointer transition-colors">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400 font-medium">Certificates</span>
+                    <i data-lucide="award" class="w-3.5 h-3.5 text-slate-500"></i>
+                  </div>
+                  <p id="co-certificates" class="text-xl font-bold font-mono text-slate-100 mt-2">0</p>
+                  <span class="text-[10px] text-cyan-400 hover:underline mt-1 inline-block">Manage →</span>
+                </div>
+                <div onclick="switchTab('roadmap')" class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 hover:border-cyan-500/30 cursor-pointer transition-colors">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400 font-medium">Roadmap</span>
+                    <i data-lucide="milestone" class="w-3.5 h-3.5 text-slate-500"></i>
+                  </div>
+                  <p id="co-roadmap" class="text-xl font-bold font-mono text-slate-100 mt-2">0</p>
+                  <span class="text-[10px] text-cyan-400 hover:underline mt-1 inline-block">Manage →</span>
+                </div>
+                <div onclick="switchTab('media')" class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 hover:border-cyan-500/30 cursor-pointer transition-colors">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400 font-medium">Media Files</span>
+                    <i data-lucide="image" class="w-3.5 h-3.5 text-slate-500"></i>
+                  </div>
+                  <p id="co-media" class="text-xl font-bold font-mono text-slate-100 mt-2">0</p>
+                  <span class="text-[10px] text-cyan-400 hover:underline mt-1 inline-block">Manage →</span>
+                </div>
+                <div onclick="switchTab('seo')" class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 hover:border-cyan-500/30 cursor-pointer transition-colors">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400 font-medium">SEO & Meta</span>
+                    <i data-lucide="globe" class="w-3.5 h-3.5 text-slate-500"></i>
+                  </div>
+                  <p id="co-seo" class="text-xl font-bold font-mono text-slate-100 mt-2">Ready</p>
+                  <span class="text-[10px] text-cyan-400 hover:underline mt-1 inline-block">Configure →</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2-Column Split: Recent Projects & Communication Overview -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Recent Projects -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-brand-border">
+                <div>
+                  <h2 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wide flex items-center gap-2">
+                    <i data-lucide="briefcase" class="w-3.5 h-3.5 text-cyan-400"></i>
+                    <span>Recently Modified Projects</span>
+                  </h2>
+                </div>
+                <button onclick="switchTab('projects')" class="text-xs text-cyan-400 hover:underline font-mono flex items-center gap-1">
+                  <span>View All</span>
+                  <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </button>
+              </div>
+              <div id="dash-recent-projects" class="divide-y divide-brand-border/60 space-y-1">
+                <div class="text-center py-6 text-xs text-slate-500 font-mono">Loading recent projects...</div>
+              </div>
+            </div>
+
+            <!-- Communication Summary & Recent Messages -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-brand-border">
+                <div>
+                  <h2 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wide flex items-center gap-2">
+                    <i data-lucide="mail" class="w-3.5 h-3.5 text-cyan-400"></i>
+                    <span>Contact Inquiries</span>
+                  </h2>
+                </div>
+                <button onclick="switchTab('messages')" class="text-xs text-cyan-400 hover:underline font-mono flex items-center gap-1">
+                  <span>View Inbox</span>
+                  <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </button>
+              </div>
+              <div class="grid grid-cols-4 gap-2 text-center pb-2">
+                <div class="bg-slate-900/40 p-2 rounded-lg border border-brand-border/40">
+                  <span class="text-[10px] text-slate-500 font-mono">Total</span>
+                  <p id="comm-total" class="text-base font-bold font-mono text-slate-200 mt-0.5">0</p>
+                </div>
+                <div class="bg-slate-900/40 p-2 rounded-lg border border-brand-border/40">
+                  <span class="text-[10px] text-cyan-400 font-mono">Unread</span>
+                  <p id="comm-unread" class="text-base font-bold font-mono text-cyan-400 mt-0.5">0</p>
+                </div>
+                <div class="bg-slate-900/40 p-2 rounded-lg border border-brand-border/40">
+                  <span class="text-[10px] text-purple-400 font-mono">Replied</span>
+                  <p id="comm-replied" class="text-base font-bold font-mono text-purple-400 mt-0.5">0</p>
+                </div>
+                <div class="bg-slate-900/40 p-2 rounded-lg border border-brand-border/40">
+                  <span class="text-[10px] text-slate-500 font-mono">Archived</span>
+                  <p id="comm-archived" class="text-base font-bold font-mono text-slate-400 mt-0.5">0</p>
+                </div>
+              </div>
+              <div id="recent-messages-list" class="divide-y divide-brand-border/60">
+                <div class="text-center py-6 text-xs text-slate-500 font-mono">Loading inquiries...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- System Health Diagnostic Probes Card -->
+          <div id="system-health-section" class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-brand-border">
+              <div>
+                <h2 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wide flex items-center gap-2">
+                  <i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <span>System Diagnostics & Service Health</span>
+                </h2>
+                <p class="text-[11px] text-slate-500 mt-0.5">Live diagnostic probes of core infrastructure services.</p>
+              </div>
+              <span id="sh-overall-status" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                HEALTHY
+              </span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3" id="sh-services-grid">
+              <!-- DB -->
+              <div class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-semibold text-slate-300">Database</span>
+                  <span id="sh-db-badge" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-400">HEALTHY</span>
+                </div>
+                <p id="sh-db-latency" class="text-xs font-mono text-slate-400">0ms latency</p>
+                <p id="sh-db-msg" class="text-[10px] text-slate-500 truncate">MongoDB connection active</p>
+              </div>
+              <!-- API -->
+              <div class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-semibold text-slate-300">Backend API</span>
+                  <span id="sh-api-badge" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-400">HEALTHY</span>
+                </div>
+                <p id="sh-api-latency" class="text-xs font-mono text-slate-400">0ms latency</p>
+                <p id="sh-api-uptime" class="text-[10px] text-slate-500 truncate">Uptime: 0s</p>
+              </div>
+              <!-- Auth -->
+              <div class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-semibold text-slate-300">Auth Engine</span>
+                  <span id="sh-auth-badge" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-400">HEALTHY</span>
+                </div>
+                <p id="sh-auth-latency" class="text-xs font-mono text-slate-400">0ms latency</p>
+                <p id="sh-auth-msg" class="text-[10px] text-slate-500 truncate">JWT subsystem operational</p>
+              </div>
+              <!-- Email -->
+              <div class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-semibold text-slate-300">Email Delivery</span>
+                  <span id="sh-email-badge" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-400">HEALTHY</span>
+                </div>
+                <p id="sh-email-provider" class="text-xs font-mono text-slate-400">SMTP Service</p>
+                <p id="sh-email-msg" class="text-[10px] text-slate-500 truncate">Configured</p>
+              </div>
+              <!-- Storage -->
+              <div class="p-3 rounded-lg bg-slate-900/50 border border-brand-border/60 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-semibold text-slate-300">File Storage</span>
+                  <span id="sh-storage-badge" class="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-400">HEALTHY</span>
+                </div>
+                <p id="sh-storage-latency" class="text-xs font-mono text-slate-400">0ms latency</p>
+                <p id="sh-storage-msg" class="text-[10px] text-slate-500 truncate">Uploads writable</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions Grid -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-3">
+            <h2 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wide flex items-center gap-2">
+              <i data-lucide="zap" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <span>Control Center Quick Actions</span>
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+              <button onclick="switchTab('projects'); setTimeout(() => typeof openCreateProjectModal === 'function' && openCreateProjectModal(), 100)" class="p-2.5 rounded-lg bg-slate-900/40 border border-brand-border/60 hover:border-cyan-500/40 hover:bg-cyan-500/5 text-slate-300 hover:text-cyan-300 text-xs font-medium transition-all flex flex-col items-center gap-2">
+                <i data-lucide="folder-plus" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-[11px] text-center truncate w-full">Add Project</span>
+              </button>
+              <button onclick="switchTab('skills'); setTimeout(() => typeof openCreateSkillModal === 'function' && openCreateSkillModal(), 100)" class="p-2.5 rounded-lg bg-slate-900/40 border border-brand-border/60 hover:border-cyan-500/40 hover:bg-cyan-500/5 text-slate-300 hover:text-cyan-300 text-xs font-medium transition-all flex flex-col items-center gap-2">
+                <i data-lucide="plus-circle" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-[11px] text-center truncate w-full">Add Skill</span>
+              </button>
+              <button onclick="switchTab('media'); setTimeout(() => typeof openUploadMediaModal === 'function' && openUploadMediaModal(), 100)" class="p-2.5 rounded-lg bg-slate-900/40 border border-brand-border/60 hover:border-cyan-500/40 hover:bg-cyan-500/5 text-slate-300 hover:text-cyan-300 text-xs font-medium transition-all flex flex-col items-center gap-2">
+                <i data-lucide="upload-cloud" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-[11px] text-center truncate w-full">Upload Media</span>
+              </button>
+              <button onclick="switchTab('resume'); setTimeout(() => typeof openUploadResumeModal === 'function' && openUploadResumeModal(), 100)" class="p-2.5 rounded-lg bg-slate-900/40 border border-brand-border/60 hover:border-cyan-500/40 hover:bg-cyan-500/5 text-slate-300 hover:text-cyan-300 text-xs font-medium transition-all flex flex-col items-center gap-2">
+                <i data-lucide="file-text" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-[11px] text-center truncate w-full">Upload Resume</span>
+              </button>
+              <button onclick="switchTab('messages')" class="p-2.5 rounded-lg bg-slate-900/40 border border-brand-border/60 hover:border-cyan-500/40 hover:bg-cyan-500/5 text-slate-300 hover:text-cyan-300 text-xs font-medium transition-all flex flex-col items-center gap-2">
+                <i data-lucide="inbox" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-[11px] text-center truncate w-full">View Inbox</span>
+              </button>
+              <button onclick="switchTab('profile')" class="p-2.5 rounded-lg bg-slate-900/40 border border-brand-border/60 hover:border-cyan-500/40 hover:bg-cyan-500/5 text-slate-300 hover:text-cyan-300 text-xs font-medium transition-all flex flex-col items-center gap-2">
+                <i data-lucide="user" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-[11px] text-center truncate w-full">Edit Profile</span>
+              </button>
+              <button onclick="switchTab('hero')" class="p-2.5 rounded-lg bg-slate-900/40 border border-brand-border/60 hover:border-cyan-500/40 hover:bg-cyan-500/5 text-slate-300 hover:text-cyan-300 text-xs font-medium transition-all flex flex-col items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-[11px] text-center truncate w-full">Edit Hero</span>
+              </button>
+              <button onclick="switchTab('seo')" class="p-2.5 rounded-lg bg-slate-900/40 border border-brand-border/60 hover:border-cyan-500/40 hover:bg-cyan-500/5 text-slate-300 hover:text-cyan-300 text-xs font-medium transition-all flex flex-col items-center gap-2">
+                <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-[11px] text-center truncate w-full">SEO Settings</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Activity Audit Feed -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-3">
+            <div class="flex items-center justify-between pb-3 border-b border-brand-border">
+              <h2 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wide flex items-center gap-2">
+                <i data-lucide="shield" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>Recent Admin Activity Audit</span>
+              </h2>
+              <button onclick="switchTab('activity')" class="text-xs text-cyan-400 hover:underline font-mono flex items-center gap-1">
+                <span>View Full Audit Log</span>
                 <i data-lucide="arrow-right" class="w-3 h-3"></i>
               </button>
             </div>
-            <div id="recent-messages-list" class="divide-y divide-brand-border pt-2">
-              <div class="text-center py-6 text-xs text-slate-500 font-mono">Loading telemetry...</div>
+            <div id="dash-recent-activity-list" class="divide-y divide-brand-border/40 space-y-1">
+              <div class="text-center py-6 text-xs text-slate-500 font-mono">Loading activity audit log...</div>
             </div>
           </div>
         </div>
@@ -833,11 +1096,130 @@
 
         <!-- ─── 14. ANALYTICS TAB ─── -->
         <div id="tab-analytics" class="tab-pane hidden space-y-6">
-          <div class="pb-6 border-b border-brand-border">
-            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Analytics</h1>
-            <p class="text-xs text-slate-400 mt-1">Live telemetry and site performance metrics.</p>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <div class="flex items-center gap-2.5">
+                <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">
+                  Analytics & Traffic Insights
+                </h1>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                  Privacy-First Telemetry
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">
+                Public website visitor behavior, engagement metrics, and referral sources (admin traffic excluded).
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="inline-flex rounded-lg bg-slate-900 border border-brand-border p-0.5 text-xs font-mono">
+                <button onclick="setAnalyticsRange('7d')" class="analytics-range-btn px-2.5 py-1 rounded-md transition-colors text-slate-400 hover:text-slate-200" data-range="7d">7D</button>
+                <button onclick="setAnalyticsRange('30d')" class="analytics-range-btn px-2.5 py-1 rounded-md transition-colors bg-cyan-500/20 text-cyan-300 font-semibold" data-range="30d">30D</button>
+                <button onclick="setAnalyticsRange('90d')" class="analytics-range-btn px-2.5 py-1 rounded-md transition-colors text-slate-400 hover:text-slate-200" data-range="90d">90D</button>
+                <button onclick="setAnalyticsRange('1y')" class="analytics-range-btn px-2.5 py-1 rounded-md transition-colors text-slate-400 hover:text-slate-200" data-range="1y">1Y</button>
+              </div>
+              <button onclick="loadAnalytics()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-sidebar border border-brand-border text-slate-300 hover:text-cyan-300 text-xs font-medium transition-colors">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                <span>Refresh</span>
+              </button>
+            </div>
           </div>
-          <div id="analytics-container" class="text-center py-12 text-xs text-slate-500 font-mono">Loading analytics...</div>
+
+          <!-- Provider & Privacy Status Notice -->
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-brand-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2.5">
+              <div class="w-2 h-2 rounded-full bg-cyan-400"></div>
+              <span class="text-slate-300 font-medium" id="analytics-provider-label">Active Provider: Internal Telemetry Engine</span>
+              <span class="text-slate-500 text-[11px] font-mono hidden md:inline">• SHA-256 Hashed IPs • Bot Filter Active • Admin Paths Excluded</span>
+            </div>
+            <span id="analytics-last-updated" class="text-[11px] font-mono text-slate-500">Updated just now</span>
+          </div>
+
+          <!-- Analytics KPI Cards (Strictly Real Numbers) -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5">
+              <span class="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">Unique Visitors</span>
+              <p id="akpi-unique-visitors" class="text-3xl font-bold font-mono text-slate-100 mt-2">0</p>
+              <p class="text-[11px] text-slate-500 mt-1 font-mono">Distinct visitor sessions</p>
+            </div>
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5">
+              <span class="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">Total Page Views</span>
+              <p id="akpi-page-views" class="text-3xl font-bold font-mono text-cyan-400 mt-2">0</p>
+              <p class="text-[11px] text-slate-500 mt-1 font-mono">Public pages browsed</p>
+            </div>
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5">
+              <span class="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">Active Online</span>
+              <p id="akpi-active-sessions" class="text-3xl font-bold font-mono text-emerald-400 mt-2">0</p>
+              <p class="text-[11px] text-slate-500 mt-1 font-mono">Last 5 min heartbeat</p>
+            </div>
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5">
+              <span class="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">Resume Downloads</span>
+              <p id="akpi-resume-downloads" class="text-3xl font-bold font-mono text-purple-400 mt-2">0</p>
+              <p class="text-[11px] text-slate-500 mt-1 font-mono">ATS Resume clicks</p>
+            </div>
+          </div>
+
+          <!-- Traffic Trend Visualization -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-brand-border">
+              <div>
+                <h2 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wide flex items-center gap-2">
+                  <i data-lucide="trending-up" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Daily Page Views Trend</span>
+                </h2>
+                <p class="text-[11px] text-slate-500 mt-0.5">Aggregated daily traffic for the selected time window.</p>
+              </div>
+              <span id="trend-summary-pill" class="text-[11px] font-mono text-slate-400 bg-slate-900 border border-brand-border px-2.5 py-0.5 rounded-full">0 views recorded</span>
+            </div>
+            <!-- Trend SVG Container or Empty State -->
+            <div id="analytics-trend-chart" class="min-h-[160px] flex items-center justify-center">
+              <div class="text-center py-10 text-xs text-slate-500 font-mono">Loading traffic trend...</div>
+            </div>
+          </div>
+
+          <!-- 3-Column Insights: Top Pages, Sources, Devices -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Top Pages -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-3">
+              <div class="flex items-center justify-between pb-2 border-b border-brand-border">
+                <h3 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wide flex items-center gap-1.5">
+                  <i data-lucide="file-text" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Top Pages</span>
+                </h3>
+                <span class="text-[10px] font-mono text-slate-500">Views</span>
+              </div>
+              <div id="analytics-top-pages-list" class="space-y-2 text-xs">
+                <div class="text-center py-6 text-xs text-slate-500 font-mono">No page view data</div>
+              </div>
+            </div>
+
+            <!-- Traffic Sources / Referrers -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-3">
+              <div class="flex items-center justify-between pb-2 border-b border-brand-border">
+                <h3 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wide flex items-center gap-1.5">
+                  <i data-lucide="compass" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Traffic Sources</span>
+                </h3>
+                <span class="text-[10px] font-mono text-slate-500">Share</span>
+              </div>
+              <div id="analytics-sources-list" class="space-y-2 text-xs">
+                <div class="text-center py-6 text-xs text-slate-500 font-mono">No source data</div>
+              </div>
+            </div>
+
+            <!-- Device Distribution -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-3">
+              <div class="flex items-center justify-between pb-2 border-b border-brand-border">
+                <h3 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wide flex items-center gap-1.5">
+                  <i data-lucide="smartphone" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Device Category</span>
+                </h3>
+                <span class="text-[10px] font-mono text-slate-500">Category</span>
+              </div>
+              <div id="analytics-devices-list" class="space-y-2 text-xs">
+                <div class="text-center py-6 text-xs text-slate-500 font-mono">No device data</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- ─── 15. MEDIA TAB ─── -->
@@ -1751,12 +2133,21 @@
       }
     }
 
-    // Live Telemetry Loaders
+    // Utility for formatting storage bytes
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    // ─── REAL CONTROL CENTER DASHBOARD LOADER ──────────────────
     async function loadDashboard() {
       try {
         const [dashRes, healthRes] = await Promise.allSettled([
           fetch('/api/admin/dashboard', { credentials: 'include' }),
-          fetch('/api/health')
+          fetch('/api/admin/health', { credentials: 'include' })
         ]);
 
         if (dashRes.status === 'fulfilled') {
@@ -1765,15 +2156,44 @@
             return;
           }
           if (dashRes.value.ok) {
-            const contactSubmissions = data.stats?.contactSubmissions ?? '0';
-            const unreadContacts = data.stats?.unreadContacts ?? '0';
-            const unreadNotifs = data.stats?.unreadNotifications ?? '0';
+            const data = await dashRes.value.json();
 
-            const statTotal = document.getElementById('stat-total-contacts');
-            const statUnread = document.getElementById('stat-unread-contacts');
-            if (statTotal) statTotal.textContent = contactSubmissions;
-            if (statUnread) statUnread.textContent = unreadContacts;
+            // 1. Top Summary Cards (Real Database Metrics)
+            const statTotalProjects = document.getElementById('stat-total-projects');
+            const statPubProjects = document.getElementById('stat-published-projects');
+            const statUnreadContacts = document.getElementById('stat-unread-contacts');
+            const statTotalContactsSub = document.getElementById('stat-total-contacts-sub');
+            const statPubSkills = document.getElementById('stat-published-skills');
+            const statTotalCerts = document.getElementById('stat-total-certs');
+            const statResumeStatus = document.getElementById('stat-resume-status');
+            const statResumeSub = document.getElementById('stat-resume-sub');
+            const statTotalMedia = document.getElementById('stat-total-media');
+            const statMediaStorage = document.getElementById('stat-media-storage');
 
+            if (statTotalProjects) statTotalProjects.textContent = data.summaryCards?.totalProjects ?? 0;
+            if (statPubProjects) statPubProjects.textContent = `${data.summaryCards?.publishedProjects ?? 0} Published`;
+            if (statUnreadContacts) statUnreadContacts.textContent = data.summaryCards?.unreadContacts ?? 0;
+            if (statTotalContactsSub) statTotalContactsSub.textContent = `${data.communicationOverview?.total ?? 0} Total`;
+            if (statPubSkills) statPubSkills.textContent = data.summaryCards?.publishedSkills ?? 0;
+            if (statTotalCerts) statTotalCerts.textContent = data.summaryCards?.totalCertificates ?? 0;
+
+            if (statResumeStatus) {
+              const hasResume = data.summaryCards?.hasActiveResume;
+              statResumeStatus.textContent = data.summaryCards?.activeResumeStatus || 'Missing';
+              statResumeStatus.className = hasResume
+                ? 'text-sm sm:text-base font-bold font-mono text-emerald-400 mt-3 truncate'
+                : 'text-sm sm:text-base font-bold font-mono text-amber-400 mt-3 truncate';
+            }
+            if (statResumeSub) {
+              statResumeSub.textContent = data.summaryCards?.hasActiveResume ? 'ATS Resume Active' : 'Click to Upload';
+            }
+
+            if (statTotalMedia) statTotalMedia.textContent = data.contentOverview?.mediaFiles ?? 0;
+            if (statMediaStorage) statMediaStorage.textContent = formatBytes(data.contentOverview?.mediaStorageBytes ?? 0);
+
+            // 2. Notification Badges
+            const unreadContacts = data.summaryCards?.unreadContacts ?? 0;
+            const unreadNotifs = data.communicationOverview?.unreadNotifications ?? 0;
             const unreadPill = document.getElementById('unread-pill');
             if (unreadPill) {
               unreadPill.textContent = unreadContacts;
@@ -1798,17 +2218,221 @@
               notifDropdownCount.textContent = `${unreadNotifs} unread`;
             }
 
+            // 3. Needs Attention Checklist
+            renderDashboardAttention(data.needsAttention);
+
+            // 4. Project Status Breakdown
+            const pStat = data.projectOverview?.byStatus || {};
+            const elWorking = document.getElementById('proj-stat-working');
+            const elCompleted = document.getElementById('proj-stat-completed');
+            const elComingSoon = document.getElementById('proj-stat-coming_soon');
+            const elPaused = document.getElementById('proj-stat-paused');
+            const elDraft = document.getElementById('stat-draft-projects');
+            const elFeatured = document.getElementById('stat-featured-count');
+
+            if (elWorking) elWorking.textContent = pStat.WORKING ?? 0;
+            if (elCompleted) elCompleted.textContent = pStat.COMPLETED ?? 0;
+            if (elComingSoon) elComingSoon.textContent = pStat.COMING_SOON ?? 0;
+            if (elPaused) elPaused.textContent = (pStat.PAUSED ?? 0) + (pStat.ARCHIVED ?? 0);
+            if (elDraft) elDraft.textContent = data.projectOverview?.draft ?? 0;
+            if (elFeatured) elFeatured.textContent = `${data.projectOverview?.featured ?? 0} Featured`;
+
+            // 5. Content Management Overview
+            const co = data.contentOverview || {};
+            const setCo = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            setCo('co-projects', co.projects ?? 0);
+            setCo('co-skills', co.skills ?? 0);
+            setCo('co-experience', co.experience ?? 0);
+            setCo('co-education', co.education ?? 0);
+            setCo('co-certificates', co.certificates ?? 0);
+            setCo('co-roadmap', co.roadmap ?? 0);
+            setCo('co-media', co.mediaFiles ?? 0);
+
+            // 6. Recent Projects
+            renderDashboardRecentProjects(data.recentProjects || []);
+
+            // 7. Communication Counts & Recent Messages
+            const comm = data.communicationOverview || {};
+            setCo('comm-total', comm.total ?? 0);
+            setCo('comm-unread', comm.unread ?? 0);
+            setCo('comm-replied', comm.replied ?? 0);
+            setCo('comm-archived', comm.archived ?? 0);
             renderRecentMessages(data.recentContacts || []);
+
+            // 8. System Diagnostics
+            renderSystemHealth(data.systemHealth);
+
+            // 9. Recent Activity Feed
+            renderDashboardActivity(data.recentActivityLogs || []);
+
+            // 10. Last Updated Timestamp
+            const lastUpdated = document.getElementById('dash-last-updated');
+            if (lastUpdated) lastUpdated.textContent = `Updated ${new Date().toLocaleTimeString()}`;
           }
         }
 
-        if (healthRes.status === 'fulfilled' && healthRes.value.ok) {
-          const el = document.getElementById('health-status');
-          if (el) el.textContent = 'API: ONLINE (200 OK)';
-        }
+        if (typeof lucide !== 'undefined') lucide.createIcons();
       } catch(e) {
-        console.warn('Telemetry sync error:', e);
+        console.warn('Dashboard sync error:', e);
       }
+    }
+
+    function renderDashboardAttention(attention) {
+      const container = document.getElementById('dash-attention-container');
+      if (!container) return;
+
+      if (!attention || attention.allGood || !attention.items || attention.items.length === 0) {
+        container.innerHTML = `
+          <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-base">🟢</span>
+              <div>
+                <h4 class="text-xs font-semibold text-emerald-300">Everything looks good!</h4>
+                <p class="text-[11px] text-emerald-400/80 mt-0.5">All core services are operational, resume is active, and no pending inquiries or failed emails require attention.</p>
+              </div>
+            </div>
+            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 whitespace-nowrap">All Good</span>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = attention.items.map(item => {
+        const isWarning = item.type === 'warning';
+        const isCaution = item.type === 'caution';
+        const bgClass = isWarning ? 'bg-amber-500/10 border-amber-500/25' : (isCaution ? 'bg-rose-500/10 border-rose-500/25' : 'bg-cyan-500/10 border-cyan-500/25');
+        const textClass = isWarning ? 'text-amber-300' : (isCaution ? 'text-rose-300' : 'text-cyan-300');
+        const icon = isWarning ? 'alert-triangle' : (isCaution ? 'alert-circle' : 'info');
+        const btnClass = isWarning ? 'text-amber-300 bg-amber-500/20 hover:bg-amber-500/30' : (isCaution ? 'text-rose-300 bg-rose-500/20 hover:bg-rose-500/30' : 'text-cyan-300 bg-cyan-500/20 hover:bg-cyan-500/30');
+
+        return `
+          <div class="p-3 rounded-xl border ${bgClass} flex items-center justify-between gap-3 transition-colors">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <i data-lucide="${icon}" class="w-4 h-4 shrink-0 ${textClass}"></i>
+              <span class="text-xs font-medium ${textClass} truncate">${escapeHtml(item.title)}</span>
+            </div>
+            <button onclick="switchTab('${item.tab}')" class="px-2.5 py-1 rounded text-[11px] font-semibold shrink-0 transition-colors ${btnClass}">
+              ${escapeHtml(item.actionText || 'Fix →')}
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderDashboardRecentProjects(projects) {
+      const container = document.getElementById('dash-recent-projects');
+      if (!container) return;
+
+      if (projects.length === 0) {
+        container.innerHTML = '<div class="text-center py-6 text-xs text-slate-500 font-mono">No projects found. Add your first project!</div>';
+        return;
+      }
+
+      container.innerHTML = projects.map(p => {
+        const thumb = p.thumbnail
+          ? `<img src="${escapeHtml(p.thumbnail)}" class="w-9 h-9 rounded-lg object-cover border border-brand-border shrink-0" onerror="this.src='/assets/as-admin-icon.svg'" />`
+          : `<div class="w-9 h-9 rounded-lg bg-slate-900 border border-brand-border flex items-center justify-center shrink-0 text-slate-500"><i data-lucide="briefcase" class="w-4 h-4"></i></div>`;
+        const statusBadge = p.status === 'COMPLETED' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+          : (p.status === 'WORKING' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
+          : (p.status === 'COMING_SOON' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-slate-800 text-slate-400 border-slate-700'));
+        const visBadge = p.visibility === 'PUBLISHED' ? 'text-emerald-400' : 'text-slate-500';
+
+        return `
+          <div class="py-2.5 flex items-center justify-between gap-3 hover:bg-slate-900/40 px-2 rounded-lg transition-colors">
+            <div class="flex items-center gap-3 min-w-0">
+              ${thumb}
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <h4 class="text-xs font-semibold text-slate-200 truncate">${escapeHtml(p.title)}</h4>
+                  <span class="px-1.5 py-0.2 rounded text-[9px] font-mono border ${statusBadge}">${p.status}</span>
+                </div>
+                <div class="flex items-center gap-2 mt-0.5 text-[10px] font-mono text-slate-500">
+                  <span class="${visBadge}">${p.visibility || 'PUBLISHED'}</span>
+                  <span>•</span>
+                  <span>${new Date(p.updatedAt || p.createdAt || Date.now()).toLocaleDateString()}</span>
+                </div>
+              </div>
+            </div>
+            <button onclick="switchTab('projects'); setTimeout(() => typeof openEditProjectModal === 'function' && openEditProjectModal('${p._id || p.id}'), 100)" class="text-xs text-cyan-400 hover:text-cyan-300 font-mono px-2 py-1 rounded bg-slate-900/60 border border-brand-border/60 hover:border-cyan-500/40 transition-colors shrink-0">
+              Edit
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderSystemHealth(health) {
+      if (!health) return;
+      const s = health.services || {};
+
+      const setService = (key, badgeId, latId, msgId) => {
+        const svc = s[key];
+        if (!svc) return;
+        const badge = document.getElementById(badgeId);
+        const lat = document.getElementById(latId);
+        const msg = document.getElementById(msgId);
+
+        if (badge) {
+          badge.textContent = svc.status;
+          badge.className = svc.status === 'HEALTHY'
+            ? 'px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+            : 'px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20';
+        }
+        if (lat) lat.textContent = svc.latencyMs !== undefined ? `${svc.latencyMs}ms latency` : (svc.uptime ? `Uptime: ${svc.uptime}` : (svc.provider ? svc.provider.toUpperCase() : 'Operational'));
+        if (msg) msg.textContent = svc.message || svc.memoryUsage || 'Operational';
+      };
+
+      setService('database', 'sh-db-badge', 'sh-db-latency', 'sh-db-msg');
+      setService('api', 'sh-api-badge', 'sh-api-latency', 'sh-api-uptime');
+      setService('authentication', 'sh-auth-badge', 'sh-auth-latency', 'sh-auth-msg');
+      setService('email', 'sh-email-badge', 'sh-email-provider', 'sh-email-msg');
+      setService('storage', 'sh-storage-badge', 'sh-storage-latency', 'sh-storage-msg');
+
+      const overall = document.getElementById('sh-overall-status');
+      const dashHealthPill = document.getElementById('dash-health-pill');
+      const dashHealthText = document.getElementById('dash-health-text');
+
+      if (overall) {
+        overall.textContent = health.overallStatus || 'HEALTHY';
+        overall.className = health.overallStatus === 'HEALTHY'
+          ? 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+          : 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20';
+      }
+
+      if (dashHealthPill && dashHealthText) {
+        dashHealthText.textContent = health.overallStatus === 'HEALTHY' ? 'Systems Operational' : 'System Degraded';
+        dashHealthPill.className = health.overallStatus === 'HEALTHY'
+          ? 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5'
+          : 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1.5';
+      }
+    }
+
+    function renderDashboardActivity(logs) {
+      const container = document.getElementById('dash-recent-activity-list');
+      if (!container) return;
+
+      if (logs.length === 0) {
+        container.innerHTML = '<div class="text-center py-6 text-xs text-slate-500 font-mono">No recent activity logged yet.</div>';
+        return;
+      }
+
+      container.innerHTML = logs.slice(0, 8).map(log => {
+        return `
+          <div class="py-2 flex items-center justify-between gap-4 text-xs">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></span>
+              <div class="min-w-0">
+                <span class="font-mono font-semibold text-slate-200">${escapeHtml(log.action)}</span>
+                <span class="text-slate-500 text-[11px] ml-1.5">• ${escapeHtml(log.resourceType || log.targetCollection || '')}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 text-[10px] font-mono text-slate-500 shrink-0">
+              <span>${escapeHtml(log.adminEmail || 'admin')}</span>
+              <span>${new Date(log.createdAt).toLocaleTimeString()}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function renderRecentMessages(msgs) {
@@ -1837,6 +2461,203 @@
               <p class="text-[11px] text-slate-500 truncate mt-0.5">${escapeHtml(m.subject || m.message)}</p>
             </div>
             <span class="text-[10px] font-mono text-slate-500 shrink-0">${new Date(m.createdAt).toLocaleDateString()}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ─── REAL ANALYTICS & INSIGHTS ENGINE ──────────────────────
+    let _analyticsRange = '30d';
+
+    function setAnalyticsRange(range) {
+      _analyticsRange = range;
+      document.querySelectorAll('.analytics-range-btn').forEach(btn => {
+        const isCurrent = btn.getAttribute('data-range') === range;
+        btn.className = isCurrent
+          ? 'analytics-range-btn px-2.5 py-1 rounded-md transition-colors bg-cyan-500/20 text-cyan-300 font-semibold'
+          : 'analytics-range-btn px-2.5 py-1 rounded-md transition-colors text-slate-400 hover:text-slate-200';
+      });
+      loadAnalytics();
+    }
+
+    async function loadAnalytics() {
+      const trendChart = document.getElementById('analytics-trend-chart');
+
+      try {
+        const res = await fetch(`/api/admin/analytics?range=${_analyticsRange}`, {
+          credentials: 'include',
+        });
+
+        if (res.status === 401) {
+          handleLogout();
+          return;
+        }
+
+        if (!res.ok) {
+          if (trendChart) trendChart.innerHTML = '<div class="text-center py-10 text-xs text-amber-400 font-mono">Analytics service temporarily unavailable.</div>';
+          return;
+        }
+
+        const data = await res.json();
+        const summary = data.summary || {};
+
+        // Update KPIs (zero fake numbers)
+        const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        setVal('akpi-unique-visitors', summary.totalVisitors ?? 0);
+        setVal('akpi-page-views', summary.pageViews ?? 0);
+        setVal('akpi-active-sessions', summary.activeSessions ?? 0);
+        setVal('akpi-resume-downloads', summary.resumeDownloads ?? 0);
+
+        // Provider label & updated time
+        const provLabel = document.getElementById('analytics-provider-label');
+        if (provLabel) provLabel.textContent = `Active Provider: ${data.provider?.name || 'Internal Telemetry Engine'}`;
+
+        const lastUp = document.getElementById('analytics-last-updated');
+        if (lastUp) lastUp.textContent = `Updated ${new Date().toLocaleTimeString()}`;
+
+        const trendPill = document.getElementById('trend-summary-pill');
+        if (trendPill) trendPill.textContent = `${summary.pageViews ?? 0} views (${_analyticsRange.toUpperCase()})`;
+
+        // Render Trend Chart
+        renderAnalyticsTrend(data.trafficTrend || [], data.hasData);
+
+        // Render Top Pages
+        renderTopPages(data.topPages || []);
+
+        // Render Traffic Sources
+        renderTrafficSources(data.trafficSources || []);
+
+        // Render Devices
+        renderDeviceBreakdown(data.devices || []);
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        console.warn('Analytics loading error:', err);
+        if (trendChart) trendChart.innerHTML = '<div class="text-center py-10 text-xs text-amber-400 font-mono">Failed to fetch analytics data.</div>';
+      }
+    }
+
+    function renderAnalyticsTrend(trend, hasData) {
+      const container = document.getElementById('analytics-trend-chart');
+      if (!container) return;
+
+      if (!hasData || !trend || trend.length === 0 || trend.every(t => t.views === 0)) {
+        container.innerHTML = `
+          <div class="text-center py-10 space-y-2">
+            <div class="w-10 h-10 rounded-full bg-slate-900 border border-brand-border text-slate-500 flex items-center justify-center mx-auto">
+              <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+            </div>
+            <p class="text-xs font-mono text-slate-300">No analytics data available for this period.</p>
+            <p class="text-[11px] text-slate-500">Public visitor page views and downloads will appear here as visitors browse.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const maxViews = Math.max(...trend.map(t => t.views), 1);
+      const totalBars = trend.length;
+      const barWidth = Math.max(100 / totalBars - 1, 1.5);
+
+      const svgBars = trend.map((t, idx) => {
+        const x = (idx / totalBars) * 100;
+        const heightPercent = Math.max((t.views / maxViews) * 75, 4);
+        const y = 85 - heightPercent;
+        return `
+          <rect x="${x}%" y="${y}%" width="${barWidth}%" height="${heightPercent}%" rx="2" class="fill-cyan-500/80 hover:fill-cyan-400 transition-colors cursor-pointer">
+            <title>${t.date}: ${t.views} views, ${t.visitors} unique visitors</title>
+          </rect>
+        `;
+      }).join('');
+
+      const firstDate = trend[0]?.date || '';
+      const lastDate = trend[trend.length - 1]?.date || '';
+
+      container.innerHTML = `
+        <div class="w-full space-y-2">
+          <div class="w-full h-36 relative flex items-end">
+            <svg class="w-full h-full overflow-visible" preserveAspectRatio="none">
+              <line x1="0" y1="85%" x2="100%" y2="85%" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,3" />
+              <line x1="0" y1="45%" x2="100%" y2="45%" stroke="rgba(255,255,255,0.05)" stroke-dasharray="3,3" />
+              <line x1="0" y1="10%" x2="100%" y2="10%" stroke="rgba(255,255,255,0.05)" stroke-dasharray="3,3" />
+              ${svgBars}
+            </svg>
+          </div>
+          <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-1 border-t border-brand-border/40">
+            <span>${firstDate}</span>
+            <span>Peak: ${maxViews} views/day</span>
+            <span>${lastDate}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTopPages(pages) {
+      const container = document.getElementById('analytics-top-pages-list');
+      if (!container) return;
+
+      if (!pages || pages.length === 0) {
+        container.innerHTML = '<div class="text-center py-6 text-xs text-slate-500 font-mono">No page view data recorded.</div>';
+        return;
+      }
+
+      container.innerHTML = pages.map(p => `
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-[11px] font-mono">
+            <span class="text-slate-300 truncate max-w-[180px]">${escapeHtml(p.path)}</span>
+            <span class="text-slate-400 font-semibold">${p.views} (${p.percentage}%)</span>
+          </div>
+          <div class="w-full h-1.5 rounded-full bg-slate-900 overflow-hidden">
+            <div class="h-full bg-cyan-500 rounded-full" style="width: ${p.percentage}%"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderTrafficSources(sources) {
+      const container = document.getElementById('analytics-sources-list');
+      if (!container) return;
+
+      if (!sources || sources.length === 0) {
+        container.innerHTML = '<div class="text-center py-6 text-xs text-slate-500 font-mono">No traffic source data.</div>';
+        return;
+      }
+
+      container.innerHTML = sources.map(s => `
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-[11px] font-mono">
+            <span class="text-slate-300 truncate">${escapeHtml(s.source)}</span>
+            <span class="text-slate-400 font-semibold">${s.count} (${s.percentage}%)</span>
+          </div>
+          <div class="w-full h-1.5 rounded-full bg-slate-900 overflow-hidden">
+            <div class="h-full bg-purple-500 rounded-full" style="width: ${s.percentage}%"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderDeviceBreakdown(devices) {
+      const container = document.getElementById('analytics-devices-list');
+      if (!container) return;
+
+      if (!devices || devices.length === 0) {
+        container.innerHTML = '<div class="text-center py-6 text-xs text-slate-500 font-mono">No device data.</div>';
+        return;
+      }
+
+      container.innerHTML = devices.map(d => {
+        const icon = d.device === 'Mobile' ? 'smartphone' : (d.device === 'Tablet' ? 'tablet' : 'monitor');
+        return `
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-[11px] font-mono">
+              <span class="text-slate-300 flex items-center gap-1.5">
+                <i data-lucide="${icon}" class="w-3.5 h-3.5 text-slate-500"></i>
+                <span>${d.device}</span>
+              </span>
+              <span class="text-slate-400 font-semibold">${d.count} (${d.percentage}%)</span>
+            </div>
+            <div class="w-full h-1.5 rounded-full bg-slate-900 overflow-hidden">
+              <div class="h-full bg-emerald-500 rounded-full" style="width: ${d.percentage}%"></div>
+            </div>
           </div>
         `;
       }).join('');
