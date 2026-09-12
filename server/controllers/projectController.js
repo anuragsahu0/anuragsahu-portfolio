@@ -1,6 +1,7 @@
 const Project = require('../models/Project');
 const { sendSuccess, sendError } = require('../utils/apiResponse');
 const { logActivity } = require('./adminController');
+const { isSafeUrl, sanitizeHtmlContent } = require('../utils/security');
 
 // In-memory fallback if DB is offline
 const FALLBACK_PROJECTS = [
@@ -302,6 +303,24 @@ const createProject = async (req, res, next) => {
 
     const cleanSlug = (slug || title).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
 
+    // Validate URLs and sanitize text
+    if (req.body.githubUrl && !isSafeUrl(req.body.githubUrl)) {
+      return sendError(res, 'Invalid or unsafe GitHub URL.', 'INVALID_URL', 422);
+    }
+    if (req.body.liveUrl && !isSafeUrl(req.body.liveUrl)) {
+      return sendError(res, 'Invalid or unsafe Live/Demo URL.', 'INVALID_URL', 422);
+    }
+    if (req.body.thumbnail && !isSafeUrl(req.body.thumbnail)) {
+      return sendError(res, 'Invalid or unsafe thumbnail URL.', 'INVALID_URL', 422);
+    }
+    const safePayload = {
+      ...req.body,
+      description: sanitizeHtmlContent(description),
+      shortDescription: sanitizeHtmlContent(req.body.shortDescription || ''),
+      slug: cleanSlug,
+      id: cleanSlug,
+    };
+
     try {
       if (Project.db && Project.db.readyState === 1) {
         const existing = await Project.findOne({ slug: cleanSlug });
@@ -309,11 +328,7 @@ const createProject = async (req, res, next) => {
           return sendError(res, `A project with slug "${cleanSlug}" already exists.`, 'DUPLICATE_SLUG', 409);
         }
 
-        const project = await Project.create({
-          ...req.body,
-          slug: cleanSlug,
-          id: cleanSlug,
-        });
+        const project = await Project.create(safePayload);
 
         try {
           await logActivity('PROJECT_CREATED', 'Project', { title: project.title, slug: project.slug }, req);
@@ -336,9 +351,7 @@ const createProject = async (req, res, next) => {
     // In-memory create
     const newProject = {
       _id: `proj-${Date.now()}`,
-      id: cleanSlug,
-      slug: cleanSlug,
-      ...req.body,
+      ...safePayload,
       createdAt: new Date(),
     };
     FALLBACK_PROJECTS.push(newProject);
@@ -354,7 +367,19 @@ const createProject = async (req, res, next) => {
 const updateProject = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
+    const updates = { ...req.body };
+
+    if (updates.githubUrl && !isSafeUrl(updates.githubUrl)) {
+      return sendError(res, 'Invalid or unsafe GitHub URL.', 'INVALID_URL', 422);
+    }
+    if (updates.liveUrl && !isSafeUrl(updates.liveUrl)) {
+      return sendError(res, 'Invalid or unsafe Live/Demo URL.', 'INVALID_URL', 422);
+    }
+    if (updates.thumbnail && !isSafeUrl(updates.thumbnail)) {
+      return sendError(res, 'Invalid or unsafe thumbnail URL.', 'INVALID_URL', 422);
+    }
+    if (updates.description) updates.description = sanitizeHtmlContent(updates.description);
+    if (updates.shortDescription) updates.shortDescription = sanitizeHtmlContent(updates.shortDescription);
 
     if (updates.slug) {
       updates.slug = updates.slug.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');

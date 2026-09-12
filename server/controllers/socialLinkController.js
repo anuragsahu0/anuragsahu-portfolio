@@ -1,6 +1,7 @@
 const SocialLink = require('../models/SocialLink');
 const { sendSuccess, sendError } = require('../utils/apiResponse');
 const { logActivity } = require('./adminController');
+const { isSafeUrl } = require('../utils/security');
 
 const DEFAULT_SOCIAL_LINKS = [
   { _id: 'soc-1', platform: 'GitHub', label: 'GitHub', url: 'https://github.com/anuragsahu0', icon: 'github', color: '#00f5ff', order: 1, isActive: true },
@@ -55,6 +56,9 @@ const createSocialLink = async (req, res, next) => {
     if (!platform || !url) {
       return sendError(res, 'Platform and URL are required.', 'VALIDATION_ERROR', 422);
     }
+    if (!isSafeUrl(url)) {
+      return sendError(res, 'Invalid or unsafe social link URL.', 'INVALID_URL', 422);
+    }
 
     let link = null;
     try {
@@ -99,6 +103,10 @@ const updateSocialLink = async (req, res, next) => {
   try {
     const { id } = req.params;
     const updates = req.body;
+
+    if (updates.url && !isSafeUrl(updates.url)) {
+      return sendError(res, 'Invalid or unsafe social link URL.', 'INVALID_URL', 422);
+    }
     let link = null;
 
     try {

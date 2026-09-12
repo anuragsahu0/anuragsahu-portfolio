@@ -1,6 +1,7 @@
 const Certificate = require('../models/Certificate');
 const { sendSuccess, sendError } = require('../utils/apiResponse');
 const { logActivity } = require('./adminController');
+const { isSafeUrl, sanitizeHtmlContent } = require('../utils/security');
 
 const FALLBACK_CERTIFICATES = [
   {
@@ -78,9 +79,12 @@ const getAdminCertificates = async (req, res, next) => {
 
 const createCertificate = async (req, res, next) => {
   try {
-    const { title, issuer } = req.body;
+    const { title, issuer, credentialUrl } = req.body;
     if (!title || !issuer) {
       return sendError(res, 'Certificate title and issuer are required.', 'VALIDATION_ERROR', 422);
+    }
+    if (credentialUrl && !isSafeUrl(credentialUrl)) {
+      return sendError(res, 'Invalid or unsafe credential URL.', 'INVALID_URL', 422);
     }
 
     let cert = null;
@@ -108,6 +112,9 @@ const createCertificate = async (req, res, next) => {
 const updateCertificate = async (req, res, next) => {
   try {
     const { id } = req.params;
+    if (req.body.credentialUrl && !isSafeUrl(req.body.credentialUrl)) {
+      return sendError(res, 'Invalid or unsafe credential URL.', 'INVALID_URL', 422);
+    }
     let cert = null;
 
     try {

@@ -1,6 +1,7 @@
 const Settings = require('../models/Settings');
 const { sendSuccess, sendError } = require('../utils/apiResponse');
 const { logActivity } = require('./adminController');
+const { isSafeUrl, sanitizeHtmlContent } = require('../utils/security');
 
 const DEFAULT_SETTINGS = {
   singletonId: 'global',
@@ -140,7 +141,17 @@ const getAdminSettings = async (req, res, next) => {
  */
 const updateSettings = async (req, res, next) => {
   try {
-    const updates = req.body;
+    const updates = { ...req.body };
+    const urlKeys = ['portfolioUrl', 'github', 'linkedin', 'resumeUrl', 'logoUrl', 'faviconUrl', 'appleTouchIconUrl', 'canonicalUrl', 'ogImage'];
+    for (const k of urlKeys) {
+      if (updates[k] && !isSafeUrl(updates[k])) {
+        return sendError(res, `Invalid or unsafe URL for ${k}.`, 'INVALID_URL', 422);
+      }
+    }
+    if (updates.siteDescription) updates.siteDescription = sanitizeHtmlContent(updates.siteDescription);
+    if (updates.maintenanceMessage) updates.maintenanceMessage = sanitizeHtmlContent(updates.maintenanceMessage);
+    if (updates.footerText) updates.footerText = sanitizeHtmlContent(updates.footerText);
+
     let settings = null;
 
     try {
@@ -197,7 +208,17 @@ const getAdminSeo = async (req, res, next) => {
  */
 const updateSeo = async (req, res, next) => {
   try {
-    const updates = req.body;
+    const updates = { ...req.body };
+
+    if (updates.canonicalUrl && !isSafeUrl(updates.canonicalUrl)) {
+      return sendError(res, 'Invalid or unsafe canonical URL.', 'INVALID_URL', 422);
+    }
+    if (updates.ogImage && !isSafeUrl(updates.ogImage)) {
+      return sendError(res, 'Invalid or unsafe ogImage URL.', 'INVALID_URL', 422);
+    }
+    if (updates.seoTitle) updates.seoTitle = sanitizeHtmlContent(updates.seoTitle);
+    if (updates.seoDescription) updates.seoDescription = sanitizeHtmlContent(updates.seoDescription);
+
     let settings = null;
 
     const seoFields = [

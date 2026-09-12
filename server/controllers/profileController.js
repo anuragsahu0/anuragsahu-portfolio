@@ -1,6 +1,7 @@
 const Profile = require('../models/Profile');
 const { sendSuccess, sendError } = require('../utils/apiResponse');
 const { logActivity } = require('./adminController');
+const { isSafeUrl, sanitizeHtmlContent } = require('../utils/security');
 
 const DEFAULT_PROFILE = {
   fullName: 'Anurag Sahu',
@@ -35,7 +36,17 @@ const getProfile = async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
   try {
-    const data = req.body;
+    const data = { ...req.body };
+    const urlFields = ['profileImage', 'secondaryImage', 'github', 'linkedin', 'portfolioUrl', 'resumeUrl'];
+    for (const f of urlFields) {
+      if (data[f] && !isSafeUrl(data[f])) {
+        return sendError(res, `Invalid or unsafe URL for ${f}.`, 'INVALID_URL', 422);
+      }
+    }
+    if (data.shortIntroduction) data.shortIntroduction = sanitizeHtmlContent(data.shortIntroduction);
+    if (data.professionalHeadline) data.professionalHeadline = sanitizeHtmlContent(data.professionalHeadline);
+    if (data.currentFocus) data.currentFocus = sanitizeHtmlContent(data.currentFocus);
+
     let profile = null;
     try {
       if (Profile.db && Profile.db.readyState === 1) {

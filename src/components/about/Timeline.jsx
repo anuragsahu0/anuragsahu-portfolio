@@ -40,7 +40,7 @@ export const Timeline = () => {
       stage: 'STAGE 05',
       title: 'Project Building & Internship Preparation',
       badge: 'CURRENT FOCUS',
-      description: 'Building practical projects like ANTI GRAVITY to apply computer science concepts and prepare for software engineering internships.',
+      description: 'Building practical full-stack projects to apply computer science concepts and prepare for software engineering internships.',
       icon: Rocket,
     },
   ];

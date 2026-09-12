@@ -80,7 +80,7 @@ const FALLBACK_MEDIA = [
     fileType: 'image',
     mimeType: 'image/svg+xml',
     size: 2519,
-    altText: 'Anti Gravity Admin Logo',
+    altText: 'Anurag Sahu Control Center Logo',
     caption: 'Control Center Brand Icon',
     category: 'BRANDING',
     status: 'ACTIVE',

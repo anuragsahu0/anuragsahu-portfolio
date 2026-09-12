@@ -1,6 +1,7 @@
 const Hero = require('../models/Hero');
 const { sendSuccess, sendError } = require('../utils/apiResponse');
 const { logActivity } = require('./adminController');
+const { isSafeUrl, sanitizeHtmlContent } = require('../utils/security');
 
 const DEFAULT_HERO = {
   mainHeading: 'ENGINEERING INTELLIGENT SYSTEMS',
@@ -35,7 +36,18 @@ const getHero = async (req, res, next) => {
 
 const updateHero = async (req, res, next) => {
   try {
-    const data = req.body;
+    const data = { ...req.body };
+    const urlFields = ['primaryCtaUrl', 'secondaryCtaUrl', 'profileImage'];
+    for (const f of urlFields) {
+      if (data[f] && !isSafeUrl(data[f])) {
+        return sendError(res, `Invalid or unsafe URL for ${f}.`, 'INVALID_URL', 422);
+      }
+    }
+    if (data.mainHeading) data.mainHeading = sanitizeHtmlContent(data.mainHeading);
+    if (data.highlightedText) data.highlightedText = sanitizeHtmlContent(data.highlightedText);
+    if (data.subtitle) data.subtitle = sanitizeHtmlContent(data.subtitle);
+    if (data.description) data.description = sanitizeHtmlContent(data.description);
+
     let hero = null;
 
     try {
