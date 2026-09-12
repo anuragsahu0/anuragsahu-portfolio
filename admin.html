@@ -117,6 +117,9 @@
     /* Delete confirm modal */
     #confirm-modal { position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; }
     #confirm-modal.open { display: flex; }
+    /* Phase 5 Modals */
+    #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal { position: fixed; inset: 0; z-index: 8500; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; padding: 16px; }
+    #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open { display: flex; }
   </style>
 </head>
 <body class="bg-brand-bg text-slate-100 antialiased selection:bg-cyan-500/20 selection:text-cyan-300">
@@ -320,6 +323,14 @@
             <button onclick="switchTab('social-links')" class="sidebar-item w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors text-slate-400 hover:text-slate-200 hover:bg-slate-800/30" data-tab="social-links">
               <i data-lucide="share-2" class="w-3.5 h-3.5 text-slate-500"></i>
               <span>Social Links</span>
+            </button>
+            <button onclick="switchTab('resume')" class="sidebar-item w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors text-slate-400 hover:text-slate-200 hover:bg-slate-800/30" data-tab="resume">
+              <i data-lucide="file-check" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Resume</span>
+            </button>
+            <button onclick="switchTab('seo')" class="sidebar-item w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors text-slate-400 hover:text-slate-200 hover:bg-slate-800/30" data-tab="seo">
+              <i data-lucide="globe" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>SEO & Meta</span>
             </button>
           </div>
         </div>
@@ -747,28 +758,439 @@
 
         <!-- ─── 15. MEDIA TAB ─── -->
         <div id="tab-media" class="tab-pane hidden space-y-6">
-          <div class="pb-6 border-b border-brand-border">
-            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Media Library</h1>
-            <p class="text-xs text-slate-400 mt-1">Manage uploaded media assets — images, files, and references.</p>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Media Library</h1>
+              <p class="text-xs text-slate-400 mt-1">Manage production assets with persistent storage, metadata, and reference protection.</p>
+            </div>
+            <button onclick="openUploadMediaModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors shadow-lg shadow-cyan-900/20">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i><span>Upload Media</span>
+            </button>
           </div>
-          <div id="media-container" class="text-center py-12 text-xs text-slate-500 font-mono">Loading media...</div>
+
+          <!-- Media Filters & Search Toolbar -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-3 sm:p-4 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="relative flex-1">
+                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input
+                  type="text"
+                  id="media-search-input"
+                  oninput="onMediaFilterChange()"
+                  placeholder="Search by filename, alt text, or caption..."
+                  class="cms-input pl-9 text-xs"
+                />
+              </div>
+              <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                <select id="media-category-select" onchange="onMediaFilterChange()" class="cms-input text-xs w-auto">
+                  <option value="ALL">All Categories</option>
+                  <option value="PROFILE">Profile</option>
+                  <option value="PROJECT">Project</option>
+                  <option value="CERTIFICATE">Certificate</option>
+                  <option value="RESUME">Resume</option>
+                  <option value="SEO">SEO</option>
+                  <option value="BRANDING">Branding</option>
+                  <option value="OTHER">Other</option>
+                </select>
+                <select id="media-sort-select" onchange="onMediaFilterChange()" class="cms-input text-xs w-auto">
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="name">Filename (A-Z)</option>
+                  <option value="size">File Size</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-2 pt-1 border-t border-brand-border/60 text-[11px] font-mono">
+              <div class="flex items-center gap-1.5" id="media-type-pills">
+                <button onclick="setMediaTypeFilter('all')" class="px-2.5 py-1 rounded-md text-[10px] font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30" data-media-type="all">All</button>
+                <button onclick="setMediaTypeFilter('image')" class="px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200" data-media-type="image">Images</button>
+                <button onclick="setMediaTypeFilter('document')" class="px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200" data-media-type="document">Documents</button>
+              </div>
+              <div id="media-status-summary" class="text-slate-500 text-[10px]">Loading assets...</div>
+            </div>
+          </div>
+
+          <!-- Media Grid Container -->
+          <div id="media-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+            <div class="col-span-full text-center py-12 text-xs text-slate-500 font-mono">Loading media assets...</div>
+          </div>
         </div>
 
-        <!-- ─── 16. SETTINGS TAB ─── -->
-        <div id="tab-settings" class="tab-pane hidden space-y-6">
-          <div class="pb-6 border-b border-brand-border">
-            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Site Settings</h1>
-            <p class="text-xs text-slate-400 mt-1">Manage SEO, site title, meta descriptions, and social preview.</p>
+        <!-- ─── 16. RESUME TAB ─── -->
+        <div id="tab-resume" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Resume Management</h1>
+              <p class="text-xs text-slate-400 mt-1">Control the active portfolio resume, upload new PDF versions, and maintain version history.</p>
+            </div>
+            <button onclick="openResumeUploadModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors shadow-lg shadow-cyan-900/20">
+              <i data-lucide="file-up" class="w-3.5 h-3.5"></i><span>Upload New Version</span>
+            </button>
           </div>
-          <form id="settings-form" onsubmit="saveSettings(event)" class="space-y-4 max-w-2xl">
-            <div><label class="cms-label">Site Title</label><input type="text" name="siteTitle" class="cms-input" placeholder="Anurag Sahu — Portfolio"></div>
-            <div><label class="cms-label">Meta Description</label><textarea name="metaDescription" class="cms-input h-20 resize-none" placeholder="Short site description for SEO..."></textarea></div>
-            <div><label class="cms-label">OG Title</label><input type="text" name="ogTitle" class="cms-input" placeholder="Anurag Sahu"></div>
-            <div><label class="cms-label">OG Description</label><input type="text" name="ogDescription" class="cms-input" placeholder="Explore engineering projects..."></div>
-            <div><label class="cms-label">Footer Text</label><input type="text" name="footerText" class="cms-input" placeholder="© 2026 Anurag Sahu."></div>
-            <div class="flex gap-3 pt-2">
-              <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2">
-                <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save Settings</span>
+
+          <!-- Active Resume Card -->
+          <div id="active-resume-card" class="bg-brand-sidebar border border-cyan-500/40 rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+                  <i data-lucide="file-check" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span id="active-resume-title" class="text-sm sm:text-base font-bold text-slate-100">Anurag Sahu Resume</span>
+                    <span id="active-resume-version" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">ACTIVE</span>
+                  </div>
+                  <p id="active-resume-filename" class="text-xs text-slate-400 font-mono mt-0.5">anurag-sahu-resume.pdf</p>
+                  <div class="flex items-center gap-3 text-[11px] text-slate-500 font-mono mt-1">
+                    <span id="active-resume-size">—</span>
+                    <span>•</span>
+                    <span id="active-resume-date">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 shrink-0 flex-wrap">
+                <a id="active-resume-view-btn" href="/assets/anurag-sahu-resume.pdf" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5">
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i><span>Preview PDF</span>
+                </a>
+                <button onclick="copyActiveResumeUrl()" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition-colors flex items-center gap-1.5">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Copy URL</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Version History Section -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold text-slate-300 uppercase font-mono tracking-wider">Version History & Archives</h3>
+              <span id="resume-count-tag" class="text-[10px] font-mono text-slate-500">1 version</span>
+            </div>
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-900/60 text-[10px] font-mono uppercase text-slate-400 border-b border-brand-border">
+                    <tr>
+                      <th class="py-3 px-4">Version</th>
+                      <th class="py-3 px-4">Title / Notes</th>
+                      <th class="py-3 px-4">File Name</th>
+                      <th class="py-3 px-4">Size</th>
+                      <th class="py-3 px-4">Status</th>
+                      <th class="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="resume-history-tbody" class="divide-y divide-brand-border">
+                    <tr>
+                      <td colspan="6" class="py-8 text-center text-slate-500 font-mono">Loading resume versions...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── 17. SEO TAB ─── -->
+        <div id="tab-seo" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">SEO & Search Optimization</h1>
+              <p class="text-xs text-slate-400 mt-1">Configure meta tags, Open Graph cards, robots directives, and live search previews.</p>
+            </div>
+            <button onclick="saveSeoForm(event)" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors shadow-lg shadow-cyan-900/20">
+              <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save SEO Settings</span>
+            </button>
+          </div>
+
+          <!-- Live Preview Cards Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Google Search Preview -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 sm:p-5 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-mono text-cyan-400 uppercase tracking-wider font-semibold">Google Search Preview</span>
+                <span class="text-[10px] font-mono text-slate-500">Desktop Simulation</span>
+              </div>
+              <div class="p-3.5 rounded-lg bg-[#181a1b] border border-slate-800 space-y-1 font-sans">
+                <div class="flex items-center gap-1.5 text-[11px] text-[#bdc1c6]">
+                  <span class="text-[#8ab4f8]">https://anuragsahu.com</span>
+                  <span class="text-slate-500">›</span>
+                  <span id="preview-google-slug" class="text-slate-400">portfolio</span>
+                </div>
+                <h4 id="preview-google-title" class="text-sm font-medium text-[#8ab4f8] hover:underline cursor-pointer line-clamp-1 leading-snug">
+                  Anurag Sahu — Full-Stack Developer & B.Tech CSE (AI & ML) Sophomore
+                </h4>
+                <p id="preview-google-desc" class="text-xs text-[#bdc1c6] line-clamp-2 leading-relaxed">
+                  Portfolio of Anurag Sahu, Computer Science & Engineering (AI & ML) student specializing in Full-Stack Web Development, React, Node.js, Python, and practical Machine Learning applications.
+                </p>
+              </div>
+            </div>
+
+            <!-- Social Card (OG / Twitter) Preview -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 sm:p-5 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-mono text-cyan-400 uppercase tracking-wider font-semibold">Social Card Preview (Open Graph)</span>
+                <span class="text-[10px] font-mono text-slate-500">Twitter / LinkedIn / FB</span>
+              </div>
+              <div class="rounded-lg bg-slate-900 border border-slate-800 overflow-hidden flex flex-col">
+                <div class="w-full h-28 sm:h-32 bg-slate-950 flex items-center justify-center overflow-hidden relative">
+                  <img id="preview-og-img" src="/assets/anurag-portrait.webp" alt="OG Preview" class="w-full h-full object-cover" onerror="this.style.display='none'" />
+                </div>
+                <div class="p-3 space-y-1">
+                  <span class="text-[10px] font-mono text-slate-500 uppercase">ANURAGSAHU.COM</span>
+                  <h4 id="preview-og-title" class="text-xs font-bold text-slate-200 line-clamp-1">Anurag Sahu — Control Center & Developer Portfolio</h4>
+                  <p id="preview-og-desc" class="text-[11px] text-slate-400 line-clamp-2">Explore engineering projects, interactive systems, and live telemetry for Anurag Sahu.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEO Health & Audit Box -->
+          <div id="seo-audit-box" class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+            <div class="flex items-center gap-2 text-xs font-semibold text-slate-200 font-mono">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+              <span>Automated SEO Health Check</span>
+            </div>
+            <div id="seo-audit-items" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-[11px] font-mono pt-1">
+              <div class="flex items-center gap-1.5 text-emerald-400"><span>✓</span><span>Title tag optimal</span></div>
+              <div class="flex items-center gap-1.5 text-emerald-400"><span>✓</span><span>Meta description set</span></div>
+              <div class="flex items-center gap-1.5 text-emerald-400"><span>✓</span><span>OG image configured</span></div>
+              <div class="flex items-center gap-1.5 text-emerald-400"><span>✓</span><span>Indexing enabled</span></div>
+            </div>
+          </div>
+
+          <!-- SEO Edit Form -->
+          <form id="seo-form" onsubmit="saveSeoForm(event)" class="space-y-6">
+            <!-- Card 1: Core Search Meta Tags -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-4">
+              <h3 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wider">Search Engine Metadata</h3>
+              <div class="space-y-4">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="cms-label">Site Title (Page Title)</label>
+                    <span id="seo-title-count" class="text-[10px] font-mono text-slate-500">0 / 60 chars</span>
+                  </div>
+                  <input type="text" name="seoTitle" oninput="updateSeoLivePreview()" class="cms-input" placeholder="Anurag Sahu — Full-Stack Developer & AI Engineer" required />
+                </div>
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="cms-label">Meta Description</label>
+                    <span id="seo-desc-count" class="text-[10px] font-mono text-slate-500">0 / 160 chars (Optimal: 140-160)</span>
+                  </div>
+                  <textarea name="seoDescription" oninput="updateSeoLivePreview()" class="cms-input h-20 resize-none" placeholder="Engaging summary for search engine snippet..." required></textarea>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="cms-label">Canonical URL</label>
+                    <input type="url" name="canonicalUrl" class="cms-input" placeholder="https://anuragsahu.com/" required />
+                  </div>
+                  <div>
+                    <label class="cms-label">Robots Directive</label>
+                    <select name="robotsDirective" class="cms-input">
+                      <option value="index, follow">index, follow (Recommended)</option>
+                      <option value="noindex, follow">noindex, follow</option>
+                      <option value="index, nofollow">index, nofollow</option>
+                      <option value="noindex, nofollow">noindex, nofollow (Hidden from Search)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="cms-label">Author Name</label>
+                    <input type="text" name="author" class="cms-input" placeholder="Anurag Sahu" />
+                  </div>
+                  <div>
+                    <label class="cms-label">Site Language Code</label>
+                    <input type="text" name="siteLanguage" class="cms-input" placeholder="en" />
+                  </div>
+                </div>
+                <div>
+                  <label class="cms-label">Keywords (Comma Separated)</label>
+                  <input type="text" name="keywords" class="cms-input" placeholder="Anurag Sahu, Full-Stack Developer, AI ML, React, Node.js" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Open Graph & Social Cards -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-4">
+              <h3 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wider">Social & Open Graph Tags</h3>
+              <div class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="cms-label">OG Title</label>
+                    <input type="text" name="ogTitle" oninput="updateSeoLivePreview()" class="cms-input" placeholder="Anurag Sahu — Control Center & Developer Portfolio" />
+                  </div>
+                  <div>
+                    <label class="cms-label">Twitter Card Type</label>
+                    <select name="twitterCard" class="cms-input">
+                      <option value="summary_large_image">summary_large_image (Large Hero Card)</option>
+                      <option value="summary">summary (Standard Square Card)</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="cms-label">OG Description</label>
+                  <textarea name="ogDescription" oninput="updateSeoLivePreview()" class="cms-input h-16 resize-none" placeholder="Summary shown when link is shared on LinkedIn or Twitter..."></textarea>
+                </div>
+                <div>
+                  <label class="cms-label">OG Image URL (Social Share Image)</label>
+                  <div class="flex gap-2">
+                    <input type="text" id="input-og-image" name="ogImage" oninput="updateSeoLivePreview()" class="cms-input flex-1" placeholder="/assets/anurag-portrait.webp" />
+                    <button type="button" onclick="openMediaPicker({ filter: 'image', targetInputId: 'input-og-image', onSelect: () => updateSeoLivePreview() })" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-semibold shrink-0 transition-colors flex items-center gap-1.5">
+                      <i data-lucide="image" class="w-3.5 h-3.5"></i><span>Choose Media</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
+                <i data-lucide="save" class="w-4 h-4"></i><span>Save SEO Changes</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ─── 18. SETTINGS TAB ─── -->
+        <div id="tab-settings" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Global Site Settings</h1>
+              <p class="text-xs text-slate-400 mt-1">Configure global branding, contact toggles, feature flags, and maintenance mode.</p>
+            </div>
+            <button onclick="saveSettingsForm(event)" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors shadow-lg shadow-cyan-900/20">
+              <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save Settings</span>
+            </button>
+          </div>
+
+          <form id="settings-form" onsubmit="saveSettingsForm(event)" class="space-y-6">
+            <!-- Section 1: General Info -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-4">
+              <h3 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wider">General Information</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="cms-label">Site Name</label>
+                  <input type="text" name="siteName" class="cms-input" placeholder="Anurag Sahu" required />
+                </div>
+                <div>
+                  <label class="cms-label">Production URL</label>
+                  <input type="url" name="portfolioUrl" class="cms-input" placeholder="https://anuragsahu.com" required />
+                </div>
+                <div>
+                  <label class="cms-label">Timezone</label>
+                  <input type="text" name="timezone" class="cms-input" placeholder="Asia/Kolkata" />
+                </div>
+                <div>
+                  <label class="cms-label">Availability Status</label>
+                  <input type="text" name="availability" class="cms-input" placeholder="Open to Internship Opportunities" />
+                </div>
+              </div>
+              <div>
+                <label class="cms-label">Site Short Description</label>
+                <textarea name="siteDescription" class="cms-input h-16 resize-none" placeholder="One-line summary of your engineering profile..."></textarea>
+              </div>
+              <div>
+                <label class="cms-label">Footer Copyright Text</label>
+                <input type="text" name="footerText" class="cms-input" placeholder="© 2026 Anurag Sahu. Engineered for performance and scale." />
+              </div>
+            </div>
+
+            <!-- Section 2: Branding & Favicon -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-4">
+              <h3 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wider">Branding & Site Icons</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="cms-label">Favicon URL (.ico / .webp / .svg)</label>
+                  <div class="flex gap-2">
+                    <input type="text" id="input-favicon-url" name="faviconUrl" class="cms-input flex-1" placeholder="/assets/anurag-portrait-sm.webp" />
+                    <button type="button" onclick="openMediaPicker({ filter: 'image', targetInputId: 'input-favicon-url' })" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-semibold shrink-0 transition-colors">
+                      Pick
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label class="cms-label">Apple Touch Icon URL</label>
+                  <div class="flex gap-2">
+                    <input type="text" id="input-apple-icon" name="appleTouchIconUrl" class="cms-input flex-1" placeholder="/assets/anurag-portrait-sm.webp" />
+                    <button type="button" onclick="openMediaPicker({ filter: 'image', targetInputId: 'input-apple-icon' })" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-semibold shrink-0 transition-colors">
+                      Pick
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="cms-label">Brand Logo SVG / Image URL</label>
+                <div class="flex gap-2">
+                  <input type="text" id="input-logo-url" name="logoUrl" class="cms-input flex-1" placeholder="/assets/as-admin-icon.svg" />
+                  <button type="button" onclick="openMediaPicker({ filter: 'image', targetInputId: 'input-logo-url' })" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-semibold shrink-0 transition-colors">
+                    Pick
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: Contact & Privacy -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-4">
+              <h3 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wider">Contact & Privacy Controls</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="sm:col-span-1">
+                  <label class="cms-label">Contact Receiving Email</label>
+                  <input type="email" name="contactEmail" class="cms-input" placeholder="shivasahu0612@gmail.com" />
+                </div>
+                <div>
+                  <label class="cms-label">Contact Form</label>
+                  <select name="contactFormEnabled" class="cms-input">
+                    <option value="true">Enabled (Accept Submissions)</option>
+                    <option value="false">Paused / Disabled</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="cms-label">Public Email Visibility</label>
+                  <select name="publicEmailVisible" class="cms-input">
+                    <option value="true">Visible on Website</option>
+                    <option value="false">Hidden from Public</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 4: Feature Flags & Maintenance Mode -->
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-5 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wider">Feature Flags & Maintenance</h3>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-cyan-500/10 text-cyan-400">Live Controls</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="cms-label">Maintenance Mode</label>
+                  <select name="maintenanceMode" class="cms-input">
+                    <option value="false">Disabled (Website Live 🟢)</option>
+                    <option value="true">Enabled (Show Maintenance Notice ⚠️)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="cms-label">Resume Button on Website</label>
+                  <select name="resumeButtonEnabled" class="cms-input">
+                    <option value="true">Enabled (Show Download Button)</option>
+                    <option value="false">Hidden</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="cms-label">Maintenance Mode Banner Message</label>
+                <input type="text" name="maintenanceMessage" class="cms-input" placeholder="System undergoing scheduled optimization. We will be back online shortly." />
+              </div>
+              <div>
+                <label class="cms-label">Analytics & Visitor Heartbeat Tracking</label>
+                <select name="analyticsEnabled" class="cms-input">
+                  <option value="true">Enabled (Collect Real-time Telemetry)</option>
+                  <option value="false">Disabled</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
+                <i data-lucide="save" class="w-4 h-4"></i><span>Save Global Settings</span>
               </button>
             </div>
           </form>
@@ -1077,6 +1499,12 @@
       } else if (tabId === 'settings') {
         document.getElementById('tab-settings').classList.remove('hidden');
         loadSettings();
+      } else if (tabId === 'resume') {
+        document.getElementById('tab-resume').classList.remove('hidden');
+        loadResume();
+      } else if (tabId === 'seo') {
+        document.getElementById('tab-seo').classList.remove('hidden');
+        loadSeo();
       } else if (tabId === 'media') {
         document.getElementById('tab-media').classList.remove('hidden');
         loadMedia();
@@ -1831,103 +2259,765 @@
       } catch(err) { showToast(err.message, 'error'); }
     }
 
-    // ─── SETTINGS ─────────────────────────────────────────────
+    // ─── Phase 5: MEDIA MANAGER ──────────────────────────────
+    let _allMedia = [];
+    let _currentMediaType = 'all';
+
+    async function loadMedia() {
+      const c = document.getElementById('media-container');
+      const summary = document.getElementById('media-status-summary');
+      if (c) c.innerHTML = '<div class="col-span-full text-center py-12 text-xs text-slate-500 font-mono">Loading media assets...</div>';
+
+      try {
+        const search = document.getElementById('media-search-input')?.value || '';
+        const category = document.getElementById('media-category-select')?.value || 'ALL';
+        const sort = document.getElementById('media-sort-select')?.value || 'newest';
+
+        const params = new URLSearchParams();
+        if (search.trim()) params.set('search', search.trim());
+        if (category !== 'ALL') params.set('category', category);
+        if (_currentMediaType !== 'all') params.set('type', _currentMediaType);
+        if (sort) params.set('sort', sort);
+
+        const data = await cmsApi('GET', `/api/admin/media?${params.toString()}`);
+        _allMedia = data.data?.media || data.media || [];
+        const total = data.data?.total ?? _allMedia.length;
+
+        if (summary) summary.textContent = `${_allMedia.length} of ${total} files`;
+
+        if (!_allMedia.length) {
+          c.innerHTML = `
+            <div class="col-span-full text-center py-16 bg-brand-sidebar/40 rounded-2xl border border-dashed border-brand-border p-8">
+              <div class="w-12 h-12 rounded-xl bg-slate-800/80 flex items-center justify-center text-slate-400 mx-auto mb-3">
+                <i data-lucide="image" class="w-6 h-6"></i>
+              </div>
+              <p class="text-sm font-semibold text-slate-200">No media assets found</p>
+              <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Upload images or documents to populate your media library and reuse them in projects, hero, or profile.</p>
+              <button onclick="openUploadMediaModal()" class="mt-4 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors">
+                <i data-lucide="upload" class="w-3.5 h-3.5"></i><span>Upload Media</span>
+              </button>
+            </div>
+          `;
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+          return;
+        }
+
+        c.innerHTML = _allMedia.map((m) => {
+          const isImg = m.type === 'image' || m.mimeType?.startsWith('image/');
+          const isDoc = m.type === 'document' || m.mimeType?.includes('pdf');
+          const sizeKb = m.size ? Math.round(m.size / 1024) + ' KB' : '—';
+          const missingAlt = isImg && !m.altText;
+
+          return `
+            <div class="bg-brand-sidebar border ${missingAlt ? 'border-amber-500/30' : 'border-brand-border'} hover:border-cyan-500/50 rounded-xl overflow-hidden group transition-all flex flex-col justify-between shadow-md">
+              <div class="relative aspect-square bg-slate-950/60 overflow-hidden flex items-center justify-center cursor-pointer" onclick="openMediaDetailModal('${m._id}')">
+                ${isImg ? `
+                  <img src="${escapeHtml(m.url)}" alt="${escapeHtml(m.altText || m.fileName)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.onerror=null;this.src='/assets/as-admin-icon.svg';this.className='w-12 h-12 opacity-40';" />
+                ` : `
+                  <div class="flex flex-col items-center justify-center text-cyan-400 p-4">
+                    <i data-lucide="${isDoc ? 'file-text' : 'file'}" class="w-10 h-10 mb-1"></i>
+                    <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400">PDF Document</span>
+                  </div>
+                `}
+                <span class="absolute top-2 left-2 px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-slate-900/90 text-slate-300 border border-slate-700/50">${m.category || 'ASSET'}</span>
+                ${missingAlt ? `<span class="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40" title="Missing Alt Text">No Alt</span>` : ''}
+              </div>
+              <div class="p-2.5 space-y-1.5 border-t border-brand-border/60">
+                <p class="text-xs font-medium text-slate-200 truncate cursor-pointer hover:text-cyan-400" title="${escapeHtml(m.fileName)}" onclick="openMediaDetailModal('${m._id}')">${escapeHtml(m.fileName)}</p>
+                <div class="flex items-center justify-between text-[10px] font-mono text-slate-500">
+                  <span>${sizeKb}</span>
+                  ${m.width && m.height ? `<span>${m.width}×${m.height}</span>` : ''}
+                </div>
+                <div class="flex items-center gap-1.5 pt-1">
+                  <button onclick="copyToClipboard('${escapeHtml(m.url)}', 'URL copied!')" class="flex-1 py-1 rounded bg-slate-800/80 hover:bg-slate-700 text-[10px] font-mono text-slate-300 transition-colors flex items-center justify-center gap-1">
+                    <i data-lucide="copy" class="w-2.5 h-2.5"></i><span>URL</span>
+                  </button>
+                  <button onclick="openMediaDetailModal('${m._id}')" class="py-1 px-2 rounded bg-slate-800/80 hover:bg-cyan-600 hover:text-white text-[10px] font-mono text-slate-300 transition-colors">
+                    <i data-lucide="info" class="w-3 h-3"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        if (c) c.innerHTML = `<div class="col-span-full text-center py-12 text-xs text-rose-400 font-mono">Failed to load media: ${escapeHtml(err.message)}</div>`;
+      }
+    }
+
+    function onMediaFilterChange() {
+      clearTimeout(window._mediaFilterTimer);
+      window._mediaFilterTimer = setTimeout(loadMedia, 250);
+    }
+
+    function setMediaTypeFilter(type) {
+      _currentMediaType = type;
+      document.querySelectorAll('#media-type-pills button').forEach((btn) => {
+        const isActive = btn.getAttribute('data-media-type') === type;
+        btn.className = isActive
+          ? 'px-2.5 py-1 rounded-md text-[10px] font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+          : 'px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200';
+      });
+      loadMedia();
+    }
+
+    function openUploadMediaModal() {
+      const modal = document.getElementById('media-upload-modal');
+      if (modal) {
+        modal.classList.add('open');
+        document.getElementById('upload-media-form')?.reset();
+        const dropText = document.getElementById('upload-file-name-preview');
+        if (dropText) dropText.textContent = 'Choose or drop a file';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    }
+
+    function closeUploadMediaModal() {
+      document.getElementById('media-upload-modal')?.classList.remove('open');
+    }
+
+    async function handleMediaUploadSubmit(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('media-file-input');
+      if (!fileInput || !fileInput.files.length) {
+        showToast('Please select a file to upload.', 'error');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('category', document.getElementById('upload-category')?.value || 'OTHER');
+      formData.append('altText', document.getElementById('upload-altText')?.value || '');
+      formData.append('caption', document.getElementById('upload-caption')?.value || '');
+      formData.append('folder', document.getElementById('upload-folder')?.value || 'general');
+
+      const submitBtn = document.getElementById('upload-media-submit-btn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span><span>Uploading...</span>';
+      }
+
+      try {
+        const res = await fetch('/api/admin/media/upload', {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        });
+
+        if (res.status === 401) {
+          handleLogout();
+          return;
+        }
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Upload failed.');
+
+        showToast('Media uploaded and saved to persistent storage!');
+        closeUploadMediaModal();
+        loadMedia();
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i data-lucide="upload" class="w-3.5 h-3.5"></i><span>Start Upload</span>';
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+      }
+    }
+
+    async function openMediaDetailModal(id) {
+      try {
+        const data = await cmsApi('GET', `/api/admin/media/${id}`);
+        const m = data.data || data;
+        const box = document.getElementById('media-detail-content');
+        if (!box) return;
+
+        const isImg = m.type === 'image' || m.mimeType?.startsWith('image/');
+        const sizeKb = m.size ? Math.round(m.size / 1024) + ' KB' : '—';
+        const usedIn = m.usedIn || [];
+
+        box.innerHTML = `
+          <div class="space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-brand-border">
+              <div class="min-w-0 pr-4">
+                <h3 class="text-sm font-bold text-slate-100 truncate">${escapeHtml(m.fileName)}</h3>
+                <p class="text-[10px] font-mono text-slate-400 mt-0.5">${escapeHtml(m.mimeType || '')} • ${sizeKb} ${m.width && m.height ? `• ${m.width}×${m.height}px` : ''}</p>
+              </div>
+              <button onclick="closeMediaDetailModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-200 text-lg leading-none">&times;</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Preview Column -->
+              <div class="bg-slate-950 rounded-xl p-3 border border-brand-border flex items-center justify-center max-h-64 overflow-hidden relative group">
+                ${isImg ? `
+                  <img src="${escapeHtml(m.url)}" alt="${escapeHtml(m.altText || '')}" class="max-h-56 max-w-full object-contain rounded-lg" />
+                ` : `
+                  <div class="flex flex-col items-center justify-center p-8 text-cyan-400">
+                    <i data-lucide="file-text" class="w-16 h-16 mb-2"></i>
+                    <a href="${escapeHtml(m.url)}" target="_blank" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold inline-flex items-center gap-1.5 mt-2">
+                      <i data-lucide="external-link" class="w-3.5 h-3.5"></i><span>Open Document</span>
+                    </a>
+                  </div>
+                `}
+              </div>
+
+              <!-- Metadata & Edit Form -->
+              <div class="space-y-3 text-xs">
+                <div>
+                  <label class="cms-label">Direct URL</label>
+                  <div class="flex gap-1.5">
+                    <input type="text" readonly value="${escapeHtml(m.url)}" class="cms-input text-[11px] font-mono select-all flex-1" />
+                    <button onclick="copyToClipboard('${escapeHtml(m.url)}', 'Asset URL copied!')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium shrink-0">
+                      Copy
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="cms-label">Alt Text (Accessibility & SEO)</label>
+                  <input type="text" id="detail-altText" value="${escapeHtml(m.altText || '')}" placeholder="Descriptive image text..." class="cms-input text-xs" />
+                  ${isImg && !m.altText ? `<p class="text-[10px] text-amber-400 font-mono mt-1">⚠️ Warning: Missing Alt text impacts SEO accessibility.</p>` : ''}
+                </div>
+
+                <div>
+                  <label class="cms-label">Caption / Subtitle</label>
+                  <input type="text" id="detail-caption" value="${escapeHtml(m.caption || '')}" placeholder="Optional caption..." class="cms-input text-xs" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="cms-label">Category</label>
+                    <select id="detail-category" class="cms-input text-xs">
+                      <option value="PROFILE" ${m.category==='PROFILE'?'selected':''}>Profile</option>
+                      <option value="PROJECT" ${m.category==='PROJECT'?'selected':''}>Project</option>
+                      <option value="CERTIFICATE" ${m.category==='CERTIFICATE'?'selected':''}>Certificate</option>
+                      <option value="RESUME" ${m.category==='RESUME'?'selected':''}>Resume</option>
+                      <option value="SEO" ${m.category==='SEO'?'selected':''}>SEO</option>
+                      <option value="BRANDING" ${m.category==='BRANDING'?'selected':''}>Branding</option>
+                      <option value="OTHER" ${m.category==='OTHER'?'selected':''}>Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="cms-label">Folder</label>
+                    <input type="text" id="detail-folder" value="${escapeHtml(m.folder || 'general')}" class="cms-input text-xs" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reference Usage Tracker Section -->
+            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-brand-border space-y-2">
+              <div class="flex items-center justify-between text-[11px] font-mono">
+                <span class="font-bold uppercase text-slate-300">Content Reference Tracker</span>
+                <span class="${usedIn.length > 0 ? 'text-amber-400 font-bold' : 'text-emerald-400'}">${usedIn.length > 0 ? `Used in ${usedIn.length} location(s)` : 'No active references (Safe to delete)'}</span>
+              </div>
+              ${usedIn.length > 0 ? `
+                <div class="space-y-1.5 max-h-28 overflow-y-auto">
+                  ${usedIn.map((u) => `
+                    <div class="flex items-center justify-between py-1 px-2 rounded bg-slate-800/60 text-[10px] font-mono text-slate-300">
+                      <span><strong>${escapeHtml(u.module)}</strong>: ${escapeHtml(u.title || u.field)}</span>
+                      <span class="text-cyan-400 font-semibold">${escapeHtml(u.field)}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : `
+                <p class="text-[11px] text-slate-500">This asset is not currently bound to any public section or project card.</p>
+              `}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-between pt-2 border-t border-brand-border">
+              <button onclick="handleDeleteMedia('${m._id}', ${usedIn.length})" class="px-4 py-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-semibold transition-colors flex items-center gap-1.5">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i><span>Delete Asset</span>
+              </button>
+              <div class="flex gap-2">
+                <button onclick="closeMediaDetailModal()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">
+                  Close
+                </button>
+                <button onclick="saveMediaDetailChanges('${m._id}')" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5">
+                  <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save Changes</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('media-detail-modal')?.classList.add('open');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function closeMediaDetailModal() {
+      document.getElementById('media-detail-modal')?.classList.remove('open');
+    }
+
+    async function saveMediaDetailChanges(id) {
+      const altText = document.getElementById('detail-altText')?.value || '';
+      const caption = document.getElementById('detail-caption')?.value || '';
+      const category = document.getElementById('detail-category')?.value || 'OTHER';
+      const folder = document.getElementById('detail-folder')?.value || 'general';
+
+      try {
+        await cmsApi('PATCH', `/api/admin/media/${id}`, { altText, caption, category, folder });
+        showToast('Media metadata updated!');
+        closeMediaDetailModal();
+        loadMedia();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function handleDeleteMedia(id, usageCount) {
+      if (usageCount > 0) {
+        confirmDelete(
+          `⚠️ CAUTION: This file is currently used by ${usageCount} content record(s). Deleting it may cause broken images on the live website. Delete anyway?`,
+          async () => {
+            try {
+              await cmsApi('DELETE', `/api/admin/media/${id}?force=true`);
+              showToast('Media asset deleted.');
+              closeMediaDetailModal();
+              loadMedia();
+            } catch (err) {
+              showToast(err.message, 'error');
+            }
+          }
+        );
+      } else {
+        confirmDelete('Delete this media asset permanently from storage?', async () => {
+          try {
+            await cmsApi('DELETE', `/api/admin/media/${id}`);
+            showToast('Media asset deleted.');
+            closeMediaDetailModal();
+            loadMedia();
+          } catch (err) {
+            showToast(err.message, 'error');
+          }
+        });
+      }
+    }
+
+    // ─── Reusable MediaPicker ─────────────────────────────────
+    let _mediaPickerOpts = null;
+
+    function openMediaPicker(opts = {}) {
+      _mediaPickerOpts = opts;
+      const modal = document.getElementById('mediapicker-modal');
+      if (!modal) return;
+      modal.classList.add('open');
+      loadMediaPickerItems();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeMediaPicker() {
+      document.getElementById('mediapicker-modal')?.classList.remove('open');
+      _mediaPickerOpts = null;
+    }
+
+    async function loadMediaPickerItems() {
+      const container = document.getElementById('mediapicker-grid');
+      if (!container) return;
+      container.innerHTML = '<div class="col-span-full text-center py-8 text-xs text-slate-500 font-mono">Loading assets...</div>';
+
+      try {
+        const filter = _mediaPickerOpts?.filter || 'all';
+        const url = filter !== 'all' ? `/api/admin/media?type=${filter}&limit=60` : `/api/admin/media?limit=60`;
+        const data = await cmsApi('GET', url);
+        const items = data.data?.media || data.media || [];
+
+        if (!items.length) {
+          container.innerHTML = '<div class="col-span-full text-center py-8 text-xs text-slate-500">No matching media assets found.</div>';
+          return;
+        }
+
+        container.innerHTML = items.map((m) => {
+          const isImg = m.type === 'image' || m.mimeType?.startsWith('image/');
+          return `
+            <div onclick="selectMediaAsset('${escapeHtml(m.url)}')" class="aspect-square bg-slate-900 border border-brand-border hover:border-cyan-400 rounded-lg overflow-hidden cursor-pointer relative group transition-all">
+              ${isImg ? `
+                <img src="${escapeHtml(m.url)}" alt="${escapeHtml(m.altText || m.fileName)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+              ` : `
+                <div class="w-full h-full flex flex-col items-center justify-center text-cyan-400 p-2 text-center">
+                  <i data-lucide="file-text" class="w-8 h-8 mb-1"></i>
+                  <span class="text-[9px] font-mono text-slate-400 truncate w-full">${escapeHtml(m.fileName)}</span>
+                </div>
+              `}
+              <div class="absolute inset-0 bg-cyan-600/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                <span class="px-2 py-1 rounded bg-cyan-600 text-white text-[10px] font-bold shadow">Select</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        container.innerHTML = `<div class="col-span-full text-center py-8 text-xs text-rose-400">${escapeHtml(err.message)}</div>`;
+      }
+    }
+
+    function selectMediaAsset(url) {
+      if (_mediaPickerOpts) {
+        if (_mediaPickerOpts.targetInputId) {
+          const target = document.getElementById(_mediaPickerOpts.targetInputId);
+          if (target) {
+            target.value = url;
+            target.dispatchEvent(new Event('input'));
+          }
+        }
+        if (typeof _mediaPickerOpts.onSelect === 'function') {
+          _mediaPickerOpts.onSelect(url);
+        }
+      }
+      showToast('Media asset selected!');
+      closeMediaPicker();
+    }
+
+    function filterMediaPickerGrid(query) {
+      const q = (query || '').toLowerCase().trim();
+      document.querySelectorAll('#mediapicker-grid > div').forEach((item) => {
+        const text = item.textContent?.toLowerCase() || '';
+        item.style.display = !q || text.includes(q) ? '' : 'none';
+      });
+    }
+
+    // ─── Phase 5: RESUME MANAGEMENT ───────────────────────────
+    async function loadResume() {
+      const historyTbody = document.getElementById('resume-history-tbody');
+      try {
+        const data = await cmsApi('GET', '/api/admin/resume');
+        const active = data.data?.activeResume || data.activeResume;
+        const resumes = data.data?.resumes || data.resumes || [];
+
+        // Spotlight card
+        if (active) {
+          document.getElementById('active-resume-title').textContent = active.title || 'Software Engineer Resume';
+          document.getElementById('active-resume-version').textContent = active.version || 'v1.0';
+          document.getElementById('active-resume-filename').textContent = active.fileName || 'anurag-sahu-resume.pdf';
+          document.getElementById('active-resume-size').textContent = active.size ? `${Math.round(active.size / 1024)} KB` : '—';
+          document.getElementById('active-resume-date').textContent = active.updatedAt ? new Date(active.updatedAt).toLocaleDateString() : 'Active';
+          const viewBtn = document.getElementById('active-resume-view-btn');
+          if (viewBtn) viewBtn.href = active.url || '/assets/anurag-sahu-resume.pdf';
+          window._currentActiveResumeUrl = active.url || '/assets/anurag-sahu-resume.pdf';
+        }
+
+        // Count tag
+        const countTag = document.getElementById('resume-count-tag');
+        if (countTag) countTag.textContent = `${resumes.length} version(s)`;
+
+        // Table
+        if (historyTbody) {
+          if (!resumes.length) {
+            historyTbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-500 font-mono">No resume records found.</td></tr>';
+            return;
+          }
+
+          historyTbody.innerHTML = resumes.map((r) => {
+            const isActive = r.status === 'ACTIVE';
+            const sizeKb = r.size ? `${Math.round(r.size / 1024)} KB` : '—';
+            return `
+              <tr class="hover:bg-slate-900/40 transition-colors">
+                <td class="py-3 px-4 font-mono font-bold ${isActive ? 'text-cyan-400' : 'text-slate-300'}">${escapeHtml(r.version)}</td>
+                <td class="py-3 px-4 text-slate-200">
+                  <div class="font-medium">${escapeHtml(r.title || 'Resume')}</div>
+                  ${r.notes ? `<p class="text-[10px] text-slate-500 mt-0.5">${escapeHtml(r.notes)}</p>` : ''}
+                </td>
+                <td class="py-3 px-4 font-mono text-[11px] text-slate-400">${escapeHtml(r.fileName)}</td>
+                <td class="py-3 px-4 font-mono text-[11px] text-slate-400">${sizeKb}</td>
+                <td class="py-3 px-4">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${isActive ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'}">
+                    ${r.status || 'ARCHIVED'}
+                  </span>
+                </td>
+                <td class="py-3 px-4 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                    <a href="${escapeHtml(r.url)}" target="_blank" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-cyan-400 transition-colors" title="Download / Preview">
+                      <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                    </a>
+                    ${!isActive ? `
+                      <button onclick="handleActivateResume('${r._id}', '${escapeHtml(r.version)}')" class="px-2.5 py-1 rounded-lg bg-cyan-600/20 hover:bg-cyan-600 text-cyan-300 hover:text-white text-[11px] font-semibold transition-colors">
+                        Activate
+                      </button>
+                      <button onclick="handleDeleteResume('${r._id}', '${escapeHtml(r.version)}')" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition-colors" title="Delete Archive">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                      </button>
+                    ` : ''}
+                  </div>
+                </td>
+              </tr>
+            `;
+          }).join('');
+
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function openResumeUploadModal() {
+      document.getElementById('resume-upload-modal')?.classList.add('open');
+      document.getElementById('resume-upload-form')?.reset();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeResumeUploadModal() {
+      document.getElementById('resume-upload-modal')?.classList.remove('open');
+    }
+
+    async function handleResumeUploadSubmit(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('resume-file-input');
+      if (!fileInput || !fileInput.files.length) {
+        showToast('Please choose a PDF resume file.', 'error');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+        showToast('Only PDF files are supported for resumes.', 'error');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('title', document.getElementById('resume-upload-title')?.value || '');
+      formData.append('notes', document.getElementById('resume-upload-notes')?.value || '');
+      formData.append('makeActive', document.getElementById('resume-make-active')?.checked ? 'true' : 'false');
+
+      const submitBtn = document.getElementById('resume-upload-submit-btn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span><span>Uploading...</span>';
+      }
+
+      try {
+        const res = await fetch('/api/admin/resume/upload', {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        });
+
+        if (res.status === 401) {
+          handleLogout();
+          return;
+        }
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Upload failed.');
+
+        showToast('New resume uploaded and set as active!');
+        closeResumeUploadModal();
+        loadResume();
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i data-lucide="file-up" class="w-3.5 h-3.5"></i><span>Upload Version</span>';
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+      }
+    }
+
+    async function handleActivateResume(id, version) {
+      try {
+        await cmsApi('PATCH', `/api/admin/resume/${id}/activate`);
+        showToast(`Resume ${version} is now active across the entire website!`);
+        loadResume();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function handleDeleteResume(id, version) {
+      confirmDelete(`Delete archived resume ${version}?`, async () => {
+        try {
+          await cmsApi('DELETE', `/api/admin/resume/${id}`);
+          showToast(`Resume ${version} deleted.`);
+          loadResume();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      });
+    }
+
+    function copyActiveResumeUrl() {
+      const url = window._currentActiveResumeUrl || '/assets/anurag-sahu-resume.pdf';
+      const full = url.startsWith('http') ? url : window.location.origin + url;
+      copyToClipboard(full, 'Active Resume download link copied!');
+    }
+
+    // ─── Phase 5: SEO MANAGEMENT ──────────────────────────────
+    async function loadSeo() {
+      try {
+        const data = await cmsApi('GET', '/api/admin/seo');
+        const s = data.data || data;
+        const form = document.getElementById('seo-form');
+        if (!form || !s) return;
+
+        const fields = [
+          'seoTitle', 'seoDescription', 'canonicalUrl', 'keywords', 'author',
+          'siteLanguage', 'robotsDirective', 'ogTitle', 'ogDescription', 'ogImage', 'twitterCard'
+        ];
+
+        fields.forEach((f) => {
+          if (form.elements[f]) {
+            form.elements[f].value = s[f] || '';
+          }
+        });
+
+        updateSeoLivePreview();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function updateSeoLivePreview() {
+      const form = document.getElementById('seo-form');
+      if (!form) return;
+
+      const title = form.elements['seoTitle']?.value || 'Anurag Sahu — Portfolio';
+      const desc = form.elements['seoDescription']?.value || 'Portfolio and telemetry showcase for Anurag Sahu.';
+      const ogImg = form.elements['ogImage']?.value || '/assets/anurag-portrait.webp';
+      const ogTitle = form.elements['ogTitle']?.value || title;
+      const ogDesc = form.elements['ogDescription']?.value || desc;
+      const robots = form.elements['robotsDirective']?.value || 'index, follow';
+
+      // Live Google Snippet
+      const gTitle = document.getElementById('preview-google-title');
+      const gDesc = document.getElementById('preview-google-desc');
+      if (gTitle) gTitle.textContent = title;
+      if (gDesc) gDesc.textContent = desc;
+
+      // Live Character Counters
+      const titleCount = document.getElementById('seo-title-count');
+      const descCount = document.getElementById('seo-desc-count');
+      if (titleCount) titleCount.textContent = `${title.length} / 60 chars ${title.length > 60 ? '⚠️ (Truncated in Search)' : '✓'}`;
+      if (descCount) descCount.textContent = `${desc.length} / 160 chars (Optimal: 140-160)`;
+
+      // Live Social Card Preview
+      const ogTitleEl = document.getElementById('preview-og-title');
+      const ogDescEl = document.getElementById('preview-og-desc');
+      const ogImgEl = document.getElementById('preview-og-img');
+      if (ogTitleEl) ogTitleEl.textContent = ogTitle;
+      if (ogDescEl) ogDescEl.textContent = ogDesc;
+      if (ogImgEl) {
+        ogImgEl.src = ogImg;
+        ogImgEl.style.display = 'block';
+      }
+
+      // Live Audit Checks
+      const auditContainer = document.getElementById('seo-audit-items');
+      if (auditContainer) {
+        const hasTitle = title.length >= 20 && title.length <= 65;
+        const hasDesc = desc.length >= 100 && desc.length <= 165;
+        const hasOg = Boolean(ogImg);
+        const isIndexed = !robots.includes('noindex');
+
+        auditContainer.innerHTML = `
+          <div class="flex items-center gap-1.5 ${hasTitle ? 'text-emerald-400' : 'text-amber-400'}">
+            <span>${hasTitle ? '✓' : '⚠️'}</span><span>${hasTitle ? 'Title length optimal' : 'Review title length'}</span>
+          </div>
+          <div class="flex items-center gap-1.5 ${hasDesc ? 'text-emerald-400' : 'text-amber-400'}">
+            <span>${hasDesc ? '✓' : '⚠️'}</span><span>${hasDesc ? 'Meta description optimal' : 'Optimize description'}</span>
+          </div>
+          <div class="flex items-center gap-1.5 ${hasOg ? 'text-emerald-400' : 'text-amber-400'}">
+            <span>${hasOg ? '✓' : '⚠️'}</span><span>${hasOg ? 'OG image configured' : 'Missing social image'}</span>
+          </div>
+          <div class="flex items-center gap-1.5 ${isIndexed ? 'text-emerald-400' : 'text-amber-400'}">
+            <span>${isIndexed ? '✓' : '⚠️'}</span><span>${isIndexed ? 'Indexing enabled' : 'Noindex is active'}</span>
+          </div>
+        `;
+      }
+    }
+
+    async function saveSeoForm(e) {
+      if (e) e.preventDefault();
+      const form = document.getElementById('seo-form');
+      if (!form) return;
+
+      const data = Object.fromEntries(new FormData(form));
+      try {
+        await cmsApi('PUT', '/api/admin/seo', data);
+        showToast('SEO settings and Open Graph tags updated!');
+        updateSeoLivePreview();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ─── Phase 5: GLOBAL SITE SETTINGS ────────────────────────
     async function loadSettings() {
       try {
         const data = await cmsApi('GET', '/api/admin/settings');
-        const settings = data.data || data;
+        const s = data.data || data;
         const form = document.getElementById('settings-form');
-        if (!form || !settings) return;
-        const flatSettings = Array.isArray(settings) ? {} : settings;
-        if (Array.isArray(settings)) {
-          settings.forEach(s => { flatSettings[s.key] = s.value; });
-        }
-        Object.keys(flatSettings).forEach(k => {
-          const el = form.elements[k];
-          if (el && typeof flatSettings[k] !== 'object') el.value = flatSettings[k] || '';
+        if (!form || !s) return;
+
+        const stringFields = [
+          'siteName', 'portfolioUrl', 'siteDescription', 'timezone',
+          'availability', 'footerText', 'logoUrl', 'faviconUrl',
+          'appleTouchIconUrl', 'contactEmail', 'maintenanceMessage'
+        ];
+
+        stringFields.forEach((f) => {
+          if (form.elements[f] && s[f] !== undefined) {
+            form.elements[f].value = s[f];
+          }
         });
-      } catch(err) { showToast(err.message, 'error'); }
+
+        // Boolean dropdowns
+        const boolFields = [
+          'contactFormEnabled', 'publicEmailVisible', 'maintenanceMode',
+          'resumeButtonEnabled', 'analyticsEnabled'
+        ];
+
+        boolFields.forEach((f) => {
+          if (form.elements[f] && s[f] !== undefined) {
+            form.elements[f].value = s[f] === true || s[f] === 'true' ? 'true' : 'false';
+          }
+        });
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
     }
 
-    async function saveSettings(e) {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(e.target));
+    async function saveSettingsForm(e) {
+      if (e) e.preventDefault();
+      const form = document.getElementById('settings-form');
+      if (!form) return;
+
+      const raw = Object.fromEntries(new FormData(form));
+      const data = {
+        ...raw,
+        contactFormEnabled: raw.contactFormEnabled === 'true',
+        publicEmailVisible: raw.publicEmailVisible === 'true',
+        maintenanceMode: raw.maintenanceMode === 'true',
+        resumeButtonEnabled: raw.resumeButtonEnabled === 'true',
+        analyticsEnabled: raw.analyticsEnabled === 'true',
+      };
+
       try {
         await cmsApi('PUT', '/api/admin/settings', data);
-        showToast('Settings saved!');
-      } catch(err) { showToast(err.message, 'error'); }
+        showToast('Global website settings saved successfully!');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
     }
 
-    // ─── MEDIA ────────────────────────────────────────────────
-    async function loadMedia() {
-      const c = document.getElementById('media-container');
-      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
-      try {
-        const data = await cmsApi('GET', '/api/admin/media');
-        const items = data.data?.media || data.media || [];
-        if (!items.length) { c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No media assets yet.</p>'; return; }
-        c.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">${items.map(m => `
-          <div class="bg-brand-sidebar border border-brand-border rounded-lg p-3">
-            <div class="text-xs text-slate-300 truncate font-mono">${escapeHtml(m.filename||m.url||'')}</div>
-            <div class="text-[10px] text-slate-500 mt-1">${m.mimeType||''}</div>
-          </div>
-        `).join('')}</div>`;
-      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
-    }
-
-    // ─── ANALYTICS ────────────────────────────────────────────
-    async function loadAnalytics() {
-      const c = document.getElementById('analytics-container');
-      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
-      try {
-        const data = await cmsApi('GET', '/api/admin/analytics');
-        const s = data.stats || data.data || {};
-        c.innerHTML = `
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            ${Object.keys(s).slice(0,8).map(k => `
-              <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 text-center">
-                <div class="text-xl font-bold text-cyan-400">${typeof s[k] === 'number' ? s[k] : '—'}</div>
-                <div class="text-[11px] text-slate-400 mt-1 font-mono">${k.replace(/([A-Z])/g,' $1').trim()}</div>
-              </div>
-            `).join('')}
-          </div>
-        `;
-      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
-    }
-
-    // ─── Reorder helper (Move Up/Down) ────────────────────────
-    async function moveItem(type, direction, currentIdx, id) {
-      // Simple: call reorder endpoint with swapped displayOrders
-      const containerMap = {
-        projects: { url: '/api/admin/projects/reorder', load: loadProjects },
-        skills: { url: '/api/admin/skills/reorder', load: loadSkills },
-      };
-      showToast(`Reordering ${type}...`);
-      // The UI will reload from server after the action
-      try {
-        const data = await cmsApi('GET', `/api/admin/${type}`);
-        const items = data.data?.projects || data.data?.skills || data.projects || data.skills || [];
-        if (direction === 'up' && currentIdx > 0) {
-          const a = items[currentIdx], b = items[currentIdx - 1];
-          const reorderPayload = items.map((item, idx) => {
-            if (item._id === a._id) return { _id: item._id, displayOrder: b.displayOrder || idx };
-            if (item._id === b._id) return { _id: item._id, displayOrder: a.displayOrder || idx + 1 };
-            return { _id: item._id, displayOrder: item.displayOrder || idx + 1 };
-          });
-          await cmsApi('PUT', `/api/admin/${type}/reorder`, { items: reorderPayload });
-        } else if (direction === 'down' && currentIdx < items.length - 1) {
-          const a = items[currentIdx], b = items[currentIdx + 1];
-          const reorderPayload = items.map((item, idx) => {
-            if (item._id === a._id) return { _id: item._id, displayOrder: b.displayOrder || idx + 2 };
-            if (item._id === b._id) return { _id: item._id, displayOrder: a.displayOrder || idx + 1 };
-            return { _id: item._id, displayOrder: item.displayOrder || idx + 1 };
-          });
-          await cmsApi('PUT', `/api/admin/${type}/reorder`, { items: reorderPayload });
-        }
-        showToast('Reordered!');
-        if (type === 'projects') loadProjects();
-        else if (type === 'skills') loadSkills();
-      } catch(err) { showToast(err.message, 'error'); }
+    // ─── UTILITY HELPERS ──────────────────────────────────────
+    function copyToClipboard(text, successMsg = 'Copied to clipboard!') {
+      if (!text) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast(successMsg)).catch(() => prompt('Copy text:', text));
+      } else {
+        prompt('Copy text:', text);
+      }
     }
 
   </script>
@@ -1956,6 +3046,178 @@
       <div class="flex gap-3">
         <button onclick="proceedDelete()" class="flex-1 px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold transition-colors">Delete</button>
         <button onclick="closeConfirmModal()" class="flex-1 px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Media Upload Modal -->
+  <div id="media-upload-modal" onclick="if(event.target===this)closeUploadMediaModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div class="flex items-center justify-between pb-4 mb-4 border-b border-brand-border">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="upload" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100">Upload Media Asset</h3>
+            <p class="text-[11px] text-slate-400">PNG, JPEG, WEBP, AVIF, or PDF (Max 15MB)</p>
+          </div>
+        </div>
+        <button onclick="closeUploadMediaModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-200 text-lg leading-none">&times;</button>
+      </div>
+
+      <form id="upload-media-form" onsubmit="handleMediaUploadSubmit(event)" class="space-y-4">
+        <div>
+          <label class="cms-label">Choose File</label>
+          <div class="border-2 border-dashed border-brand-border hover:border-cyan-500/50 rounded-xl p-4 text-center cursor-pointer relative transition-colors bg-slate-950/40">
+            <input type="file" id="media-file-input" name="file" accept="image/png,image/jpeg,image/webp,image/avif,application/pdf" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onchange="const p=document.getElementById('upload-file-name-preview'); if(p && this.files[0]) p.textContent=this.files[0].name;" />
+            <div class="flex flex-col items-center gap-1.5 pointer-events-none">
+              <i data-lucide="file-plus" class="w-7 h-7 text-cyan-400"></i>
+              <span id="upload-file-name-preview" class="text-xs font-mono text-slate-300">Choose or drop a file</span>
+              <span class="text-[10px] text-slate-500">Auto-sanitized & stored persistently</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="cms-label">Category</label>
+            <select id="upload-category" class="cms-input text-xs">
+              <option value="PROJECT">Project</option>
+              <option value="PROFILE">Profile</option>
+              <option value="CERTIFICATE">Certificate</option>
+              <option value="SEO">SEO</option>
+              <option value="BRANDING">Branding</option>
+              <option value="OTHER" selected>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="cms-label">Folder</label>
+            <input type="text" id="upload-folder" value="general" class="cms-input text-xs" />
+          </div>
+        </div>
+
+        <div>
+          <label class="cms-label">Alt Text (Accessibility & SEO)</label>
+          <input type="text" id="upload-altText" placeholder="Describe the image content..." class="cms-input text-xs" />
+        </div>
+
+        <div>
+          <label class="cms-label">Caption (Optional)</label>
+          <input type="text" id="upload-caption" placeholder="Asset description or credit..." class="cms-input text-xs" />
+        </div>
+
+        <div class="flex gap-3 pt-3 border-t border-brand-border">
+          <button type="submit" id="upload-media-submit-btn" class="flex-1 px-4 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-lg shadow-cyan-900/20">
+            <i data-lucide="upload" class="w-3.5 h-3.5"></i><span>Start Upload</span>
+          </button>
+          <button type="button" onclick="closeUploadMediaModal()" class="px-4 py-2.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Media Detail Modal -->
+  <div id="media-detail-modal" onclick="if(event.target===this)closeMediaDetailModal()">
+    <div id="media-detail-content" class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+      <!-- Dynamically filled by openMediaDetailModal -->
+    </div>
+  </div>
+
+  <!-- Resume Upload Modal -->
+  <div id="resume-upload-modal" onclick="if(event.target===this)closeResumeUploadModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div class="flex items-center justify-between pb-4 mb-4 border-b border-brand-border">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="file-up" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100">Upload New Resume</h3>
+            <p class="text-[11px] text-slate-400">PDF document with automated versioning</p>
+          </div>
+        </div>
+        <button onclick="closeResumeUploadModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-200 text-lg leading-none">&times;</button>
+      </div>
+
+      <form id="resume-upload-form" onsubmit="handleResumeUploadSubmit(event)" class="space-y-4">
+        <div>
+          <label class="cms-label">PDF Resume File</label>
+          <div class="border-2 border-dashed border-brand-border hover:border-cyan-500/50 rounded-xl p-4 text-center cursor-pointer relative transition-colors bg-slate-950/40">
+            <input type="file" id="resume-file-input" name="file" accept="application/pdf" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onchange="const p=document.getElementById('resume-file-name-preview'); if(p && this.files[0]) p.textContent=this.files[0].name;" />
+            <div class="flex flex-col items-center gap-1.5 pointer-events-none">
+              <i data-lucide="file-text" class="w-7 h-7 text-cyan-400"></i>
+              <span id="resume-file-name-preview" class="text-xs font-mono text-slate-300">Choose PDF resume file</span>
+              <span class="text-[10px] text-slate-500">Max size: 10MB</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="cms-label">Title / Label</label>
+          <input type="text" id="resume-upload-title" value="Anurag Sahu — Software Engineer" placeholder="e.g. Software Engineer Resume" class="cms-input text-xs" />
+        </div>
+
+        <div>
+          <label class="cms-label">Release Notes / Changelog</label>
+          <input type="text" id="resume-upload-notes" placeholder="e.g. Added Q3 projects, updated contact info..." class="cms-input text-xs" />
+        </div>
+
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="resume-make-active" checked class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-cyan-600 focus:ring-0 focus:ring-offset-0 cursor-pointer" />
+          <label for="resume-make-active" class="text-xs text-slate-300 cursor-pointer select-none">
+            Immediately set as active resume across portfolio
+          </label>
+        </div>
+
+        <div class="flex gap-3 pt-3 border-t border-brand-border">
+          <button type="submit" id="resume-upload-submit-btn" class="flex-1 px-4 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-lg shadow-cyan-900/20">
+            <i data-lucide="file-up" class="w-3.5 h-3.5"></i><span>Upload Version</span>
+          </button>
+          <button type="button" onclick="closeResumeUploadModal()" class="px-4 py-2.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reusable MediaPicker Modal -->
+  <div id="mediapicker-modal" onclick="if(event.target===this)closeMediaPicker()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-2xl mx-4 max-h-[85vh] flex flex-col shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-brand-border">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="image" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100">Select Media Asset</h3>
+            <p class="text-[10px] text-slate-400">Choose an asset from your library to insert into this field</p>
+          </div>
+        </div>
+        <button onclick="closeMediaPicker()" class="p-1 rounded-lg text-slate-400 hover:text-slate-200 text-lg leading-none">&times;</button>
+      </div>
+
+      <div class="py-3 flex items-center gap-2 border-b border-brand-border/60">
+        <div class="relative flex-1">
+          <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input type="text" id="mediapicker-search" placeholder="Search filename..." class="cms-input pl-8 py-1.5 text-xs" oninput="filterMediaPickerGrid(this.value)" />
+        </div>
+        <button onclick="openUploadMediaModal()" class="px-3 py-1.5 rounded-lg bg-cyan-600/20 hover:bg-cyan-600 text-cyan-300 hover:text-white text-xs font-semibold transition-colors flex items-center gap-1.5 shrink-0">
+          <i data-lucide="plus" class="w-3 h-3"></i><span>Upload New</span>
+        </button>
+      </div>
+
+      <div id="mediapicker-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 p-2 overflow-y-auto flex-1 my-3 max-h-96">
+        <!-- Injected dynamically by loadMediaPickerItems() -->
+      </div>
+
+      <div class="pt-3 border-t border-brand-border flex justify-end">
+        <button onclick="closeMediaPicker()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">
+          Cancel
+        </button>
       </div>
     </div>
   </div>

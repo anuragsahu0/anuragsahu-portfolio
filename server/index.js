@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 const { connectDB, isDbConnected } = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const { publicLimiter } = require('./middleware/rateLimiter');
@@ -106,6 +107,10 @@ const handleHealth = (req, res) => {
 
 app.get('/api/health', handleHealth);
 app.get('/health', handleHealth);
+
+// ─── Static File Serving ────────────────────────────────────
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+app.use('/assets', express.static(path.join(__dirname, '../assets')));
 
 // ─── API Routes ────────────────────────────────────────────
 // Public CMS Routes

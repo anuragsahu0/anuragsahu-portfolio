@@ -15,6 +15,7 @@ const Media = require('../models/Media');
 const Settings = require('../models/Settings');
 const Notification = require('../models/Notification');
 const ActivityLog = require('../models/ActivityLog');
+const Resume = require('../models/Resume');
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/anti_gravity_portfolio';
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@anuragsahu.dev').toLowerCase();
@@ -460,65 +461,149 @@ async function seed() {
   console.log('✓ Roadmap seeded.');
 
   // 10. Media
-  console.log('🖼️ Seeding Media Metadata...');
+  console.log('🖼️ Seeding Media Metadata & Static Assets...');
   await Media.deleteMany({});
   await Media.create([
     {
       fileName: 'anurag-portrait-sm.webp',
+      originalName: 'anurag-portrait-sm.webp',
       url: '/assets/anurag-portrait-sm.webp',
       type: 'image',
+      fileType: 'image',
       mimeType: 'image/webp',
-      size: 9246,
+      size: 9026,
+      width: 400,
+      height: 400,
       altText: 'Anurag Sahu Portrait WebP',
+      caption: 'Official profile portrait',
       category: 'PROFILE',
+      status: 'ACTIVE',
     },
     {
       fileName: 'anurag-portrait-sm.jpg',
+      originalName: 'anurag-portrait-sm.jpg',
       url: '/assets/anurag-portrait-sm.jpg',
       type: 'image',
+      fileType: 'image',
       mimeType: 'image/jpeg',
-      size: 15995,
+      size: 15618,
+      width: 400,
+      height: 400,
       altText: 'Anurag Sahu Portrait JPEG',
+      caption: 'Profile fallback image',
       category: 'PROFILE',
+      status: 'ACTIVE',
+    },
+    {
+      fileName: 'anurag-portrait.webp',
+      originalName: 'anurag-portrait.webp',
+      url: '/assets/anurag-portrait.webp',
+      type: 'image',
+      fileType: 'image',
+      mimeType: 'image/webp',
+      size: 46052,
+      width: 1200,
+      height: 1200,
+      altText: 'Anurag Sahu High-Resolution Portrait',
+      caption: 'Open Graph social card image',
+      category: 'SEO',
+      status: 'ACTIVE',
+    },
+    {
+      fileName: 'anurag-portrait.jpg',
+      originalName: 'anurag-portrait.jpg',
+      url: '/assets/anurag-portrait.jpg',
+      type: 'image',
+      fileType: 'image',
+      mimeType: 'image/jpeg',
+      size: 81602,
+      width: 1200,
+      height: 1200,
+      altText: 'Anurag Sahu High-Resolution Portrait JPEG',
+      caption: 'High-DPI Hero fallback',
+      category: 'SEO',
+      status: 'ACTIVE',
     },
     {
       fileName: 'anurag-sahu-resume.pdf',
+      originalName: 'anurag-sahu-resume.pdf',
       url: '/assets/anurag-sahu-resume.pdf',
       type: 'document',
+      fileType: 'document',
       mimeType: 'application/pdf',
       size: 85200,
       altText: 'Anurag Sahu Curriculum Vitae PDF',
+      caption: 'Official Software Engineering Resume',
       category: 'RESUME',
+      status: 'ACTIVE',
     },
     {
-      fileName: 'project-portfolio.webp',
-      url: '/assets/project-portfolio.webp',
+      fileName: 'as-admin-icon.svg',
+      originalName: 'as-admin-icon.svg',
+      url: '/assets/as-admin-icon.svg',
       type: 'image',
-      mimeType: 'image/webp',
-      size: 47155,
-      altText: 'Portfolio Project Preview',
-      category: 'PROJECT',
+      fileType: 'image',
+      mimeType: 'image/svg+xml',
+      size: 2519,
+      altText: 'Anti Gravity Admin Logo',
+      caption: 'Control Center Brand Icon',
+      category: 'BRANDING',
+      status: 'ACTIVE',
     },
   ]);
   console.log('✓ Media metadata seeded.');
 
-  // 11. Settings
-  console.log('⚙️ Seeding Settings...');
+  // 11. Resume
+  console.log('📄 Seeding Resume Versioning...');
+  await Resume.deleteMany({});
+  await Resume.create({
+    version: 'v1.0',
+    title: 'Anurag Sahu — Software Engineer Resume (v1.0)',
+    fileName: 'anurag-sahu-resume.pdf',
+    originalName: 'anurag-sahu-resume.pdf',
+    url: '/assets/anurag-sahu-resume.pdf',
+    size: 85200,
+    mimeType: 'application/pdf',
+    status: 'ACTIVE',
+    uploadedBy: 'admin',
+    notes: 'Official verified resume for internships and engineering roles.',
+  });
+  console.log('✓ Active Resume seeded.');
+
+  // 12. Settings
+  console.log('⚙️ Seeding Global Settings & SEO...');
   await Settings.deleteMany({});
   await Settings.create({
     singletonId: 'global',
     siteName: 'Anurag Sahu',
     portfolioUrl: 'https://anuragsahu.com',
+    siteDescription: 'Computer Science Engineer & Full-Stack Developer specializing in high-performance web systems and AI applications.',
+    timezone: 'Asia/Kolkata',
     contactEmail: 'shivasahu0612@gmail.com',
+    contactFormEnabled: true,
+    publicEmailVisible: true,
     github: 'https://github.com/anuragsahu0',
     linkedin: 'https://linkedin.com/in/anuragsahu0',
     resumeUrl: '/assets/anurag-sahu-resume.pdf',
     availability: 'Open to Internship Opportunities',
-    seoTitle: 'Anurag Sahu — Computer Science Engineer & Full-Stack Developer',
-    seoDescription: 'Personal portfolio and engineering telemetry showcase for Anurag Sahu.',
+    logoUrl: '/assets/as-admin-icon.svg',
+    faviconUrl: '/assets/anurag-portrait-sm.webp',
+    appleTouchIconUrl: '/assets/anurag-portrait-sm.webp',
+    seoTitle: 'Anurag Sahu — Full-Stack Developer & B.Tech CSE (AI & ML) Sophomore',
+    seoDescription: 'Portfolio of Anurag Sahu, Computer Science & Engineering (AI & ML) student specializing in Full-Stack Web Development, React, Node.js, Python, and practical Machine Learning applications. Open for Summer 2026 internships.',
+    canonicalUrl: 'https://anuragsahu.com/',
+    keywords: 'Anurag Sahu, Full-Stack Developer, AI ML Developer, React Developer, Node.js, Python, Computer Science, Portfolio, Software Engineering Intern',
+    author: 'Anurag Sahu',
+    siteLanguage: 'en',
+    robotsDirective: 'index, follow',
     ogTitle: 'Anurag Sahu — Control Center & Developer Portfolio',
-    ogDescription: 'Explore engineering projects, interactive systems, and live telemetry.',
-    ogImage: '/assets/anurag-portrait-sm.jpg',
+    ogDescription: 'Explore engineering projects, interactive systems, and live telemetry for Anurag Sahu.',
+    ogImage: '/assets/anurag-portrait.webp',
+    twitterCard: 'summary_large_image',
+    maintenanceMode: false,
+    maintenanceMessage: 'System undergoing scheduled optimization. We will be back online shortly.',
+    resumeButtonEnabled: true,
+    analyticsEnabled: true,
     footerText: '© 2026 Anurag Sahu. Engineered for performance and scale.',
   });
   console.log('✓ Settings seeded.');

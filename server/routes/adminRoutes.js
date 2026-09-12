@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { verifyToken } = require('../middleware/auth');
+const { upload } = require('../services/storageService');
 
 // Controllers
 const { getHero, updateHero } = require('../controllers/heroController');
@@ -67,14 +68,32 @@ const {
   deleteSocialLink,
   reorderSocialLinks,
 } = require('../controllers/socialLinkController');
-const { getMedia, createMedia, deleteMedia } = require('../controllers/mediaController');
+const {
+  getMedia,
+  getMediaById,
+  uploadMedia,
+  updateMedia,
+  deleteMedia,
+  getMediaUsage,
+} = require('../controllers/mediaController');
+const {
+  getAdminResumes,
+  uploadResume,
+  setActiveResume,
+  deleteResume,
+} = require('../controllers/resumeController');
 const {
   getMessages,
   markMessageRead,
   archiveMessage,
   deleteMessage,
 } = require('../controllers/contactController');
-const { getAdminSettings, updateSettings } = require('../controllers/settingsController');
+const {
+  getAdminSettings,
+  updateSettings,
+  getAdminSeo,
+  updateSeo,
+} = require('../controllers/settingsController');
 const {
   getNotifications,
   markNotificationRead,
@@ -170,8 +189,29 @@ router.delete('/admin/social-links/:id', deleteSocialLink);
 
 // ─── Media Library ──────────────────────────────────────────
 router.get('/admin/media', getMedia);
-router.post('/admin/media', createMedia);
+router.post('/admin/media/upload', upload.single('file'), uploadMedia);
+router.post('/admin/media', upload.single('file'), uploadMedia);
+router.get('/admin/media/:id/usage', getMediaUsage);
+router.get('/admin/media/:id', getMediaById);
+router.put('/admin/media/:id', updateMedia);
+router.patch('/admin/media/:id', updateMedia);
 router.delete('/admin/media/:id', deleteMedia);
+
+// ─── Resume Management ──────────────────────────────────────
+router.get('/admin/resume', getAdminResumes);
+router.post('/admin/resume/upload', upload.single('file'), uploadResume);
+router.patch('/admin/resume/:id/activate', setActiveResume);
+router.delete('/admin/resume/:id', deleteResume);
+
+// ─── SEO Management ─────────────────────────────────────────
+router.get('/admin/seo', getAdminSeo);
+router.put('/admin/seo', updateSeo);
+router.patch('/admin/seo', updateSeo);
+
+// ─── Site Settings ──────────────────────────────────────────
+router.get('/admin/settings', getAdminSettings);
+router.put('/admin/settings', updateSettings);
+router.patch('/admin/settings', updateSettings);
 
 // ─── Messages & Inquiries ───────────────────────────────────
 router.get('/admin/messages', getMessages);
@@ -180,11 +220,6 @@ router.patch('/admin/messages/:id/read', markMessageRead);
 router.put('/admin/messages/:id/archive', archiveMessage);
 router.patch('/admin/messages/:id/archive', archiveMessage);
 router.delete('/admin/messages/:id', deleteMessage);
-
-// ─── Settings ───────────────────────────────────────────────
-router.get('/admin/settings', getAdminSettings);
-router.put('/admin/settings', updateSettings);
-router.patch('/admin/settings', updateSettings);
 
 // ─── Notifications ──────────────────────────────────────────
 router.get('/admin/notifications', getNotifications);

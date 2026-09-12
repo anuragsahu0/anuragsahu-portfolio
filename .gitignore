@@ -7,3 +7,7 @@ yarn-error.log*
 .vercel
 .env*
 scratch/
+public/uploads/*
+!public/uploads/.gitkeep
+dist/public/uploads/*
+!dist/public/uploads/.gitkeep

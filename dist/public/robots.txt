@@ -1,5 +1,16 @@
 # Robots.txt for Anurag Sahu Anti Gravity Portfolio
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+Disallow: /mobile-admin
+Disallow: /mobile-admin/*
+Disallow: /api/admin
+Disallow: /api/admin/
+Disallow: /api/admin/*
+Disallow: /api/auth
+Disallow: /api/auth/
+Disallow: /api/auth/*
 
 Sitemap: https://anuragsahu.com/sitemap.xml

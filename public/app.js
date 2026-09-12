@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCategoryFilters();
   initScrollReveal();
   initContactForm();
+  initCmsDynamicHydration();
 });
 
 /* -------------------------------------------------------------------------- */
@@ -692,3 +693,147 @@ window.closeSuccessModal = function() {
     if (contactForm) contactForm.reset();
   }, 150);
 };
+
+/* -------------------------------------------------------------------------- */
+/* Phase 5 — Dynamic CMS, SEO, Resume & Global Settings Hydration Engine      */
+/* -------------------------------------------------------------------------- */
+async function initCmsDynamicHydration() {
+  function setMetaTag(attribute, key, content) {
+    if (!content) return;
+    let el = document.querySelector(`meta[${attribute}="${key}"]`);
+    if (!el) {
+      el = document.createElement('meta');
+      el.setAttribute(attribute, key);
+      document.head.appendChild(el);
+    }
+    el.setAttribute('content', content);
+  }
+
+  function setLinkTag(rel, href, type) {
+    if (!href) return;
+    let el = document.querySelector(`link[rel="${rel}"]`);
+    if (!el) {
+      el = document.createElement('link');
+      el.setAttribute('rel', rel);
+      document.head.appendChild(el);
+    }
+    el.setAttribute('href', href);
+    if (type) el.setAttribute('type', type);
+  }
+
+  try {
+    const [seoRes, settingsRes, resumeRes] = await Promise.allSettled([
+      fetch(`${API_BASE}/public/seo`),
+      fetch(`${API_BASE}/public/settings`),
+      fetch(`${API_BASE}/public/resume`),
+    ]);
+
+    // 1. Dynamic SEO & Meta Tags Rendering
+    if (seoRes.status === 'fulfilled' && seoRes.value.ok) {
+      const seoData = await seoRes.value.json();
+      const seo = seoData.data || seoData;
+
+      if (seo.title) {
+        document.title = seo.title;
+        setMetaTag('name', 'title', seo.title);
+      }
+      if (seo.description) setMetaTag('name', 'description', seo.description);
+      if (seo.canonicalUrl) setLinkTag('canonical', seo.canonicalUrl);
+      if (seo.keywords) setMetaTag('name', 'keywords', seo.keywords);
+      if (seo.author) setMetaTag('name', 'author', seo.author);
+      if (seo.robotsDirective) setMetaTag('name', 'robots', seo.robotsDirective);
+
+      // Open Graph Tags
+      if (seo.openGraph) {
+        if (seo.openGraph.title) setMetaTag('property', 'og:title', seo.openGraph.title);
+        if (seo.openGraph.description) setMetaTag('property', 'og:description', seo.openGraph.description);
+        if (seo.openGraph.image) setMetaTag('property', 'og:image', seo.openGraph.image);
+        if (seo.openGraph.url) setMetaTag('property', 'og:url', seo.openGraph.url);
+      }
+
+      // Twitter Cards
+      if (seo.twitter) {
+        if (seo.twitter.card) setMetaTag('name', 'twitter:card', seo.twitter.card);
+        if (seo.twitter.title) setMetaTag('name', 'twitter:title', seo.twitter.title);
+        if (seo.twitter.description) setMetaTag('name', 'twitter:description', seo.twitter.description);
+        if (seo.twitter.image) setMetaTag('name', 'twitter:image', seo.twitter.image);
+      }
+
+      // Favicon & Apple Touch Icon
+      if (seo.faviconUrl) {
+        const ext = seo.faviconUrl.split('.').pop().toLowerCase();
+        const mime = ext === 'svg' ? 'image/svg+xml' : ext === 'png' ? 'image/png' : 'image/webp';
+        setLinkTag('icon', seo.faviconUrl, mime);
+      }
+      if (seo.appleTouchIconUrl) {
+        setLinkTag('apple-touch-icon', seo.appleTouchIconUrl);
+      }
+    }
+
+    // 2. Active Resume Hydration
+    if (resumeRes.status === 'fulfilled' && resumeRes.value.ok) {
+      const resumeData = await resumeRes.value.json();
+      const activeResume = resumeData.data || resumeData;
+
+      if (activeResume && activeResume.url) {
+        document.querySelectorAll('a').forEach((link) => {
+          const href = (link.getAttribute('href') || '').toLowerCase();
+          const text = (link.textContent || '').toLowerCase();
+          if (
+            href.includes('resume') ||
+            text.includes('resume') ||
+            link.id === 'hero-resume-btn' ||
+            link.id === 'footer-resume-btn'
+          ) {
+            link.setAttribute('href', activeResume.url);
+            link.setAttribute('target', '_blank');
+            link.setAttribute('rel', 'noopener noreferrer');
+          }
+        });
+      }
+    }
+
+    // 3. Settings & Maintenance Mode Hydration
+    if (settingsRes.status === 'fulfilled' && settingsRes.value.ok) {
+      const settingsData = await settingsRes.value.json();
+      const settings = settingsData.data || settingsData;
+
+      // Maintenance mode notice on public pages (never locks out /admin)
+      if (settings.maintenanceMode && !window.location.pathname.startsWith('/admin')) {
+        if (!document.getElementById('maintenance-banner')) {
+          const banner = document.createElement('div');
+          banner.id = 'maintenance-banner';
+          banner.style.cssText =
+            'position:fixed;top:0;left:0;right:0;z-index:99999;background:#b45309;color:#fff;text-align:center;padding:10px 16px;font-size:12px;font-family:monospace;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;gap:8px;';
+          banner.innerHTML = `<span>⚠️ ${settings.maintenanceMessage || 'System undergoing scheduled optimization.'}</span>`;
+          document.body.prepend(banner);
+        }
+      }
+
+      // Contact Form Toggle
+      if (settings.contactFormEnabled === false) {
+        const submitBtn = document.querySelector('#contact-form button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Submissions Temporarily Paused';
+          submitBtn.style.opacity = '0.6';
+          submitBtn.style.cursor = 'not-allowed';
+        }
+      }
+
+      // Resume Button Visibility Toggle
+      if (settings.resumeButtonEnabled === false) {
+        document.querySelectorAll('a').forEach((link) => {
+          const text = (link.textContent || '').toLowerCase();
+          if (text.includes('resume')) {
+            link.style.display = 'none';
+          }
+        });
+      }
+    }
+  } catch (err) {
+    // Non-fatal: public portfolio continues using hardcoded static fallback
+    console.debug('[initCmsDynamicHydration] Using static fallbacks:', err.message);
+  }
+}
+

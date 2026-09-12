@@ -12,7 +12,9 @@ const { getPublicCertificates } = require('../controllers/certificateController'
 const { getPublicRoadmap } = require('../controllers/roadmapController');
 const { getPublicNavigation } = require('../controllers/navigationController');
 const { getPublicSocialLinks } = require('../controllers/socialLinkController');
-const { getPublicSettings } = require('../controllers/settingsController');
+const { getPublicSettings, getPublicSeo } = require('../controllers/settingsController');
+const { getPublicResume } = require('../controllers/resumeController');
+const { getMediaById } = require('../controllers/mediaController');
 
 // ─── Public Read-Only Portfolio Endpoints ────────────────────────────────────
 // Return only published/visible records, stripping any private metadata or admin fields
@@ -30,5 +32,8 @@ router.get('/public/roadmap', getPublicRoadmap);
 router.get('/public/navigation', getPublicNavigation);
 router.get('/public/social-links', getPublicSocialLinks);
 router.get('/public/settings', getPublicSettings);
+router.get('/public/seo', getPublicSeo);
+router.get('/public/resume', getPublicResume);
+router.get('/public/media/:id', getMediaById);
 
 module.exports = router;
