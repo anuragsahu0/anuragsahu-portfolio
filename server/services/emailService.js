@@ -2,9 +2,28 @@ const nodemailer = require('nodemailer');
 const config = require('../config/emailConfig');
 
 /**
- * Email Service Service Layer
- * Sends recruiter messages to shivasahu0612@gmail.com using Nodemailer.
- * Features a fallback logger if SMTP credentials have not been configured yet.
+ * Sanitize header strings to prevent email header injection (\r and \n).
+ */
+function sanitizeHeader(str) {
+  if (!str) return '';
+  return String(str).replace(/[\r\n]+/g, ' ').trim();
+}
+
+/**
+ * Escape HTML characters to prevent XSS in email bodies.
+ */
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
+ * Nodemailer Transporter instance
  */
 let transporter = null;
 
@@ -20,56 +39,165 @@ if (config.smtp.auth.user && config.smtp.auth.pass) {
   });
 }
 
-const sendContactEmail = async ({ fullName, email, company, subject, message }) => {
+/**
+ * Send Contact Notification Email to Admin/Owner
+ */
+const sendContactNotificationEmail = async ({
+  name,
+  fullName,
+  email,
+  company,
+  subject,
+  message,
+  createdAt,
+}) => {
+  const senderName = sanitizeHeader(name || fullName || 'Visitor');
+  const senderEmail = sanitizeHeader(email);
+  const cleanSubject = sanitizeHeader(subject || 'Portfolio Inquiry');
+  const safeMessage = String(message || '').trim();
+  const safeCompany = sanitizeHeader(company || '');
+  const timestamp = createdAt ? new Date(createdAt).toLocaleString() : new Date().toLocaleString();
+
   const mailOptions = {
-    from: `"${fullName}" <${config.recipientEmail}>`,
-    replyTo: email,
-    to: config.recipientEmail,
-    subject: `[ANTI GRAVITY PORTFOLIO] ${subject} (From: ${fullName}${company ? ` @ ${company}` : ''})`,
+    from: `"Portfolio Notification" <${config.emailFrom}>`,
+    replyTo: senderEmail,
+    to: config.contactNotificationEmail,
+    subject: `[Portfolio Inquiry] ${cleanSubject} (From: ${senderName})`,
     text: `
-=== NEW RECRUITER CONTACT INQUIRY ===
+=== NEW CONTACT INQUIRY RECEIVED ===
 
-Candidate: Anurag Sahu
-Sender Name: ${fullName}
-Sender Email: ${email}
-Company / Organization: ${company || 'N/A'}
-Subject: ${subject}
+Sender Name: ${senderName}
+Sender Email: ${senderEmail}
+Company: ${safeCompany || 'N/A'}
+Subject: ${cleanSubject}
+Received: ${timestamp}
 
+----------------------------------------
 Message Content:
+${safeMessage}
 ----------------------------------------
-${message}
-----------------------------------------
-Timestamp: ${new Date().toISOString()}
-Reply directly to this email to contact ${fullName} (${email}).
-    `,
+
+* Reply directly to this email to respond to ${senderName} (${senderEmail}).
+    `.trim(),
     html: `
-      <div style="font-family: Arial, sans-serif; background-color: #030712; color: #f9fafb; padding: 24px; border-radius: 12px; border: 1px solid #06b6d4;">
-        <h2 style="color: #06b6d4; margin-top: 0;">⚡ Anti Gravity Recruiter Inquiry</h2>
-        <p><strong>Candidate:</strong> Anurag Sahu</p>
-        <p><strong>From:</strong> ${fullName} (&lt;<a href="mailto:${email}" style="color: #8b5cf6;">${email}</a>&gt;)</p>
-        ${company ? `<p><strong>Company:</strong> ${company}</p>` : ''}
-        <p><strong>Subject:</strong> ${subject}</p>
-        <hr style="border-color: rgba(255,255,255,0.1);" />
-        <h4 style="color: #f9fafb;">Message:</h4>
-        <p style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 8px; font-family: monospace; white-space: pre-wrap;">${message}</p>
-        <p style="font-size: 11px; color: #9ca3af; margin-top: 20px;">Sent via Anti Gravity Portfolio API for Anurag Sahu (shivasahu0612@gmail.com).</p>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #070B16; color: #f1f5f9; padding: 32px 24px; border-radius: 16px; border: 1px solid #1e293b; max-width: 600px; margin: 0 auto;">
+        <div style="border-bottom: 1px solid #1e293b; padding-bottom: 16px; margin-bottom: 20px;">
+          <h2 style="color: #06b6d4; margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.02em;">
+            ⚡ New Contact Inquiry
+          </h2>
+          <p style="color: #94a3b8; font-size: 12px; margin: 4px 0 0 0;">
+            Submitted via Anurag Sahu Personal Portfolio (anuragsahu.com)
+          </p>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.6); padding: 18px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px; font-size: 13px; line-height: 1.6;">
+          <p style="margin: 0 0 8px 0;"><strong style="color: #cbd5e1;">From:</strong> ${escapeHtml(senderName)} (&lt;<a href="mailto:${escapeHtml(senderEmail)}" style="color: #38bdf8; text-decoration: none;">${escapeHtml(senderEmail)}</a>&gt;)</p>
+          ${safeCompany ? `<p style="margin: 0 0 8px 0;"><strong style="color: #cbd5e1;">Company:</strong> ${escapeHtml(safeCompany)}</p>` : ''}
+          <p style="margin: 0 0 8px 0;"><strong style="color: #cbd5e1;">Subject:</strong> ${escapeHtml(cleanSubject)}</p>
+          <p style="margin: 0;"><strong style="color: #cbd5e1;">Time:</strong> ${escapeHtml(timestamp)}</p>
+        </div>
+
+        <div style="background: #0B1120; border: 1px solid #1e293b; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+          <h4 style="color: #94a3b8; margin: 0 0 10px 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Message Content</h4>
+          <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #f8fafc; white-space: pre-wrap; font-family: inherit;">${escapeHtml(safeMessage)}</p>
+        </div>
+
+        <div style="text-align: center; border-top: 1px solid #1e293b; padding-top: 16px; font-size: 11px; color: #64748b;">
+          <p style="margin: 0;">Hit Reply in your email client to respond directly to ${escapeHtml(senderEmail)}.</p>
+          <p style="margin: 4px 0 0 0;">Anurag Sahu Control Center • Automated Communication Engine</p>
+        </div>
       </div>
-    `,
+    `.trim(),
   };
 
   if (transporter) {
-    const info = await transporter.sendMail(mailOptions);
-    return { success: true, messageId: info.messageId };
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      return { success: true, messageId: info.messageId, mode: 'smtp' };
+    } catch (err) {
+      console.error('[EmailService] SMTP Notification delivery failed:', err.message);
+      return { success: false, error: err.message, mode: 'smtp_failed' };
+    }
   } else {
-    // Development / Demo Fallback Mode: Log message to console safely
     console.log('\n========================================');
-    console.log('📬 [DEMO MODE - RECRUITER INQUIRY LOGGED]');
-    console.log('Recipient Target:', config.recipientEmail);
-    console.log('Sender:', fullName, `<${email}>`);
-    console.log('Subject:', subject);
-    console.log('Message:', message);
+    console.log('📬 [EMAIL SERVICE - DEMO MODE LOGGED]');
+    console.log('To:', config.contactNotificationEmail);
+    console.log('From:', senderName, `<${senderEmail}>`);
+    console.log('Subject:', cleanSubject);
+    console.log('Message:', safeMessage);
     console.log('========================================\n');
-    return { success: true, mode: 'demo_logged' };
+    return { success: true, messageId: `demo-${Date.now()}`, mode: 'demo_logged' };
+  }
+};
+
+/**
+ * Send Direct Admin Reply Email to Visitor
+ */
+const sendAdminReplyEmail = async ({ to, subject, message, originalSubject }) => {
+  const recipientEmail = sanitizeHeader(to);
+  const cleanSubject = sanitizeHeader(subject || `Re: ${originalSubject || 'Your Inquiry'}`);
+  const safeMessage = String(message || '').trim();
+
+  const mailOptions = {
+    from: `"Anurag Sahu" <${config.emailFrom}>`,
+    replyTo: config.emailFrom,
+    to: recipientEmail,
+    subject: cleanSubject,
+    text: `
+Hi,
+
+${safeMessage}
+
+Best regards,
+Anurag Sahu
+Computer Science & Engineering | Full-Stack & AI Systems
+Portfolio: https://anuragsahu.com
+Email: ${config.emailFrom}
+    `.trim(),
+    html: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #070B16; color: #f1f5f9; padding: 32px 24px; border-radius: 16px; border: 1px solid #1e293b; max-width: 600px; margin: 0 auto;">
+        <div style="border-bottom: 1px solid #1e293b; padding-bottom: 16px; margin-bottom: 24px;">
+          <h2 style="color: #06b6d4; margin: 0; font-size: 20px; font-weight: 700;">
+            Anurag Sahu
+          </h2>
+          <p style="color: #94a3b8; font-size: 12px; margin: 4px 0 0 0;">
+            Full-Stack Developer & AI Systems Engineer
+          </p>
+        </div>
+
+        <div style="font-size: 14px; line-height: 1.7; color: #f8fafc; margin-bottom: 28px; white-space: pre-wrap;">
+${escapeHtml(safeMessage)}
+        </div>
+
+        <div style="border-top: 1px solid #1e293b; padding-top: 20px; font-size: 12px; color: #94a3b8;">
+          <p style="margin: 0; font-weight: 600; color: #e2e8f0;">Anurag Sahu</p>
+          <p style="margin: 4px 0 0 0;">B.Tech CSE (AI & ML) Sophomore</p>
+          <p style="margin: 4px 0 0 0;">
+            <a href="https://anuragsahu.com" style="color: #06b6d4; text-decoration: none;">anuragsahu.com</a> • 
+            <a href="https://github.com/anuragsahu0" style="color: #06b6d4; text-decoration: none;">GitHub</a> • 
+            <a href="mailto:${escapeHtml(config.emailFrom)}" style="color: #06b6d4; text-decoration: none;">${escapeHtml(config.emailFrom)}</a>
+          </p>
+        </div>
+      </div>
+    `.trim(),
+  };
+
+  if (transporter) {
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      return { success: true, messageId: info.messageId, mode: 'smtp' };
+    } catch (err) {
+      console.error('[EmailService] SMTP Admin Reply failed:', err.message);
+      return { success: false, error: err.message, mode: 'smtp_failed' };
+    }
+  } else {
+    console.log('\n========================================');
+    console.log('✉️ [EMAIL SERVICE - ADMIN REPLY DEMO LOGGED]');
+    console.log('To:', recipientEmail);
+    console.log('Subject:', cleanSubject);
+    console.log('Reply Body:', safeMessage);
+    console.log('========================================\n');
+    return { success: true, messageId: `demo-reply-${Date.now()}`, mode: 'demo_logged' };
   }
 };
 
@@ -78,14 +206,18 @@ Reply directly to this email to contact ${fullName} (${email}).
  * SLA: 24-48 Hours Response Guarantee.
  */
 const sendAutoReplyEmail = async ({ fullName, email, subject }) => {
+  const recipientName = sanitizeHeader(fullName || 'Visitor');
+  const recipientEmail = sanitizeHeader(email);
+  const cleanSubject = sanitizeHeader(subject || 'Inquiry');
+
   const mailOptions = {
-    from: `"Anurag Sahu" <${config.recipientEmail}>`,
-    to: email,
+    from: `"Anurag Sahu" <${config.emailFrom}>`,
+    to: recipientEmail,
     subject: `Thank you for contacting Anurag Sahu | Message Received ⚡`,
     text: `
-Hi ${fullName},
+Hi ${recipientName},
 
-Thank you for reaching out through my portfolio website! I have received your message regarding "${subject}".
+Thank you for reaching out through my portfolio website! I have received your message regarding "${cleanSubject}".
 
 RESPONSE SLA TIMELINE:
 I am reviewing your inquiry and will personally reply to your email within 24 to 48 hours.
@@ -97,58 +229,72 @@ LinkedIn: https://www.linkedin.com/in/anurag-sahu-5a46b9360/
 Best regards,
 Anurag Sahu
 B.Tech CSE (AI & ML) Sophomore
-shivasahu0612@gmail.com
-    `,
+${config.emailFrom}
+    `.trim(),
     html: `
-      <div style="font-family: Arial, sans-serif; background-color: #030712; color: #f9fafb; padding: 32px; border-radius: 16px; border: 1px solid #06b6d4; max-width: 600px; margin: 0 auto;">
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #070B16; color: #f1f5f9; padding: 32px 24px; border-radius: 16px; border: 1px solid #1e293b; max-width: 600px; margin: 0 auto;">
         <div style="text-align: center; margin-bottom: 24px;">
-          <h2 style="color: #06b6d4; margin: 0; font-size: 22px;">⚡ ANURAG SAHU • PORTFOLIO</h2>
-          <p style="color: #9ca3af; font-size: 13px; margin-top: 4px;">Full-Stack Web Architect & AI/ML Sophomore</p>
+          <h2 style="color: #06b6d4; margin: 0; font-size: 20px;">⚡ ANURAG SAHU • PORTFOLIO</h2>
+          <p style="color: #94a3b8; font-size: 12px; margin-top: 4px;">Full-Stack Web Architect & AI/ML Sophomore</p>
         </div>
 
-        <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-          <p style="font-size: 16px; color: #ffffff; margin-top: 0;">Hi <strong>${fullName}</strong>,</p>
+        <div style="background: rgba(15, 23, 42, 0.6); padding: 20px; border-radius: 12px; border: 1px solid #334155;">
+          <p style="font-size: 15px; color: #ffffff; margin-top: 0;">Hi <strong>${escapeHtml(recipientName)}</strong>,</p>
           
-          <p style="color: #d1d5db; line-height: 1.6;">
-            Thank you for reaching out through my portfolio website! I have received your message regarding <strong>"${subject}"</strong>.
+          <p style="color: #cbd5e1; line-height: 1.6; font-size: 13px;">
+            Thank you for reaching out through my portfolio website! I have received your message regarding <strong>"${escapeHtml(cleanSubject)}"</strong>.
           </p>
 
           <div style="padding: 14px; background: rgba(6,182,212,0.1); border-left: 4px solid #06b6d4; border-radius: 6px; margin: 20px 0;">
-            <p style="margin: 0; color: #06b6d4; font-weight: bold; font-size: 14px;">
+            <p style="margin: 0; color: #06b6d4; font-weight: bold; font-size: 13px;">
               ⏰ Response SLA Timeline:
             </p>
-            <p style="margin: 4px 0 0 0; color: #e0f2fe; font-size: 14px;">
+            <p style="margin: 4px 0 0 0; color: #e0f2fe; font-size: 13px;">
               I am reviewing your inquiry and will personally reply to your email within <strong>24 to 48 hours</strong>.
             </p>
           </div>
 
-          <p style="color: #9ca3af; font-size: 13px; margin-bottom: 0;">
-            In the meantime, feel free to explore my latest code builds on <a href="https://github.com/anuragsahu0" style="color: #06b6d4;">GitHub</a> or connect with me on <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" style="color: #8b5cf6;">LinkedIn</a>.
+          <p style="color: #94a3b8; font-size: 12px; margin-bottom: 0;">
+            In the meantime, feel free to explore my latest code builds on <a href="https://github.com/anuragsahu0" style="color: #06b6d4;">GitHub</a> or connect with me on <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" style="color: #38bdf8;">LinkedIn</a>.
           </p>
         </div>
 
-        <div style="text-align: center; margin-top: 24px; color: #6b7280; font-size: 12px;">
+        <div style="text-align: center; margin-top: 24px; color: #64748b; font-size: 11px;">
           Best regards,<br/>
           <strong style="color: #ffffff;">Anurag Sahu</strong><br/>
           B.Tech CSE (AI & ML) Sophomore<br/>
-          <a href="mailto:shivasahu0612@gmail.com" style="color: #06b6d4;">shivasahu0612@gmail.com</a>
+          <a href="mailto:${escapeHtml(config.emailFrom)}" style="color: #06b6d4;">${escapeHtml(config.emailFrom)}</a>
         </div>
       </div>
-    `,
+    `.trim(),
   };
 
   if (transporter) {
-    const info = await transporter.sendMail(mailOptions);
-    return { success: true, messageId: info.messageId };
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      return { success: true, messageId: info.messageId, mode: 'smtp' };
+    } catch (err) {
+      console.error('[EmailService] SMTP Auto-Reply failed:', err.message);
+      return { success: false, error: err.message, mode: 'smtp_failed' };
+    }
   } else {
     console.log('\n========================================');
-    console.log('🤖 [AUTO-REPLY SENT TO VISITOR]');
-    console.log('To:', fullName, `<${email}>`);
+    console.log('🤖 [EMAIL SERVICE - AUTO-REPLY DEMO LOGGED]');
+    console.log('To:', recipientName, `<${recipientEmail}>`);
     console.log('Subject:', mailOptions.subject);
-    console.log('SLA Guarantee: 24-48 Hours Response');
     console.log('========================================\n');
-    return { success: true, mode: 'auto_reply_demo' };
+    return { success: true, messageId: `demo-auto-${Date.now()}`, mode: 'auto_reply_demo' };
   }
 };
 
-module.exports = { sendContactEmail, sendAutoReplyEmail };
+// Aliases for backward compatibility
+const sendContactEmail = sendContactNotificationEmail;
+
+module.exports = {
+  sendContactNotificationEmail,
+  sendAdminReplyEmail,
+  sendAutoReplyEmail,
+  sendContactEmail,
+  sanitizeHeader,
+  escapeHtml,
+};

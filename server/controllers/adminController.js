@@ -1,4 +1,5 @@
 const Contact = require('../models/Contact');
+const Notification = require('../models/Notification');
 const ActivityLog = require('../models/ActivityLog');
 const LoginHistory = require('../models/LoginHistory');
 const { memoryEvents, activeSessions, parseUserAgent } = require('./analyticsController');
@@ -11,13 +12,16 @@ const memoryLoginHistory = [];
  * Log an Admin Activity Event
  */
 const logActivity = async (action, targetCollection, details = {}, req = null) => {
+  const resourceType = targetCollection || '';
   const logEntry = {
     _id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-    adminId: 'admin',
-    adminEmail: 'admin@anuragsahu.dev',
+    adminId: req?.user?.id || 'admin',
+    adminEmail: req?.user?.email || 'admin@anuragsahu.dev',
     action,
+    resourceType,
     targetCollection,
     details,
+    metadata: details,
     ipAddress: req ? req.ip || req.headers['x-forwarded-for'] || '127.0.0.1' : '127.0.0.1',
     createdAt: new Date(),
   };
@@ -66,15 +70,21 @@ const getAdminDashboardStats = async (req, res, next) => {
   try {
     let totalContacts = 0;
     let unreadCount = 0;
+    let unreadNotifications = 0;
     let recentContacts = [];
 
     try {
       if (Contact.db && Contact.db.readyState === 1) {
-        [totalContacts, unreadCount, recentContacts] = await Promise.all([
+        const [totalC, unreadC, recentC, unreadN] = await Promise.all([
           Contact.countDocuments(),
-          Contact.countDocuments({ status: 'unread' }),
+          Contact.countDocuments({ status: { $in: ['NEW', 'UNREAD', 'unread'] } }),
           Contact.find().sort({ createdAt: -1 }).limit(10),
+          Notification.countDocuments({ isRead: false }).catch(() => 0),
         ]);
+        totalContacts = totalC;
+        unreadCount = unreadC;
+        recentContacts = recentC;
+        unreadNotifications = unreadN || 0;
       }
     } catch (dbErr) {}
 
@@ -130,6 +140,7 @@ const getAdminDashboardStats = async (req, res, next) => {
         linkedinClicks: linkedinClicks,
         contactSubmissions: totalContacts,
         unreadContacts: unreadCount,
+        unreadNotifications: unreadNotifications,
       },
       recentContacts,
       recentEvents: events.slice(-15).reverse(),

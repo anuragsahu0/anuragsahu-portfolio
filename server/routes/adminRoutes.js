@@ -84,8 +84,12 @@ const {
 } = require('../controllers/resumeController');
 const {
   getMessages,
+  getMessageById,
   markMessageRead,
+  markMessageUnread,
   archiveMessage,
+  updateMessageStatus,
+  replyToMessage,
   deleteMessage,
 } = require('../controllers/contactController');
 const {
@@ -97,6 +101,7 @@ const {
 const {
   getNotifications,
   markNotificationRead,
+  markAllNotificationsRead,
   deleteNotification,
 } = require('../controllers/notificationController');
 const { getActivityLogs } = require('../controllers/activityLogController');
@@ -215,14 +220,22 @@ router.patch('/admin/settings', updateSettings);
 
 // ─── Messages & Inquiries ───────────────────────────────────
 router.get('/admin/messages', getMessages);
+router.get('/admin/messages/:id', getMessageById);
 router.put('/admin/messages/:id/read', markMessageRead);
 router.patch('/admin/messages/:id/read', markMessageRead);
+router.put('/admin/messages/:id/unread', markMessageUnread);
+router.patch('/admin/messages/:id/unread', markMessageUnread);
 router.put('/admin/messages/:id/archive', archiveMessage);
 router.patch('/admin/messages/:id/archive', archiveMessage);
+router.put('/admin/messages/:id/status', updateMessageStatus);
+router.patch('/admin/messages/:id/status', updateMessageStatus);
+router.post('/admin/messages/:id/reply', replyToMessage);
 router.delete('/admin/messages/:id', deleteMessage);
 
 // ─── Notifications ──────────────────────────────────────────
 router.get('/admin/notifications', getNotifications);
+router.post('/admin/notifications/read-all', markAllNotificationsRead);
+router.patch('/admin/notifications/read-all', markAllNotificationsRead);
 router.patch('/admin/notifications/:id/read', markNotificationRead);
 router.put('/admin/notifications/:id/read', markNotificationRead);
 router.delete('/admin/notifications/:id', deleteNotification);

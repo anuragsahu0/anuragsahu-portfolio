@@ -36,16 +36,21 @@ const authLimiter = rateLimit({
 
 /**
  * Contact Form Rate Limiter
- * 5 submissions per hour per IP.
+ * 10 submissions per hour per IP.
  */
 const contactLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 5,
+  max: 10,
   standardHeaders: true,
   legacyHeaders: false,
+  statusCode: 429,
   message: {
     success: false,
-    message: 'Too many contact form submissions. Please wait an hour before trying again.',
+    error: {
+      code: 'RATE_LIMIT_EXCEEDED',
+      message: 'Too many contact form submissions. Please wait before trying again.',
+    },
+    message: 'Too many contact form submissions. Please wait before trying again.',
   },
 });
 

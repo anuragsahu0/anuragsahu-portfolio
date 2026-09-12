@@ -117,9 +117,9 @@
     /* Delete confirm modal */
     #confirm-modal { position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; }
     #confirm-modal.open { display: flex; }
-    /* Phase 5 Modals */
-    #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal { position: fixed; inset: 0; z-index: 8500; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; padding: 16px; }
-    #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open { display: flex; }
+    /* Phase 5 & 6 Modals */
+    #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal { position: fixed; inset: 0; z-index: 8500; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; padding: 16px; }
+    #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open { display: flex; }
   </style>
 </head>
 <body class="bg-brand-bg text-slate-100 antialiased selection:bg-cyan-500/20 selection:text-cyan-300">
@@ -350,6 +350,15 @@
               <span>Messages</span>
               <span id="unread-pill" class="hidden ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-cyan-500/20 text-cyan-300 font-bold">0</span>
             </button>
+            <button onclick="switchTab('notifications')" class="sidebar-item w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/40" data-tab="notifications">
+              <i data-lucide="bell" class="w-4 h-4 text-slate-500"></i>
+              <span>Notifications</span>
+              <span id="sidebar-notif-badge" class="hidden ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-cyan-500/20 text-cyan-300 font-bold">0</span>
+            </button>
+            <button onclick="switchTab('activity')" class="sidebar-item w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/40" data-tab="activity">
+              <i data-lucide="history" class="w-4 h-4 text-slate-500"></i>
+              <span>Activity Log</span>
+            </button>
             <button onclick="switchTab('settings')" class="sidebar-item w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/40" data-tab="settings">
               <i data-lucide="settings" class="w-4 h-4 text-slate-500"></i>
               <span>Settings</span>
@@ -402,6 +411,37 @@
           <div class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono">
             <i data-lucide="activity" class="w-3 h-3 animate-pulse"></i>
             <span id="health-status">API: ONLINE</span>
+          </div>
+
+          <!-- Topbar Notification Bell -->
+          <div class="relative">
+            <button id="topbar-notif-btn" onclick="toggleNotificationDropdown()" class="p-2 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-slate-800/60 relative transition-colors" title="Notifications" aria-label="Notifications">
+              <i data-lucide="bell" class="w-4 h-4"></i>
+              <span id="topbar-notif-badge" class="hidden absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-cyan-500 text-[10px] font-mono font-bold text-slate-950 flex items-center justify-center border-2 border-brand-sidebar shadow-sm">0</span>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="topbar-notif-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-[#070B16] border border-brand-border shadow-2xl z-50 overflow-hidden backdrop-blur-xl">
+              <div class="p-3.5 border-b border-brand-border flex items-center justify-between bg-slate-950/60">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="bell" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span class="text-xs font-bold text-slate-200">Notifications</span>
+                  <span id="notif-dropdown-count" class="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-cyan-500/10 text-cyan-300">0 unread</span>
+                </div>
+                <button onclick="markAllNotificationsRead()" class="text-[11px] font-mono text-cyan-400 hover:underline">
+                  Mark all read
+                </button>
+              </div>
+              <div id="notif-dropdown-list" class="max-h-72 overflow-y-auto divide-y divide-brand-border/60">
+                <div class="p-4 text-center text-xs text-slate-500 font-mono">Loading notifications...</div>
+              </div>
+              <div class="p-2.5 border-t border-brand-border bg-slate-950/40 text-center">
+                <button onclick="switchTab('notifications'); toggleNotificationDropdown(false)" class="text-xs text-cyan-400 hover:underline font-mono inline-flex items-center gap-1">
+                  <span>View all in Notifications tab</span>
+                  <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </button>
+              </div>
+            </div>
           </div>
 
           <a href="/" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-cyan-500/10 border border-transparent hover:border-cyan-500/20 text-xs font-medium transition-colors">
@@ -529,21 +569,65 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
             <div>
               <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">
-                Contact Messages
+                Contact Inquiries & Messages
               </h1>
               <p class="text-xs text-slate-400 mt-1">
-                Real-time communications submitted via the public portfolio contact form.
+                Real-time communications submitted via the public portfolio contact form with email delivery tracking and admin reply capabilities.
               </p>
             </div>
-            <button onclick="loadMessages()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-sidebar border border-brand-border text-slate-300 hover:text-cyan-300 text-xs font-medium transition-colors">
-              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-              <span>Refresh Inquiries</span>
-            </button>
+            <div class="flex items-center gap-2">
+              <button onclick="loadMessages()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-sidebar border border-brand-border text-slate-300 hover:text-cyan-300 text-xs font-medium transition-colors">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                <span>Refresh</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Messages Toolbar: Filters, Search, Sort -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-3 sm:p-4 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <!-- Search Input -->
+              <div class="relative flex-1">
+                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input
+                  type="text"
+                  id="messages-search-input"
+                  oninput="onMessageSearchInput(this.value)"
+                  placeholder="Search inquiries by sender, email, subject, or message content..."
+                  class="cms-input pl-9 text-xs"
+                />
+              </div>
+              <!-- Sort Selector -->
+              <div class="flex items-center gap-2">
+                <select id="messages-sort-select" onchange="onMessageSortChange(this.value)" class="cms-input text-xs w-auto">
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Status Filter Pills -->
+            <div class="flex items-center justify-between gap-2 pt-1 border-t border-brand-border/60 text-[11px] font-mono flex-wrap">
+              <div class="flex items-center gap-1.5 flex-wrap" id="messages-status-pills">
+                <button onclick="filterMessagesByStatus('ALL')" class="msg-status-pill px-2.5 py-1 rounded-md text-[10px] font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30" data-status="ALL">ALL</button>
+                <button onclick="filterMessagesByStatus('NEW')" class="msg-status-pill px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200" data-status="NEW">NEW</button>
+                <button onclick="filterMessagesByStatus('READ')" class="msg-status-pill px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200" data-status="READ">READ</button>
+                <button onclick="filterMessagesByStatus('REPLIED')" class="msg-status-pill px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200" data-status="REPLIED">REPLIED</button>
+                <button onclick="filterMessagesByStatus('ARCHIVED')" class="msg-status-pill px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200" data-status="ARCHIVED">ARCHIVED</button>
+                <button onclick="filterMessagesByStatus('SPAM')" class="msg-status-pill px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200" data-status="SPAM">SPAM</button>
+              </div>
+              <div id="messages-summary-count" class="text-slate-500 text-[10px]">Loading count...</div>
+            </div>
           </div>
 
           <!-- Messages Container -->
           <div id="messages-container" class="space-y-3">
             <div class="text-center py-12 text-xs text-slate-500 font-mono">Loading inquiries...</div>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div id="messages-pagination" class="flex items-center justify-between pt-4 border-t border-brand-border text-xs text-slate-400">
+            <!-- Dynamically populated -->
           </div>
         </div>
 
@@ -1196,6 +1280,131 @@
           </form>
         </div>
 
+        <!-- ─── 19. NOTIFICATIONS TAB ─── -->
+        <div id="tab-notifications" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">System Notifications</h1>
+              <p class="text-xs text-slate-400 mt-1">Real-time alerts for contact submissions, administrative actions, and system health.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="markAllNotificationsRead()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors flex items-center gap-1.5">
+                <i data-lucide="check-check" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>Mark All Read</span>
+              </button>
+              <button onclick="loadNotifications()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-sidebar border border-brand-border text-slate-300 hover:text-cyan-300 text-xs font-medium transition-colors">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                <span>Refresh</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Notifications Filter Toolbar -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-3 flex items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2" id="notif-filter-pills">
+              <button onclick="filterNotifications(false)" class="notif-pill px-3 py-1 rounded-md text-[11px] font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30" data-notif-filter="all">All Notifications</button>
+              <button onclick="filterNotifications(true)" class="notif-pill px-3 py-1 rounded-md text-[11px] font-medium text-slate-400 hover:text-slate-200" data-notif-filter="unread">Unread Only</button>
+            </div>
+            <span id="notif-total-summary" class="text-[11px] font-mono text-slate-500">Loading...</span>
+          </div>
+
+          <!-- Notifications List -->
+          <div id="notifications-container" class="space-y-2.5">
+            <div class="text-center py-12 text-xs text-slate-500 font-mono">Loading notifications...</div>
+          </div>
+
+          <!-- Notifications Pagination -->
+          <div id="notifications-pagination" class="flex items-center justify-between pt-4 border-t border-brand-border text-xs text-slate-400">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- ─── 20. ACTIVITY LOG TAB ─── -->
+        <div id="tab-activity" class="tab-pane hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Activity & Audit Logs</h1>
+              <p class="text-xs text-slate-400 mt-1">Chronological record of administrator mutations, security events, and system telemetry.</p>
+            </div>
+            <button onclick="loadActivityLogs()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-sidebar border border-brand-border text-slate-300 hover:text-cyan-300 text-xs font-medium transition-colors">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>Refresh Logs</span>
+            </button>
+          </div>
+
+          <!-- Activity Filter Toolbar -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-3 sm:p-4 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="cms-label">Action</label>
+                <select id="activity-action-select" onchange="onActivityFilterChange()" class="cms-input text-xs">
+                  <option value="ALL">All Actions</option>
+                  <option value="LOGIN">LOGIN</option>
+                  <option value="REPLY">REPLY</option>
+                  <option value="UPDATE">UPDATE</option>
+                  <option value="CREATE">CREATE</option>
+                  <option value="DELETE">DELETE</option>
+                  <option value="ARCHIVE">ARCHIVE</option>
+                  <option value="READ">READ</option>
+                </select>
+              </div>
+              <div>
+                <label class="cms-label">Resource Type</label>
+                <select id="activity-resource-select" onchange="onActivityFilterChange()" class="cms-input text-xs">
+                  <option value="ALL">All Resources</option>
+                  <option value="MESSAGE">MESSAGE</option>
+                  <option value="AUTH">AUTH</option>
+                  <option value="NOTIFICATION">NOTIFICATION</option>
+                  <option value="PROJECT">PROJECT</option>
+                  <option value="SKILL">SKILL</option>
+                  <option value="SETTINGS">SETTINGS</option>
+                  <option value="MEDIA">MEDIA</option>
+                  <option value="RESUME">RESUME</option>
+                  <option value="SYSTEM">SYSTEM</option>
+                </select>
+              </div>
+              <div>
+                <label class="cms-label">Search</label>
+                <input
+                  type="text"
+                  id="activity-search-input"
+                  oninput="onActivitySearchInput(this.value)"
+                  placeholder="Search description, email..."
+                  class="cms-input text-xs"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity Table -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl overflow-hidden shadow-xl">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-900/80 text-[10px] font-mono uppercase text-slate-400 border-b border-brand-border">
+                  <tr>
+                    <th class="py-3 px-4">Timestamp</th>
+                    <th class="py-3 px-4">Action</th>
+                    <th class="py-3 px-4">Resource</th>
+                    <th class="py-3 px-4">Description</th>
+                    <th class="py-3 px-4">Admin / Origin</th>
+                    <th class="py-3 px-4">IP</th>
+                  </tr>
+                </thead>
+                <tbody id="activity-table-body" class="divide-y divide-brand-border">
+                  <tr>
+                    <td colspan="6" class="py-12 text-center text-slate-500 font-mono">Loading activity logs...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Activity Pagination -->
+          <div id="activity-pagination" class="flex items-center justify-between pt-4 border-t border-brand-border text-xs text-slate-400">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
         <!-- ─── GENERIC FALLBACK (unused) ─── -->
         <div id="tab-placeholder" class="tab-pane hidden"></div>
 
@@ -1268,6 +1477,14 @@
             <button onclick="switchTab('messages'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
               <i data-lucide="mail" class="w-4 h-4 text-slate-500"></i>
               <span>Messages</span>
+            </button>
+            <button onclick="switchTab('notifications'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
+              <i data-lucide="bell" class="w-4 h-4 text-slate-500"></i>
+              <span>Notifications</span>
+            </button>
+            <button onclick="switchTab('activity'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
+              <i data-lucide="history" class="w-4 h-4 text-slate-500"></i>
+              <span>Activity Log</span>
             </button>
             <button onclick="switchTab('settings'); toggleMobileDrawer(false)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40">
               <i data-lucide="settings" class="w-4 h-4 text-slate-500"></i>
@@ -1511,6 +1728,12 @@
       } else if (tabId === 'analytics') {
         document.getElementById('tab-analytics').classList.remove('hidden');
         loadAnalytics();
+      } else if (tabId === 'notifications') {
+        document.getElementById('tab-notifications').classList.remove('hidden');
+        loadNotifications();
+      } else if (tabId === 'activity') {
+        document.getElementById('tab-activity').classList.remove('hidden');
+        loadActivityLogs();
       } else {
         document.getElementById('tab-placeholder').classList.remove('hidden');
       }
@@ -1542,16 +1765,37 @@
             return;
           }
           if (dashRes.value.ok) {
-            const data = await dashRes.value.json();
-            document.getElementById('stat-total-contacts').textContent = data.stats?.contactSubmissions ?? '0';
-            document.getElementById('stat-unread-contacts').textContent = data.stats?.unreadContacts ?? '0';
+            const contactSubmissions = data.stats?.contactSubmissions ?? '0';
+            const unreadContacts = data.stats?.unreadContacts ?? '0';
+            const unreadNotifs = data.stats?.unreadNotifications ?? '0';
+
+            const statTotal = document.getElementById('stat-total-contacts');
+            const statUnread = document.getElementById('stat-unread-contacts');
+            if (statTotal) statTotal.textContent = contactSubmissions;
+            if (statUnread) statUnread.textContent = unreadContacts;
 
             const unreadPill = document.getElementById('unread-pill');
             if (unreadPill) {
-              const count = data.stats?.unreadContacts || 0;
-              unreadPill.textContent = count;
-              if (count > 0) unreadPill.classList.remove('hidden');
+              unreadPill.textContent = unreadContacts;
+              if (Number(unreadContacts) > 0) unreadPill.classList.remove('hidden');
               else unreadPill.classList.add('hidden');
+            }
+
+            const topNotifBadge = document.getElementById('topbar-notif-badge');
+            const sideNotifBadge = document.getElementById('sidebar-notif-badge');
+            const notifDropdownCount = document.getElementById('notif-dropdown-count');
+            if (topNotifBadge) {
+              topNotifBadge.textContent = unreadNotifs;
+              if (Number(unreadNotifs) > 0) topNotifBadge.classList.remove('hidden');
+              else topNotifBadge.classList.add('hidden');
+            }
+            if (sideNotifBadge) {
+              sideNotifBadge.textContent = unreadNotifs;
+              if (Number(unreadNotifs) > 0) sideNotifBadge.classList.remove('hidden');
+              else sideNotifBadge.classList.add('hidden');
+            }
+            if (notifDropdownCount) {
+              notifDropdownCount.textContent = `${unreadNotifs} unread`;
             }
 
             renderRecentMessages(data.recentContacts || []);
@@ -1559,7 +1803,8 @@
         }
 
         if (healthRes.status === 'fulfilled' && healthRes.value.ok) {
-          document.getElementById('health-status').textContent = 'API: ONLINE (200 OK)';
+          const el = document.getElementById('health-status');
+          if (el) el.textContent = 'API: ONLINE (200 OK)';
         }
       } catch(e) {
         console.warn('Telemetry sync error:', e);
@@ -1571,102 +1816,755 @@
       if (!container) return;
 
       if (msgs.length === 0) {
-        container.innerHTML = '<div class="text-center py-6 text-xs text-slate-500">No recent contact inquiries received yet.</div>';
+        container.innerHTML = '<div class="text-center py-6 text-xs text-slate-500 font-mono">No recent contact inquiries received yet.</div>';
         return;
       }
 
-      container.innerHTML = msgs.slice(0, 5).map(m => `
-        <div class="py-3 flex items-center justify-between gap-4">
-          <div class="min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-semibold text-slate-200 truncate">${escapeHtml(m.fullName)}</span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${
-                m.status === 'read' ? 'bg-slate-800 text-slate-400' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-              }">${m.status || 'unread'}</span>
+      container.innerHTML = msgs.slice(0, 5).map(m => {
+        const sender = escapeHtml(m.name || m.fullName || 'Anonymous');
+        const status = (m.status || (m.isRead ? 'READ' : 'NEW')).toUpperCase();
+        const badgeColor = status === 'NEW'
+          ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+          : (status === 'REPLIED' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-slate-800 text-slate-400');
+
+        return `
+          <div class="py-3 flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-900/40 px-2 rounded-lg transition-colors" onclick="openMessageDetailModal('${m._id}')">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-semibold text-slate-200 truncate">${sender}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${badgeColor}">${status}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 truncate mt-0.5">${escapeHtml(m.subject || m.message)}</p>
             </div>
-            <p class="text-[11px] text-slate-500 truncate mt-0.5">${escapeHtml(m.subject || m.message)}</p>
+            <span class="text-[10px] font-mono text-slate-500 shrink-0">${new Date(m.createdAt).toLocaleDateString()}</span>
           </div>
-          <span class="text-[10px] font-mono text-slate-500 shrink-0">${new Date(m.createdAt).toLocaleDateString()}</span>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    async function loadMessages() {
+    // ─── PHASE 6: CONTACT MESSAGES INBOX ENGINE ────────────────
+    let _messagesState = { status: 'ALL', search: '', sort: 'newest', page: 1, limit: 10, total: 0, pages: 1 };
+    let _messagesCache = [];
+    let _msgSearchTimeout = null;
+    let _activeMessage = null;
+
+    async function loadMessages(page = 1) {
+      _messagesState.page = page;
       const container = document.getElementById('messages-container');
+      if (!container) return;
       container.innerHTML = '<div class="text-center py-12 text-xs text-slate-500 font-mono">Loading inquiries...</div>';
 
       try {
-        const res = await fetch('/api/admin/messages', {
-          credentials: 'include'
+        const queryParams = new URLSearchParams({
+          page: _messagesState.page,
+          limit: _messagesState.limit,
+          status: _messagesState.status,
+          sort: _messagesState.sort,
         });
-
-        if (res.status === 401) {
-          handleLogout();
-          return;
+        if (_messagesState.search.trim()) {
+          queryParams.set('search', _messagesState.search.trim());
         }
+
+        const res = await fetch(`/api/admin/messages?${queryParams.toString()}`, { credentials: 'include' });
+        if (res.status === 401) { handleLogout(); return; }
 
         const data = await res.json();
-        const msgs = data.messages || [];
+        const msgs = data.data?.messages || data.messages || [];
+        _messagesCache = msgs;
+        _messagesState.total = data.data?.pagination?.totalItems ?? data.total ?? msgs.length;
+        _messagesState.pages = data.data?.pagination?.totalPages ?? Math.ceil(_messagesState.total / _messagesState.limit) || 1;
 
-        if (msgs.length === 0) {
-          container.innerHTML = `
-            <div class="p-8 border border-dashed border-brand-border rounded-2xl bg-brand-sidebar/50 text-center text-xs text-slate-500">
-              No contact inquiries recorded. Submissions via the public contact form will appear here.
+        const countSummary = document.getElementById('messages-summary-count');
+        if (countSummary) countSummary.textContent = `${_messagesState.total} total inquiries`;
+
+        renderMessages(msgs);
+        renderMessagesPagination();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        container.innerHTML = `<div class="p-6 text-center text-xs text-rose-400">Failed to load inquiries: ${err.message}</div>`;
+      }
+    }
+
+    function renderMessages(msgs) {
+      const container = document.getElementById('messages-container');
+      if (!container) return;
+
+      if (msgs.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 border border-dashed border-brand-border rounded-2xl bg-brand-sidebar/50 text-center text-xs text-slate-500">
+            No inquiries match your current filters.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = msgs.map(m => {
+        const id = m._id;
+        const sender = escapeHtml(m.name || m.fullName || 'Anonymous');
+        const email = escapeHtml(m.email || '');
+        const subject = escapeHtml(m.subject || 'No Subject');
+        const snippet = escapeHtml((m.message || '').substring(0, 180));
+        const status = (m.status || (m.isRead ? 'READ' : 'NEW')).toUpperCase();
+        const emailStatus = m.emailNotificationStatus || 'PENDING';
+
+        let statusClass = 'bg-slate-800 text-slate-400 border border-slate-700';
+        if (status === 'NEW') statusClass = 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20';
+        else if (status === 'REPLIED') statusClass = 'bg-purple-500/10 text-purple-400 border border-purple-500/20';
+        else if (status === 'ARCHIVED') statusClass = 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+        else if (status === 'SPAM') statusClass = 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+
+        const emailBadge = emailStatus === 'SENT'
+          ? '<span class="text-[10px] font-mono text-emerald-400 flex items-center gap-1" title="Notification email delivered to admin"><i data-lucide="check-circle" class="w-3 h-3"></i><span>Emailed</span></span>'
+          : (emailStatus === 'FAILED'
+            ? '<span class="text-[10px] font-mono text-rose-400 flex items-center gap-1" title="Email dispatch failed"><i data-lucide="alert-triangle" class="w-3 h-3"></i><span>Email Failed</span></span>'
+            : '<span class="text-[10px] font-mono text-slate-500 flex items-center gap-1"><span>Email Queued</span></span>');
+
+        const isUnread = status === 'NEW' || !m.isRead;
+
+        return `
+          <div class="bg-brand-sidebar border ${isUnread ? 'border-cyan-500/40 bg-cyan-950/10' : 'border-brand-border'} rounded-xl p-4 sm:p-5 transition-all space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5 flex-wrap">
+                <span class="text-sm font-bold text-slate-100">${sender}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${statusClass}">${status}</span>
+                ${m.company ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-800 text-slate-400 border border-slate-700">${escapeHtml(m.company)}</span>` : ''}
+                ${emailBadge}
+              </div>
+              <div class="flex items-center gap-3 text-[11px] font-mono text-slate-500">
+                <span>${new Date(m.createdAt).toLocaleString()}</span>
+              </div>
             </div>
-          `;
+
+            <div class="space-y-1">
+              <p class="text-xs text-cyan-400 font-mono flex items-center gap-1">
+                <i data-lucide="mail" class="w-3 h-3"></i>
+                <a href="mailto:${email}" class="hover:underline">${email}</a>
+              </p>
+              <h4 class="text-xs font-semibold text-slate-200">${subject}</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">${snippet}${(m.message || '').length > 180 ? '...' : ''}</p>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-brand-border flex-wrap gap-2">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <button onclick="openMessageDetailModal('${id}')" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-sm">
+                  <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                  <span>View & Reply</span>
+                </button>
+                <button onclick="toggleMessageRead('${id}', ${isUnread})" class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">
+                  ${isUnread ? 'Mark Read' : 'Mark Unread'}
+                </button>
+                <button onclick="archiveMessageById('${id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-amber-400 hover:bg-slate-700 text-xs font-medium transition-colors">
+                  ${status === 'ARCHIVED' ? 'Unarchive' : 'Archive'}
+                </button>
+              </div>
+              <button onclick="deleteMessageById('${id}')" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors" title="Delete Inquiry">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderMessagesPagination() {
+      const container = document.getElementById('messages-pagination');
+      if (!container) return;
+      const { page, pages, total } = _messagesState;
+      if (total === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = `
+        <span class="text-[11px] font-mono text-slate-500">Page ${page} of ${pages} (${total} total)</span>
+        <div class="flex items-center gap-2">
+          <button onclick="changeMessagesPage(${page - 1})" ${page <= 1 ? 'disabled class="opacity-40 cursor-not-allowed"' : 'class="hover:text-cyan-400"'} class="px-3 py-1 rounded bg-slate-800 text-xs font-mono">
+            ‹ Prev
+          </button>
+          <button onclick="changeMessagesPage(${page + 1})" ${page >= pages ? 'disabled class="opacity-40 cursor-not-allowed"' : 'class="hover:text-cyan-400"'} class="px-3 py-1 rounded bg-slate-800 text-xs font-mono">
+            Next ›
+          </button>
+        </div>
+      `;
+    }
+
+    function changeMessagesPage(p) {
+      if (p < 1 || p > _messagesState.pages) return;
+      loadMessages(p);
+    }
+
+    function filterMessagesByStatus(status) {
+      _messagesState.status = status;
+      document.querySelectorAll('.msg-status-pill').forEach(btn => {
+        if (btn.getAttribute('data-status') === status) {
+          btn.className = 'msg-status-pill px-2.5 py-1 rounded-md text-[10px] font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30';
+        } else {
+          btn.className = 'msg-status-pill px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200';
+        }
+      });
+      loadMessages(1);
+    }
+
+    function onMessageSearchInput(val) {
+      _messagesState.search = val;
+      clearTimeout(_msgSearchTimeout);
+      _msgSearchTimeout = setTimeout(() => {
+        loadMessages(1);
+      }, 300);
+    }
+
+    function onMessageSortChange(val) {
+      _messagesState.sort = val;
+      loadMessages(1);
+    }
+
+    async function openMessageDetailModal(id) {
+      let m = _messagesCache.find(x => String(x._id) === String(id));
+      if (!m) {
+        try {
+          const res = await fetch(`/api/admin/messages/${id}`, { credentials: 'include' });
+          if (res.ok) {
+            const json = await res.json();
+            m = json.data || json.message;
+          }
+        } catch (_) {}
+      }
+      if (!m) {
+        showToast('Inquiry not found', 'error');
+        return;
+      }
+      _activeMessage = m;
+
+      // Populate UI
+      const sender = m.name || m.fullName || 'Anonymous';
+      document.getElementById('mdetail-sender-name').textContent = sender;
+      document.getElementById('mdetail-sender-email').textContent = m.email || '';
+      document.getElementById('mdetail-company').textContent = m.company || '—';
+      document.getElementById('mdetail-created-at').textContent = new Date(m.createdAt).toLocaleString();
+      document.getElementById('mdetail-email-status').textContent = m.emailNotificationStatus || 'SENT';
+      document.getElementById('mdetail-ip-hash').textContent = m.ipHash || '—';
+      document.getElementById('mdetail-subject').textContent = m.subject || '(No Subject)';
+      document.getElementById('mdetail-message-body').textContent = m.message || '';
+
+      const statusBadge = document.getElementById('mdetail-status-badge');
+      const status = (m.status || (m.isRead ? 'READ' : 'NEW')).toUpperCase();
+      statusBadge.textContent = status;
+      statusBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ' +
+        (status === 'NEW' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' :
+        (status === 'REPLIED' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' :
+        (status === 'ARCHIVED' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-slate-800 text-slate-300 border border-slate-700')));
+
+      // Reply form setup
+      document.getElementById('reply-message-id').value = m._id;
+      document.getElementById('reply-subject-input').value = m.subject?.startsWith('Re:') ? m.subject : `Re: ${m.subject || 'Portfolio Inquiry'}`;
+      document.getElementById('reply-body-input').value = `Hi ${sender},\n\nThank you for reaching out through my portfolio website. `;
+
+      // Reply history
+      const historyBox = document.getElementById('mdetail-reply-history');
+      if (m.replySentAt || m.replyMessage) {
+        historyBox.classList.remove('hidden');
+        document.getElementById('mdetail-reply-sent-at').textContent = m.replySentAt ? new Date(m.replySentAt).toLocaleString() : '';
+        document.getElementById('mdetail-reply-subject').textContent = m.replySubject || '(No subject)';
+        document.getElementById('mdetail-reply-content').textContent = m.replyMessage || '';
+      } else {
+        historyBox.classList.add('hidden');
+      }
+
+      // Read status toggle button text
+      const readBtn = document.getElementById('mdetail-toggle-read-btn');
+      if (readBtn) {
+        readBtn.textContent = (status === 'NEW' || !m.isRead) ? 'Mark Read' : 'Mark Unread';
+      }
+
+      // Automatically mark as read if NEW
+      if (status === 'NEW' || !m.isRead) {
+        try {
+          await fetch(`/api/admin/messages/${m._id}/read`, { method: 'PUT', credentials: 'include' });
+          m.isRead = true;
+          m.status = 'READ';
+          loadDashboard();
+        } catch (_) {}
+      }
+
+      document.getElementById('message-detail-modal').classList.add('open');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeMessageDetailModal() {
+      document.getElementById('message-detail-modal').classList.remove('open');
+      _activeMessage = null;
+    }
+
+    function applyReplyTemplate(type) {
+      if (!_activeMessage) return;
+      const sender = _activeMessage.name || _activeMessage.fullName || 'there';
+      const bodyInput = document.getElementById('reply-body-input');
+      if (type === 'thanks') {
+        bodyInput.value = `Hi ${sender},\n\nThank you for reaching out and reviewing my portfolio! I appreciate your message and would love to connect further.\n\nPlease feel free to check out my GitHub (https://github.com/anuragsahu0) or let me know a suitable time for a conversation.\n\nBest regards,\nAnurag Sahu\nFull-Stack Software Engineer`;
+      } else if (type === 'meeting') {
+        bodyInput.value = `Hi ${sender},\n\nThank you for reaching out regarding this opportunity. I am definitely interested in discussing how my engineering skills align with your goals.\n\nCould you share a few potential time slots that work best for you this week? I am available for a Google Meet or phone call.\n\nLooking forward to speaking with you.\n\nBest regards,\nAnurag Sahu\nhttps://anuragsahu.com`;
+      }
+    }
+
+    async function handleAdminReplySubmit(e) {
+      e.preventDefault();
+      if (!_activeMessage) return;
+      const id = document.getElementById('reply-message-id').value;
+      const subject = document.getElementById('reply-subject-input').value.trim();
+      const message = document.getElementById('reply-body-input').value.trim();
+      const btn = document.getElementById('send-reply-btn');
+
+      if (!subject || !message) {
+        showToast('Subject and reply message are required', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span><span>Dispatching Email...</span>';
+
+      try {
+        const res = await fetch(`/api/admin/messages/${id}/reply`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ subject, message }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to send reply');
+
+        showToast('✓ Reply email delivered successfully!', 'success');
+        closeMessageDetailModal();
+        loadMessages(_messagesState.page);
+        loadDashboard();
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="send" class="w-3.5 h-3.5"></i><span>Send Reply Email</span>';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    }
+
+    async function toggleDetailReadStatus() {
+      if (!_activeMessage) return;
+      const isUnread = _activeMessage.status === 'NEW' || !_activeMessage.isRead;
+      await toggleMessageRead(_activeMessage._id, isUnread);
+      closeMessageDetailModal();
+    }
+
+    async function archiveDetailMessage() {
+      if (!_activeMessage) return;
+      await archiveMessageById(_activeMessage._id);
+      closeMessageDetailModal();
+    }
+
+    async function markDetailSpam() {
+      if (!_activeMessage) return;
+      try {
+        await cmsApi('PUT', `/api/admin/messages/${_activeMessage._id}/status`, { status: 'SPAM' });
+        showToast('Message marked as spam', 'success');
+        closeMessageDetailModal();
+        loadMessages(_messagesState.page);
+        loadDashboard();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function deleteDetailMessage() {
+      if (!_activeMessage) return;
+      const id = _activeMessage._id;
+      confirmDelete(`Permanently delete inquiry from "${_activeMessage.name || _activeMessage.fullName || 'Sender'}"?`, async () => {
+        closeMessageDetailModal();
+        await deleteMessageById(id, false);
+      });
+    }
+
+    async function toggleMessageRead(id, currentIsUnread) {
+      try {
+        const endpoint = currentIsUnread ? `/api/admin/messages/${id}/read` : `/api/admin/messages/${id}/unread`;
+        await cmsApi('PUT', endpoint);
+        showToast(currentIsUnread ? 'Marked as read' : 'Marked as unread', 'success');
+        loadMessages(_messagesState.page);
+        loadDashboard();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function archiveMessageById(id) {
+      try {
+        await cmsApi('PUT', `/api/admin/messages/${id}/archive`);
+        showToast('Message archived', 'success');
+        loadMessages(_messagesState.page);
+        loadDashboard();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function deleteMessageById(id, promptConfirm = true) {
+      const doDelete = async () => {
+        try {
+          await cmsApi('DELETE', `/api/admin/messages/${id}`);
+          showToast('Inquiry permanently removed', 'success');
+          loadMessages(_messagesState.page);
+          loadDashboard();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      };
+
+      if (promptConfirm) {
+        confirmDelete('Are you sure you want to permanently delete this message?', doDelete);
+      } else {
+        await doDelete();
+      }
+    }
+
+    // ─── PHASE 6: NOTIFICATIONS ENGINE ─────────────────────────
+    let _notificationsState = { unreadOnly: false, page: 1, limit: 15, total: 0, pages: 1 };
+
+    function toggleNotificationDropdown(force) {
+      const dd = document.getElementById('topbar-notif-dropdown');
+      if (!dd) return;
+      const isHidden = dd.classList.contains('hidden');
+      const shouldOpen = force !== undefined ? force : isHidden;
+
+      if (shouldOpen) {
+        dd.classList.remove('hidden');
+        loadRecentNotificationsDropdown();
+      } else {
+        dd.classList.add('hidden');
+      }
+    }
+
+    async function loadRecentNotificationsDropdown() {
+      const listEl = document.getElementById('notif-dropdown-list');
+      if (!listEl) return;
+      try {
+        const res = await fetch('/api/admin/notifications?limit=6', { credentials: 'include' });
+        if (res.status === 401) return;
+        const data = await res.json();
+        const items = data.data?.notifications || data.notifications || [];
+        const unreadCount = data.data?.unreadCount ?? data.unreadCount ?? 0;
+
+        const countEl = document.getElementById('notif-dropdown-count');
+        if (countEl) countEl.textContent = `${unreadCount} unread`;
+
+        const topBadge = document.getElementById('topbar-notif-badge');
+        const sideBadge = document.getElementById('sidebar-notif-badge');
+        if (topBadge) {
+          topBadge.textContent = unreadCount;
+          if (unreadCount > 0) topBadge.classList.remove('hidden');
+          else topBadge.classList.add('hidden');
+        }
+        if (sideBadge) {
+          sideBadge.textContent = unreadCount;
+          if (unreadCount > 0) sideBadge.classList.remove('hidden');
+          else sideBadge.classList.add('hidden');
+        }
+
+        if (items.length === 0) {
+          listEl.innerHTML = '<div class="p-4 text-center text-xs text-slate-500 font-mono">No notifications recorded yet.</div>';
           return;
         }
 
-        container.innerHTML = msgs.map(m => `
-          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="space-y-1 min-w-0 flex-1">
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-semibold text-slate-100 truncate">${escapeHtml(m.fullName)}</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${
-                  m.status === 'read' ? 'bg-slate-800 text-slate-400' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                }">${m.status || 'unread'}</span>
-              </div>
-              <p class="text-xs text-cyan-400 font-mono">${escapeHtml(m.email)}</p>
-              <p class="text-xs text-slate-300 font-medium pt-1">${escapeHtml(m.subject || 'No Subject')}</p>
-              <p class="text-xs text-slate-400 leading-relaxed pt-0.5 whitespace-pre-wrap">${escapeHtml(m.message)}</p>
-              <p class="text-[10px] text-slate-500 font-mono pt-1">Received: ${new Date(m.createdAt).toLocaleString()}</p>
+        listEl.innerHTML = items.map(n => `
+          <div class="p-3 hover:bg-slate-900/60 flex items-start gap-2.5 transition-colors ${n.isRead ? 'opacity-70' : 'bg-cyan-950/10'}">
+            <div class="w-6 h-6 rounded-md bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="${n.type === 'CONTACT_MESSAGE' ? 'mail' : (n.type === 'SECURITY' ? 'shield' : 'bell')}" class="w-3 h-3"></i>
             </div>
-            <div class="flex sm:flex-col items-center sm:items-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-brand-border">
-              <a href="mailto:${escapeHtml(m.email)}?subject=Re: ${encodeURIComponent(m.subject || 'Inquiry')}" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5">
-                <i data-lucide="mail" class="w-3.5 h-3.5"></i>
-                <span>Reply</span>
-              </a>
-              ${m.status !== 'read' ? `
-                <button onclick="markRead('${m._id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">
-                  Mark Read
-                </button>
-              ` : ''}
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-xs font-semibold text-slate-200 truncate">${escapeHtml(n.title)}</span>
+                ${!n.isRead ? '<span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></span>' : ''}
+              </div>
+              <p class="text-[11px] text-slate-400 leading-snug mt-0.5 truncate">${escapeHtml(n.message)}</p>
+              <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mt-1">
+                <span>${new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                ${!n.isRead ? `<button onclick="markNotificationRead('${n._id}')" class="text-cyan-400 hover:underline">Mark read</button>` : ''}
+              </div>
             </div>
           </div>
         `).join('');
 
         if (typeof lucide !== 'undefined') lucide.createIcons();
-      } catch(err) {
-        container.innerHTML = `<div class="p-6 text-center text-xs text-rose-400">Failed to load inquiries: ${err.message}</div>`;
+      } catch (_) {
+        listEl.innerHTML = '<div class="p-3 text-center text-xs text-slate-500 font-mono">Unable to sync notifications.</div>';
       }
     }
 
-    async function markRead(id) {
+    async function loadNotifications(page = 1) {
+      _notificationsState.page = page;
+      const container = document.getElementById('notifications-container');
+      if (!container) return;
+      container.innerHTML = '<div class="text-center py-12 text-xs text-slate-500 font-mono">Loading notifications...</div>';
+
       try {
-        const res = await fetch(`/api/admin/messages/${id}/read`, {
-          method: 'PUT',
-          credentials: 'include'
+        const queryParams = new URLSearchParams({
+          page: _notificationsState.page,
+          limit: _notificationsState.limit,
         });
-        if (res.status === 401) {
-          handleLogout();
-          return;
+        if (_notificationsState.unreadOnly) {
+          queryParams.set('unreadOnly', 'true');
         }
-        loadMessages();
-        loadDashboard();
-      } catch(e) {
-        alert('Could not update message.');
+
+        const res = await fetch(`/api/admin/notifications?${queryParams.toString()}`, { credentials: 'include' });
+        if (res.status === 401) { handleLogout(); return; }
+
+        const data = await res.json();
+        const items = data.data?.notifications || data.notifications || [];
+        _notificationsState.total = data.data?.pagination?.totalItems ?? data.total ?? items.length;
+        _notificationsState.pages = data.data?.pagination?.totalPages ?? Math.ceil(_notificationsState.total / _notificationsState.limit) || 1;
+
+        const summary = document.getElementById('notif-total-summary');
+        if (summary) summary.textContent = `${_notificationsState.total} notifications`;
+
+        renderNotifications(items);
+        renderNotificationsPagination();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        container.innerHTML = `<div class="p-6 text-center text-xs text-rose-400">Failed to load notifications: ${err.message}</div>`;
       }
     }
+
+    function renderNotifications(items) {
+      const container = document.getElementById('notifications-container');
+      if (!container) return;
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 border border-dashed border-brand-border rounded-2xl bg-brand-sidebar/50 text-center text-xs text-slate-500 font-mono">
+            No notifications to display.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(n => {
+        const isUnread = !n.isRead;
+        const iconName = n.type === 'CONTACT_MESSAGE' ? 'mail' : (n.type === 'SECURITY' ? 'shield-alert' : 'bell');
+
+        return `
+          <div class="bg-brand-sidebar border ${isUnread ? 'border-cyan-500/30 bg-cyan-950/10' : 'border-brand-border'} rounded-xl p-4 flex items-start justify-between gap-4 transition-all">
+            <div class="flex items-start gap-3 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="${iconName}" class="w-4 h-4"></i>
+              </div>
+              <div class="min-w-0 space-y-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-xs font-bold text-slate-200">${escapeHtml(n.title)}</span>
+                  ${isUnread ? '<span class="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-cyan-500/20 text-cyan-300">NEW</span>' : ''}
+                  <span class="text-[10px] font-mono text-slate-500">${new Date(n.createdAt).toLocaleString()}</span>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">${escapeHtml(n.message)}</p>
+                ${n.link ? `
+                  <a href="${escapeHtml(n.link)}" class="text-xs text-cyan-400 hover:underline inline-flex items-center gap-1 font-mono pt-1">
+                    <span>View Related Details</span>
+                    <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                  </a>
+                ` : ''}
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              ${isUnread ? `
+                <button onclick="markNotificationRead('${n._id}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors" title="Mark as read">
+                  Mark Read
+                </button>
+              ` : ''}
+              <button onclick="deleteNotification('${n._id}')" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors" title="Delete notification">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderNotificationsPagination() {
+      const container = document.getElementById('notifications-pagination');
+      if (!container) return;
+      const { page, pages, total } = _notificationsState;
+      if (total === 0) { container.innerHTML = ''; return; }
+
+      container.innerHTML = `
+        <span class="text-[11px] font-mono text-slate-500">Page ${page} of ${pages} (${total} notifications)</span>
+        <div class="flex items-center gap-2">
+          <button onclick="loadNotifications(${page - 1})" ${page <= 1 ? 'disabled class="opacity-40 cursor-not-allowed"' : 'class="hover:text-cyan-400"'} class="px-3 py-1 rounded bg-slate-800 text-xs font-mono">
+            ‹ Prev
+          </button>
+          <button onclick="loadNotifications(${page + 1})" ${page >= pages ? 'disabled class="opacity-40 cursor-not-allowed"' : 'class="hover:text-cyan-400"'} class="px-3 py-1 rounded bg-slate-800 text-xs font-mono">
+            Next ›
+          </button>
+        </div>
+      `;
+    }
+
+    function filterNotifications(unreadOnly) {
+      _notificationsState.unreadOnly = unreadOnly;
+      document.querySelectorAll('.notif-pill').forEach(btn => {
+        const matches = (btn.getAttribute('data-notif-filter') === 'unread') === unreadOnly;
+        if (matches) {
+          btn.className = 'notif-pill px-3 py-1 rounded-md text-[11px] font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30';
+        } else {
+          btn.className = 'notif-pill px-3 py-1 rounded-md text-[11px] font-medium text-slate-400 hover:text-slate-200';
+        }
+      });
+      loadNotifications(1);
+    }
+
+    async function markNotificationRead(id) {
+      try {
+        await cmsApi('PATCH', `/api/admin/notifications/${id}/read`);
+        loadNotifications(_notificationsState.page);
+        loadRecentNotificationsDropdown();
+        loadDashboard();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function markAllNotificationsRead() {
+      try {
+        await cmsApi('POST', '/api/admin/notifications/read-all');
+        showToast('All notifications marked as read', 'success');
+        loadNotifications(1);
+        loadRecentNotificationsDropdown();
+        loadDashboard();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function deleteNotification(id) {
+      try {
+        await cmsApi('DELETE', `/api/admin/notifications/${id}`);
+        showToast('Notification deleted', 'success');
+        loadNotifications(_notificationsState.page);
+        loadRecentNotificationsDropdown();
+        loadDashboard();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ─── PHASE 6: ACTIVITY & AUDIT LOG ENGINE ───────────────────
+    let _activityState = { action: 'ALL', resourceType: 'ALL', search: '', page: 1, limit: 20, total: 0, pages: 1 };
+    let _actSearchTimeout = null;
+
+    async function loadActivityLogs(page = 1) {
+      _activityState.page = page;
+      const tbody = document.getElementById('activity-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center text-slate-500 font-mono">Loading activity logs...</td></tr>';
+
+      try {
+        const queryParams = new URLSearchParams({
+          page: _activityState.page,
+          limit: _activityState.limit,
+          action: _activityState.action,
+          resourceType: _activityState.resourceType,
+        });
+        if (_activityState.search.trim()) {
+          queryParams.set('search', _activityState.search.trim());
+        }
+
+        const res = await fetch(`/api/admin/activity?${queryParams.toString()}`, { credentials: 'include' });
+        if (res.status === 401) { handleLogout(); return; }
+
+        const data = await res.json();
+        const logs = data.data?.logs || data.logs || [];
+        _activityState.total = data.data?.pagination?.totalItems ?? data.total ?? logs.length;
+        _activityState.pages = data.data?.pagination?.totalPages ?? Math.ceil(_activityState.total / _activityState.limit) || 1;
+
+        renderActivityLogs(logs);
+        renderActivityPagination();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-rose-400 font-mono">Failed to load activity logs: ${err.message}</td></tr>`;
+      }
+    }
+
+    function renderActivityLogs(logs) {
+      const tbody = document.getElementById('activity-table-body');
+      if (!tbody) return;
+
+      if (logs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center text-slate-500 font-mono">No activity events recorded.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = logs.map(l => {
+        const action = (l.action || 'EVENT').toUpperCase();
+        let actionColor = 'bg-slate-800 text-slate-300 border-slate-700';
+        if (action.includes('LOGIN')) actionColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+        else if (action.includes('REPLY')) actionColor = 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+        else if (action.includes('DELETE')) actionColor = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+        else if (action.includes('UPDATE')) actionColor = 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
+        else if (action.includes('CREATE')) actionColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+
+        return `
+          <tr class="hover:bg-slate-900/40 font-mono text-[11px]">
+            <td class="py-3 px-4 text-slate-500 whitespace-nowrap">${new Date(l.createdAt).toLocaleString()}</td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${actionColor}">${action}</span>
+            </td>
+            <td class="py-3 px-4 text-slate-300 font-semibold">${escapeHtml(l.resourceType || l.entity || 'SYSTEM')}</td>
+            <td class="py-3 px-4 text-slate-300 max-w-xs sm:max-w-md truncate" title="${escapeHtml(l.description)}">${escapeHtml(l.description)}</td>
+            <td class="py-3 px-4 text-slate-400">${escapeHtml(l.adminEmail || l.performedBy || 'admin')}</td>
+            <td class="py-3 px-4 text-slate-500">${escapeHtml(l.ipAddress || '—')}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderActivityPagination() {
+      const container = document.getElementById('activity-pagination');
+      if (!container) return;
+      const { page, pages, total } = _activityState;
+      if (total === 0) { container.innerHTML = ''; return; }
+
+      container.innerHTML = `
+        <span class="text-[11px] font-mono text-slate-500">Page ${page} of ${pages} (${total} log entries)</span>
+        <div class="flex items-center gap-2">
+          <button onclick="loadActivityLogs(${page - 1})" ${page <= 1 ? 'disabled class="opacity-40 cursor-not-allowed"' : 'class="hover:text-cyan-400"'} class="px-3 py-1 rounded bg-slate-800 text-xs font-mono">
+            ‹ Prev
+          </button>
+          <button onclick="loadActivityLogs(${page + 1})" ${page >= pages ? 'disabled class="opacity-40 cursor-not-allowed"' : 'class="hover:text-cyan-400"'} class="px-3 py-1 rounded bg-slate-800 text-xs font-mono">
+            Next ›
+          </button>
+        </div>
+      `;
+    }
+
+    function onActivityFilterChange() {
+      const actionSel = document.getElementById('activity-action-select');
+      const resourceSel = document.getElementById('activity-resource-select');
+      if (actionSel) _activityState.action = actionSel.value;
+      if (resourceSel) _activityState.resourceType = resourceSel.value;
+      loadActivityLogs(1);
+    }
+
+    function onActivitySearchInput(val) {
+      _activityState.search = val;
+      clearTimeout(_actSearchTimeout);
+      _actSearchTimeout = setTimeout(() => {
+        loadActivityLogs(1);
+      }, 300);
+    }
+
+    // Close notification dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const btn = document.getElementById('topbar-notif-btn');
+      const dropdown = document.getElementById('topbar-notif-dropdown');
+      if (dropdown && !dropdown.classList.contains('hidden')) {
+        if (!dropdown.contains(e.target) && (!btn || !btn.contains(e.target))) {
+          dropdown.classList.add('hidden');
+        }
+      }
+    });
 
     function escapeHtml(str) {
       if (!str) return '';
@@ -3218,6 +4116,137 @@
         <button onclick="closeMediaPicker()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">
           Cancel
         </button>
+      </div>
+    </div>
+  <!-- Message Detail & Admin Reply Modal -->
+  <div id="message-detail-modal" onclick="if(event.target===this)closeMessageDetailModal()">
+    <div class="bg-[#070B16] border border-brand-border rounded-2xl p-5 sm:p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto shadow-2xl space-y-5">
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-brand-border">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="mail" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="mdetail-sender-name" class="text-sm font-bold text-slate-100">Sender Inquiry</h3>
+            <p id="mdetail-sender-email" class="text-[11px] text-cyan-400 font-mono">email@example.com</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="mdetail-status-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold">STATUS</span>
+          <button onclick="closeMessageDetailModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-200 text-lg leading-none">&times;</button>
+        </div>
+      </div>
+
+      <!-- Meta Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] font-mono">
+        <div>
+          <span class="text-slate-500 block text-[10px] uppercase">Company / Org</span>
+          <span id="mdetail-company" class="text-slate-200 font-medium truncate block">—</span>
+        </div>
+        <div>
+          <span class="text-slate-500 block text-[10px] uppercase">Received</span>
+          <span id="mdetail-created-at" class="text-slate-200 font-medium truncate block">—</span>
+        </div>
+        <div>
+          <span class="text-slate-500 block text-[10px] uppercase">Email Status</span>
+          <span id="mdetail-email-status" class="text-slate-200 font-medium truncate block">—</span>
+        </div>
+        <div>
+          <span class="text-slate-500 block text-[10px] uppercase">Origin Hash</span>
+          <span id="mdetail-ip-hash" class="text-slate-400 truncate block font-mono">—</span>
+        </div>
+      </div>
+
+      <!-- Subject & Original Message Content -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="cms-label">Original Inquiry Subject</span>
+          <span id="mdetail-read-at" class="text-[10px] font-mono text-slate-500"></span>
+        </div>
+        <div id="mdetail-subject" class="p-2.5 rounded-lg bg-slate-900 border border-brand-border text-xs font-semibold text-slate-100">
+          Subject line
+        </div>
+        <span class="cms-label mt-2">Message Body</span>
+        <div id="mdetail-message-body" class="p-3.5 rounded-lg bg-slate-950/80 border border-brand-border text-xs text-slate-300 leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto">
+          Message body
+        </div>
+      </div>
+
+      <!-- Previous Reply Section (if already replied) -->
+      <div id="mdetail-reply-history" class="hidden p-3.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 space-y-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5 text-xs font-bold text-indigo-300">
+            <i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i>
+            <span>Previous Reply Sent</span>
+          </div>
+          <span id="mdetail-reply-sent-at" class="text-[10px] font-mono text-indigo-300/70"></span>
+        </div>
+        <p id="mdetail-reply-subject" class="text-xs font-semibold text-slate-200"></p>
+        <p id="mdetail-reply-content" class="text-xs text-slate-300 whitespace-pre-wrap pl-2 border-l-2 border-indigo-400/40"></p>
+      </div>
+
+      <!-- Admin Reply Form -->
+      <div class="pt-2 border-t border-brand-border space-y-3">
+        <div class="flex items-center justify-between">
+          <h4 class="text-xs font-bold text-slate-200 font-mono uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="send" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>Send Direct Admin Reply</span>
+          </h4>
+          <!-- Quick Templates -->
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="applyReplyTemplate('thanks')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-mono text-cyan-300">
+              Template: Thanks
+            </button>
+            <button type="button" onclick="applyReplyTemplate('meeting')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-mono text-cyan-300">
+              Template: Discuss
+            </button>
+          </div>
+        </div>
+
+        <form id="admin-reply-form" onsubmit="handleAdminReplySubmit(event)" class="space-y-3">
+          <input type="hidden" id="reply-message-id" />
+          <div>
+            <label class="cms-label">Reply Subject</label>
+            <input type="text" id="reply-subject-input" class="cms-input text-xs" required />
+          </div>
+          <div>
+            <label class="cms-label">Reply Message Content</label>
+            <textarea id="reply-body-input" rows="4" class="cms-input text-xs resize-none" placeholder="Compose your response to the sender..." required></textarea>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <p class="text-[10px] text-slate-500 font-mono">
+              Sent via verified portfolio mail engine with automatic reply tracking.
+            </p>
+            <button type="submit" id="send-reply-btn" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-lg shadow-cyan-900/20">
+              <i data-lucide="send" class="w-3.5 h-3.5"></i>
+              <span>Send Reply Email</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Footer Actions: Status toggles, Archive, Delete -->
+      <div class="pt-3 border-t border-brand-border flex items-center justify-between gap-2 flex-wrap text-xs">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <button type="button" id="mdetail-toggle-read-btn" onclick="toggleDetailReadStatus()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Mark Read
+          </button>
+          <button type="button" id="mdetail-archive-btn" onclick="archiveDetailMessage()" class="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 text-xs font-medium transition-colors">
+            Archive
+          </button>
+          <button type="button" id="mdetail-spam-btn" onclick="markDetailSpam()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-xs font-medium transition-colors">
+            Mark Spam
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="deleteDetailMessage()" class="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-medium transition-colors">
+            Delete
+          </button>
+          <button type="button" onclick="closeMessageDetailModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Close
+          </button>
+        </div>
       </div>
     </div>
   </div>

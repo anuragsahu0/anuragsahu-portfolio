@@ -566,76 +566,41 @@ function initContactForm() {
       localStorage.setItem('anuragsahu_contact_messages', JSON.stringify(existingMsgs));
     } catch (e) {}
 
-    // 2. Real-Time Cloud Serverless API Delivery (MongoDB Atlas)
+    // Real-Time Backend API Delivery
     try {
-      fetch('/api/contact', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fullName,
+          name: fullName,
           email,
           company: 'Direct Inquiry',
           subject: `📩 Portfolio Inquiry from ${fullName}`,
-          message
-        })
-      })
-      .then(res => res.json())
-      .then(json => {
-        if (json && json.id) newMsg.id = json.id;
+          message,
+        }),
+      });
+
+      const json = await res.json().catch(() => null);
+
+      if (res.ok) {
         sendTelemetry('contact_submission', { sender: fullName, email });
-      })
-      .catch(() => {});
-    } catch (e) {}
-
-    // 3. Instant 0ms Cross-Tab Real-Time Sync
-    try {
-      const bc = new BroadcastChannel('anurag_portfolio_realtime');
-      bc.postMessage({ type: 'new_message', message: newMsg });
-    } catch (e) {}
-
-    // 4. Instant Admin Email Delivery to shivasahu0612@gmail.com & Visitor Auto-Reply
-    try {
-      const fd = new FormData();
-      fd.append('name', fullName);
-      fd.append('email', email);
-      fd.append('subject', `📩 NEW DIRECT MESSAGE from ${fullName}`);
-      fd.append('message', `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${fullName}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${message}"\n\nTimestamp: ${new Date().toLocaleString()}`);
-      fd.append('_replyto', email);
-      fd.append('_autoresponse', `Dear ${fullName},\n\nThank you for contacting us!\n\nYour message has been successfully received by Team Anurag Sahu.\n\nTeam Anurag Sahu will contact you within 24-48 hours at ${email}.\n\nBest regards,\nTeam Anurag Sahu\nhttps://anuragsahu.com`);
-      fd.append('_template', 'table');
-      fd.append('_captcha', 'false');
-
-      fetch('https://formsubmit.co/ajax/shivasahu0612@gmail.com', {
-        method: 'POST',
-        body: fd
-      }).catch(() => {});
-    } catch (e) {}
-
-    // 5. Instant 2-Second Web3Forms Auto-Reply directly to Visitor's Inbox
-    try {
-      fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          access_key: '4c34a942-8822-48df-b593-01824497e793',
-          name: 'Team Anurag Sahu',
-          email: email,
-          to: email,
-          from_name: 'Team Anurag Sahu',
-          subject: 'Thank you for contacting Anurag Sahu!',
-          message: `Dear ${fullName},\n\nThank you for contacting us!\n\nYour message has been delivered to Anurag Sahu (shivasahu0612@gmail.com).\n\nTeam Anurag Sahu will contact you within 24-48 hours.\n\nYour Submitted Message:\n"${message}"\n\nBest regards,\nTeam Anurag Sahu\nhttps://anuragsahu.com`
-        })
-      }).catch(() => {});
-    } catch (e) {}
-
-    showToast('✓ Message Delivered! Check your email inbox for confirmation.');
-    showSuccessModal(fullName, email);
-    contactForm.reset();
-
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = '<span>Send Message</span><i data-lucide="send" style="width: 16px;"></i>';
-      if (window.lucide) window.lucide.createIcons();
+        showToast('✓ Message Received! Check your email inbox for confirmation.');
+        showSuccessModal(fullName, email);
+        contactForm.reset();
+      } else {
+        const errorMsg =
+          json?.error?.message || json?.message || (res.status === 429 ? 'Too many submissions. Please wait a moment.' : 'Could not deliver message. Please try again.');
+        showToast(errorMsg);
+      }
+    } catch (err) {
+      showToast('Network error. Please check your connection and try again.');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Send Message</span><i data-lucide="send" style="width: 16px;"></i>';
+        if (window.lucide) window.lucide.createIcons();
+      }
     }
   });
 }
