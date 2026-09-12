@@ -136,6 +136,19 @@ const {
   runSchedulerNow,
   bulkSchedule,
 } = require('../controllers/scheduleController');
+const {
+  createBackup,
+  getBackups,
+  getBackupById,
+  verifyBackup,
+  restoreBackup,
+  downloadBackup,
+  deleteBackup,
+  getBackupHealth,
+  getBackupSettings,
+  updateBackupSettings,
+  getSystemHealth,
+} = require('../controllers/backupController');
 
 // All routes here are guarded by JWT Bearer Authentication
 router.use('/admin', verifyToken);
@@ -306,5 +319,21 @@ router.put('/admin/schedules/:id', updateSchedule);
 router.post('/admin/schedules/:id/cancel', cancelSchedule);
 router.post('/admin/schedules/:id/retry', retrySchedule);
 router.delete('/admin/schedules/:id', deleteSchedule);
+
+// ─── Phase 13: Backup, Restore & Disaster Recovery ──────────
+router.get('/admin/backups', getBackups);
+router.post('/admin/backups', createBackup);
+router.get('/admin/backups/health', getBackupHealth);
+router.get('/admin/backups/settings', getBackupSettings);
+router.put('/admin/backups/settings', updateBackupSettings);
+router.patch('/admin/backups/settings', updateBackupSettings);
+router.get('/admin/backups/:id', getBackupById);
+router.post('/admin/backups/:id/verify', verifyBackup);
+router.post('/admin/backups/:id/restore', restoreBackup);
+router.get('/admin/backups/:id/download', downloadBackup);
+router.delete('/admin/backups/:id', deleteBackup);
+
+// ─── Phase 13: System Maintenance Center ────────────────────
+router.get('/admin/system/health', getSystemHealth);
 
 module.exports = router;

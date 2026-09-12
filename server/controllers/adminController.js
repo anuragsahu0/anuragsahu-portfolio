@@ -272,11 +272,37 @@ const getAdminDashboardStats = async (req, res, next) => {
       }
     } catch (e) {}
 
+    // Backup Telemetry
+    let backupHealth = {
+      totalBackups: 0,
+      storageUsedBytes: 0,
+      storageUsedFormatted: '0 KB',
+      healthStatus: 'OPERATIONAL',
+      attentionReason: '',
+      lastSuccessfulBackup: null,
+      lastFailedBackup: null,
+    };
+    try {
+      const { getBackupHealthStats } = require('../services/backupService');
+      backupHealth = await getBackupHealthStats();
+    } catch (_) {}
+
     // 2. Real System Health Diagnostic Probes
     const healthResult = await checkSystemHealth();
 
     // 3. Dynamic "Needs Attention" Checklist Engine (strictly real conditions)
     const attentionItems = [];
+
+    if (backupHealth.healthStatus === 'ATTENTION_REQUIRED' && backupHealth.attentionReason) {
+      attentionItems.push({
+        id: 'backup-attention',
+        type: 'warning',
+        title: backupHealth.attentionReason,
+        tab: 'backups',
+        link: '/admin/backups',
+        actionText: 'Review Backups',
+      });
+    }
 
     if (failedSchedulesCount > 0) {
       attentionItems.push({
@@ -412,6 +438,8 @@ const getAdminDashboardStats = async (req, res, next) => {
         activeDrafts: totalDrafts,
         upcomingSchedules: upcomingSchedulesCount,
         failedSchedules: failedSchedulesCount,
+        totalBackups: backupHealth.totalBackups,
+        backupHealthStatus: backupHealth.healthStatus,
       },
       scheduledOverview: {
         upcoming: upcomingSchedulesCount,
@@ -427,6 +455,15 @@ const getAdminDashboardStats = async (req, res, next) => {
               timezone: nextScheduledAction.timezone,
             }
           : null,
+      },
+      backupOverview: {
+        totalBackups: backupHealth.totalBackups,
+        storageUsedBytes: backupHealth.storageUsedBytes,
+        storageUsedFormatted: backupHealth.storageUsedFormatted,
+        healthStatus: backupHealth.healthStatus,
+        lastSuccessfulBackup: backupHealth.lastSuccessfulBackup,
+        lastFailedBackup: backupHealth.lastFailedBackup,
+        nextScheduledBackup: backupHealth.nextScheduledBackup,
       },
       contentOverview: {
         projects: totalProjects,

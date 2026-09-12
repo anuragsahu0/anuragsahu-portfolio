@@ -154,7 +154,7 @@
     #cms-toast.toast-hidden { opacity: 0; transform: translateY(8px); }
 
     /* Responsive Modal System: Bottom Sheet on Mobile (<640px), Centered Modal on Desktop (>=640px) */
-    #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal, #revision-history-modal, #revision-compare-modal, #restore-confirm-modal, #publish-confirm-modal, #conflict-modal, #preview-modal, #schedule-action-modal, #schedule-details-modal, #bulk-schedule-modal {
+    #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal, #revision-history-modal, #revision-compare-modal, #restore-confirm-modal, #publish-confirm-modal, #conflict-modal, #preview-modal, #schedule-action-modal, #schedule-details-modal, #bulk-schedule-modal, #create-backup-modal, #backup-details-modal, #disaster-restore-modal, #backup-settings-modal {
       position: fixed;
       inset: 0;
       z-index: 8500;
@@ -165,7 +165,7 @@
       justify-content: center;
       padding: 0;
     }
-    #cms-modal.open, #confirm-modal.open, #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open, #revision-history-modal.open, #revision-compare-modal.open, #restore-confirm-modal.open, #publish-confirm-modal.open, #conflict-modal.open, #preview-modal.open, #schedule-action-modal.open, #schedule-details-modal.open, #bulk-schedule-modal.open {
+    #cms-modal.open, #confirm-modal.open, #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open, #revision-history-modal.open, #revision-compare-modal.open, #restore-confirm-modal.open, #publish-confirm-modal.open, #conflict-modal.open, #preview-modal.open, #schedule-action-modal.open, #schedule-details-modal.open, #bulk-schedule-modal.open, #create-backup-modal.open, #backup-details-modal.open, #disaster-restore-modal.open, #backup-settings-modal.open {
       display: flex;
     }
     @media (min-width: 640px) {
@@ -191,7 +191,11 @@
     #preview-modal > div,
     #schedule-action-modal > div,
     #schedule-details-modal > div,
-    #bulk-schedule-modal > div {
+    #bulk-schedule-modal > div,
+    #create-backup-modal > div,
+    #backup-details-modal > div,
+    #disaster-restore-modal > div,
+    #backup-settings-modal > div {
       background: #070B16;
       border: 1px solid #141E33;
       border-top-left-radius: 20px;
@@ -235,6 +239,10 @@
       #schedule-action-modal > div { max-width: 580px; }
       #schedule-details-modal > div { max-width: 640px; }
       #bulk-schedule-modal > div { max-width: 600px; }
+      #create-backup-modal > div { max-width: 540px; }
+      #backup-details-modal > div { max-width: 680px; }
+      #disaster-restore-modal > div { max-width: 520px; }
+      #backup-settings-modal > div { max-width: 480px; }
       #preview-modal > div { max-width: 1040px; width: 95vw; height: 90vh; height: 90dvh; padding: 0; overflow: hidden; display: flex; flex-direction: column; }
       .diff-badge-added { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
       .diff-badge-removed { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
@@ -488,6 +496,14 @@
               <i data-lucide="clock" class="w-4 h-4 text-slate-500"></i>
               <span>Scheduled Actions</span>
               <span id="scheduled-badge" class="hidden ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-500/20 text-amber-300 font-bold">0</span>
+            </button>
+            <button onclick="switchTab('backups')" class="sidebar-item w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/40" data-tab="backups">
+              <i data-lucide="archive" class="w-4 h-4 text-slate-500"></i>
+              <span>Backup & Recovery</span>
+            </button>
+            <button onclick="switchTab('system')" class="sidebar-item w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/40" data-tab="system">
+              <i data-lucide="server" class="w-4 h-4 text-slate-500"></i>
+              <span>System Health</span>
             </button>
             <button onclick="switchTab('activity')" class="sidebar-item w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/40" data-tab="activity">
               <i data-lucide="history" class="w-4 h-4 text-slate-500"></i>
@@ -2209,6 +2225,178 @@
           </div>
         </div>
 
+        <!-- ─── BACKUP & DISASTER RECOVERY CENTER (Phase 13) ─── -->
+        <div id="tab-backups" class="tab-pane hidden space-y-6">
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-brand-border">
+            <div>
+              <h1 class="text-xl sm:text-2xl font-bold font-display text-slate-100 flex items-center gap-2.5">
+                <i data-lucide="archive" class="w-6 h-6 text-cyan-400"></i>
+                <span>Backup & Disaster Recovery Center</span>
+              </h1>
+              <p class="text-xs text-slate-400 mt-1">
+                Sanitized database snapshots, cryptographic SHA-256 integrity verification, and pre-restore guarded recovery.
+              </p>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button onclick="openCreateBackupModal()" class="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-lg shadow-cyan-900/30 transition-all">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>Create Backup</span>
+              </button>
+              <button onclick="openBackupSettingsModal()" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-brand-border transition-all">
+                <i data-lucide="sliders" class="w-4 h-4"></i>
+                <span>Retention Policy</span>
+              </button>
+              <button onclick="switchTab('system')" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-brand-border transition-all">
+                <i data-lucide="server" class="w-4 h-4"></i>
+                <span>System Health</span>
+              </button>
+              <button onclick="loadBackups()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-brand-border transition-all" title="Refresh">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Metrics Row -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Total Snapshots</span>
+              <p id="bkp-metric-total" class="text-2xl sm:text-3xl font-bold font-mono text-slate-100 mt-1.5">0</p>
+              <p class="text-[11px] text-slate-500 mt-1 font-mono">Completed recovery points</p>
+            </div>
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Storage Consumed</span>
+              <p id="bkp-metric-storage" class="text-2xl sm:text-3xl font-bold font-mono text-cyan-400 mt-1.5">0 KB</p>
+              <p class="text-[11px] text-slate-500 mt-1 font-mono">Local snapshot archive</p>
+            </div>
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Last Backup</span>
+              <p id="bkp-metric-last-date" class="text-sm font-bold font-mono text-slate-200 mt-2 truncate">None</p>
+              <p id="bkp-metric-last-sub" class="text-[11px] text-slate-500 mt-1 font-mono truncate">—</p>
+            </div>
+            <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4">
+              <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider font-mono">Recovery Health</span>
+              <div class="flex items-center gap-2 mt-2">
+                <span id="bkp-health-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <p id="bkp-metric-health" class="text-sm font-bold font-mono text-emerald-400">OPERATIONAL</p>
+              </div>
+              <p id="bkp-metric-health-sub" class="text-[11px] text-slate-500 mt-1 font-mono truncate">Ready for disaster recovery</p>
+            </div>
+          </div>
+
+          <!-- Filter & Controls Toolbar -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <!-- Filter Tabs -->
+            <div class="flex items-center gap-1.5 overflow-x-auto text-xs pb-1 sm:pb-0" id="bkp-status-filters">
+              <button onclick="setBackupStatusFilter('ALL')" id="bkp-tab-all" class="px-3 py-1.5 rounded-md font-semibold transition-colors bg-cyan-600 text-white">All</button>
+              <button onclick="setBackupStatusFilter('COMPLETED')" id="bkp-tab-completed" class="px-3 py-1.5 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200">Completed</button>
+              <button onclick="setBackupStatusFilter('RUNNING')" id="bkp-tab-running" class="px-3 py-1.5 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200">Running</button>
+              <button onclick="setBackupStatusFilter('FAILED')" id="bkp-tab-failed" class="px-3 py-1.5 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200">Failed</button>
+              <button onclick="setBackupStatusFilter('PRE_RESTORE')" id="bkp-tab-pre-restore" class="px-3 py-1.5 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200">Pre-Restore</button>
+            </div>
+
+            <!-- Search input -->
+            <div class="relative w-full sm:w-64">
+              <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+              <input type="text" id="bkp-search-input" oninput="filterBackupsList()" placeholder="Search backup ID or notes..." class="w-full bg-slate-900 border border-brand-border rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50">
+            </div>
+          </div>
+
+          <!-- Backups List Table (Desktop & Tablet) -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl overflow-hidden hidden md:block">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-300">
+                <thead class="bg-slate-900/80 text-[10px] font-mono uppercase text-slate-400 border-b border-brand-border tracking-wider">
+                  <tr>
+                    <th class="py-3 px-4">Backup ID</th>
+                    <th class="py-3 px-3">Type</th>
+                    <th class="py-3 px-3">Scope</th>
+                    <th class="py-3 px-3">Status</th>
+                    <th class="py-3 px-3">Size</th>
+                    <th class="py-3 px-3">Integrity (SHA-256)</th>
+                    <th class="py-3 px-3">Created</th>
+                    <th class="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="backups-table-body" class="divide-y divide-brand-border/60 font-sans">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Mobile Backup Cards Container (<768px) -->
+          <div id="backups-mobile-cards" class="space-y-3 md:hidden">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- Empty State -->
+          <div id="backups-empty-state" class="hidden bg-brand-sidebar border border-brand-border rounded-xl p-12 text-center space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center mx-auto">
+              <i data-lucide="archive" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-200 font-display">No Backups Found</h3>
+            <p class="text-xs text-slate-400 max-w-sm mx-auto">
+              No snapshot records match the current filter. Create a backup to establish a verified recovery baseline.
+            </p>
+            <button onclick="openCreateBackupModal()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>Create Initial Snapshot</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ─── SYSTEM HEALTH & MAINTENANCE CENTER (Phase 13) ─── -->
+        <div id="tab-system" class="tab-pane hidden space-y-6">
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-brand-border">
+            <div>
+              <h1 class="text-xl sm:text-2xl font-bold font-display text-slate-100 flex items-center gap-2.5">
+                <i data-lucide="server" class="w-6 h-6 text-cyan-400"></i>
+                <span>System Maintenance & Health Center</span>
+              </h1>
+              <p class="text-xs text-slate-400 mt-1">
+                Real-time diagnostic probes across 8 critical subsystems of the Anurag Sahu Control Center.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="loadSystemHealth()" class="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                <span>Run Diagnostics Now</span>
+              </button>
+              <button onclick="switchTab('backups')" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-brand-border transition-all">
+                <i data-lucide="archive" class="w-4 h-4"></i>
+                <span>Backups</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Overall Health Banner -->
+          <div id="system-overall-banner" class="rounded-xl p-5 border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-emerald-950/30 border-emerald-500/30">
+            <div class="flex items-center gap-3.5">
+              <div id="system-overall-icon" class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <i data-lucide="check-circle" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h2 id="system-overall-title" class="text-sm sm:text-base font-bold text-emerald-200">
+                  All Systems Fully Operational
+                </h2>
+                <p id="system-overall-sub" class="text-xs text-emerald-400/80 mt-0.5 font-mono">
+                  All 8 subsystems responding with optimal latencies. Zero critical failures detected.
+                </p>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <span id="system-last-probed" class="text-[11px] font-mono text-slate-400">Last Probed: Just now</span>
+            </div>
+          </div>
+
+          <!-- 8 Services Diagnostic Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="system-services-grid">
+            <!-- Populated via loadSystemHealth() -->
+          </div>
+        </div>
+
         <!-- ─── GENERIC FALLBACK (unused) ─── -->
         <div id="tab-placeholder" class="tab-pane hidden"></div>
 
@@ -2349,6 +2537,14 @@
                 <i data-lucide="clock" class="w-4 h-4 text-slate-500"></i>
                 <span>Scheduled Actions</span>
                 <span id="drawer-scheduled-badge" class="hidden ml-auto px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-amber-500/20 text-amber-300 font-bold">0</span>
+              </button>
+              <button onclick="switchTab('backups'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="backups">
+                <i data-lucide="archive" class="w-4 h-4 text-slate-500"></i>
+                <span>Backup & Recovery</span>
+              </button>
+              <button onclick="switchTab('system'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="system">
+                <i data-lucide="server" class="w-4 h-4 text-slate-500"></i>
+                <span>System Health</span>
               </button>
               <button onclick="switchTab('activity'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="activity">
                 <i data-lucide="history" class="w-4 h-4 text-slate-500"></i>
@@ -2674,6 +2870,8 @@
         notifications: 'System & Security Notifications',
         activity: 'Audit Log & Operator Events',
         scheduled: 'Scheduled Actions & Content Automation',
+        backups: 'Backup, Restore & Disaster Recovery Center',
+        system: 'System Health & Maintenance Diagnostics',
       };
       if (title) title.textContent = titleMap[tabId] || `${tabId} Management Console`;
 
@@ -2740,6 +2938,12 @@
       } else if (tabId === 'scheduled') {
         document.getElementById('tab-scheduled').classList.remove('hidden');
         loadSchedules();
+      } else if (tabId === 'backups') {
+        document.getElementById('tab-backups').classList.remove('hidden');
+        loadBackups();
+      } else if (tabId === 'system') {
+        document.getElementById('tab-system').classList.remove('hidden');
+        loadSystemHealth();
       } else {
         document.getElementById('tab-placeholder').classList.remove('hidden');
       }
@@ -6835,6 +7039,705 @@
       }
     }
 
+    // ═══════════════════════════════════════════════════════════
+    // ─── PHASE 13: BACKUP, RESTORE & DISASTER RECOVERY ────────
+    // ═══════════════════════════════════════════════════════════
+
+    let currentBackupStatusFilter = 'ALL';
+    let currentBackupsList = [];
+
+    async function loadBackups() {
+      try {
+        const [listRes, healthRes] = await Promise.allSettled([
+          fetch('/api/admin/backups?limit=100', { credentials: 'include' }),
+          fetch('/api/admin/backups/health', { credentials: 'include' }),
+        ]);
+
+        if (listRes.status === 'fulfilled' && listRes.value.ok) {
+          const data = await listRes.value.json();
+          currentBackupsList = data.backups || [];
+          filterBackupsList();
+        }
+
+        if (healthRes.status === 'fulfilled' && healthRes.value.ok) {
+          const hData = await healthRes.value.json();
+          const health = hData.health || {};
+
+          const totalEl = document.getElementById('bkp-metric-total');
+          const storageEl = document.getElementById('bkp-metric-storage');
+          const lastDateEl = document.getElementById('bkp-metric-last-date');
+          const lastSubEl = document.getElementById('bkp-metric-last-sub');
+          const healthEl = document.getElementById('bkp-metric-health');
+          const healthDot = document.getElementById('bkp-health-dot');
+
+          if (totalEl) totalEl.textContent = health.totalBackups ?? currentBackupsList.length;
+          if (storageEl) storageEl.textContent = health.storageUsedFormatted ?? '0 KB';
+
+          if (health.lastSuccessfulBackup) {
+            const d = new Date(health.lastSuccessfulBackup.createdAt);
+            if (lastDateEl) lastDateEl.textContent = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            if (lastSubEl) lastSubEl.textContent = health.lastSuccessfulBackup.backupId;
+          } else {
+            if (lastDateEl) lastDateEl.textContent = 'None';
+            if (lastSubEl) lastSubEl.textContent = 'No completed backups';
+          }
+
+          const isHealthy = health.healthStatus === 'OPERATIONAL';
+          if (healthEl) {
+            healthEl.textContent = isHealthy ? 'OPERATIONAL' : 'ATTENTION REQUIRED';
+            healthEl.className = isHealthy ? 'text-sm font-bold font-mono text-emerald-400' : 'text-sm font-bold font-mono text-amber-400';
+          }
+          if (healthDot) {
+            healthDot.className = isHealthy ? 'w-2.5 h-2.5 rounded-full bg-emerald-400' : 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse';
+          }
+        }
+      } catch (err) {
+        console.warn('[Backups] Load error:', err);
+      }
+    }
+
+    function setBackupStatusFilter(filter) {
+      currentBackupStatusFilter = filter;
+      const tabIds = {
+        ALL: 'bkp-tab-all',
+        COMPLETED: 'bkp-tab-completed',
+        RUNNING: 'bkp-tab-running',
+        FAILED: 'bkp-tab-failed',
+        PRE_RESTORE: 'bkp-tab-pre-restore',
+      };
+
+      Object.entries(tabIds).forEach(([key, id]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (key === filter) {
+          el.className = 'px-3 py-1.5 rounded-md font-semibold transition-colors bg-cyan-600 text-white';
+        } else {
+          el.className = 'px-3 py-1.5 rounded-md font-medium transition-colors text-slate-400 hover:text-slate-200';
+        }
+      });
+
+      filterBackupsList();
+    }
+
+    function filterBackupsList() {
+      const search = (document.getElementById('bkp-search-input')?.value || '').toLowerCase().trim();
+      let filtered = [...currentBackupsList];
+
+      if (currentBackupStatusFilter === 'PRE_RESTORE') {
+        filtered = filtered.filter(b => b.type === 'PRE_RESTORE');
+      } else if (currentBackupStatusFilter !== 'ALL') {
+        filtered = filtered.filter(b => b.status === currentBackupStatusFilter);
+      }
+
+      if (search) {
+        filtered = filtered.filter(b =>
+          (b.backupId && b.backupId.toLowerCase().includes(search)) ||
+          (b.notes && b.notes.toLowerCase().includes(search)) ||
+          (b.type && b.type.toLowerCase().includes(search))
+        );
+      }
+
+      renderBackupsTable(filtered);
+      renderMobileBackupCards(filtered);
+
+      const emptyEl = document.getElementById('backups-empty-state');
+      if (emptyEl) {
+        if (filtered.length === 0) emptyEl.classList.remove('hidden');
+        else emptyEl.classList.add('hidden');
+      }
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function renderBackupsTable(backups) {
+      const tbody = document.getElementById('backups-table-body');
+      if (!tbody) return;
+
+      if (!backups || backups.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-500 font-mono text-xs">No backup snapshots found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = backups.map(b => {
+        const createdDate = new Date(b.createdAt).toLocaleString(undefined, {
+          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        const sizeFormatted = b.size > 1024 * 1024
+          ? `${(b.size / (1024 * 1024)).toFixed(2)} MB`
+          : `${(b.size / 1024).toFixed(1)} KB`;
+
+        const typeBadgeColors = {
+          MANUAL: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+          PRE_DEPLOYMENT: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+          SCHEDULED: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
+          PRE_RESTORE: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+        };
+
+        const statusBadgeColors = {
+          COMPLETED: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+          RUNNING: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20 animate-pulse',
+          QUEUED: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+          FAILED: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+          EXPIRED: 'bg-slate-800 text-slate-500 border-slate-700',
+          DELETED: 'bg-rose-950/20 text-rose-500 border-rose-900/30',
+        };
+
+        const isVerified = b.integrity === 'VALID';
+        const integrityBadge = isVerified
+          ? '<span class="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20"><i data-lucide="shield-check" class="w-3 h-3"></i> Valid</span>'
+          : (b.integrity === 'INVALID'
+              ? '<span class="inline-flex items-center gap-1 text-[10px] font-mono text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20"><i data-lucide="alert-triangle" class="w-3 h-3"></i> Checksum Mismatch</span>'
+              : '<span class="inline-flex items-center gap-1 text-[10px] font-mono text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded"><i data-lucide="shield" class="w-3 h-3"></i> Unverified</span>');
+
+        return `
+          <tr class="hover:bg-slate-900/40 transition-colors">
+            <td class="py-3 px-4 font-mono">
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-slate-200 text-xs">${escapeHtml(b.backupId)}</span>
+                <button onclick="copyToClipboard('${escapeHtml(b.backupId)}', 'Backup ID copied!')" class="text-slate-500 hover:text-cyan-400" title="Copy ID">
+                  <i data-lucide="copy" class="w-3 h-3"></i>
+                </button>
+              </div>
+              ${b.notes ? `<p class="text-[10px] text-slate-400 truncate max-w-xs mt-0.5">${escapeHtml(b.notes)}</p>` : ''}
+            </td>
+            <td class="py-3 px-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold border ${typeBadgeColors[b.type] || 'bg-slate-800 text-slate-400'}">
+                ${escapeHtml(b.type)}
+              </span>
+            </td>
+            <td class="py-3 px-3 font-mono text-[11px] text-slate-300">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                ${escapeHtml(b.scope || 'FULL')}
+              </span>
+            </td>
+            <td class="py-3 px-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold border ${statusBadgeColors[b.status] || 'bg-slate-800 text-slate-400'}">
+                ${escapeHtml(b.status)}
+              </span>
+            </td>
+            <td class="py-3 px-3 font-mono text-[11px] text-slate-300">
+              ${sizeFormatted}
+            </td>
+            <td class="py-3 px-3">
+              ${integrityBadge}
+            </td>
+            <td class="py-3 px-3 font-mono text-[11px] text-slate-400">
+              ${createdDate}
+            </td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-1">
+                <button onclick="openBackupDetailsModal('${escapeHtml(b.backupId)}')" class="p-1.5 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-slate-800 transition-colors" title="Inspect Details">
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+                <button onclick="verifyBackupAction('${escapeHtml(b.backupId)}')" class="p-1.5 rounded-lg text-slate-400 hover:text-emerald-300 hover:bg-slate-800 transition-colors" title="Verify SHA-256 Checksum">
+                  <i data-lucide="shield-check" class="w-4 h-4"></i>
+                </button>
+                <button onclick="downloadBackupAction('${escapeHtml(b.backupId)}')" class="p-1.5 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-slate-800 transition-colors" title="Download Snapshot">
+                  <i data-lucide="download" class="w-4 h-4"></i>
+                </button>
+                ${b.status === 'COMPLETED' ? `
+                  <button onclick="openRestoreModal('${escapeHtml(b.backupId)}')" class="p-1.5 rounded-lg text-slate-400 hover:text-amber-400 hover:bg-slate-800 transition-colors" title="Restore Data">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                  </button>
+                ` : ''}
+                <button onclick="deleteBackupAction('${escapeHtml(b.backupId)}')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors" title="Delete Backup">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderMobileBackupCards(backups) {
+      const container = document.getElementById('backups-mobile-cards');
+      if (!container) return;
+
+      if (!backups || backups.length === 0) {
+        container.innerHTML = '<div class="text-center py-6 text-slate-500 font-mono text-xs">No backups found.</div>';
+        return;
+      }
+
+      container.innerHTML = backups.map(b => {
+        const createdDate = new Date(b.createdAt).toLocaleString(undefined, {
+          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        const sizeFormatted = b.size > 1024 * 1024
+          ? `${(b.size / (1024 * 1024)).toFixed(2)} MB`
+          : `${(b.size / 1024).toFixed(1)} KB`;
+
+        return `
+          <div class="p-4 rounded-xl bg-brand-sidebar border border-brand-border space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <p class="font-mono font-bold text-xs text-slate-100 flex items-center gap-1.5">
+                  <span>${escapeHtml(b.backupId)}</span>
+                  <button onclick="copyToClipboard('${escapeHtml(b.backupId)}')" class="text-slate-500 hover:text-cyan-400">
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                  </button>
+                </p>
+                <p class="text-[11px] text-slate-400 mt-0.5">${b.notes ? escapeHtml(b.notes) : 'Standard snapshot'}</p>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                ${escapeHtml(b.status)}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 text-[10px] font-mono text-slate-400 py-2 border-y border-brand-border/60">
+              <div>Type: <span class="text-slate-200 font-semibold">${escapeHtml(b.type)}</span></div>
+              <div>Scope: <span class="text-slate-200 font-semibold">${escapeHtml(b.scope || 'FULL')}</span></div>
+              <div>Size: <span class="text-slate-200 font-semibold">${sizeFormatted}</span></div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="font-mono text-slate-500 text-[10px]">${createdDate}</span>
+              <div class="flex items-center gap-1">
+                <button onclick="openBackupDetailsModal('${escapeHtml(b.backupId)}')" class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-cyan-300 text-[11px] font-medium transition-colors">
+                  Details
+                </button>
+                <button onclick="verifyBackupAction('${escapeHtml(b.backupId)}')" class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:text-emerald-300 text-[11px] font-medium transition-colors">
+                  Verify
+                </button>
+                ${b.status === 'COMPLETED' ? `
+                  <button onclick="openRestoreModal('${escapeHtml(b.backupId)}')" class="px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 text-[11px] font-semibold transition-colors">
+                    Restore
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openCreateBackupModal() {
+      const modal = document.getElementById('create-backup-modal');
+      if (modal) modal.classList.add('open');
+    }
+
+    function closeCreateBackupModal() {
+      const modal = document.getElementById('create-backup-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    async function submitCreateBackup(e) {
+      e.preventDefault();
+      const type = document.getElementById('cb-type')?.value || 'MANUAL';
+      const scope = document.getElementById('cb-scope')?.value || 'FULL';
+      const notes = document.getElementById('cb-notes')?.value || '';
+      const submitBtn = document.getElementById('cb-submit-btn');
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Generating Snapshot...</span>';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+
+      try {
+        const res = await fetch('/api/admin/backups', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ type, scope, notes }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || data.error?.message || 'Failed to create backup');
+
+        showToast(`Backup ${data.backup?.backupId || ''} created successfully!`, 'success');
+        closeCreateBackupModal();
+        loadBackups();
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i><span>Generate Backup Snapshot</span>';
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+      }
+    }
+
+    async function openBackupDetailsModal(backupId) {
+      try {
+        const res = await fetch(`/api/admin/backups/${encodeURIComponent(backupId)}`, { credentials: 'include' });
+        if (!res.ok) throw new Error('Could not fetch backup details.');
+        const data = await res.json();
+        const b = data.backup;
+        if (!b) return;
+
+        const titleEl = document.getElementById('bmd-id-title');
+        const typeEl = document.getElementById('bmd-type');
+        const scopeEl = document.getElementById('bmd-scope');
+        const statusEl = document.getElementById('bmd-status');
+        const sizeEl = document.getElementById('bmd-size');
+        const checksumEl = document.getElementById('bmd-checksum');
+        const storageEl = document.getElementById('bmd-storage');
+        const integrityEl = document.getElementById('bmd-integrity-badge');
+        const verifiedAtEl = document.getElementById('bmd-verified-at');
+        const countsGrid = document.getElementById('bmd-counts-grid');
+        const verifyBtn = document.getElementById('bmd-verify-btn');
+        const downloadBtn = document.getElementById('bmd-download-btn');
+        const restoreBtn = document.getElementById('bmd-restore-btn');
+
+        if (titleEl) titleEl.textContent = b.backupId;
+        if (typeEl) typeEl.textContent = b.type;
+        if (scopeEl) scopeEl.textContent = b.scope || 'FULL';
+        if (statusEl) {
+          statusEl.textContent = b.status;
+          statusEl.className = b.status === 'COMPLETED' ? 'font-semibold text-emerald-400 mt-0.5' : 'font-semibold text-amber-400 mt-0.5';
+        }
+        if (sizeEl) {
+          sizeEl.textContent = b.size > 1024 * 1024
+            ? `${(b.size / (1024 * 1024)).toFixed(2)} MB`
+            : `${(b.size / 1024).toFixed(1)} KB`;
+        }
+        if (checksumEl) checksumEl.textContent = b.checksum || 'No checksum available';
+        if (storageEl) storageEl.textContent = b.storageReference || 'server/backups/...';
+
+        if (integrityEl) {
+          const isValid = b.integrity === 'VALID';
+          integrityEl.textContent = b.integrity;
+          integrityEl.className = isValid
+            ? 'px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+            : 'px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20';
+        }
+
+        if (verifiedAtEl) {
+          verifiedAtEl.textContent = b.lastVerifiedAt
+            ? `Verified: ${new Date(b.lastVerifiedAt).toLocaleString()}`
+            : 'Verified: Not checked';
+        }
+
+        // Collection counts
+        if (countsGrid) {
+          const counts = (b.metadata && b.metadata.counts) || {};
+          const entries = Object.entries(counts);
+          if (entries.length === 0) {
+            countsGrid.innerHTML = '<p class="text-slate-500 text-[11px] col-span-3 py-2 text-center font-mono">No per-collection breakdown available.</p>';
+          } else {
+            countsGrid.innerHTML = entries.map(([col, cnt]) => `
+              <div class="flex items-center justify-between p-2 rounded bg-slate-900/60 border border-brand-border/40 font-mono text-[10px]">
+                <span class="text-slate-300 capitalize">${escapeHtml(col)}</span>
+                <span class="text-cyan-400 font-bold">${cnt}</span>
+              </div>
+            `).join('');
+          }
+        }
+
+        if (verifyBtn) verifyBtn.onclick = () => verifyBackupAction(b.backupId);
+        if (downloadBtn) downloadBtn.onclick = () => downloadBackupAction(b.backupId);
+        if (restoreBtn) restoreBtn.onclick = () => { closeBackupDetailsModal(); openRestoreModal(b.backupId); };
+
+        const modal = document.getElementById('backup-details-modal');
+        if (modal) modal.classList.add('open');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function closeBackupDetailsModal() {
+      const modal = document.getElementById('backup-details-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    async function verifyBackupAction(backupId) {
+      try {
+        showToast(`Calculating SHA-256 for ${backupId}...`, 'info');
+        const res = await fetch(`/api/admin/backups/${encodeURIComponent(backupId)}/verify`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Verification request failed');
+
+        if (data.isValid) {
+          showToast(`Integrity Verified: ${backupId} SHA-256 hash valid!`, 'success');
+        } else {
+          showToast(`WARNING: Integrity verification failed for ${backupId}!`, 'error');
+        }
+
+        loadBackups();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function downloadBackupAction(backupId) {
+      showToast(`Initiating download for ${backupId}...`, 'info');
+      window.location.href = `/api/admin/backups/${encodeURIComponent(backupId)}/download`;
+    }
+
+    let pendingRestoreBackupId = null;
+
+    function openRestoreModal(backupId) {
+      pendingRestoreBackupId = backupId;
+      const b = currentBackupsList.find(x => x.backupId === backupId) || { backupId, createdAt: new Date() };
+
+      const targetIdEl = document.getElementById('drm-target-id');
+      const targetDateEl = document.getElementById('drm-target-date');
+      const inputEl = document.getElementById('drm-confirm-input');
+      const submitBtn = document.getElementById('drm-submit-btn');
+
+      if (targetIdEl) targetIdEl.textContent = b.backupId;
+      if (targetDateEl) targetDateEl.textContent = new Date(b.createdAt).toLocaleString();
+      if (inputEl) inputEl.value = '';
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.className = 'px-4 py-2 rounded-lg bg-amber-600/50 text-slate-400 cursor-not-allowed text-xs font-semibold transition-all flex items-center gap-2';
+      }
+
+      const modal = document.getElementById('disaster-restore-modal');
+      if (modal) modal.classList.add('open');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeRestoreModal() {
+      const modal = document.getElementById('disaster-restore-modal');
+      if (modal) modal.classList.remove('open');
+      pendingRestoreBackupId = null;
+    }
+
+    function checkRestoreInput(val) {
+      const submitBtn = document.getElementById('drm-submit-btn');
+      if (!submitBtn) return;
+
+      if (val.trim().toUpperCase() === 'RESTORE') {
+        submitBtn.disabled = false;
+        submitBtn.className = 'px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white cursor-pointer text-xs font-semibold transition-all flex items-center gap-2 shadow-lg shadow-amber-900/30';
+      } else {
+        submitBtn.disabled = true;
+        submitBtn.className = 'px-4 py-2 rounded-lg bg-amber-600/50 text-slate-400 cursor-not-allowed text-xs font-semibold transition-all flex items-center gap-2';
+      }
+    }
+
+    async function submitRestoreBackup(e) {
+      e.preventDefault();
+      if (!pendingRestoreBackupId) return;
+
+      const inputVal = document.getElementById('drm-confirm-input')?.value || '';
+      if (inputVal.trim().toUpperCase() !== 'RESTORE') {
+        showToast("Type 'RESTORE' to unlock the button.", 'warning');
+        return;
+      }
+
+      const scheduleStrategy = document.getElementById('drm-schedule-strategy')?.value || 'preserve';
+      const submitBtn = document.getElementById('drm-submit-btn');
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Restoring Database State...</span>';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+
+      try {
+        const res = await fetch(`/api/admin/backups/${encodeURIComponent(pendingRestoreBackupId)}/restore`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            confirmationText: 'RESTORE',
+            scheduleStrategy,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || data.error?.message || 'Restore failed');
+
+        showToast(`Disaster Recovery Restore Completed! Pre-restore snapshot: ${data.result?.preRestoreBackupId}`, 'success');
+        closeRestoreModal();
+        loadDashboard();
+        loadBackups();
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i><span>Execute Disaster Recovery Restore</span>';
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+      }
+    }
+
+    async function deleteBackupAction(backupId) {
+      if (!confirm(`Are you sure you want to delete backup snapshot ${backupId}? This action cannot be undone.`)) {
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/admin/backups/${encodeURIComponent(backupId)}`, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Could not delete backup');
+
+        showToast(`Backup ${backupId} deleted.`, 'success');
+        loadBackups();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function openBackupSettingsModal() {
+      try {
+        const res = await fetch('/api/admin/backups/settings', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          const s = data.settings || {};
+          const daysEl = document.getElementById('bsm-retention-days');
+          const maxEl = document.getElementById('bsm-max-backups');
+          const freqEl = document.getElementById('bsm-auto-frequency');
+
+          if (daysEl && s.retentionDays) daysEl.value = s.retentionDays;
+          if (maxEl && s.maxBackups) maxEl.value = s.maxBackups;
+          if (freqEl && s.autoBackupFrequency) freqEl.value = s.autoBackupFrequency;
+        }
+      } catch (_) {}
+
+      const modal = document.getElementById('backup-settings-modal');
+      if (modal) modal.classList.add('open');
+    }
+
+    function closeBackupSettingsModal() {
+      const modal = document.getElementById('backup-settings-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    async function submitBackupSettings(e) {
+      e.preventDefault();
+      const retentionDays = Number(document.getElementById('bsm-retention-days')?.value || 30);
+      const maxBackups = Number(document.getElementById('bsm-max-backups')?.value || 15);
+      const autoBackupFrequency = document.getElementById('bsm-auto-frequency')?.value || 'daily';
+
+      try {
+        const res = await fetch('/api/admin/backups/settings', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ retentionDays, maxBackups, autoBackupFrequency }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Could not update retention settings');
+
+        showToast('Retention policy updated successfully.', 'success');
+        closeBackupSettingsModal();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function loadSystemHealth() {
+      try {
+        const res = await fetch('/api/admin/system/health', { credentials: 'include' });
+        if (!res.ok) throw new Error('Could not run system health probes.');
+        const data = await res.json();
+        renderSystemHealth(data);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function renderSystemHealth(data) {
+      const overall = data.overall || 'operational';
+      const banner = document.getElementById('system-overall-banner');
+      const iconEl = document.getElementById('system-overall-icon');
+      const titleEl = document.getElementById('system-overall-title');
+      const subEl = document.getElementById('system-overall-sub');
+      const probedEl = document.getElementById('system-last-probed');
+
+      if (probedEl) probedEl.textContent = `Last Probed: ${new Date(data.timestamp || Date.now()).toLocaleTimeString()}`;
+
+      if (banner && iconEl && titleEl && subEl) {
+        if (overall === 'operational') {
+          banner.className = 'rounded-xl p-5 border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-emerald-950/30 border-emerald-500/30';
+          iconEl.className = 'w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0';
+          iconEl.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i>';
+          titleEl.textContent = 'All 8 Subsystems Fully Operational';
+          subEl.textContent = 'Database, API, Auth, Storage, Email, Scheduler, Backups, and Telemetry healthy.';
+        } else if (overall === 'warning') {
+          banner.className = 'rounded-xl p-5 border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-amber-950/30 border-amber-500/30';
+          iconEl.className = 'w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0';
+          iconEl.innerHTML = '<i data-lucide="alert-triangle" class="w-6 h-6"></i>';
+          titleEl.textContent = 'System Diagnostics: Non-Fatal Warnings Detected';
+          subEl.textContent = 'Review subsystem statuses below. Core CMS remains functional.';
+        } else {
+          banner.className = 'rounded-xl p-5 border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-rose-950/30 border-rose-500/30';
+          iconEl.className = 'w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0';
+          iconEl.innerHTML = '<i data-lucide="alert-octagon" class="w-6 h-6"></i>';
+          titleEl.textContent = 'System Maintenance: Service Interruption Detected';
+          subEl.textContent = 'One or more critical services are offline or unreachable.';
+        }
+      }
+
+      const grid = document.getElementById('system-services-grid');
+      if (!grid) return;
+
+      const services = data.services || {};
+      const serviceIcons = {
+        DATABASE: 'database',
+        API: 'cpu',
+        AUTH: 'shield',
+        STORAGE: 'hard-drive',
+        EMAIL: 'mail',
+        SCHEDULER: 'clock',
+        BACKUPS: 'archive',
+        ANALYTICS: 'bar-chart-3',
+      };
+
+      grid.innerHTML = Object.entries(services).map(([key, s]) => {
+        const isOp = s.status === 'operational';
+        const isWarn = s.status === 'warning';
+        const iconName = serviceIcons[key] || 'server';
+
+        const badgeClass = isOp
+          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+          : (isWarn ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20');
+
+        return `
+          <div class="p-4 rounded-xl bg-brand-sidebar border border-brand-border space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 text-slate-200">
+                <div class="w-7 h-7 rounded-lg bg-slate-900 border border-brand-border flex items-center justify-center text-cyan-400">
+                  <i data-lucide="${iconName}" class="w-4 h-4"></i>
+                </div>
+                <span class="font-bold text-xs">${escapeHtml(s.name || key)}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase border ${badgeClass}">
+                ${escapeHtml(s.status)}
+              </span>
+            </div>
+
+            <div class="space-y-1">
+              <p class="text-xs font-mono text-slate-300">${escapeHtml(s.message)}</p>
+              ${s.latencyMs !== undefined ? `<p class="text-[10px] font-mono text-slate-500">Latency: ${s.latencyMs}ms</p>` : ''}
+            </div>
+
+            ${s.details ? `
+              <div class="pt-2 border-t border-brand-border/60 text-[10px] font-mono text-slate-400 space-y-0.5">
+                ${Object.entries(s.details).map(([k, v]) => `
+                  <div class="flex justify-between">
+                    <span class="text-slate-500">${escapeHtml(k)}:</span>
+                    <span class="text-slate-300 truncate max-w-[150px]">${escapeHtml(String(v))}</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
     // ─── UTILITY HELPERS ──────────────────────────────────────
     function copyToClipboard(text, successMsg = 'Copied to clipboard!') {
       if (!text) return;
@@ -7543,6 +8446,265 @@
           </button>
           <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all">
             Confirm Bulk Schedule
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Phase 13: Create Backup Modal -->
+  <div id="create-backup-modal" onclick="if(event.target===this)closeCreateBackupModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-lg mx-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="archive" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100 font-display">Create System Backup</h3>
+            <p class="text-[11px] text-slate-400">Generate a sanitized, cryptographic snapshot</p>
+          </div>
+        </div>
+        <button onclick="closeCreateBackupModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="create-backup-form" onsubmit="submitCreateBackup(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Backup Type</label>
+          <select id="cb-type" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+            <option value="MANUAL">Manual Backup (Admin Snapshot)</option>
+            <option value="PRE_DEPLOYMENT">Pre-Deployment Snapshot</option>
+            <option value="SCHEDULED">Scheduled / Maintenance Snapshot</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Backup Scope</label>
+          <select id="cb-scope" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+            <option value="FULL">FULL — All 24 collections (CMS, Revisions, Schedules, Media, Logs, Settings)</option>
+            <option value="CONTENT">CONTENT — Public Portfolio Content Modules Only</option>
+            <option value="DATABASE">DATABASE — All Database collections except transient events</option>
+            <option value="MEDIA">MEDIA — Media Asset and Resume metadata records</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Operator Notes (Optional)</label>
+          <input type="text" id="cb-notes" placeholder="e.g. Prior to hero layout update" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+        </div>
+
+        <div class="p-3 rounded-lg bg-cyan-950/20 border border-cyan-500/20 text-slate-400 text-[11px] space-y-1">
+          <p class="font-semibold text-cyan-300 flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>Cryptographic Privacy Guarantee</span>
+          </p>
+          <p>
+            Sensitive credentials (passwords, JWT secrets, SMTP passwords, session tokens) will be permanently scrubbed. An immutable SHA-256 integrity checksum will be generated.
+          </p>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-brand-border">
+          <button type="button" onclick="closeCreateBackupModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+          <button type="submit" id="cb-submit-btn" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all flex items-center gap-2">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span>Generate Backup Snapshot</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Phase 13: Backup Details Modal -->
+  <div id="backup-details-modal" onclick="if(event.target===this)closeBackupDetailsModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-xl mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="file-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100 font-display">Backup Inspection</h3>
+            <p id="bmd-id-title" class="text-[11px] font-mono text-cyan-400">bkp_...</p>
+          </div>
+        </div>
+        <button onclick="closeBackupDetailsModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-lg bg-slate-900/60 border border-brand-border">
+          <div>
+            <span class="text-[10px] text-slate-500 uppercase font-mono">Type</span>
+            <p id="bmd-type" class="font-semibold text-slate-200 mt-0.5">—</p>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-500 uppercase font-mono">Scope</span>
+            <p id="bmd-scope" class="font-semibold text-slate-200 mt-0.5">—</p>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-500 uppercase font-mono">Status</span>
+            <p id="bmd-status" class="font-semibold mt-0.5">—</p>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-500 uppercase font-mono">Size</span>
+            <p id="bmd-size" class="font-mono text-slate-200 mt-0.5">—</p>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-lg bg-slate-900/40 border border-brand-border space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-slate-300">SHA-256 Cryptographic Checksum</span>
+            <span id="bmd-integrity-badge" class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold">VALID</span>
+          </div>
+          <p id="bmd-checksum" class="text-[11px] font-mono text-cyan-300 bg-slate-950 p-2 rounded border border-brand-border/60 break-all select-all">sha256:...</p>
+          <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono">
+            <span>Storage: <span id="bmd-storage" class="text-slate-400">server/backups/...</span></span>
+            <span id="bmd-verified-at">Verified: —</span>
+          </div>
+        </div>
+
+        <!-- Collection Breakdown -->
+        <div>
+          <h4 class="text-[11px] font-semibold text-slate-300 mb-2 uppercase font-mono tracking-wide">Included Collections & Records</h4>
+          <div id="bmd-counts-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto p-1 bg-slate-900/30 rounded-lg border border-brand-border/60">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-3 border-t border-brand-border">
+          <div class="flex items-center gap-2">
+            <button type="button" id="bmd-verify-btn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-brand-border transition-colors flex items-center gap-1.5">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <span>Verify Integrity</span>
+            </button>
+            <button type="button" id="bmd-download-btn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-brand-border transition-colors flex items-center gap-1.5">
+              <i data-lucide="download" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <span>Download</span>
+            </button>
+          </div>
+          <button type="button" id="bmd-restore-btn" class="px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>Restore from Backup</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 13: Disaster Recovery Restore Confirmation Modal -->
+  <div id="disaster-restore-modal" onclick="if(event.target===this)closeRestoreModal()">
+    <div class="bg-brand-sidebar border border-amber-500/40 rounded-2xl p-6 w-full max-w-lg mx-4 shadow-2xl shadow-amber-950/40">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-amber-300 font-display">Disaster Recovery Restore</h3>
+            <p class="text-[11px] text-slate-400">High-risk database state replacement</p>
+          </div>
+        </div>
+        <button onclick="closeRestoreModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="disaster-restore-form" onsubmit="submitRestoreBackup(event)" class="space-y-4 text-xs">
+        <div class="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/30 space-y-2 text-amber-200/90">
+          <p class="font-bold text-amber-300 text-xs flex items-center gap-2">
+            <i data-lucide="alert-octagon" class="w-4 h-4 text-amber-400"></i>
+            <span>HIGH-RISK RESTORATION PROCEDURE</span>
+          </p>
+          <p class="text-[11px] leading-relaxed">
+            Restoring snapshot <span id="drm-target-id" class="font-mono font-bold text-amber-400">bkp_...</span> will overwrite active database collections with data from <span id="drm-target-date" class="font-mono text-slate-300">—</span>.
+          </p>
+          <ul class="text-[11px] space-y-1 list-disc list-inside text-slate-300 pt-1">
+            <li>An automatic <strong>PRE_RESTORE</strong> safety snapshot will be created before any writes.</li>
+            <li>SHA-256 integrity verification will be validated first.</li>
+            <li>Historical revision history will remain preserved.</li>
+          </ul>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Scheduled Actions Handling</label>
+          <select id="drm-schedule-strategy" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500/50">
+            <option value="preserve">Preserve existing scheduled actions (Recommended)</option>
+            <option value="restore">Restore scheduled actions from this backup snapshot</option>
+            <option value="cancel">Cancel all currently pending scheduled actions</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-300 mb-1">
+            To proceed, type <span class="font-mono font-bold text-amber-400">RESTORE</span> below:
+          </label>
+          <input type="text" id="drm-confirm-input" oninput="checkRestoreInput(this.value)" placeholder="Type RESTORE to unlock" class="w-full bg-slate-950 border border-brand-border rounded-lg px-3 py-2 text-slate-100 font-mono text-center tracking-widest focus:outline-none focus:border-amber-500/60 uppercase">
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-brand-border">
+          <button type="button" onclick="closeRestoreModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Abort
+          </button>
+          <button type="submit" id="drm-submit-btn" disabled class="px-4 py-2 rounded-lg bg-amber-600/50 text-slate-400 cursor-not-allowed text-xs font-semibold transition-all flex items-center gap-2">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>Execute Disaster Recovery Restore</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Phase 13: Retention Settings Modal -->
+  <div id="backup-settings-modal" onclick="if(event.target===this)closeBackupSettingsModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="sliders" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100 font-display">Backup Retention Policy</h3>
+            <p class="text-[11px] text-slate-400">Configure pruning schedules & limits</p>
+          </div>
+        </div>
+        <button onclick="closeBackupSettingsModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="backup-settings-form" onsubmit="submitBackupSettings(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Retention Period (Days)</label>
+          <input type="number" id="bsm-retention-days" min="1" max="365" value="30" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+          <p class="text-[10px] text-slate-500 mt-1">Unprotected backups older than this will be pruned automatically.</p>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Maximum Backup Snapshots</label>
+          <input type="number" id="bsm-max-backups" min="2" max="100" value="15" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+          <p class="text-[10px] text-slate-500 mt-1">Oldest snapshots exceeding this count will be removed (pre-restore safety points protected).</p>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Automated Schedule Frequency</label>
+          <select id="bsm-auto-frequency" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+            <option value="daily">Daily Snapshot (02:00 UTC)</option>
+            <option value="weekly">Weekly Snapshot (Sunday 02:00 UTC)</option>
+            <option value="manual">Manual Only (No automated cron)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-brand-border">
+          <button type="button" onclick="closeBackupSettingsModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all">
+            Save Policy
           </button>
         </div>
       </form>
