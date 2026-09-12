@@ -170,6 +170,25 @@ const updateSettings = async (req, res, next) => {
       await logActivity('SETTINGS_UPDATED', 'Settings', { updatedKeys: Object.keys(updates) }, req);
     } catch (e) {}
 
+    // Phase 11: Record revision & clear draft
+    try {
+      const { recordRevision } = require('../utils/revisionHelper');
+      const Draft = require('../models/Draft');
+      const sSnap = settings ? (settings.toObject ? settings.toObject() : settings) : { ...DEFAULT_SETTINGS, ...updates };
+      await recordRevision({
+        entityType: 'Settings',
+        entityId: 'global',
+        title: 'Global Settings',
+        snapshot: sSnap,
+        state: 'PUBLISHED',
+        createdBy: req.user?.email || 'admin',
+        changeSummary: 'Updated Site Settings',
+      });
+      if (Draft.db && Draft.db.readyState === 1) {
+        await Draft.deleteOne({ entityType: 'Settings', entityId: 'global' });
+      }
+    } catch (revErr) {}
+
     inMemorySettings = { ...inMemorySettings, ...updates };
 
     return sendSuccess(res, settings || { ...DEFAULT_SETTINGS, ...updates });
@@ -253,6 +272,25 @@ const updateSeo = async (req, res, next) => {
     try {
       await logActivity('SEO_UPDATED', 'Settings', { fields: Object.keys(cleanUpdates) }, req);
     } catch (e) {}
+
+    // Phase 11: Record revision & clear draft
+    try {
+      const { recordRevision } = require('../utils/revisionHelper');
+      const Draft = require('../models/Draft');
+      const sSnap = settings ? (settings.toObject ? settings.toObject() : settings) : { ...DEFAULT_SETTINGS, ...cleanUpdates };
+      await recordRevision({
+        entityType: 'SEO',
+        entityId: 'global',
+        title: 'SEO & Search Metadata',
+        snapshot: sSnap,
+        state: 'PUBLISHED',
+        createdBy: req.user?.email || 'admin',
+        changeSummary: 'Updated Search & Open Graph Metadata',
+      });
+      if (Draft.db && Draft.db.readyState === 1) {
+        await Draft.deleteOne({ entityType: 'SEO', entityId: 'global' });
+      }
+    } catch (revErr) {}
 
     inMemorySettings = { ...inMemorySettings, ...cleanUpdates };
 

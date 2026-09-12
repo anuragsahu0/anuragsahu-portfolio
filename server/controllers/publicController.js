@@ -16,7 +16,11 @@ const SocialLink = require('../models/SocialLink');
 const Navigation = require('../models/Navigation');
 const Resume = require('../models/Resume');
 const Settings = require('../models/Settings');
+const jwt = require('jsonwebtoken');
 const { sendSuccess } = require('../utils/apiResponse');
+const { PREVIEW_SESSIONS } = require('../utils/previewStore');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'anuragsahu-control-center-secret-key-2026';
 
 // ─── Default Fallback Payloads (Used if Database is Cold/Empty) ──────────────
 
@@ -309,10 +313,11 @@ const getPublicSite = async (req, res, next) => {
       if (settingsData.status === 'fulfilled' && settingsData.value) settingsDoc = settingsData.value;
     }
 
-    // Apply safe defaults where missing
-    const resolvedHero = hero || DEFAULT_HERO;
-    const resolvedProfile = profile || DEFAULT_PROFILE;
-    const resolvedAbout = about || DEFAULT_ABOUT;
+    // Apply safe defaults where missing (deep clone defaults to prevent preview mutations affecting subsequent requests)
+    const resolvedHero = hero ? { ...hero } : JSON.parse(JSON.stringify(DEFAULT_HERO));
+    const resolvedProfile = profile ? { ...profile } : JSON.parse(JSON.stringify(DEFAULT_PROFILE));
+    const resolvedAbout = about ? { ...about } : JSON.parse(JSON.stringify(DEFAULT_ABOUT));
+    let resolvedSkills = [...skills];
     const resolvedProjects = (projects && projects.length ? projects : DEFAULT_PROJECTS).map((p) => {
       // Standardize portfolio title to clean "Portfolio"
       const title =
@@ -403,14 +408,64 @@ const getPublicSite = async (req, res, next) => {
         }
       : DEFAULT_RESUME;
 
-    // Cache-Control: allow client & CDN caching with stale-while-revalidate
-    res.set('Cache-Control', 'public, max-age=60, s-maxage=120, stale-while-revalidate=300');
+    // ─── Phase 11: Authenticated Live Preview Token Overlay ───
+    const previewToken = req.query.previewToken || req.headers['x-preview-token'];
+    let isPreview = false;
+
+    if (previewToken) {
+      try {
+        const decoded = jwt.verify(previewToken, JWT_SECRET);
+        if (decoded && decoded.previewId) {
+          const previewSession = PREVIEW_SESSIONS.get(decoded.previewId);
+          if (previewSession && previewSession.draftData) {
+            isPreview = true;
+            const { entityType, entityId, draftData } = previewSession;
+            if (entityType === 'Hero') {
+              Object.assign(resolvedHero, draftData);
+            } else if (entityType === 'Profile') {
+              Object.assign(resolvedProfile, draftData);
+            } else if (entityType === 'About') {
+              Object.assign(resolvedAbout, draftData);
+            } else if (entityType === 'Settings') {
+              Object.assign(resolvedSettings, draftData);
+            } else if (entityType === 'SEO') {
+              Object.assign(resolvedSeo, draftData);
+            } else if (entityType === 'Project') {
+              const pIdx = resolvedProjects.findIndex(
+                (p) => String(p._id) === String(entityId) || p.id === String(entityId) || p.slug === String(entityId)
+              );
+              if (pIdx !== -1) {
+                resolvedProjects[pIdx] = { ...resolvedProjects[pIdx], ...draftData };
+              } else {
+                resolvedProjects.unshift({ _id: entityId, id: entityId, slug: entityId, ...draftData });
+              }
+            } else if (entityType === 'Skill') {
+              const sIdx = resolvedSkills.findIndex(
+                (s) => String(s._id) === String(entityId) || s.id === String(entityId)
+              );
+              if (sIdx !== -1) {
+                resolvedSkills[sIdx] = { ...resolvedSkills[sIdx], ...draftData };
+              } else {
+                resolvedSkills.push({ _id: entityId, ...draftData });
+              }
+            }
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (isPreview) {
+      res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+    } else {
+      // Cache-Control: allow client & CDN caching with stale-while-revalidate
+      res.set('Cache-Control', 'public, max-age=60, s-maxage=120, stale-while-revalidate=300');
+    }
 
     return sendSuccess(res, {
       hero: resolvedHero,
       profile: resolvedProfile,
       about: resolvedAbout,
-      skills,
+      skills: resolvedSkills,
       experience,
       education,
       projects: resolvedProjects,
@@ -421,6 +476,7 @@ const getPublicSite = async (req, res, next) => {
       resume: resolvedResume,
       settings: resolvedSettings,
       seo: resolvedSeo,
+      isPreview,
       timestamp: new Date().toISOString(),
     });
   } catch (err) {

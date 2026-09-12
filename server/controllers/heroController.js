@@ -64,6 +64,27 @@ const updateHero = async (req, res, next) => {
       await logActivity('HERO_UPDATED', 'Hero', { fields: Object.keys(data) }, req);
     } catch (e) {}
 
+    // Phase 11: Record immutable revision & clear working draft
+    try {
+      const { recordRevision } = require('../utils/revisionHelper');
+      const Draft = require('../models/Draft');
+      const finalHero = hero ? (hero.toObject ? hero.toObject() : hero) : { ...DEFAULT_HERO, ...data };
+      await recordRevision({
+        entityType: 'Hero',
+        entityId: 'global',
+        title: 'Hero Section',
+        snapshot: finalHero,
+        state: 'PUBLISHED',
+        createdBy: req.user?.email || 'admin',
+        changeSummary: 'Updated Hero Section',
+      });
+      if (Draft.db && Draft.db.readyState === 1) {
+        await Draft.deleteOne({ entityType: 'Hero', entityId: 'global' });
+      }
+    } catch (revErr) {
+      console.warn('[Hero] Revision recording failed:', revErr.message);
+    }
+
     return sendSuccess(res, hero || { ...DEFAULT_HERO, ...data });
   } catch (err) {
     next(err);

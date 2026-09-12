@@ -334,6 +334,19 @@ const createProject = async (req, res, next) => {
           await logActivity('PROJECT_CREATED', 'Project', { title: project.title, slug: project.slug }, req);
         } catch (e) {}
 
+        try {
+          const { recordRevision } = require('../utils/revisionHelper');
+          await recordRevision({
+            entityType: 'Project',
+            entityId: String(project._id || project.slug),
+            title: project.title,
+            snapshot: project.toObject ? project.toObject() : project,
+            state: project.visibility === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
+            createdBy: req.user?.email || 'admin',
+            changeSummary: 'Initial project creation',
+          });
+        } catch (revErr) {}
+
         return sendSuccess(res, project, 201);
       }
     } catch (dbErr) {
@@ -425,6 +438,26 @@ const updateProject = async (req, res, next) => {
     try {
       await logActivity('PROJECT_UPDATED', 'Project', { id, title: project.title }, req);
     } catch (e) {}
+
+    try {
+      const { recordRevision } = require('../utils/revisionHelper');
+      const Draft = require('../models/Draft');
+      const pSnap = project.toObject ? project.toObject() : project;
+      await recordRevision({
+        entityType: 'Project',
+        entityId: String(project._id || project.slug || id),
+        title: project.title,
+        snapshot: pSnap,
+        state: project.visibility === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
+        createdBy: req.user?.email || 'admin',
+        changeSummary: updates.visibility === 'PUBLISHED' ? 'Published project updates' : 'Updated project details',
+      });
+      if (Draft.db && Draft.db.readyState === 1) {
+        await Draft.deleteOne({ entityType: 'Project', entityId: String(project._id || project.slug || id) });
+      }
+    } catch (revErr) {
+      console.warn('[Project] Revision recording failed:', revErr.message);
+    }
 
     return sendSuccess(res, project);
   } catch (err) {

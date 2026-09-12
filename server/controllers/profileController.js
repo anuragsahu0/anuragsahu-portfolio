@@ -62,6 +62,27 @@ const updateProfile = async (req, res, next) => {
       await logActivity('PROFILE_UPDATED', 'Profile', { fields: Object.keys(data) }, req);
     } catch (e) {}
 
+    // Phase 11: Record immutable revision & clear working draft
+    try {
+      const { recordRevision } = require('../utils/revisionHelper');
+      const Draft = require('../models/Draft');
+      const finalProfile = profile ? (profile.toObject ? profile.toObject() : profile) : { ...DEFAULT_PROFILE, ...data };
+      await recordRevision({
+        entityType: 'Profile',
+        entityId: 'global',
+        title: finalProfile.fullName || 'Anurag Sahu Profile',
+        snapshot: finalProfile,
+        state: 'PUBLISHED',
+        createdBy: req.user?.email || 'admin',
+        changeSummary: 'Updated Profile Information',
+      });
+      if (Draft.db && Draft.db.readyState === 1) {
+        await Draft.deleteOne({ entityType: 'Profile', entityId: 'global' });
+      }
+    } catch (revErr) {
+      console.warn('[Profile] Revision recording failed:', revErr.message);
+    }
+
     return sendSuccess(res, profile || { ...DEFAULT_PROFILE, ...data });
   } catch (err) {
     next(err);

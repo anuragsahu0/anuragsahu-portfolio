@@ -108,6 +108,21 @@ const { getActivityLogs } = require('../controllers/activityLogController');
 const { getAdminDashboardStats } = require('../controllers/adminController');
 const { getAdminHealth } = require('../controllers/adminHealthController');
 const { getAdminAnalytics } = require('../controllers/analyticsController');
+const {
+  getRevisions,
+  getRevisionByVersion,
+  compareRevisions,
+  restoreRevision,
+} = require('../controllers/revisionController');
+const {
+  autosaveDraft,
+  getDraft,
+  discardDraft,
+} = require('../controllers/draftController');
+const {
+  generatePreviewToken,
+  getPreviewSiteData,
+} = require('../controllers/previewController');
 
 // All routes here are guarded by JWT Bearer Authentication
 router.use('/admin', verifyToken);
@@ -249,5 +264,20 @@ router.get('/admin/activity', getActivityLogs);
 router.get('/admin/dashboard', getAdminDashboardStats);
 router.get('/admin/health', getAdminHealth);
 router.get('/admin/analytics', getAdminAnalytics);
+
+// ─── Phase 11: Revisions & Rollback ─────────────────────────
+router.get('/admin/revisions/:entity/:id', getRevisions);
+router.get('/admin/revisions/:entity/:id/:version', getRevisionByVersion);
+router.post('/admin/revisions/:entity/:id/compare', compareRevisions);
+router.post('/admin/revisions/:entity/:id/restore', restoreRevision);
+
+// ─── Phase 11: Drafts & Autosave ────────────────────────────
+router.post('/admin/draft/autosave', autosaveDraft);
+router.get('/admin/draft/:entity/:id', getDraft);
+router.delete('/admin/draft/:entity/:id', discardDraft);
+
+// ─── Phase 11: Live Preview ─────────────────────────────────
+router.post('/admin/preview/token', generatePreviewToken);
+router.get('/admin/preview/site', getPreviewSiteData);
 
 module.exports = router;

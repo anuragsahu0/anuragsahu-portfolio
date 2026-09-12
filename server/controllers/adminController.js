@@ -13,6 +13,7 @@ const Hero = require('../models/Hero');
 const Notification = require('../models/Notification');
 const ActivityLog = require('../models/ActivityLog');
 const LoginHistory = require('../models/LoginHistory');
+const Draft = require('../models/Draft');
 const { checkSystemHealth } = require('../services/healthService');
 const { parseUserAgent } = require('./analyticsController');
 
@@ -244,11 +245,29 @@ const getAdminDashboardStats = async (req, res, next) => {
       recentActivity = memoryLogs.slice(-10).reverse();
     }
 
+    let totalDrafts = 0;
+    try {
+      if (Draft.db && Draft.db.readyState === 1) {
+        totalDrafts = await Draft.countDocuments();
+      }
+    } catch (e) {}
+
     // 2. Real System Health Diagnostic Probes
     const healthResult = await checkSystemHealth();
 
     // 3. Dynamic "Needs Attention" Checklist Engine (strictly real conditions)
     const attentionItems = [];
+
+    if (totalDrafts > 0) {
+      attentionItems.push({
+        id: 'active-drafts',
+        type: 'info',
+        title: `${totalDrafts} draft revision(s) saved and awaiting publication`,
+        tab: 'projects',
+        link: '/admin/projects',
+        actionText: 'Review Drafts',
+      });
+    }
 
     if (contactCounts.unread > 0) {
       attentionItems.push({
@@ -359,6 +378,7 @@ const getAdminDashboardStats = async (req, res, next) => {
         totalCertificates,
         activeResumeStatus: activeResume ? `${activeResume.version || 'Active'} (${activeResume.title || 'ATS Resume'})` : 'Missing',
         hasActiveResume: Boolean(activeResume),
+        activeDrafts: totalDrafts,
       },
       contentOverview: {
         projects: totalProjects,

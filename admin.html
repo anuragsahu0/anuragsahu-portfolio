@@ -154,7 +154,7 @@
     #cms-toast.toast-hidden { opacity: 0; transform: translateY(8px); }
 
     /* Responsive Modal System: Bottom Sheet on Mobile (<640px), Centered Modal on Desktop (>=640px) */
-    #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal {
+    #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal, #revision-history-modal, #revision-compare-modal, #restore-confirm-modal, #publish-confirm-modal, #conflict-modal, #preview-modal {
       position: fixed;
       inset: 0;
       z-index: 8500;
@@ -165,7 +165,7 @@
       justify-content: center;
       padding: 0;
     }
-    #cms-modal.open, #confirm-modal.open, #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open {
+    #cms-modal.open, #confirm-modal.open, #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open, #revision-history-modal.open, #revision-compare-modal.open, #restore-confirm-modal.open, #publish-confirm-modal.open, #conflict-modal.open, #preview-modal.open {
       display: flex;
     }
     @media (min-width: 640px) {
@@ -182,7 +182,13 @@
     #media-detail-content,
     #resume-upload-modal > div,
     #mediapicker-modal > div,
-    #message-detail-modal > div {
+    #message-detail-modal > div,
+    #revision-history-modal > div,
+    #revision-compare-modal > div,
+    #restore-confirm-modal > div,
+    #publish-confirm-modal > div,
+    #conflict-modal > div,
+    #preview-modal > div {
       background: #070B16;
       border: 1px solid #141E33;
       border-top-left-radius: 20px;
@@ -218,6 +224,16 @@
       #resume-upload-modal > div { max-width: 480px; }
       #mediapicker-modal > div { max-width: 760px; }
       #message-detail-modal > div { max-width: 640px; }
+      #revision-history-modal > div { max-width: 680px; }
+      #revision-compare-modal > div { max-width: 820px; }
+      #restore-confirm-modal > div { max-width: 440px; }
+      #publish-confirm-modal > div { max-width: 480px; }
+      #conflict-modal > div { max-width: 480px; }
+      #preview-modal > div { max-width: 1040px; width: 95vw; height: 90vh; height: 90dvh; padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+      .diff-badge-added { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+      .diff-badge-removed { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+      .diff-badge-modified { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
+
     }
     @keyframes modalSlideUp {
       from { transform: translateY(100%); opacity: 0; }
@@ -1099,9 +1115,19 @@
 
         <!-- ─── 9. PROFILE TAB ─── -->
         <div id="tab-profile" class="tab-pane hidden space-y-6">
-          <div class="pb-6 border-b border-brand-border">
-            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Profile</h1>
-            <p class="text-xs text-slate-400 mt-1">Edit your public profile details — name, headline, location, links.</p>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Profile</h1>
+              <p class="text-xs text-slate-400 mt-1">Edit your public profile details — name, headline, location, links.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="openRevisionHistory('Profile', 'global', 'Profile Details')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
+                <i data-lucide="history" class="w-3.5 h-3.5"></i><span>History</span>
+              </button>
+              <button type="button" onclick="triggerPreview('Profile', 'global', document.getElementById('profile-form'))" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i><span>Preview</span>
+              </button>
+            </div>
           </div>
           <form id="profile-form" onsubmit="saveProfile(event)" class="space-y-4 max-w-2xl">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1118,35 +1144,67 @@
             </div>
             <div><label class="cms-label">Short Introduction</label><textarea name="shortIntroduction" class="cms-input h-20 resize-none" placeholder="Brief intro..."></textarea></div>
             <div class="sticky-mobile-actions flex items-center justify-between gap-3">
-              <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
-                <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save Profile</span>
-              </button>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="triggerSaveDraft('Profile', 'global', document.getElementById('profile-form'))" class="px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+                  Save Draft
+                </button>
+                <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
+                  <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Publish Profile</span>
+                </button>
+              </div>
+              <span id="profile-autosave-status" class="text-[10px] font-mono text-slate-400 hidden sm:inline"></span>
             </div>
           </form>
         </div>
 
         <!-- ─── 10. ABOUT TAB ─── -->
         <div id="tab-about" class="tab-pane hidden space-y-6">
-          <div class="pb-6 border-b border-brand-border">
-            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">About</h1>
-            <p class="text-xs text-slate-400 mt-1">Edit your About section content.</p>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">About</h1>
+              <p class="text-xs text-slate-400 mt-1">Edit your About section content.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="openRevisionHistory('About', 'global', 'About Section')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
+                <i data-lucide="history" class="w-3.5 h-3.5"></i><span>History</span>
+              </button>
+              <button type="button" onclick="triggerPreview('About', 'global', document.getElementById('about-form'))" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i><span>Preview</span>
+              </button>
+            </div>
           </div>
           <form id="about-form" onsubmit="saveAbout(event)" class="space-y-4 max-w-2xl">
             <div><label class="cms-label">Title</label><input type="text" name="title" class="cms-input" placeholder="About Me"></div>
             <div><label class="cms-label">Description</label><textarea name="description" class="cms-input h-24 resize-none" placeholder="Short description..."></textarea></div>
             <div class="sticky-mobile-actions flex items-center justify-between gap-3">
-              <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
-                <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save About</span>
-              </button>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="triggerSaveDraft('About', 'global', document.getElementById('about-form'))" class="px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+                  Save Draft
+                </button>
+                <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
+                  <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Publish About</span>
+                </button>
+              </div>
+              <span id="about-autosave-status" class="text-[10px] font-mono text-slate-400 hidden sm:inline"></span>
             </div>
           </form>
         </div>
 
         <!-- ─── 11. HERO TAB ─── -->
         <div id="tab-hero" class="tab-pane hidden space-y-6">
-          <div class="pb-6 border-b border-brand-border">
-            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Hero Section</h1>
-            <p class="text-xs text-slate-400 mt-1">Edit the main hero heading, CTA buttons, availability badge, and profile image.</p>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
+            <div>
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-100 font-display">Hero Section</h1>
+              <p class="text-xs text-slate-400 mt-1">Edit the main hero heading, CTA buttons, availability badge, and profile image.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="openRevisionHistory('Hero', 'global', 'Hero Section')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
+                <i data-lucide="history" class="w-3.5 h-3.5"></i><span>History</span>
+              </button>
+              <button type="button" onclick="triggerPreview('Hero', 'global', document.getElementById('hero-form'))" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-medium flex items-center gap-1.5 transition-colors">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i><span>Preview</span>
+              </button>
+            </div>
           </div>
           <form id="hero-form" onsubmit="saveHero(event)" class="space-y-4 max-w-2xl">
             <div><label class="cms-label">Main Heading</label><input type="text" name="mainHeading" class="cms-input" placeholder="ENGINEERING INTELLIGENT SYSTEMS"></div>
@@ -1162,9 +1220,15 @@
             <div><label class="cms-label">Availability Badge</label><input type="text" name="availabilityBadge" class="cms-input" placeholder="OPEN TO INTERNSHIP OPPORTUNITIES"></div>
             <div><label class="cms-label">Supporting Text</label><input type="text" name="supportingText" class="cms-input" placeholder="B.Tech CSE (AI & ML) • 2022–2026"></div>
             <div class="sticky-mobile-actions flex items-center justify-between gap-3">
-              <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
-                <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Save Hero</span>
-              </button>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="triggerSaveDraft('Hero', 'global', document.getElementById('hero-form'))" class="px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+                  Save Draft
+                </button>
+                <button type="submit" class="px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-cyan-900/20">
+                  <i data-lucide="save" class="w-3.5 h-3.5"></i><span>Publish Hero</span>
+                </button>
+              </div>
+              <span id="hero-autosave-status" class="text-[10px] font-mono text-slate-400 hidden sm:inline"></span>
             </div>
           </form>
         </div>
@@ -2172,6 +2236,12 @@
           if (typeof closeResumeUploadModal === 'function') closeResumeUploadModal();
           if (typeof closeMessageDetailModal === 'function') closeMessageDetailModal();
           if (typeof closeMediaPicker === 'function') closeMediaPicker();
+          if (typeof closeRevisionHistoryModal === 'function') closeRevisionHistoryModal();
+          if (typeof closeRevisionCompareModal === 'function') closeRevisionCompareModal();
+          if (typeof closeRestoreConfirmModal === 'function') closeRestoreConfirmModal();
+          if (typeof closePublishConfirmModal === 'function') closePublishConfirmModal();
+          if (typeof closeConflictModal === 'function') closeConflictModal();
+          if (typeof closePreviewModal === 'function') closePreviewModal();
         }
       });
 
@@ -3787,28 +3857,71 @@
       if (_deleteCallback) _deleteCallback();
     }
 
-    // ─── Generic Modal ────────────────────────────────────────
+    // ─── Generic Modal (Phase 11 Enhanced with History, Drafts & Autosave) ────
     let _currentModal = null;
-    function openModal(title, fieldsHtml, onSubmitFn) {
+    function openModal(title, fieldsHtml, onSubmitFn, meta = {}) {
       _currentModal = onSubmitFn;
+      _hasUnsavedChanges = false;
       const box = document.getElementById('cms-modal-box');
       box.innerHTML = `
-        <div class="flex items-center justify-between mb-5">
-          <h3 class="text-sm font-bold text-slate-100">${escapeHtml(title)}</h3>
-          <button onclick="closeModal()" class="text-slate-400 hover:text-slate-200 text-lg leading-none">&times;</button>
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-brand-border">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-bold text-slate-100">${escapeHtml(title)}</h3>
+            ${meta.entityType ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-cyan-950/40 text-cyan-400 border border-cyan-800/50">${escapeHtml(meta.entityType)}</span>` : ''}
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="autosave-status" class="text-[10px] font-mono text-slate-400 hidden sm:inline">All changes saved</span>
+            ${meta.entityType && meta.entityId ? `
+              <button type="button" onclick="openRevisionHistory('${meta.entityType}', '${meta.entityId}', '${escapeHtml(meta.itemTitle || title)}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-medium flex items-center gap-1.5 transition-colors" title="Version History">
+                <i data-lucide="history" class="w-3.5 h-3.5"></i> History
+              </button>
+              <button type="button" onclick="triggerPreview('${meta.entityType}', '${meta.entityId}', document.getElementById('cms-modal-form'))" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-medium flex items-center gap-1.5 transition-colors" title="Live Preview">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Preview
+              </button>
+            ` : ''}
+            <button onclick="closeModal()" class="text-slate-400 hover:text-slate-200 text-lg leading-none p-1">&times;</button>
+          </div>
+        </div>
+        <div id="draft-recovery-banner" class="hidden mb-3 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300 flex items-center justify-between gap-2">
+          <span>⚠️ Unsaved draft recovered from previous session.</span>
+          <div class="flex items-center gap-1.5">
+            <button type="button" id="btn-apply-recovery" class="px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-bold text-[11px]">Restore</button>
+            <button type="button" id="btn-discard-recovery" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[11px]">Discard</button>
+          </div>
         </div>
         <form id="cms-modal-form" onsubmit="handleModalSubmit(event)" class="space-y-4">
           ${fieldsHtml}
-          <div class="flex gap-3 pt-2">
-            <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">Save</button>
-            <button type="button" onclick="closeModal()" class="px-5 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">Cancel</button>
+          <div class="flex items-center justify-between pt-3 border-t border-brand-border">
+            <div class="flex items-center gap-2">
+              ${meta.entityType && meta.entityId ? `
+                <button type="button" onclick="triggerSaveDraft('${meta.entityType}', '${meta.entityId}', document.getElementById('cms-modal-form'))" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+                  Save Draft
+                </button>
+              ` : ''}
+              <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">
+                Publish Changes
+              </button>
+            </div>
+            <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-800/80 text-slate-400 hover:text-slate-200 text-xs font-medium transition-colors">Cancel</button>
           </div>
         </form>
       `;
       document.getElementById('cms-modal').classList.add('open');
       if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (meta.entityType && meta.entityId) {
+        attachAutosaveToForm(meta.entityType, meta.entityId, document.getElementById('cms-modal-form'), meta.baseVersion || 1);
+        checkDraftRecovery(meta.entityType, meta.entityId, document.getElementById('cms-modal-form'));
+      }
     }
-    function closeModal() { document.getElementById('cms-modal').classList.remove('open'); }
+    function closeModal() {
+      if (_hasUnsavedChanges) {
+        if (!confirm('You have unsaved changes in this draft. Close anyway?')) {
+          return;
+        }
+      }
+      _hasUnsavedChanges = false;
+      document.getElementById('cms-modal').classList.remove('open');
+    }
     async function handleModalSubmit(e) {
       e.preventDefault();
       const form = e.target;
@@ -3885,9 +3998,10 @@
         const method = p._id ? 'PUT' : 'POST';
         data.description = data.shortDescription;
         await cmsApi(method, url, data);
-        showToast(p._id ? 'Project updated!' : 'Project created!');
+        _hasUnsavedChanges = false;
+        showToast(p._id ? 'Project updated & published!' : 'Project created!');
         loadProjects();
-      });
+      }, { entityType: 'Project', entityId: p._id || p.slug || p.id, itemTitle: p.title });
     }
 
     async function editProject(id) {
@@ -3948,9 +4062,10 @@
         const url = s._id ? `/api/admin/skills/${s._id}` : '/api/admin/skills';
         const method = s._id ? 'PUT' : 'POST';
         await cmsApi(method, url, data);
-        showToast(s._id ? 'Skill updated!' : 'Skill created!');
+        _hasUnsavedChanges = false;
+        showToast(s._id ? 'Skill updated & published!' : 'Skill created!');
         loadSkills();
-      });
+      }, { entityType: 'Skill', entityId: s._id || s.id, itemTitle: s.name });
     }
 
     async function editSkill(id) {
@@ -4162,6 +4277,8 @@
         const p = data.data || data;
         const form = document.getElementById('profile-form');
         if (!form) return;
+        attachAutosaveToForm('Profile', 'global', form);
+        checkDraftRecovery('Profile', 'global', form);
         Object.keys(p).forEach(k => {
           const el = form.elements[k];
           if (el) el.value = p[k] || '';
@@ -4186,6 +4303,8 @@
         const a = data.data || data;
         const form = document.getElementById('about-form');
         if (!form) return;
+        attachAutosaveToForm('About', 'global', form);
+        checkDraftRecovery('About', 'global', form);
         if (form.elements.title) form.elements.title.value = a.title || '';
         if (form.elements.description) form.elements.description.value = a.description || '';
       } catch(err) { showToast(err.message, 'error'); }
@@ -4207,6 +4326,8 @@
         const h = data.data || data;
         const form = document.getElementById('hero-form');
         if (!form) return;
+        attachAutosaveToForm('Hero', 'global', form);
+        checkDraftRecovery('Hero', 'global', form);
         Object.keys(h).forEach(k => {
           const el = form.elements[k];
           if (el && typeof h[k] !== 'object') el.value = h[k] || '';
@@ -5072,6 +5193,8 @@
         const s = data.data || data;
         const form = document.getElementById('settings-form');
         if (!form || !s) return;
+        attachAutosaveToForm('Settings', 'global', form);
+        checkDraftRecovery('Settings', 'global', form);
 
         const stringFields = [
           'siteName', 'portfolioUrl', 'siteDescription', 'timezone',
@@ -5121,6 +5244,526 @@
         showToast('Global website settings saved successfully!');
       } catch (err) {
         showToast(err.message, 'error');
+      }
+    }
+
+    
+    // ═════════════════════════════════════════════════════════════════════
+    // PHASE 11: ADVANCED CONTROL CENTER (REVISIONS, PREVIEW, AUTOSAVE)
+    // ═════════════════════════════════════════════════════════════════════
+
+    let _hasUnsavedChanges = false;
+    let _autosaveTimer = null;
+    let _activeDraftContext = null;
+    let _historyContext = null;
+    let _restoreTargetVersion = null;
+    let _currentPreviewViewport = 'desktop';
+
+    // Guard against accidental window close/reload when edits exist
+    window.addEventListener('beforeunload', (e) => {
+      if (_hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved content in the Control Center.';
+        return e.returnValue;
+      }
+    });
+
+    // Offline & Online Network Interruption Handlers
+    window.addEventListener('offline', () => {
+      showToast('Network disconnected. Edits will be preserved in browser cache.', 'error');
+      const statusEl = document.getElementById('autosave-status');
+      if (statusEl) statusEl.textContent = 'Offline (cache active)';
+    });
+
+    window.addEventListener('online', () => {
+      showToast('Network restored. Cloud autosave reconnected.', 'success');
+      const statusEl = document.getElementById('autosave-status');
+      if (statusEl) statusEl.textContent = 'Online';
+    });
+
+    /**
+     * Attaches debounced autosave and unsaved-change tracking to any form
+     */
+    function attachAutosaveToForm(entityType, entityId, formEl, baseVersion = 1) {
+      if (!formEl) return;
+      _activeDraftContext = { entityType, entityId, formEl, baseVersion };
+
+      formEl.addEventListener('input', () => {
+        _hasUnsavedChanges = true;
+        const statusEl = document.getElementById('autosave-status');
+        if (statusEl) {
+          statusEl.textContent = 'Unsaved edits...';
+          statusEl.className = 'text-[10px] font-mono text-amber-400';
+        }
+
+        clearTimeout(_autosaveTimer);
+        _autosaveTimer = setTimeout(() => {
+          triggerAutosave(entityType, entityId, formEl, baseVersion);
+        }, 3000);
+      });
+    }
+
+    /**
+     * Performs debounced autosave to /api/admin/draft/autosave
+     */
+    async function triggerAutosave(entityType, entityId, formEl, baseVersion = 1) {
+      if (!formEl) return;
+      const statusEl = document.getElementById('autosave-status');
+      if (statusEl) {
+        statusEl.textContent = 'Autosaving draft...';
+        statusEl.className = 'text-[10px] font-mono text-cyan-400';
+      }
+
+      const formData = Object.fromEntries(new FormData(formEl).entries());
+
+      // Save locally to localStorage as instantaneous safety net
+      try {
+        localStorage.setItem('as_draft_' + entityType + '_' + entityId, JSON.stringify({
+          data: formData,
+          timestamp: Date.now()
+        }));
+      } catch (e) {}
+
+      try {
+        const res = await cmsApi('POST', '/api/admin/draft/autosave', {
+          entityType,
+          entityId,
+          data: formData,
+          baseVersion
+        });
+
+        if (res && res.data && res.data.conflict) {
+          showConflictModal(entityType, entityId, res.data.latestVersion, formEl);
+          if (statusEl) {
+            statusEl.textContent = 'Concurrency conflict!';
+            statusEl.className = 'text-[10px] font-mono text-rose-400';
+          }
+          return;
+        }
+
+        _hasUnsavedChanges = false;
+        if (statusEl) {
+          const now = new Date();
+          const timeStr = now.toTimeString().split(' ')[0];
+          statusEl.textContent = 'Draft saved at ' + timeStr;
+          statusEl.className = 'text-[10px] font-mono text-slate-400';
+        }
+      } catch (err) {
+        if (statusEl) {
+          statusEl.textContent = 'Unable to cloud save (cached locally)';
+          statusEl.className = 'text-[10px] font-mono text-amber-500';
+        }
+      }
+    }
+
+    /**
+     * Immediately persists draft without waiting for debounce
+     */
+    async function triggerSaveDraft(entityType, entityId, formEl, baseVersion = 1) {
+      clearTimeout(_autosaveTimer);
+      await triggerAutosave(entityType, entityId, formEl, baseVersion);
+      showToast('Draft state saved securely!');
+    }
+
+    /**
+     * Checks if a server or local recovery draft exists on editor open
+     */
+    async function checkDraftRecovery(entityType, entityId, formEl) {
+      const banner = document.getElementById('draft-recovery-banner');
+      if (!banner || !formEl) return;
+
+      try {
+        const res = await cmsApi('GET', '/api/admin/draft/' + entityType + '/' + entityId);
+        if (res && res.data && res.data.hasDraft && res.data.draft) {
+          const draft = res.data.draft;
+          banner.classList.remove('hidden');
+
+          const applyBtn = document.getElementById('btn-apply-recovery');
+          const discardBtn = document.getElementById('btn-discard-recovery');
+
+          if (applyBtn) {
+            applyBtn.onclick = () => {
+              Object.keys(draft.data || {}).forEach(k => {
+                const el = formEl.elements[k];
+                if (el) el.value = draft.data[k] || '';
+              });
+              banner.classList.add('hidden');
+              showToast('Recovered draft applied to editor!');
+            };
+          }
+
+          if (discardBtn) {
+            discardBtn.onclick = async () => {
+              banner.classList.add('hidden');
+              try {
+                await cmsApi('DELETE', '/api/admin/draft/' + entityType + '/' + entityId);
+                localStorage.removeItem('as_draft_' + entityType + '_' + entityId);
+                showToast('Draft discarded.');
+              } catch(e) {}
+            };
+          }
+        }
+      } catch (e) {}
+    }
+
+    /**
+     * Concurrency Conflict Notification Modal
+     */
+    function showConflictModal(entityType, entityId, latestVersion, formEl) {
+      const modal = document.getElementById('conflict-modal');
+      const msg = document.getElementById('conflict-modal-msg');
+      if (msg) {
+        msg.textContent = 'This ' + entityType + ' was updated to Version ' + latestVersion + ' in another session since you opened it. Overwriting will erase newer modifications.';
+      }
+      modal.classList.add('open');
+
+      const compareBtn = document.getElementById('conflict-compare-btn');
+      if (compareBtn) {
+        compareBtn.onclick = () => {
+          closeConflictModal();
+          openRevisionCompare(entityType, entityId, latestVersion);
+        };
+      }
+
+      const keepBtn = document.getElementById('conflict-keep-btn');
+      if (keepBtn) {
+        keepBtn.onclick = () => {
+          closeConflictModal();
+          showToast('Continuing with local draft.');
+        };
+      }
+    }
+
+    function closeConflictModal() {
+      document.getElementById('conflict-modal').classList.remove('open');
+    }
+
+    // ─── VERSION HISTORY MODAL ───────────────────────────────────────
+    async function openRevisionHistory(entityType, entityId, title = '') {
+      _historyContext = { entityType, entityId, title };
+      const modal = document.getElementById('revision-history-modal');
+      const titleEl = document.getElementById('rev-history-title');
+      const listEl = document.getElementById('rev-history-list');
+
+      if (titleEl) titleEl.textContent = (title || entityType) + ' — Version History';
+      if (listEl) listEl.innerHTML = '<div class="text-center py-10 text-xs font-mono text-slate-500">Loading revision timeline...</div>';
+
+      modal.classList.add('open');
+
+      try {
+        const res = await cmsApi('GET', '/api/admin/revisions/' + entityType + '/' + entityId);
+        const revisions = res.data?.revisions || res.revisions || [];
+        renderRevisionHistoryList(revisions, entityType, entityId);
+      } catch (err) {
+        if (listEl) listEl.innerHTML = '<p class="text-xs text-rose-400 text-center py-8">' + err.message + '</p>';
+      }
+    }
+
+    function closeRevisionHistoryModal() {
+      document.getElementById('revision-history-modal').classList.remove('open');
+    }
+
+    function renderRevisionHistoryList(revisions, entityType, entityId) {
+      const listEl = document.getElementById('rev-history-list');
+      if (!listEl) return;
+
+      if (!revisions.length) {
+        listEl.innerHTML = `
+          <div class="text-center py-12 px-4 border border-dashed border-brand-border rounded-xl">
+            <i data-lucide="history" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
+            <p class="text-xs text-slate-400 font-medium">No recorded revisions found yet.</p>
+            <p class="text-[11px] text-slate-500 mt-1">Revisions are automatically generated on every publish or rollback.</p>
+          </div>
+        `;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
+      }
+
+      listEl.innerHTML = revisions.map((rev, idx) => {
+        const isLatest = idx === 0;
+        const dateStr = rev.createdAt ? new Date(rev.createdAt).toLocaleString() : 'Unknown date';
+        const stateBadgeClass =
+          rev.state === 'PUBLISHED' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+          rev.state === 'RESTORED' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20' :
+          'bg-amber-500/10 text-amber-400 border-amber-500/20';
+
+        return `
+          <div class="bg-slate-900/60 border border-brand-border rounded-xl p-4 transition-all hover:border-slate-700">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2.5 flex-wrap">
+                <span class="px-2.5 py-1 rounded-md bg-cyan-950/60 border border-cyan-800/40 text-cyan-300 font-mono font-bold text-xs">
+                  Version ${rev.version}
+                </span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono border ${stateBadgeClass}">
+                  ${escapeHtml(rev.state || 'PUBLISHED')}
+                </span>
+                ${isLatest ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-950 text-emerald-300 border border-emerald-800">CURRENT LIVE</span>' : ''}
+              </div>
+              <span class="text-[11px] font-mono text-slate-500 shrink-0">${dateStr}</span>
+            </div>
+            <p class="text-xs text-slate-300 font-sans mb-3">${escapeHtml(rev.changeSummary || 'No change description')}</p>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-[11px] text-slate-500">
+              <span class="flex items-center gap-1">
+                <i data-lucide="user" class="w-3 h-3"></i> ${escapeHtml(rev.createdBy || 'admin')}
+              </span>
+              <div class="flex items-center gap-2">
+                <button onclick="viewRevisionSnapshot('${entityType}', '${entityId}', ${rev.version})" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors">
+                  View Data
+                </button>
+                <button onclick="openRevisionCompare('${entityType}', '${entityId}', ${rev.version})" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-cyan-400 hover:text-cyan-300 transition-colors">
+                  Compare
+                </button>
+                ${!isLatest ? `
+                  <button onclick="confirmRestoreRevision('${entityType}', '${entityId}', ${rev.version})" class="px-2.5 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition-colors">
+                    Restore
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    /**
+     * View read-only formatted snapshot of a revision
+     */
+    async function viewRevisionSnapshot(entityType, entityId, version) {
+      try {
+        const res = await cmsApi('GET', '/api/admin/revisions/' + entityType + '/' + entityId + '/' + version);
+        const rev = res.data || res;
+        const snapshotStr = JSON.stringify(rev.snapshot || {}, null, 2);
+
+        openModal('Snapshot Data: Version ' + version + ' (' + entityType + ')', `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-brand-border">
+              <span>Recorded: ${rev.createdAt ? new Date(rev.createdAt).toLocaleString() : 'N/A'}</span>
+              <span>Author: ${escapeHtml(rev.createdBy || 'admin')}</span>
+            </div>
+            <div>
+              <label class="cms-label">Snapshot JSON Payload (Read-Only)</label>
+              <pre class="bg-slate-950 p-3 rounded-lg border border-brand-border font-mono text-[11px] text-slate-300 overflow-x-auto max-h-96 leading-relaxed select-all">${escapeHtml(snapshotStr)}</pre>
+            </div>
+          </div>
+        `, null);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ─── CHANGE COMPARISON VIEW ───────────────────────────────────────
+    async function openRevisionCompare(entityType, entityId, targetVersion, baseVersion = null) {
+      const modal = document.getElementById('revision-compare-modal');
+      const titleEl = document.getElementById('rev-compare-title');
+      const contentEl = document.getElementById('rev-compare-content');
+      const footerRestoreBtn = document.getElementById('rev-compare-restore-btn');
+
+      if (titleEl) titleEl.textContent = 'Comparing Current Version with Version ' + targetVersion;
+      if (contentEl) contentEl.innerHTML = '<div class="text-center py-12 text-xs font-mono text-slate-500">Calculating field differences...</div>';
+      if (footerRestoreBtn) {
+        footerRestoreBtn.onclick = () => {
+          closeRevisionCompareModal();
+          confirmRestoreRevision(entityType, entityId, targetVersion);
+        };
+      }
+
+      modal.classList.add('open');
+
+      try {
+        const res = await cmsApi('POST', '/api/admin/revisions/' + entityType + '/' + entityId + '/compare', {
+          baseVersion,
+          targetVersion
+        });
+        renderCompareView(res.data || res);
+      } catch (err) {
+        if (contentEl) contentEl.innerHTML = '<p class="text-xs text-rose-400 text-center py-8">' + err.message + '</p>';
+      }
+    }
+
+    function closeRevisionCompareModal() {
+      document.getElementById('revision-compare-modal').classList.remove('open');
+    }
+
+    function renderCompareView(data) {
+      const contentEl = document.getElementById('rev-compare-content');
+      if (!contentEl) return;
+
+      const changes = data.changes || [];
+      if (!changes.length) {
+        contentEl.innerHTML = `
+          <div class="text-center py-10 px-4">
+            <div class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center mx-auto mb-3">
+              <i data-lucide="check" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-sm font-semibold text-slate-200">Zero Differences Detected</h4>
+            <p class="text-xs text-slate-400 mt-1">The compared content is identical to the target version.</p>
+          </div>
+        `;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
+      }
+
+      contentEl.innerHTML = `
+        <div class="mb-4 p-3 rounded-xl bg-slate-900/60 border border-brand-border flex items-center justify-between text-xs">
+          <span class="text-slate-300 font-medium">${escapeHtml(data.summary || '')}</span>
+          <span class="text-slate-500 font-mono">${changes.length} field alteration(s)</span>
+        </div>
+        <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+          ${changes.map((c) => {
+            const badgeClass =
+              c.changeType === 'ADDED' ? 'diff-badge-added' :
+              c.changeType === 'REMOVED' ? 'diff-badge-removed' :
+              'diff-badge-modified';
+
+            const formatVal = (v) => {
+              if (v === null || v === undefined) return '<span class="text-slate-600 italic">none</span>';
+              if (typeof v === 'object') return escapeHtml(JSON.stringify(v, null, 1));
+              return escapeHtml(String(v));
+            };
+
+            return `
+              <div class="bg-slate-950 border border-brand-border rounded-xl p-3.5 space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-mono font-bold text-slate-200">${escapeHtml(c.field)}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold ${badgeClass}">
+                    [${c.changeType}]
+                  </span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div class="p-2.5 rounded-lg bg-rose-950/20 border border-rose-500/20">
+                    <span class="text-[10px] font-mono text-rose-400 block mb-1">Previous (v${data.targetVersion}):</span>
+                    <div class="text-slate-300 font-mono text-[11px] break-words">${formatVal(c.newValue)}</div>
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-500/20">
+                    <span class="text-[10px] font-mono text-emerald-400 block mb-1">Current State:</span>
+                    <div class="text-slate-300 font-mono text-[11px] break-words">${formatVal(c.oldValue)}</div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    // ─── SAFE RESTORE ENGINE ──────────────────────────────────────────
+    function confirmRestoreRevision(entityType, entityId, targetVersion) {
+      _restoreTargetVersion = targetVersion;
+      const modal = document.getElementById('restore-confirm-modal');
+      const textEl = document.getElementById('restore-confirm-text');
+      if (textEl) {
+        textEl.textContent = 'You are about to restore this ' + entityType + ' to Version ' + targetVersion + '. The current live content will remain preserved as a new revision.';
+      }
+      modal.classList.add('open');
+
+      const proceedBtn = document.getElementById('restore-proceed-btn');
+      if (proceedBtn) {
+        proceedBtn.onclick = () => executeRestoreRevision(entityType, entityId, targetVersion);
+      }
+    }
+
+    function closeRestoreConfirmModal() {
+      document.getElementById('restore-confirm-modal').classList.remove('open');
+      _restoreTargetVersion = null;
+    }
+
+    async function executeRestoreRevision(entityType, entityId, targetVersion) {
+      closeRestoreConfirmModal();
+      closeRevisionHistoryModal();
+      closeRevisionCompareModal();
+
+      try {
+        const res = await cmsApi('POST', '/api/admin/revisions/' + entityType + '/' + entityId + '/restore', {
+          targetVersion
+        });
+        showToast(res.message || 'Restored successfully! Created Version ' + (res.data?.newVersion || ''));
+
+        // Refresh whichever module is currently open
+        if (entityType === 'Project') loadProjects();
+        else if (entityType === 'Skill') loadSkills();
+        else if (entityType === 'Hero') loadHero();
+        else if (entityType === 'Profile') loadProfile();
+        else if (entityType === 'About') loadAbout();
+        else if (entityType === 'Settings') loadSettingsForm();
+        else if (entityType === 'SEO') loadSeoForm();
+        else if (entityType === 'Education') loadEducation();
+        else if (entityType === 'Experience') loadExperience();
+        else if (entityType === 'Roadmap') loadRoadmap();
+        else if (entityType === 'Certificate') loadCertificates();
+        else if (entityType === 'SocialLink') loadSocialLinks();
+        else if (entityType === 'Navigation') loadNavigation();
+
+        if (typeof closeModal === 'function') closeModal();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ─── LIVE DEVICE PREVIEW ENGINE ──────────────────────────────────
+    async function triggerPreview(entityType, entityId, formEl) {
+      if (!formEl) return;
+      const formData = Object.fromEntries(new FormData(formEl).entries());
+
+      try {
+        const res = await cmsApi('POST', '/api/admin/preview/token', {
+          entityType,
+          entityId: entityId || 'global',
+          draftData: formData
+        });
+
+        if (res && res.data && res.data.previewUrl) {
+          openDevicePreview(res.data.previewUrl);
+        }
+      } catch (err) {
+        showToast('Preview error: ' + err.message, 'error');
+      }
+    }
+
+    function openDevicePreview(url) {
+      const modal = document.getElementById('preview-modal');
+      const iframe = document.getElementById('preview-iframe');
+      if (iframe) iframe.src = url;
+      modal.classList.add('open');
+      setPreviewViewport('desktop');
+    }
+
+    function closePreviewModal() {
+      const modal = document.getElementById('preview-modal');
+      const iframe = document.getElementById('preview-iframe');
+      if (iframe) iframe.src = 'about:blank';
+      modal.classList.remove('open');
+    }
+
+    function setPreviewViewport(mode) {
+      _currentPreviewViewport = mode;
+      const container = document.getElementById('preview-viewport-container');
+      const btnPhone = document.getElementById('pv-btn-phone');
+      const btnTablet = document.getElementById('pv-btn-tablet');
+      const btnDesktop = document.getElementById('pv-btn-desktop');
+
+      [btnPhone, btnTablet, btnDesktop].forEach(b => {
+        if (b) {
+          b.classList.remove('bg-cyan-600', 'text-white');
+          b.classList.add('bg-slate-800', 'text-slate-400');
+        }
+      });
+
+      if (!container) return;
+      container.classList.remove('preview-viewport-phone', 'preview-viewport-tablet', 'preview-viewport-desktop');
+
+      if (mode === 'phone') {
+        container.classList.add('preview-viewport-phone');
+        if (btnPhone) { btnPhone.classList.add('bg-cyan-600', 'text-white'); btnPhone.classList.remove('bg-slate-800', 'text-slate-400'); }
+      } else if (mode === 'tablet') {
+        container.classList.add('preview-viewport-tablet');
+        if (btnTablet) { btnTablet.classList.add('bg-cyan-600', 'text-white'); btnTablet.classList.remove('bg-slate-800', 'text-slate-400'); }
+      } else {
+        container.classList.add('preview-viewport-desktop');
+        if (btnDesktop) { btnDesktop.classList.add('bg-cyan-600', 'text-white'); btnDesktop.classList.remove('bg-slate-800', 'text-slate-400'); }
       }
     }
 
@@ -5462,6 +6105,147 @@
           <button type="button" onclick="closeMessageDetailModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
             Close
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Phase 11: Revision History Modal -->
+  <div id="revision-history-modal" onclick="if(event.target===this)closeRevisionHistoryModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-2xl mx-4 max-h-[88vh] overflow-y-auto shadow-2xl">
+      <div class="flex items-center justify-between pb-4 mb-4 border-b border-brand-border">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="git-commit" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="rev-history-title" class="text-sm font-bold text-slate-100">Revision History</h3>
+            <p class="text-[11px] text-slate-400">Complete, immutable snapshot log with non-destructive restore</p>
+          </div>
+        </div>
+        <button onclick="closeRevisionHistoryModal()" class="text-slate-400 hover:text-slate-200 text-lg leading-none p-1">&times;</button>
+      </div>
+      <div id="rev-history-list" class="space-y-3"></div>
+    </div>
+  </div>
+
+  <!-- Phase 11: Change Comparison (Diff) Modal -->
+  <div id="revision-compare-modal" onclick="if(event.target===this)closeRevisionCompareModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div class="flex items-center justify-between pb-4 mb-4 border-b border-brand-border">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="git-compare" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="rev-compare-title" class="text-sm font-bold text-slate-100">Change Comparison</h3>
+            <p class="text-[11px] text-slate-400">Review differences between target revision and current live state</p>
+          </div>
+        </div>
+        <button onclick="closeRevisionCompareModal()" class="text-slate-400 hover:text-slate-200 text-lg leading-none p-1">&times;</button>
+      </div>
+      <div id="rev-compare-content"></div>
+      <div class="flex items-center justify-between pt-4 mt-4 border-t border-brand-border">
+        <button type="button" id="rev-compare-restore-btn" class="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Restore to this Version
+        </button>
+        <button type="button" onclick="closeRevisionCompareModal()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">
+          Close Comparison
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 11: Restore Confirmation Modal -->
+  <div id="restore-confirm-modal" onclick="if(event.target===this)closeRestoreConfirmModal()">
+    <div class="bg-brand-sidebar border border-rose-500/30 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+          <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-slate-100">Safe Rollback Confirmation</h3>
+          <p class="text-xs text-slate-400">Non-destructive version restoration</p>
+        </div>
+      </div>
+      <p id="restore-confirm-text" class="text-xs text-slate-300 mb-4 leading-relaxed"></p>
+      <div class="p-3 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-400 mb-5">
+        ℹ️ Restoring does NOT delete future versions. It creates a brand-new revision with the historic snapshot.
+      </div>
+      <div class="flex gap-3">
+        <button id="restore-proceed-btn" class="flex-1 px-4 py-2.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold transition-colors">
+          Restore Version
+        </button>
+        <button onclick="closeRestoreConfirmModal()" class="flex-1 px-4 py-2.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition-colors">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 11: Concurrency Conflict Modal -->
+  <div id="conflict-modal" onclick="if(event.target===this)closeConflictModal()">
+    <div class="bg-brand-sidebar border border-amber-500/30 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-slate-100">Concurrent Edit Conflict</h3>
+          <p class="text-xs text-slate-400">Another operator saved changes</p>
+        </div>
+      </div>
+      <p id="conflict-modal-msg" class="text-xs text-slate-300 mb-5 leading-relaxed"></p>
+      <div class="flex flex-col gap-2">
+        <button id="conflict-compare-btn" class="w-full px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-colors">
+          Compare Differences
+        </button>
+        <button id="conflict-keep-btn" class="w-full px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+          Keep Working on Draft
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 11: Live Device Preview Modal -->
+  <div id="preview-modal" onclick="if(event.target===this)closePreviewModal()">
+    <div class="bg-brand-sidebar border border-cyan-500/30 rounded-2xl shadow-2xl flex flex-col mx-auto overflow-hidden">
+      <!-- Preview Warning Banner -->
+      <div class="bg-amber-500 text-slate-950 px-4 py-1.5 flex items-center justify-between text-xs font-bold shrink-0">
+        <div class="flex items-center gap-2">
+          <i data-lucide="alert-circle" class="w-4 h-4"></i>
+          <span>PREVIEW MODE — DRAFT CONTENT (NOT LIVE TO PUBLIC)</span>
+        </div>
+        <span class="text-[10px] uppercase font-mono tracking-wider opacity-80">Private Admin Session</span>
+      </div>
+
+      <!-- Preview Header & Device Viewport Switcher -->
+      <div class="px-4 py-3 bg-slate-900/90 border-b border-brand-border flex items-center justify-between shrink-0 gap-3">
+        <div class="flex items-center gap-1.5">
+          <span class="text-xs text-slate-400 font-mono mr-2 hidden sm:inline">Viewport:</span>
+          <button id="pv-btn-phone" type="button" onclick="setPreviewViewport('phone')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors bg-slate-800 text-slate-400">
+            <i data-lucide="smartphone" class="w-3.5 h-3.5"></i> Phone
+          </button>
+          <button id="pv-btn-tablet" type="button" onclick="setPreviewViewport('tablet')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors bg-slate-800 text-slate-400">
+            <i data-lucide="tablet" class="w-3.5 h-3.5"></i> Tablet
+          </button>
+          <button id="pv-btn-desktop" type="button" onclick="setPreviewViewport('desktop')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors bg-cyan-600 text-white">
+            <i data-lucide="monitor" class="w-3.5 h-3.5"></i> Desktop
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closePreviewModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            ← Back to Editor
+          </button>
+        </div>
+      </div>
+
+      <!-- Centered Responsive Iframe Stage -->
+      <div class="flex-1 bg-slate-950/80 p-4 flex items-center justify-center overflow-auto">
+        <div id="preview-viewport-container" class="preview-viewport-desktop h-full bg-slate-900 rounded-xl overflow-hidden shadow-2xl border border-brand-border">
+          <iframe id="preview-iframe" class="w-full h-full border-0" src="about:blank"></iframe>
         </div>
       </div>
     </div>

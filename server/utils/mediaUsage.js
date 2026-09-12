@@ -103,6 +103,20 @@ async function findMediaUsage(media) {
         usages.push({ module: 'Resume', field: 'url', title: `Resume: ${r.version} (${r.status})`, refId: r._id });
       });
     }
+
+    // 7. Check Revisions history for preserved references
+    try {
+      const { isMediaReferencedInRevisions } = require('./revisionHelper');
+      const revCheck = await isMediaReferencedInRevisions(url || fileName);
+      if (revCheck && revCheck.referenced) {
+        usages.push({
+          module: 'Revisions',
+          field: 'snapshot',
+          title: `Revision History: ${revCheck.revisionInfo.entityType} (v${revCheck.revisionInfo.version} - ${revCheck.revisionInfo.title || ''})`,
+          refId: 'revision-history',
+        });
+      }
+    } catch (revErr) {}
   } catch (err) {
     console.warn('[findMediaUsage] Error checking references:', err.message);
   }

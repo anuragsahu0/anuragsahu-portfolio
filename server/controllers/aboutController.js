@@ -73,6 +73,27 @@ const updateAbout = async (req, res, next) => {
       await logActivity('ABOUT_UPDATED', 'About', { fields: Object.keys(data) }, req);
     } catch (e) {}
 
+    // Phase 11: Record immutable revision & clear working draft
+    try {
+      const { recordRevision } = require('../utils/revisionHelper');
+      const Draft = require('../models/Draft');
+      const finalAbout = about ? (about.toObject ? about.toObject() : about) : { ...DEFAULT_ABOUT, ...data };
+      await recordRevision({
+        entityType: 'About',
+        entityId: 'global',
+        title: 'About Section',
+        snapshot: finalAbout,
+        state: 'PUBLISHED',
+        createdBy: req.user?.email || 'admin',
+        changeSummary: 'Updated About Section',
+      });
+      if (Draft.db && Draft.db.readyState === 1) {
+        await Draft.deleteOne({ entityType: 'About', entityId: 'global' });
+      }
+    } catch (revErr) {
+      console.warn('[About] Revision recording failed:', revErr.message);
+    }
+
     return sendSuccess(res, about || { ...DEFAULT_ABOUT, ...data });
   } catch (err) {
     next(err);
