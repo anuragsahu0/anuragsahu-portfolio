@@ -23,6 +23,7 @@
     { "src": "/AI-FINANCE-CONTROLLER", "dest": "/AI-FINANCE-CONTROLLER.html" },
     { "src": "/ai-finance-controller", "dest": "/AI-FINANCE-CONTROLLER.html" },
     { "src": "/AI-FINANCE%20CONTROLLER", "dest": "/AI-FINANCE-CONTROLLER.html" },
+    { "src": "/sitemap.xml", "dest": "/api/index.js" },
     { "src": "/api/(.*)", "dest": "/api/index.js" },
     {
       "src": "/admin(.*)",

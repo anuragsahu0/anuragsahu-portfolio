@@ -15,10 +15,13 @@ const { getPublicSocialLinks } = require('../controllers/socialLinkController');
 const { getPublicSettings, getPublicSeo } = require('../controllers/settingsController');
 const { getPublicResume } = require('../controllers/resumeController');
 const { getMediaById } = require('../controllers/mediaController');
+const { getPublicSite, getDynamicSitemap } = require('../controllers/publicController');
 
 // ─── Public Read-Only Portfolio Endpoints ────────────────────────────────────
 // Return only published/visible records, stripping any private metadata or admin fields
 
+router.get('/public/site', getPublicSite);
+router.get('/sitemap.xml', getDynamicSitemap);
 router.get('/public/hero', getHero);
 router.get('/public/profile', getProfile);
 router.get('/public/about', getAbout);

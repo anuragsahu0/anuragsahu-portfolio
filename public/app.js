@@ -660,9 +660,17 @@ window.closeSuccessModal = function() {
 };
 
 /* -------------------------------------------------------------------------- */
-/* Phase 5 — Dynamic CMS, SEO, Resume & Global Settings Hydration Engine      */
+/* Phase 8 — Live CMS & Website Integration Engine                            */
+/* Admin → Database → Public Read API (/api/public/site) → Public DOM        */
 /* -------------------------------------------------------------------------- */
+
+const CMS_SITE_CACHE_KEY = 'as_public_site_cache';
+
 async function initCmsDynamicHydration() {
+  await initCmsIntegration();
+}
+
+async function initCmsIntegration() {
   function setMetaTag(attribute, key, content) {
     if (!content) return;
     let el = document.querySelector(`meta[${attribute}="${key}"]`);
@@ -686,18 +694,12 @@ async function initCmsDynamicHydration() {
     if (type) el.setAttribute('type', type);
   }
 
-  try {
-    const [seoRes, settingsRes, resumeRes] = await Promise.allSettled([
-      fetch(`${API_BASE}/public/seo`),
-      fetch(`${API_BASE}/public/settings`),
-      fetch(`${API_BASE}/public/resume`),
-    ]);
+  function applyCmsData(site) {
+    if (!site) return;
 
-    // 1. Dynamic SEO & Meta Tags Rendering
-    if (seoRes.status === 'fulfilled' && seoRes.value.ok) {
-      const seoData = await seoRes.value.json();
-      const seo = seoData.data || seoData;
-
+    // ─── 1. SEO & Metadata Rehydration ──────────────────────────────────────
+    if (site.seo) {
+      const seo = site.seo;
       if (seo.title) {
         document.title = seo.title;
         setMetaTag('name', 'title', seo.title);
@@ -708,7 +710,6 @@ async function initCmsDynamicHydration() {
       if (seo.author) setMetaTag('name', 'author', seo.author);
       if (seo.robotsDirective) setMetaTag('name', 'robots', seo.robotsDirective);
 
-      // Open Graph Tags
       if (seo.openGraph) {
         if (seo.openGraph.title) setMetaTag('property', 'og:title', seo.openGraph.title);
         if (seo.openGraph.description) setMetaTag('property', 'og:description', seo.openGraph.description);
@@ -716,7 +717,6 @@ async function initCmsDynamicHydration() {
         if (seo.openGraph.url) setMetaTag('property', 'og:url', seo.openGraph.url);
       }
 
-      // Twitter Cards
       if (seo.twitter) {
         if (seo.twitter.card) setMetaTag('name', 'twitter:card', seo.twitter.card);
         if (seo.twitter.title) setMetaTag('name', 'twitter:title', seo.twitter.title);
@@ -724,7 +724,6 @@ async function initCmsDynamicHydration() {
         if (seo.twitter.image) setMetaTag('name', 'twitter:image', seo.twitter.image);
       }
 
-      // Favicon & Apple Touch Icon
       if (seo.faviconUrl) {
         const ext = seo.faviconUrl.split('.').pop().toLowerCase();
         const mime = ext === 'svg' ? 'image/svg+xml' : ext === 'png' ? 'image/png' : 'image/webp';
@@ -735,35 +734,29 @@ async function initCmsDynamicHydration() {
       }
     }
 
-    // 2. Active Resume Hydration
-    if (resumeRes.status === 'fulfilled' && resumeRes.value.ok) {
-      const resumeData = await resumeRes.value.json();
-      const activeResume = resumeData.data || resumeData;
-
-      if (activeResume && activeResume.url) {
-        document.querySelectorAll('a').forEach((link) => {
-          const href = (link.getAttribute('href') || '').toLowerCase();
-          const text = (link.textContent || '').toLowerCase();
-          if (
-            href.includes('resume') ||
-            text.includes('resume') ||
-            link.id === 'hero-resume-btn' ||
-            link.id === 'footer-resume-btn'
-          ) {
-            link.setAttribute('href', activeResume.url);
-            link.setAttribute('target', '_blank');
-            link.setAttribute('rel', 'noopener noreferrer');
-          }
-        });
-      }
+    // ─── 2. Active Resume Rehydration ───────────────────────────────────────
+    if (site.resume && site.resume.url) {
+      const resumeUrl = site.resume.url;
+      document.querySelectorAll('a').forEach((link) => {
+        const href = (link.getAttribute('href') || '').toLowerCase();
+        const text = (link.textContent || '').toLowerCase();
+        if (
+          href.includes('resume') ||
+          text.includes('resume') ||
+          link.id === 'hero-resume-btn' ||
+          link.id === 'footer-resume-btn'
+        ) {
+          link.setAttribute('href', resumeUrl);
+          link.setAttribute('target', '_blank');
+          link.setAttribute('rel', 'noopener noreferrer');
+        }
+      });
     }
 
-    // 3. Settings & Maintenance Mode Hydration
-    if (settingsRes.status === 'fulfilled' && settingsRes.value.ok) {
-      const settingsData = await settingsRes.value.json();
-      const settings = settingsData.data || settingsData;
+    // ─── 3. Global Settings & Maintenance ───────────────────────────────────
+    if (site.settings) {
+      const settings = site.settings;
 
-      // Maintenance mode notice on public pages (never locks out /admin)
       if (settings.maintenanceMode && !window.location.pathname.startsWith('/admin')) {
         if (!document.getElementById('maintenance-banner')) {
           const banner = document.createElement('div');
@@ -773,9 +766,11 @@ async function initCmsDynamicHydration() {
           banner.innerHTML = `<span>⚠️ ${settings.maintenanceMessage || 'System undergoing scheduled optimization.'}</span>`;
           document.body.prepend(banner);
         }
+      } else {
+        const banner = document.getElementById('maintenance-banner');
+        if (banner) banner.remove();
       }
 
-      // Contact Form Toggle
       if (settings.contactFormEnabled === false) {
         const submitBtn = document.querySelector('#contact-form button[type="submit"]');
         if (submitBtn) {
@@ -786,7 +781,6 @@ async function initCmsDynamicHydration() {
         }
       }
 
-      // Resume Button Visibility Toggle
       if (settings.resumeButtonEnabled === false) {
         document.querySelectorAll('a').forEach((link) => {
           const text = (link.textContent || '').toLowerCase();
@@ -795,10 +789,207 @@ async function initCmsDynamicHydration() {
           }
         });
       }
+
+      if (settings.footerText) {
+        const footerSpan = document.querySelector('footer .footer-content span');
+        if (footerSpan) footerSpan.textContent = settings.footerText;
+      }
+    }
+
+    // ─── 4. Hero Section Rehydration ────────────────────────────────────────
+    if (site.hero) {
+      const hero = site.hero;
+      if (hero.mainHeading) {
+        const heroTitle = document.querySelector('.hero-title');
+        if (heroTitle) {
+          heroTitle.textContent = hero.mainHeading + (hero.highlightedText ? ` ${hero.highlightedText}` : '');
+        }
+      }
+
+      if (hero.description || hero.subtitle) {
+        const heroSubtitle = document.querySelector('.hero-subtitle');
+        if (heroSubtitle) {
+          heroSubtitle.innerHTML = hero.description || hero.subtitle;
+        }
+      }
+
+      if (hero.supportingText) {
+        const tagline = document.querySelector('.hero-tagline');
+        if (tagline) {
+          const spans = tagline.querySelectorAll('span');
+          if (spans.length >= 3) {
+            spans[2].textContent = hero.supportingText;
+          }
+        }
+      }
+
+      if (hero.availabilityBadge) {
+        const typewriter = document.getElementById('red-typewriter-text');
+        if (typewriter) typewriter.textContent = hero.availabilityBadge;
+      }
+
+      const primaryCta = document.querySelector('.hero-actions a.btn-primary');
+      if (primaryCta) {
+        if (hero.primaryCtaLabel) {
+          const span = primaryCta.querySelector('span');
+          if (span) span.textContent = hero.primaryCtaLabel;
+        }
+        if (hero.primaryCtaUrl) primaryCta.setAttribute('href', hero.primaryCtaUrl);
+      }
+
+      if (hero.profileImage) {
+        const portraitImg = document.querySelector('.portrait-inner-frame img');
+        if (portraitImg && hero.profileImage !== '/assets/anurag-portrait-sm.webp') {
+          portraitImg.src = hero.profileImage;
+        }
+      }
+    }
+
+    // ─── 5. Profile & Contact Rehydration ───────────────────────────────────
+    if (site.profile) {
+      const profile = site.profile;
+      if (profile.email) {
+        document.querySelectorAll('a[href^="mailto:"]').forEach((a) => {
+          a.setAttribute('href', `mailto:${profile.email}`);
+          if (a.textContent.includes('@')) a.textContent = profile.email;
+        });
+      }
+      if (profile.github) {
+        document.querySelectorAll('a[href*="github.com"]').forEach((a) => {
+          a.setAttribute('href', profile.github);
+        });
+      }
+      if (profile.linkedin) {
+        document.querySelectorAll('a[href*="linkedin.com"]').forEach((a) => {
+          a.setAttribute('href', profile.linkedin);
+        });
+      }
+    }
+
+    // ─── 6. About Section Rehydration ───────────────────────────────────────
+    if (site.about) {
+      const about = site.about;
+      if (about.title) {
+        const heading = document.getElementById('about-heading');
+        if (heading) heading.textContent = about.title;
+      }
+
+      let narrativeText = '';
+      if (about.personalNarrative && about.personalNarrative.length) {
+        narrativeText = about.personalNarrative.map((p) => p.text).join(' ');
+      } else if (about.description) {
+        narrativeText = about.description;
+      }
+
+      if (narrativeText) {
+        const paraEl = document.getElementById('about-char-para');
+        if (paraEl) {
+          let html = '';
+          const chars = narrativeText.split('');
+          chars.forEach((ch, i) => {
+            const display = ch === ' ' ? '\u00A0' : ch;
+            html += `<span style="position:relative;display:inline-block;"><span style="opacity:0.3;user-select:none;" aria-hidden="true">${display}</span><span id="ac${i}" style="position:absolute;top:0;left:0;opacity:0.85;transition:opacity 0.2s ease;">${display}</span></span>`;
+          });
+          paraEl.innerHTML = html;
+        }
+      }
+    }
+
+    // ─── 7. Coding Profiles / Social Links ──────────────────────────────────
+    if (site.socialLinks && site.socialLinks.length) {
+      site.socialLinks.forEach((link) => {
+        const p = (link.platform || '').toLowerCase();
+        if (p.includes('leetcode')) {
+          const el = document.getElementById('leetcode-link-card');
+          if (el && link.url) el.setAttribute('href', link.url);
+        } else if (p.includes('geeks') || p.includes('gfg')) {
+          const el = document.getElementById('gfg-link-card');
+          if (el && link.url) el.setAttribute('href', link.url);
+        }
+      });
+    }
+
+    // ─── 8. Projects Section Dynamic Rehydration ────────────────────────────
+    if (site.projects && site.projects.length) {
+      const formatStatus = (st) => {
+        const s = (st || '').toUpperCase();
+        if (s === 'COMPLETED') {
+          return { label: 'Completed', symbol: '🟢', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', color: '#10b981' };
+        }
+        if (s === 'WORKING' || s === 'IN_PROGRESS') {
+          return { label: 'Working', symbol: '🟢', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', color: '#06b6d4' };
+        }
+        return { label: 'Coming Soon', symbol: '🟡', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', color: '#f59e0b' };
+      };
+
+      // In-place badge update for standard cards
+      site.projects.forEach((proj, i) => {
+        const idxStr = `0${i + 1}`.slice(-2);
+        const badge = document.getElementById(`main-project-status-${idxStr}`);
+        if (badge) {
+          const fs = formatStatus(proj.status);
+          badge.textContent = `${fs.symbol} Status: ${fs.label}`;
+          badge.style.background = fs.bg;
+          badge.style.borderColor = fs.border;
+          badge.style.color = fs.color;
+        }
+      });
+    }
+
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      try {
+        window.lucide.createIcons();
+      } catch (e) {}
+    }
+  }
+
+  // 1. Instant Cache Hydration (0ms Stale-While-Revalidate)
+  try {
+    const rawCache = sessionStorage.getItem(CMS_SITE_CACHE_KEY);
+    if (rawCache) {
+      const cachedData = JSON.parse(rawCache);
+      applyCmsData(cachedData);
+    }
+  } catch (e) {}
+
+  // 2. Fresh Network Fetch & Live Rehydration
+  try {
+    const res = await fetch(`${API_BASE}/public/site`);
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.success && json.data) {
+        applyCmsData(json.data);
+        try {
+          sessionStorage.setItem(CMS_SITE_CACHE_KEY, JSON.stringify(json.data));
+        } catch (e) {}
+      }
     }
   } catch (err) {
-    // Non-fatal: public portfolio continues using hardcoded static fallback
-    console.debug('[initCmsDynamicHydration] Using static fallbacks:', err.message);
+    console.debug('[initCmsIntegration] Falling back to bundled content:', err.message);
+  }
+
+  // 3. Real-Time Cross-Tab Broadcast Channel Listener
+  if (typeof BroadcastChannel !== 'undefined') {
+    try {
+      const bc = new BroadcastChannel('anurag_portfolio_realtime');
+      bc.addEventListener('message', async (ev) => {
+        if (ev && ev.data && (ev.data.type === 'cms_content_updated' || ev.data.type === 'project_updated')) {
+          try {
+            const res = await fetch(`${API_BASE}/public/site?_t=${Date.now()}`);
+            if (res.ok) {
+              const json = await res.json();
+              if (json && json.success && json.data) {
+                applyCmsData(json.data);
+                try {
+                  sessionStorage.setItem(CMS_SITE_CACHE_KEY, JSON.stringify(json.data));
+                } catch (e) {}
+              }
+            }
+          } catch (e) {}
+        }
+      });
+    } catch (e) {}
   }
 }
+
 

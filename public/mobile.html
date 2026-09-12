@@ -1026,20 +1026,86 @@
       }
     }
 
-    async function syncMobileProjectBadges() {
-      localStorage.setItem('ag_proj_status_01', 'Completed');
-      localStorage.setItem('ag_proj_status_02', 'Coming Soon');
+    async function initMobileCmsIntegration() {
+      const CMS_SITE_CACHE_KEY = 'as_public_site_cache';
 
-      ['01', '02', '03'].forEach(num => {
-        const status = num === '01' ? 'Completed' : (num === '02' ? 'Coming Soon' : (localStorage.getItem(`ag_proj_status_${num}`) || 'Coming Soon'));
-        const badge = document.getElementById(`mp-badge-${num}`);
-        if (badge) {
-          badge.textContent = status === 'Completed' ? '🟢 Completed' : '🟡 Coming Soon';
-          badge.className = status === 'Completed'
-            ? 'px-4 py-1.5 rounded-full bg-emerald-500/25 text-emerald-400 font-mono font-black text-xs sm:text-sm border border-emerald-500/40 flex-shrink-0'
-            : 'px-4 py-1.5 rounded-full bg-amber-500/25 text-amber-400 font-mono font-black text-xs sm:text-sm border border-amber-500/40 flex-shrink-0';
+      function applyMobileCms(site) {
+        if (!site) return;
+
+        // 1. Projects Status & Badges
+        if (site.projects && site.projects.length) {
+          site.projects.forEach((p, idx) => {
+            const num = `0${idx + 1}`.slice(-2);
+            const badge = document.getElementById(`mp-badge-${num}`);
+            if (badge) {
+              const status = (p.status || '').toUpperCase();
+              if (status === 'COMPLETED') {
+                badge.textContent = '🟢 Completed';
+                badge.className = 'px-4 py-1.5 rounded-full bg-emerald-500/25 text-emerald-400 font-mono font-black text-xs sm:text-sm border border-emerald-500/40 flex-shrink-0';
+              } else if (status === 'WORKING' || status === 'IN_PROGRESS') {
+                badge.textContent = '🟢 Working';
+                badge.className = 'px-4 py-1.5 rounded-full bg-cyan-500/25 text-cyan-400 font-mono font-black text-xs sm:text-sm border border-cyan-500/40 flex-shrink-0';
+              } else {
+                badge.textContent = '🟡 Coming Soon';
+                badge.className = 'px-4 py-1.5 rounded-full bg-amber-500/25 text-amber-400 font-mono font-black text-xs sm:text-sm border border-amber-500/40 flex-shrink-0';
+              }
+            }
+          });
         }
-      });
+
+        // 2. Active Resume URL
+        if (site.resume && site.resume.url) {
+          document.querySelectorAll('a[href*="resume"]').forEach((link) => {
+            link.setAttribute('href', site.resume.url);
+            link.setAttribute('target', '_blank');
+          });
+        }
+
+        // 3. Hero & Availability
+        if (site.hero && site.hero.availabilityBadge) {
+          const el = document.getElementById('m-status-pill');
+          if (el) el.textContent = site.hero.availabilityBadge;
+        }
+      }
+
+      // Fast cache apply (0ms)
+      try {
+        const raw = sessionStorage.getItem(CMS_SITE_CACHE_KEY);
+        if (raw) applyMobileCms(JSON.parse(raw));
+      } catch (e) {}
+
+      // Network fetch
+      try {
+        const res = await fetch('/api/public/site');
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.success && json.data) {
+            applyMobileCms(json.data);
+            try { sessionStorage.setItem(CMS_SITE_CACHE_KEY, JSON.stringify(json.data)); } catch (e) {}
+          }
+        }
+      } catch (e) {}
+
+      // Broadcast channel for real-time publishing updates
+      if (typeof BroadcastChannel !== 'undefined') {
+        try {
+          const bc = new BroadcastChannel('anurag_portfolio_realtime');
+          bc.addEventListener('message', async (ev) => {
+            if (ev && ev.data && (ev.data.type === 'cms_content_updated' || ev.data.type === 'project_updated')) {
+              try {
+                const res = await fetch(`/api/public/site?_t=${Date.now()}`);
+                if (res.ok) {
+                  const json = await res.json();
+                  if (json && json.success && json.data) {
+                    applyMobileCms(json.data);
+                    try { sessionStorage.setItem(CMS_SITE_CACHE_KEY, JSON.stringify(json.data)); } catch (e) {}
+                  }
+                }
+              } catch (e) {}
+            }
+          });
+        } catch (e) {}
+      }
     }
 
     function startMobileTelemetry() {
@@ -1068,9 +1134,7 @@
     }
     startMobileTelemetry();
 
-    syncMobileProjectBadges();
-    setInterval(syncMobileProjectBadges, 2000);
-    window.addEventListener('storage', syncMobileProjectBadges);
+    initMobileCmsIntegration();
   </script>
 </body>
 </html>

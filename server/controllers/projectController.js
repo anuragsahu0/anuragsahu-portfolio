@@ -99,7 +99,7 @@ const FALLBACK_PROJECTS = [
     _id: 'proj-3',
     id: 'portfolio',
     slug: 'portfolio',
-    title: 'Personal Portfolio & Control Center',
+    title: 'Portfolio',
     subtitle: 'Production-ready personal platform & developer telemetry dashboard.',
     shortDescription: 'Production-ready personal platform built with React, Express, MongoDB, and telemetry dashboard.',
     description: 'A full-stack personal platform built with modern architecture, REST APIs, MongoDB Mongoose models, and an administrative control center.',
