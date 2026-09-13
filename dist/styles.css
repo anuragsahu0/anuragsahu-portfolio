@@ -989,7 +989,7 @@ footer {
 
   /* ── 2. HERO BANNER (SCREEN 1 OF MOCKUP) ── */
   .m-hero-section {
-    padding: 12px 14px 18px 14px !important;
+    padding: 8px 16px 20px 16px !important;
     box-sizing: border-box !important;
     width: 100% !important;
     max-width: 100% !important;
@@ -997,48 +997,46 @@ footer {
   .m-hero-banner {
     position: relative !important;
     width: 100% !important;
-    border-radius: 32px !important;
-    background: linear-gradient(180deg, #FDEEE4 0%, #F8E3D3 100%) !important;
-    padding: 24px 14px 18px 14px !important;
+    border-radius: 36px !important;
+    background: linear-gradient(180deg, #FCEEE4 0%, #F8E1D3 100%) !important;
+    padding: 0 !important;
     overflow: hidden !important;
-    box-shadow: 0 10px 32px rgba(234, 88, 12, 0.08) !important;
-    border: 1.5px solid rgba(249, 115, 22, 0.16) !important;
+    box-shadow: 0 10px 30px rgba(224, 78, 0, 0.05) !important;
+    border: 1.5px solid rgba(255, 100, 24, 0.14) !important;
     box-sizing: border-box !important;
-    min-height: 380px !important;
+    height: 380px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: flex-end !important;
   }
 
-  /* Vibrant Orange Circle Backdrop Graphic */
+  /* Vibrant Orange Basketball-style Circle Backdrop Graphic */
   .m-hero-circle-backdrop {
     position: absolute !important;
-    top: 24px !important;
+    top: 40px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    width: 220px !important;
-    height: 220px !important;
+    width: 250px !important;
+    height: 250px !important;
     border-radius: 50% !important;
-    background: linear-gradient(135deg, #F97316 0%, #EA580C 100%) !important;
-    box-shadow: 0 14px 40px rgba(234, 88, 12, 0.35) !important;
+    background: linear-gradient(135deg, #FF6418 0%, #E84E00 100%) !important;
+    box-shadow: 0 12px 35px rgba(232, 78, 0, 0.32) !important;
     overflow: hidden !important;
     z-index: 1 !important;
   }
   .m-circle-lines {
     width: 100% !important;
     height: 100% !important;
-    opacity: 0.75 !important;
+    opacity: 0.8 !important;
   }
 
-  /* Portrait image centered over circle */
+  /* Cutout portrait centered over circle */
   .m-hero-portrait-frame {
     position: relative !important;
     z-index: 2 !important;
-    width: 100% !important;
-    max-width: 230px !important;
-    height: 270px !important;
-    margin-top: 10px !important;
+    width: 270px !important;
+    height: 320px !important;
     display: flex !important;
     justify-content: center !important;
     align-items: flex-end !important;
@@ -1046,61 +1044,63 @@ footer {
   .m-hero-portrait-img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
-    object-position: center top !important;
-    border-radius: 24px !important;
-    filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.22)) !important;
+    object-fit: contain !important;
+    object-position: bottom center !important;
+    filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.16)) !important;
+    display: block !important;
   }
 
   /* Floating Stat Glass Badge (Mid-Right, matching mockup) */
   .m-stat-glass-badge {
     position: absolute !important;
-    right: 10px !important;
-    bottom: 64px !important;
-    z-index: 3 !important;
-    background: rgba(255, 255, 255, 0.92) !important;
+    right: 12px !important;
+    bottom: 52px !important;
+    z-index: 4 !important;
+    background: rgba(255, 255, 255, 0.52) !important;
     backdrop-filter: blur(16px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-    border-radius: 16px !important;
-    padding: 8px 12px !important;
-    border: 1px solid rgba(255, 255, 255, 0.95) !important;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12) !important;
+    border-radius: 20px !important;
+    padding: 11px 14px !important;
+    border: 1px solid rgba(255, 255, 255, 0.75) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 4px !important;
-  }
-  .m-stat-row {
-    display: flex !important;
-    align-items: center !important;
     gap: 6px !important;
-    white-space: nowrap !important;
+    text-align: left !important;
+  }
+  .m-stat-item {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0px !important;
   }
   .m-stat-num {
     font-family: var(--font-kanit), 'Kanit', sans-serif !important;
-    font-size: 0.85rem !important;
-    font-weight: 900 !important;
-    color: #EA580C !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+    line-height: 1.15 !important;
   }
   .m-stat-label {
     font-family: 'Inter', sans-serif !important;
-    font-size: 0.72rem !important;
-    font-weight: 700 !important;
-    color: #1E293B !important;
+    font-size: 0.68rem !important;
+    font-weight: 600 !important;
+    color: #5C5248 !important;
+    white-space: nowrap !important;
   }
 
   /* Floating Email Pill Badge (Bottom Left, matching mockup) */
   .m-email-pill-badge {
     position: absolute !important;
     left: 12px !important;
-    bottom: 14px !important;
-    z-index: 3 !important;
-    background: rgba(255, 255, 255, 0.94) !important;
+    bottom: 18px !important;
+    z-index: 4 !important;
+    background: rgba(255, 255, 255, 0.65) !important;
     backdrop-filter: blur(14px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
     border-radius: 9999px !important;
-    padding: 7px 14px !important;
-    border: 1px solid rgba(249, 115, 22, 0.3) !important;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08) !important;
+    padding: 8px 14px !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05) !important;
     display: inline-flex !important;
     align-items: center !important;
     gap: 6px !important;
@@ -1113,102 +1113,148 @@ footer {
   .m-email-text {
     font-size: 0.72rem !important;
     font-weight: 700 !important;
-    color: #EA580C !important;
+    color: #E04E00 !important;
     white-space: nowrap !important;
   }
 
-  /* ── HERO BIO CARD ── */
+  /* ── HERO WHITE BIO CARD ── */
   .m-hero-card {
-    padding: 20px 4px 10px 4px !important;
+    background: #FFFFFF !important;
+    border-radius: 32px !important;
+    padding: 26px 20px 24px 20px !important;
+    margin-top: 14px !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03) !important;
+    border: 1px solid rgba(0, 0, 0, 0.03) !important;
   }
   .m-eyebrow {
     display: block !important;
-    font-size: 0.88rem !important;
-    font-weight: 800 !important;
-    color: #F97316 !important;
-    text-transform: capitalize !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #FF6418 !important;
+    margin-bottom: 6px !important;
     letter-spacing: 0.01em !important;
-    margin-bottom: 4px !important;
   }
   .m-headline {
     font-family: var(--font-kanit), 'Kanit', sans-serif !important;
-    font-size: clamp(1.85rem, 8vw, 2.3rem) !important;
+    font-size: 1.85rem !important;
     font-weight: 900 !important;
-    color: #0F172A !important;
-    line-height: 1.12 !important;
-    letter-spacing: -0.02em !important;
+    color: #111827 !important;
+    line-height: 1.15 !important;
     margin: 0 0 10px 0 !important;
+    letter-spacing: -0.02em !important;
   }
   .m-subtext {
-    font-size: 0.92rem !important;
-    color: #475569 !important;
-    line-height: 1.6 !important;
+    font-size: 0.88rem !important;
+    color: #64748B !important;
+    line-height: 1.55 !important;
     margin: 0 0 20px 0 !important;
   }
   .m-hero-actions {
     display: flex !important;
     align-items: center !important;
-    gap: 14px !important;
+    gap: 16px !important;
   }
   .m-btn-resume {
-    flex: 1 !important;
     display: inline-flex !important;
     align-items: center !important;
-    justify-content: center !important;
-    gap: 8px !important;
-    padding: 13px 22px !important;
+    gap: 10px !important;
+    padding: 12px 24px !important;
     border-radius: 9999px !important;
-    background: linear-gradient(135deg, #F97316 0%, #EA580C 100%) !important;
+    background: linear-gradient(135deg, #FF6418 0%, #E04E00 100%) !important;
     color: #FFFFFF !important;
     font-family: var(--font-kanit), 'Kanit', sans-serif !important;
     font-size: 0.95rem !important;
     font-weight: 700 !important;
     text-decoration: none !important;
-    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.38) !important;
+    box-shadow: 0 8px 22px rgba(255, 100, 24, 0.35) !important;
     transition: transform 0.2s ease !important;
   }
   .m-btn-resume:active {
     transform: scale(0.97) !important;
   }
+  .m-arrow-circle {
+    font-size: 0.85rem !important;
+  }
+  .m-call-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
   .m-btn-call {
-    width: 48px !important;
-    height: 48px !important;
+    width: 44px !important;
+    height: 44px !important;
     border-radius: 50% !important;
-    background: linear-gradient(135deg, #F97316 0%, #EA580C 100%) !important;
+    background: linear-gradient(135deg, #FF6418 0%, #E04E00 100%) !important;
     color: #FFFFFF !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    box-shadow: 0 8px 22px rgba(249, 115, 22, 0.32) !important;
+    box-shadow: 0 6px 18px rgba(255, 100, 24, 0.3) !important;
     text-decoration: none !important;
     flex-shrink: 0 !important;
   }
   .m-call-label {
-    font-size: 0.95rem !important;
+    font-family: var(--font-kanit), 'Kanit', sans-serif !important;
+    font-size: 0.92rem !important;
     font-weight: 700 !important;
-    color: #1E293B !important;
+    color: #1F2937 !important;
   }
 
-  /* ── 3. SOCIAL QUICK-ACCESS CHIPS (SCREEN 2 TOP MOCKUP) ── */
-  .m-social-chips-section {
-    padding: 0 14px 22px 14px !important;
-    width: 100% !important;
+  /* ── 3. SCREEN 2 BANNER + SOCIAL CHIPS (SCREEN 2 TOP MOCKUP) ── */
+  .m-screen2-header-section {
+    padding: 0 16px 20px 16px !important;
     box-sizing: border-box !important;
+    width: 100% !important;
+  }
+  .m-screen2-banner {
+    position: relative !important;
+    width: 100% !important;
+    height: 170px !important;
+    border-radius: 28px !important;
+    background: linear-gradient(180deg, #FDEEE4 0%, #F7DED0 100%) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: flex-end !important;
+    box-shadow: 0 8px 24px rgba(224, 78, 0, 0.05) !important;
+    border: 1px solid rgba(255, 100, 24, 0.12) !important;
+    padding-right: 20px !important;
+  }
+  .m-cursive-tag {
+    position: absolute !important;
+    top: 18px !important;
+    left: 20px !important;
+    font-family: 'Caveat', cursive, sans-serif !important;
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+    color: #E04E00 !important;
+    transform: rotate(-6deg) !important;
+    letter-spacing: 0.02em !important;
+  }
+  .m-screen2-banner-img {
+    height: 100% !important;
+    width: auto !important;
+    max-width: 170px !important;
+    object-fit: contain !important;
+    object-position: bottom center !important;
   }
   .m-chips-grid {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 10px !important;
-    width: 100% !important;
+    margin-top: -24px !important;
+    position: relative !important;
+    z-index: 5 !important;
+    padding: 0 8px !important;
   }
   .m-chip-card {
     background: #FFFFFF !important;
     border-radius: 18px !important;
     padding: 12px 6px !important;
-    border: 1px solid rgba(249, 115, 22, 0.12) !important;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.04) !important;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04) !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -1216,12 +1262,11 @@ footer {
     transition: transform 0.2s ease !important;
   }
   .m-chip-card:active {
-    transform: translateY(2px) !important;
-    background: #FFF7ED !important;
+    transform: scale(0.96) !important;
   }
   .m-chip-icon {
-    width: 36px !important;
-    height: 36px !important;
+    width: 32px !important;
+    height: 32px !important;
     border-radius: 10px !important;
     display: flex !important;
     align-items: center !important;
@@ -1242,15 +1287,15 @@ footer {
   }
   .m-chip-title {
     font-family: var(--font-kanit), 'Kanit', sans-serif !important;
-    font-size: 0.85rem !important;
+    font-size: 0.8rem !important;
     font-weight: 700 !important;
-    color: #0F172A !important;
+    color: #111827 !important;
   }
   .m-chip-sub {
-    font-size: 0.68rem !important;
+    font-size: 0.65rem !important;
     font-weight: 500 !important;
     color: #64748B !important;
-    margin-top: 2px !important;
+    margin-top: 1px !important;
   }
 
   /* ── 4. CONTENT SECTIONS (SKILLS, PROJECTS, CODING, CONTACT) ── */
@@ -1369,16 +1414,13 @@ footer {
     overflow: hidden !important;
   }
   .m-pcard-link {
-    font-size: 0.8rem !important;
+    font-size: 0.82rem !important;
     font-weight: 700 !important;
-    color: #F97316 !important;
-    text-decoration: none !important;
+    color: #FF6418 !important;
+    text-decoration: underline !important;
     display: inline-flex !important;
     align-items: center !important;
     gap: 4px !important;
-  }
-  .m-pcard-link:active {
-    text-decoration: underline !important;
   }
   .m-pcard-thumb {
     width: 82px !important;
