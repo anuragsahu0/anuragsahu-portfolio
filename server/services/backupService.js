@@ -35,6 +35,10 @@ const Revision = require('../models/Revision');
 const ScheduledAction = require('../models/ScheduledAction');
 const Draft = require('../models/Draft');
 const LoginHistory = require('../models/LoginHistory');
+const Role = require('../models/Role');
+const Session = require('../models/Session');
+const SecurityEvent = require('../models/SecurityEvent');
+const Invitation = require('../models/Invitation');
 
 // Stores & Utilities
 const { IN_MEMORY_BACKUPS, BACKUP_SETTINGS } = require('../utils/backupStore');
@@ -67,6 +71,10 @@ const ALL_MODELS = {
   drafts: Draft,
   loginHistory: LoginHistory,
   users: User,
+  roles: Role,
+  sessions: Session,
+  securityEvents: SecurityEvent,
+  invitations: Invitation,
 };
 
 // Scope-to-models mapping

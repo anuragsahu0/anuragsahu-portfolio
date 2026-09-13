@@ -25,14 +25,33 @@ const UserSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['admin', 'editor', 'viewer'],
       default: 'admin',
+      trim: true,
+    },
+    status: {
+      type: String,
+      enum: ['ACTIVE', 'INVITED', 'SUSPENDED', 'DISABLED', 'active', 'invited', 'suspended', 'disabled'],
+      default: 'ACTIVE',
+      index: true,
     },
     isActive: {
       type: Boolean,
       default: true,
+      index: true,
+    },
+    failedLoginAttempts: {
+      type: Number,
+      default: 0,
+    },
+    lockoutUntil: {
+      type: Date,
+      default: null,
     },
     lastLoginAt: {
+      type: Date,
+      default: null,
+    },
+    lastActivityAt: {
       type: Date,
       default: null,
     },
@@ -42,8 +61,18 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-// Pre-save bcrypt hash
+// Pre-save bcrypt hash & status sync
 UserSchema.pre('save', async function (next) {
+  if (this.status) {
+    const s = this.status.toUpperCase();
+    this.status = s;
+    if (s === 'DISABLED' || s === 'SUSPENDED') {
+      this.isActive = false;
+    } else if (s === 'ACTIVE') {
+      this.isActive = true;
+    }
+  }
+
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
@@ -53,5 +82,7 @@ UserSchema.pre('save', async function (next) {
 UserSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
+
+UserSchema.index({ status: 1, role: 1 });
 
 module.exports = mongoose.models.User || mongoose.model('User', UserSchema);

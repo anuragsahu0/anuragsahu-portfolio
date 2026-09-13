@@ -154,7 +154,7 @@
     #cms-toast.toast-hidden { opacity: 0; transform: translateY(8px); }
 
     /* Responsive Modal System: Bottom Sheet on Mobile (<640px), Centered Modal on Desktop (>=640px) */
-    #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal, #revision-history-modal, #revision-compare-modal, #restore-confirm-modal, #publish-confirm-modal, #conflict-modal, #preview-modal, #schedule-action-modal, #schedule-details-modal, #bulk-schedule-modal, #create-backup-modal, #backup-details-modal, #disaster-restore-modal, #backup-settings-modal {
+    #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal, #revision-history-modal, #revision-compare-modal, #restore-confirm-modal, #publish-confirm-modal, #conflict-modal, #preview-modal, #schedule-action-modal, #schedule-details-modal, #bulk-schedule-modal, #create-backup-modal, #backup-details-modal, #disaster-restore-modal, #backup-settings-modal, #create-user-modal, #edit-user-modal, #role-editor-modal, #change-password-modal {
       position: fixed;
       inset: 0;
       z-index: 8500;
@@ -165,7 +165,7 @@
       justify-content: center;
       padding: 0;
     }
-    #cms-modal.open, #confirm-modal.open, #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open, #revision-history-modal.open, #revision-compare-modal.open, #restore-confirm-modal.open, #publish-confirm-modal.open, #conflict-modal.open, #preview-modal.open, #schedule-action-modal.open, #schedule-details-modal.open, #bulk-schedule-modal.open, #create-backup-modal.open, #backup-details-modal.open, #disaster-restore-modal.open, #backup-settings-modal.open {
+    #cms-modal.open, #confirm-modal.open, #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open, #revision-history-modal.open, #revision-compare-modal.open, #restore-confirm-modal.open, #publish-confirm-modal.open, #conflict-modal.open, #preview-modal.open, #schedule-action-modal.open, #schedule-details-modal.open, #bulk-schedule-modal.open, #create-backup-modal.open, #backup-details-modal.open, #disaster-restore-modal.open, #backup-settings-modal.open, #create-user-modal.open, #edit-user-modal.open, #role-editor-modal.open, #change-password-modal.open {
       display: flex;
     }
     @media (min-width: 640px) {
@@ -195,7 +195,11 @@
     #create-backup-modal > div,
     #backup-details-modal > div,
     #disaster-restore-modal > div,
-    #backup-settings-modal > div {
+    #backup-settings-modal > div,
+    #create-user-modal > div,
+    #edit-user-modal > div,
+    #role-editor-modal > div,
+    #change-password-modal > div {
       background: #070B16;
       border: 1px solid #141E33;
       border-top-left-radius: 20px;
@@ -243,6 +247,10 @@
       #backup-details-modal > div { max-width: 680px; }
       #disaster-restore-modal > div { max-width: 520px; }
       #backup-settings-modal > div { max-width: 480px; }
+      #create-user-modal > div { max-width: 520px; }
+      #edit-user-modal > div { max-width: 500px; }
+      #role-editor-modal > div { max-width: 780px; }
+      #change-password-modal > div { max-width: 480px; }
       #preview-modal > div { max-width: 1040px; width: 95vw; height: 90vh; height: 90dvh; padding: 0; overflow: hidden; display: flex; flex-direction: column; }
       .diff-badge-added { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
       .diff-badge-removed { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
@@ -512,6 +520,19 @@
             <button onclick="switchTab('settings')" class="sidebar-item w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/40" data-tab="settings">
               <i data-lucide="settings" class="w-4 h-4 text-slate-500"></i>
               <span>Settings</span>
+            </button>
+
+            <!-- Group 5: Access & Security -->
+            <div class="pt-2 pb-1">
+              <p class="px-3 text-[10px] font-mono text-slate-500 uppercase tracking-wider font-semibold">Access & Security</p>
+            </div>
+            <button onclick="switchTab('access')" class="sidebar-item w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/40" data-tab="access">
+              <i data-lucide="users" class="w-4 h-4 text-slate-500"></i>
+              <span>Access & Roles</span>
+            </button>
+            <button onclick="switchTab('security')" class="sidebar-item w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/40" data-tab="security">
+              <i data-lucide="shield-check" class="w-4 h-4 text-slate-500"></i>
+              <span>Security Center</span>
             </button>
           </div>
         </div>
@@ -2397,6 +2418,445 @@
           </div>
         </div>
 
+        <!-- ─── ACCESS MANAGEMENT & ROLES CENTER (Phase 14) ─── -->
+        <div id="tab-access" class="tab-pane hidden space-y-6">
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-brand-border">
+            <div>
+              <h1 class="text-xl sm:text-2xl font-bold font-display text-slate-100 flex items-center gap-2.5">
+                <i data-lucide="users" class="w-6 h-6 text-cyan-400"></i>
+                <span>Access Management & Sovereign Roles</span>
+              </h1>
+              <p class="text-xs text-slate-400 mt-1">
+                Manage authenticated operator accounts, role assignments, and granular permission matrices.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="openCreateUserModal()" class="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all shadow-lg shadow-cyan-900/20">
+                <i data-lucide="user-plus" class="w-4 h-4"></i>
+                <span>Add / Invite Admin</span>
+              </button>
+              <button onclick="openRoleEditorModal()" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-brand-border transition-all">
+                <i data-lucide="shield" class="w-4 h-4 text-cyan-400"></i>
+                <span>New Custom Role</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sub-view Navigation Tabs -->
+          <div class="flex items-center gap-2 p-1 bg-slate-900/60 border border-brand-border rounded-xl w-fit">
+            <button id="access-sub-users-btn" onclick="showAccessSubView('users')" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 transition-all flex items-center gap-2">
+              <i data-lucide="users" class="w-3.5 h-3.5"></i>
+              <span>Admin Accounts</span>
+            </button>
+            <button id="access-sub-roles-btn" onclick="showAccessSubView('roles')" class="px-4 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center gap-2">
+              <i data-lucide="key" class="w-3.5 h-3.5"></i>
+              <span>Roles & Permissions Matrix</span>
+            </button>
+          </div>
+
+          <!-- Sub-View 1: Admin Accounts -->
+          <div id="access-users-subview" class="space-y-6">
+            <!-- KPI Summary Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div class="p-4 rounded-xl bg-brand-card border border-brand-border">
+                <div class="flex items-center justify-between text-slate-400 mb-1">
+                  <span class="text-[11px] font-medium uppercase font-mono tracking-wider">Total Accounts</span>
+                  <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i>
+                </div>
+                <div id="access-kpi-total" class="text-2xl font-bold font-mono text-slate-100 mt-1">0</div>
+                <p class="text-[10px] text-slate-500 mt-1 font-mono">Provisioned operators</p>
+              </div>
+              <div class="p-4 rounded-xl bg-brand-card border border-brand-border">
+                <div class="flex items-center justify-between text-slate-400 mb-1">
+                  <span class="text-[11px] font-medium uppercase font-mono tracking-wider">Active Admins</span>
+                  <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                </div>
+                <div id="access-kpi-active" class="text-2xl font-bold font-mono text-emerald-400 mt-1">0</div>
+                <p class="text-[10px] text-emerald-500/80 mt-1 font-mono">Fully authorized</p>
+              </div>
+              <div class="p-4 rounded-xl bg-brand-card border border-brand-border">
+                <div class="flex items-center justify-between text-slate-400 mb-1">
+                  <span class="text-[11px] font-medium uppercase font-mono tracking-wider">Active Sessions</span>
+                  <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
+                </div>
+                <div id="access-kpi-sessions" class="text-2xl font-bold font-mono text-cyan-300 mt-1">0</div>
+                <p class="text-[10px] text-cyan-500/80 mt-1 font-mono">Live authentications</p>
+              </div>
+              <div class="p-4 rounded-xl bg-brand-card border border-brand-border">
+                <div class="flex items-center justify-between text-slate-400 mb-1">
+                  <span class="text-[11px] font-medium uppercase font-mono tracking-wider">Pending Invites</span>
+                  <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i>
+                </div>
+                <div id="access-kpi-invites" class="text-2xl font-bold font-mono text-amber-400 mt-1">0</div>
+                <p class="text-[10px] text-amber-500/80 mt-1 font-mono">Awaiting password setup</p>
+              </div>
+            </div>
+
+            <!-- Filter & Search Bar -->
+            <div class="p-3 sm:p-4 rounded-xl bg-brand-card border border-brand-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div class="flex-1 relative">
+                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="users-search-input" oninput="filterUsersList()" placeholder="Search administrators by name or email..." class="w-full bg-slate-900/80 border border-brand-border rounded-lg pl-9 pr-4 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50">
+              </div>
+              <div class="flex items-center gap-2">
+                <select id="users-role-filter" onchange="filterUsersList()" class="bg-slate-900 border border-brand-border rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500/50">
+                  <option value="ALL">All Roles</option>
+                  <option value="OWNER">Owner</option>
+                  <option value="ADMIN">Admin</option>
+                  <option value="EDITOR">Editor</option>
+                  <option value="VIEWER">Viewer</option>
+                </select>
+                <select id="users-status-filter" onchange="filterUsersList()" class="bg-slate-900 border border-brand-border rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500/50">
+                  <option value="ALL">All Statuses</option>
+                  <option value="ACTIVE">Active</option>
+                  <option value="INVITED">Invited</option>
+                  <option value="SUSPENDED">Suspended</option>
+                  <option value="DISABLED">Disabled</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Dual Representation: Desktop Table -->
+            <div class="hidden md:block overflow-x-auto rounded-xl border border-brand-border bg-brand-card shadow-sm">
+              <table class="w-full text-left text-xs text-slate-300">
+                <thead class="bg-[#070C1A] text-[10px] uppercase font-mono text-slate-400 border-b border-brand-border tracking-wider">
+                  <tr>
+                    <th class="py-3 px-4">Administrator</th>
+                    <th class="py-3 px-4">Role</th>
+                    <th class="py-3 px-4">Status</th>
+                    <th class="py-3 px-4">Sessions</th>
+                    <th class="py-3 px-4">Last Activity</th>
+                    <th class="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body" class="divide-y divide-brand-border/60">
+                  <!-- Rendered via renderUsersTable() -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Dual Representation: Mobile Touch Cards -->
+            <div id="users-mobile-cards" class="md:hidden space-y-3">
+              <!-- Rendered via renderMobileUserCards() -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="users-empty-state" class="hidden text-center py-12 border border-dashed border-brand-border rounded-xl">
+              <i data-lucide="users" class="w-8 h-8 text-slate-500 mx-auto mb-2"></i>
+              <p class="text-sm font-semibold text-slate-300">No Administrators Found</p>
+              <p class="text-xs text-slate-500 mt-1">Adjust search parameters or invite a new operator.</p>
+            </div>
+          </div>
+
+          <!-- Sub-View 2: Roles & Permission Matrix -->
+          <div id="access-roles-subview" class="hidden space-y-6">
+            <div class="p-4 rounded-xl bg-cyan-950/20 border border-cyan-500/20 text-xs text-slate-300 flex items-start gap-3">
+              <i data-lucide="shield-alert" class="w-5 h-5 text-cyan-400 shrink-0 mt-0.5"></i>
+              <div>
+                <p class="font-bold text-cyan-300">Role-Based Access Control Architecture</p>
+                <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+                  System default roles (<span class="font-mono text-cyan-400">OWNER, ADMIN, EDITOR, VIEWER</span>) have fixed baseline permissions to guarantee system continuity. Custom roles can be tailored with any combination of the 32 granular permissions.
+                </p>
+              </div>
+            </div>
+
+            <!-- Roles Grid -->
+            <div id="roles-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- Rendered via renderRolesCards() -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── SECURITY AUDIT & CONTROL CENTER (Phase 14) ─── -->
+        <div id="tab-security" class="tab-pane hidden space-y-6">
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-brand-border">
+            <div>
+              <h1 class="text-xl sm:text-2xl font-bold font-display text-slate-100 flex items-center gap-2.5">
+                <i data-lucide="shield-check" class="w-6 h-6 text-cyan-400"></i>
+                <span>Security Audit & Diagnostics Center</span>
+              </h1>
+              <p class="text-xs text-slate-400 mt-1">
+                Real security telemetry, active session invalidation, authentic audit events, and login attack protection.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="loadSecurityDashboard()" class="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                <span>Re-Audit Telemetry</span>
+              </button>
+              <button onclick="openChangePasswordModal()" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-brand-border transition-all">
+                <i data-lucide="key" class="w-4 h-4 text-cyan-400"></i>
+                <span>Change Password</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Overall Security Health Banner -->
+          <div id="sec-overall-banner" class="rounded-xl p-5 border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-emerald-950/30 border-emerald-500/30">
+            <div class="flex items-center gap-3.5">
+              <div id="sec-overall-icon" class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h2 id="sec-overall-title" class="text-sm sm:text-base font-bold text-emerald-200">
+                  Security Posture: Optimal (Good)
+                </h2>
+                <p id="sec-overall-sub" class="text-xs text-emerald-400/80 mt-0.5 font-mono">
+                  All 9 cryptographic and access-control defenses verified. Zero high-severity intrusions detected.
+                </p>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <span id="sec-checks-counter" class="text-[11px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold">9 / 9 Checks Passed</span>
+            </div>
+          </div>
+
+          <!-- 9 Real Security Checks Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="sec-checks-grid">
+            <!-- Populated via loadSecurityDashboard() -->
+          </div>
+
+          <!-- Security Telemetry Metrics -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="p-4 rounded-xl bg-brand-card border border-brand-border">
+              <div class="flex items-center justify-between text-slate-400 mb-1">
+                <span class="text-[11px] font-medium uppercase font-mono tracking-wider">Active Admins</span>
+                <i data-lucide="user-check" class="w-4 h-4 text-cyan-400"></i>
+              </div>
+              <div id="sec-metric-admins" class="text-2xl font-bold font-mono text-slate-100 mt-1">1</div>
+              <p class="text-[10px] text-slate-500 mt-1 font-mono">Authenticated</p>
+            </div>
+            <div class="p-4 rounded-xl bg-brand-card border border-brand-border">
+              <div class="flex items-center justify-between text-slate-400 mb-1">
+                <span class="text-[11px] font-medium uppercase font-mono tracking-wider">Active Sessions</span>
+                <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i>
+              </div>
+              <div id="sec-metric-sessions" class="text-2xl font-bold font-mono text-emerald-400 mt-1">1</div>
+              <p class="text-[10px] text-slate-500 mt-1 font-mono">Hashed token state</p>
+            </div>
+            <div class="p-4 rounded-xl bg-brand-card border border-brand-border">
+              <div class="flex items-center justify-between text-slate-400 mb-1">
+                <span class="text-[11px] font-medium uppercase font-mono tracking-wider">Failed Logins (24h)</span>
+                <i data-lucide="alert-circle" class="w-4 h-4 text-amber-400"></i>
+              </div>
+              <div id="sec-metric-failed" class="text-2xl font-bold font-mono text-slate-100 mt-1">0</div>
+              <p class="text-[10px] text-slate-500 mt-1 font-mono">Brute-force protected</p>
+            </div>
+            <div class="p-4 rounded-xl bg-brand-card border border-brand-border">
+              <div class="flex items-center justify-between text-slate-400 mb-1">
+                <span class="text-[11px] font-medium uppercase font-mono tracking-wider">Security Events</span>
+                <i data-lucide="shield" class="w-4 h-4 text-cyan-400"></i>
+              </div>
+              <div id="sec-metric-events" class="text-2xl font-bold font-mono text-cyan-300 mt-1">0</div>
+              <p class="text-[10px] text-slate-500 mt-1 font-mono">Authentic audit records</p>
+            </div>
+          </div>
+
+          <!-- Section 1: Active Sessions Management -->
+          <div class="p-5 rounded-xl bg-brand-card border border-brand-border space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-brand-border">
+              <div>
+                <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <i data-lucide="laptop" class="w-4 h-4 text-cyan-400"></i>
+                  <span>Active Administrative Sessions</span>
+                </h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">Non-sensitive session metadata. Tokens are hashed and never exposed.</p>
+              </div>
+              <button onclick="revokeOtherSessionsAction()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-950/40 border border-amber-500/30 text-amber-300 hover:bg-amber-900/50 text-xs font-semibold transition-all">
+                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                <span>Revoke All Other Sessions</span>
+              </button>
+            </div>
+
+            <!-- Sessions Table Desktop -->
+            <div class="hidden md:block overflow-x-auto rounded-lg border border-brand-border/60">
+              <table class="w-full text-left text-xs text-slate-300">
+                <thead class="bg-[#070C1A] text-[10px] uppercase font-mono text-slate-400 border-b border-brand-border">
+                  <tr>
+                    <th class="py-2.5 px-3">Device / Platform</th>
+                    <th class="py-2.5 px-3">Operator</th>
+                    <th class="py-2.5 px-3">IP Address</th>
+                    <th class="py-2.5 px-3">Last Active</th>
+                    <th class="py-2.5 px-3">Expiration</th>
+                    <th class="py-2.5 px-3 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="sec-sessions-table-body" class="divide-y divide-brand-border/60">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Sessions Mobile Cards -->
+            <div id="sec-sessions-mobile-cards" class="md:hidden space-y-2">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Section 2: Security Audit Events Log -->
+          <div class="p-5 rounded-xl bg-brand-card border border-brand-border space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-brand-border">
+              <div>
+                <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <i data-lucide="shield-alert" class="w-4 h-4 text-cyan-400"></i>
+                  <span>Security Audit Log</span>
+                </h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">Immutable record of permissions, authentications, role changes, and alerts.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <select id="sec-events-severity-filter" onchange="loadSecurityEvents()" class="bg-slate-900 border border-brand-border rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500/50">
+                  <option value="ALL">All Severities</option>
+                  <option value="CRITICAL">Critical</option>
+                  <option value="HIGH">High</option>
+                  <option value="MEDIUM">Medium</option>
+                  <option value="LOW">Low</option>
+                </select>
+                <select id="sec-events-type-filter" onchange="loadSecurityEvents()" class="bg-slate-900 border border-brand-border rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500/50">
+                  <option value="ALL">All Event Types</option>
+                  <option value="LOGIN_SUCCESS">Login Success</option>
+                  <option value="LOGIN_FAILED">Login Failed</option>
+                  <option value="LOGIN_FAILED_REPEATED">Repeated Login Failure</option>
+                  <option value="PERMISSION_DENIED">Permission Denied</option>
+                  <option value="ROLE_CHANGED">Role Changed</option>
+                  <option value="SESSION_REVOKED">Session Revoked</option>
+                  <option value="PASSWORD_CHANGED">Password Changed</option>
+                  <option value="SECURITY_CONFIG_CHANGED">Security Config Changed</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Events Table Desktop -->
+            <div class="hidden md:block overflow-x-auto rounded-lg border border-brand-border/60">
+              <table class="w-full text-left text-xs text-slate-300">
+                <thead class="bg-[#070C1A] text-[10px] uppercase font-mono text-slate-400 border-b border-brand-border">
+                  <tr>
+                    <th class="py-2.5 px-3">Timestamp</th>
+                    <th class="py-2.5 px-3">Event Type</th>
+                    <th class="py-2.5 px-3">Severity</th>
+                    <th class="py-2.5 px-3">Operator</th>
+                    <th class="py-2.5 px-3">Resource & Details</th>
+                    <th class="py-2.5 px-3">IP</th>
+                  </tr>
+                </thead>
+                <tbody id="sec-events-table-body" class="divide-y divide-brand-border/60">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Events Mobile Cards -->
+            <div id="sec-events-mobile-cards" class="md:hidden space-y-2">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div id="sec-events-empty-state" class="hidden text-center py-8 border border-dashed border-brand-border rounded-lg">
+              <p class="text-xs text-slate-400 font-mono">No security events recorded.</p>
+            </div>
+          </div>
+
+          <!-- Section 3: Login History -->
+          <div class="p-5 rounded-xl bg-brand-card border border-brand-border space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-brand-border">
+              <div>
+                <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <i data-lucide="key" class="w-4 h-4 text-cyan-400"></i>
+                  <span>Recent Login History</span>
+                </h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">Authentication attempts across all administrator accounts.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <select id="sec-login-status-filter" onchange="loadLoginHistory()" class="bg-slate-900 border border-brand-border rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500/50">
+                  <option value="ALL">All Outcomes</option>
+                  <option value="success">Success Only</option>
+                  <option value="failed">Failed Only</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="hidden md:block overflow-x-auto rounded-lg border border-brand-border/60">
+              <table class="w-full text-left text-xs text-slate-300">
+                <thead class="bg-[#070C1A] text-[10px] uppercase font-mono text-slate-400 border-b border-brand-border">
+                  <tr>
+                    <th class="py-2.5 px-3">Timestamp</th>
+                    <th class="py-2.5 px-3">Account</th>
+                    <th class="py-2.5 px-3">Outcome</th>
+                    <th class="py-2.5 px-3">Platform</th>
+                    <th class="py-2.5 px-3">IP Address</th>
+                  </tr>
+                </thead>
+                <tbody id="sec-login-table-body" class="divide-y divide-brand-border/60">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div id="sec-login-mobile-cards" class="md:hidden space-y-2"></div>
+            <div id="sec-login-empty-state" class="hidden text-center py-8 border border-dashed border-brand-border rounded-lg">
+              <p class="text-xs text-slate-400 font-mono">No login history records found.</p>
+            </div>
+          </div>
+
+          <!-- Section 4: Security Policy & Retention Controls -->
+          <div class="p-5 rounded-xl bg-brand-card border border-brand-border space-y-4">
+            <div class="pb-3 border-b border-brand-border">
+              <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+                <i data-lucide="sliders" class="w-4 h-4 text-cyan-400"></i>
+                <span>Enforceable Security Controls & Retention</span>
+              </h3>
+              <p class="text-[11px] text-slate-400 mt-0.5">Parameters directly enforced by the backend security kernel.</p>
+            </div>
+
+            <form id="security-settings-form" onsubmit="submitSecuritySettings(event)" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+              <div>
+                <label class="block text-[11px] font-medium text-slate-300 mb-1">Session Inactivity Timeout</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="sec-set-session-timeout" min="15" max="43200" value="10080" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-1.5 text-slate-200">
+                  <span class="text-[11px] text-slate-500 font-mono">mins</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-1">Default 10,080m (7 days)</p>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-medium text-slate-300 mb-1">Brute-Force Lockout Threshold</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="sec-set-max-attempts" min="3" max="20" value="5" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-1.5 text-slate-200">
+                  <span class="text-[11px] text-slate-500 font-mono">tries</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-1">Attempts before temporary lockout</p>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-medium text-slate-300 mb-1">Lockout Duration</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="sec-set-lockout-duration" min="5" max="120" value="15" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-1.5 text-slate-200">
+                  <span class="text-[11px] text-slate-500 font-mono">mins</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-1">Automatic progressive delay</p>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-medium text-slate-300 mb-1">Audit Event Retention</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="sec-set-retention-days" min="7" max="365" value="90" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-1.5 text-slate-200">
+                  <span class="text-[11px] text-slate-500 font-mono">days</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-1">Purges expired audit logs</p>
+              </div>
+
+              <div class="md:col-span-2 lg:col-span-4 flex items-center justify-end gap-2.5 pt-3 border-t border-brand-border">
+                <button type="button" onclick="runSecurityCleanupAction()" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-brand-border transition-all">
+                  Purge Expired Logs Now
+                </button>
+                <button type="submit" class="px-4 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all">
+                  Save Security Policy
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
         <!-- ─── GENERIC FALLBACK (unused) ─── -->
         <div id="tab-placeholder" class="tab-pane hidden"></div>
 
@@ -2556,6 +3016,19 @@
               </button>
             </div>
 
+            <!-- Group 5: Access & Security -->
+            <div class="space-y-1">
+              <p class="px-3 py-1 text-[10px] font-mono text-slate-500 uppercase tracking-wider font-semibold">Access & Security</p>
+              <button onclick="switchTab('access'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="access">
+                <i data-lucide="users" class="w-4 h-4 text-slate-500"></i>
+                <span>Access & Roles</span>
+              </button>
+              <button onclick="switchTab('security'); toggleMobileDrawer(false)" class="drawer-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/40" data-drawer-tab="security">
+                <i data-lucide="shield-check" class="w-4 h-4 text-slate-500"></i>
+                <span>Security Center</span>
+              </button>
+            </div>
+
             <!-- Public Site Link -->
             <div class="pt-2 border-t border-brand-border/60">
               <a href="/" target="_blank" rel="noopener noreferrer" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors">
@@ -2686,6 +3159,14 @@
           if (typeof closeScheduleActionModal === 'function') closeScheduleActionModal();
           if (typeof closeScheduleDetailsModal === 'function') closeScheduleDetailsModal();
           if (typeof closeBulkScheduleModal === 'function') closeBulkScheduleModal();
+          if (typeof closeCreateBackupModal === 'function') closeCreateBackupModal();
+          if (typeof closeBackupDetailsModal === 'function') closeBackupDetailsModal();
+          if (typeof closeDisasterRestoreModal === 'function') closeDisasterRestoreModal();
+          if (typeof closeBackupSettingsModal === 'function') closeBackupSettingsModal();
+          if (typeof closeCreateUserModal === 'function') closeCreateUserModal();
+          if (typeof closeEditUserModal === 'function') closeEditUserModal();
+          if (typeof closeRoleEditorModal === 'function') closeRoleEditorModal();
+          if (typeof closeChangePasswordModal === 'function') closeChangePasswordModal();
         }
       });
 
@@ -2872,6 +3353,8 @@
         scheduled: 'Scheduled Actions & Content Automation',
         backups: 'Backup, Restore & Disaster Recovery Center',
         system: 'System Health & Maintenance Diagnostics',
+        access: 'Access Management & Sovereign Roles',
+        security: 'Security Audit & Diagnostics Center',
       };
       if (title) title.textContent = titleMap[tabId] || `${tabId} Management Console`;
 
@@ -2944,6 +3427,12 @@
       } else if (tabId === 'system') {
         document.getElementById('tab-system').classList.remove('hidden');
         loadSystemHealth();
+      } else if (tabId === 'access') {
+        document.getElementById('tab-access').classList.remove('hidden');
+        loadAccessManagement();
+      } else if (tabId === 'security') {
+        document.getElementById('tab-security').classList.remove('hidden');
+        loadSecurityCenter();
       } else {
         document.getElementById('tab-placeholder').classList.remove('hidden');
       }
@@ -7738,6 +8227,1226 @@
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
+    // ══════════════════════════════════════════════════════════════
+    // PHASE 14: ACCESS MANAGEMENT & SOVEREIGN ROLES
+    // ══════════════════════════════════════════════════════════════
+
+    let currentAccessSubView = 'users';
+    let allUsersCache = [];
+    let allRolesCache = [];
+    let allPermissionsCache = [];
+    let permissionGroupsCache = [];
+    let currentRoleEditingPerms = new Set();
+
+    function getCurrentUser() {
+      try {
+        return JSON.parse(sessionStorage.getItem(USER_KEY) || localStorage.getItem(USER_KEY) || 'null');
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function showAccessSubView(view) {
+      currentAccessSubView = view;
+      const usersBtn = document.getElementById('access-sub-users-btn');
+      const rolesBtn = document.getElementById('access-sub-roles-btn');
+      const usersView = document.getElementById('access-users-subview');
+      const rolesView = document.getElementById('access-roles-subview');
+
+      if (view === 'users') {
+        if (usersBtn) usersBtn.className = 'px-4 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 transition-all flex items-center gap-2';
+        if (rolesBtn) rolesBtn.className = 'px-4 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center gap-2';
+        if (usersView) usersView.classList.remove('hidden');
+        if (rolesView) rolesView.classList.add('hidden');
+        loadUsers();
+      } else {
+        if (rolesBtn) rolesBtn.className = 'px-4 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 transition-all flex items-center gap-2';
+        if (usersBtn) usersBtn.className = 'px-4 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center gap-2';
+        if (rolesView) rolesView.classList.remove('hidden');
+        if (usersView) usersView.classList.add('hidden');
+        loadRoles();
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function loadAccessManagement() {
+      showAccessSubView(currentAccessSubView || 'users');
+    }
+
+    async function loadUsers() {
+      try {
+        const res = await fetch('/api/admin/users', { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to load administrator accounts');
+        const data = await res.json();
+        allUsersCache = data.data?.users || data.users || [];
+
+        // KPI calculations
+        const totalEl = document.getElementById('access-kpi-total');
+        const activeEl = document.getElementById('access-kpi-active');
+        const sessionsEl = document.getElementById('access-kpi-sessions');
+        const invitesEl = document.getElementById('access-kpi-invites');
+
+        if (totalEl) totalEl.textContent = allUsersCache.length;
+        if (activeEl) activeEl.textContent = allUsersCache.filter(u => (u.status || '').toUpperCase() === 'ACTIVE').length;
+        if (sessionsEl) sessionsEl.textContent = allUsersCache.reduce((acc, u) => acc + (u.sessionCount || 0), 0);
+        if (invitesEl) invitesEl.textContent = allUsersCache.filter(u => (u.status || '').toUpperCase() === 'INVITED').length;
+
+        filterUsersList();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function filterUsersList() {
+      const search = (document.getElementById('users-search-input')?.value || '').toLowerCase().trim();
+      const roleFilter = document.getElementById('users-role-filter')?.value || 'ALL';
+      const statusFilter = document.getElementById('users-status-filter')?.value || 'ALL';
+
+      const filtered = allUsersCache.filter(u => {
+        const name = (u.name || '').toLowerCase();
+        const email = (u.email || '').toLowerCase();
+        const matchesSearch = !search || name.includes(search) || email.includes(search);
+        const matchesRole = roleFilter === 'ALL' || (u.role || '').toUpperCase() === roleFilter;
+        const matchesStatus = statusFilter === 'ALL' || (u.status || '').toUpperCase() === statusFilter;
+        return matchesSearch && matchesRole && matchesStatus;
+      });
+
+      renderUsersTable(filtered);
+      renderMobileUserCards(filtered);
+
+      const emptyEl = document.getElementById('users-empty-state');
+      if (emptyEl) emptyEl.classList.toggle('hidden', filtered.length > 0);
+    }
+
+    function renderUsersTable(users) {
+      const tbody = document.getElementById('users-table-body');
+      if (!tbody) return;
+
+      if (users.length === 0) {
+        tbody.innerHTML = '';
+        return;
+      }
+
+      const currentUser = getCurrentUser();
+      const currentEmail = (currentUser?.email || '').toLowerCase();
+
+      tbody.innerHTML = users.map(u => {
+        const email = (u.email || '').toLowerCase();
+        const isSelf = email === currentEmail;
+        const isOwner = (u.role || '').toUpperCase() === 'OWNER' || u.isOwner;
+        const role = (u.role || 'VIEWER').toUpperCase();
+        const status = (u.status || 'ACTIVE').toUpperCase();
+        const sessionCount = u.sessionCount || 0;
+
+        let roleBadgeClass = 'bg-slate-800 text-slate-300 border-slate-700';
+        if (role === 'OWNER') roleBadgeClass = 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30';
+        else if (role === 'ADMIN') roleBadgeClass = 'bg-purple-500/10 text-purple-300 border-purple-500/30';
+        else if (role === 'EDITOR') roleBadgeClass = 'bg-blue-500/10 text-blue-300 border-blue-500/30';
+
+        let statusBadgeClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+        let statusDot = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block mr-1"></span>';
+        if (status === 'INVITED') {
+          statusBadgeClass = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+          statusDot = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block mr-1"></span>';
+        } else if (status === 'SUSPENDED') {
+          statusBadgeClass = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+          statusDot = '<span class="w-1.5 h-1.5 rounded-full bg-rose-400 inline-block mr-1"></span>';
+        } else if (status === 'DISABLED') {
+          statusBadgeClass = 'bg-slate-800 text-slate-400 border-slate-700';
+          statusDot = '';
+        }
+
+        const initial = (u.name || u.email || 'A').charAt(0).toUpperCase();
+        const lastActive = u.lastActivityAt || u.lastLoginAt;
+        const lastActiveStr = lastActive ? new Date(lastActive).toLocaleDateString() + ' ' + new Date(lastActive).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Never';
+
+        return `
+          <tr class="hover:bg-slate-800/20 transition-colors">
+            <td class="py-3 px-4">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center font-bold text-cyan-400 text-xs shrink-0">
+                  ${escapeHtml(initial)}
+                </div>
+                <div>
+                  <div class="font-medium text-slate-100 flex items-center gap-1.5">
+                    <span>${escapeHtml(u.name || 'Unnamed Operator')}</span>
+                    ${isSelf ? '<span class="text-[10px] font-mono text-cyan-400 font-semibold">(You)</span>' : ''}
+                    ${isOwner ? '<span class="text-[10px] font-mono text-amber-400 font-semibold">★</span>' : ''}
+                  </div>
+                  <div class="text-[11px] font-mono text-slate-400">${escapeHtml(u.email)}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold border ${roleBadgeClass}">
+                ${escapeHtml(role)}
+              </span>
+            </td>
+            <td class="py-3 px-4">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-mono border ${statusBadgeClass}">
+                ${statusDot}${escapeHtml(status)}
+              </span>
+            </td>
+            <td class="py-3 px-4 font-mono text-[11px]">
+              <div class="flex items-center gap-1.5">
+                ${sessionCount > 0 ? '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>' : '<span class="w-2 h-2 rounded-full bg-slate-600"></span>'}
+                <span class="${sessionCount > 0 ? 'text-emerald-400 font-semibold' : 'text-slate-500'}">${sessionCount} active</span>
+              </div>
+            </td>
+            <td class="py-3 px-4 text-[11px] font-mono text-slate-400">
+              ${escapeHtml(lastActiveStr)}
+            </td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                ${status === 'INVITED' ? `
+                  <button onclick="resendInviteAction('${escapeHtml(u.id)}')" class="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 text-xs transition-colors" title="Resend Invite Link">
+                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                  </button>
+                ` : ''}
+                <button onclick="openEditUserModal('${escapeHtml(u.id)}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition-colors" title="Edit Account">
+                  <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                </button>
+                ${!isOwner && !isSelf ? `
+                  <button onclick="deleteUserAction('${escapeHtml(u.id)}', '${escapeHtml(u.name || u.email)}')" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs transition-colors" title="Delete Account">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function renderMobileUserCards(users) {
+      const container = document.getElementById('users-mobile-cards');
+      if (!container) return;
+
+      if (users.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      const currentUser = getCurrentUser();
+      const currentEmail = (currentUser?.email || '').toLowerCase();
+
+      container.innerHTML = users.map(u => {
+        const email = (u.email || '').toLowerCase();
+        const isSelf = email === currentEmail;
+        const isOwner = (u.role || '').toUpperCase() === 'OWNER' || u.isOwner;
+        const role = (u.role || 'VIEWER').toUpperCase();
+        const status = (u.status || 'ACTIVE').toUpperCase();
+        const sessionCount = u.sessionCount || 0;
+        const initial = (u.name || u.email || 'A').charAt(0).toUpperCase();
+
+        return `
+          <div class="p-4 rounded-xl bg-brand-sidebar border border-brand-border space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center font-bold text-cyan-400 text-xs">
+                  ${escapeHtml(initial)}
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-100 flex items-center gap-1.5">
+                    <span>${escapeHtml(u.name || 'Unnamed')}</span>
+                    ${isSelf ? '<span class="text-[10px] font-mono text-cyan-400">(You)</span>' : ''}
+                  </h4>
+                  <p class="text-[11px] font-mono text-slate-400">${escapeHtml(u.email)}</p>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold border ${role === 'OWNER' ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30' : 'bg-slate-800 text-slate-300 border-slate-700'}">
+                ${escapeHtml(role)}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-brand-border/60 text-[11px] font-mono">
+              <span class="text-slate-400">Status: <span class="text-slate-200">${escapeHtml(status)}</span></span>
+              <span class="text-slate-400">Sessions: <span class="${sessionCount > 0 ? 'text-emerald-400' : 'text-slate-500'} font-bold">${sessionCount}</span></span>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-2 border-t border-brand-border/60">
+              ${status === 'INVITED' ? `
+                <button onclick="resendInviteAction('${escapeHtml(u.id)}')" class="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 text-xs font-medium">Resend Invite</button>
+              ` : ''}
+              <button onclick="openEditUserModal('${escapeHtml(u.id)}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-200 text-xs font-medium">Edit</button>
+              ${!isOwner && !isSelf ? `
+                <button onclick="deleteUserAction('${escapeHtml(u.id)}', '${escapeHtml(u.name || u.email)}')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 text-xs font-medium">Delete</button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function openCreateUserModal() {
+      const form = document.getElementById('create-user-form');
+      if (form) form.reset();
+      toggleProvisioningMode('invite');
+      const modal = document.getElementById('create-user-modal');
+      if (modal) modal.classList.add('open');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeCreateUserModal() {
+      const modal = document.getElementById('create-user-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function toggleProvisioningMode(mode) {
+      const passField = document.getElementById('cu-password-field');
+      const passInput = document.getElementById('cu-password');
+      const notice = document.getElementById('cu-invite-notice');
+
+      if (mode === 'direct') {
+        if (passField) passField.classList.remove('hidden');
+        if (passInput) passInput.required = true;
+        if (notice) notice.classList.add('hidden');
+      } else {
+        if (passField) passField.classList.add('hidden');
+        if (passInput) {
+          passInput.required = false;
+          passInput.value = '';
+        }
+        if (notice) notice.classList.remove('hidden');
+      }
+    }
+
+    async function submitCreateUser(e) {
+      e.preventDefault();
+      const name = document.getElementById('cu-name')?.value?.trim();
+      const email = document.getElementById('cu-email')?.value?.trim();
+      const role = document.getElementById('cu-role')?.value || 'VIEWER';
+      const mode = document.querySelector('input[name="cu-mode"]:checked')?.value || 'invite';
+      const password = mode === 'direct' ? document.getElementById('cu-password')?.value : undefined;
+
+      if (!name || !email) {
+        showToast('Please fill in all required fields.', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ name, email, role, password, status: mode === 'invite' ? 'INVITED' : 'ACTIVE' }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to create user');
+
+        closeCreateUserModal();
+        showToast('Operator account created successfully.', 'success');
+
+        const inviteUrl = data.data?.invitationUrl || data.invitationUrl;
+        if (inviteUrl) {
+          copyToClipboard(inviteUrl, 'Invitation setup link copied to clipboard!');
+        }
+
+        loadUsers();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function openEditUserModal(userId) {
+      const user = allUsersCache.find(u => u.id === userId);
+      if (!user) return;
+
+      document.getElementById('eu-id').value = user.id;
+      document.getElementById('eu-name').value = user.name || '';
+      document.getElementById('eu-email-subtitle').textContent = user.email;
+      document.getElementById('eu-role').value = (user.role || 'VIEWER').toUpperCase();
+      document.getElementById('eu-status').value = (user.status || 'ACTIVE').toUpperCase();
+
+      const warningBox = document.getElementById('eu-warning-box');
+      const isOwner = (user.role || '').toUpperCase() === 'OWNER' || user.isOwner;
+      if (warningBox) warningBox.classList.toggle('hidden', !isOwner);
+
+      const modal = document.getElementById('edit-user-modal');
+      if (modal) modal.classList.add('open');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeEditUserModal() {
+      const modal = document.getElementById('edit-user-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    async function submitEditUser(e) {
+      e.preventDefault();
+      const id = document.getElementById('eu-id')?.value;
+      const name = document.getElementById('eu-name')?.value?.trim();
+      const role = document.getElementById('eu-role')?.value;
+      const status = document.getElementById('eu-status')?.value;
+
+      try {
+        const res = await fetch(`/api/admin/users/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ name, role, status }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to update user');
+
+        closeEditUserModal();
+        showToast('Operator account updated successfully.', 'success');
+        loadUsers();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function deleteUserAction(userId, name) {
+      confirmDelete(`Permanently delete operator account "${name}"? This action cannot be undone.`, async () => {
+        try {
+          const res = await fetch(`/api/admin/users/${userId}`, {
+            method: 'DELETE',
+            credentials: 'include',
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to delete user');
+
+          showToast('Operator deleted successfully.', 'success');
+          loadUsers();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      });
+    }
+
+    async function resendInviteAction(userId) {
+      try {
+        const res = await fetch(`/api/admin/users/${userId}/resend-invite`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to generate invitation');
+
+        const inviteUrl = data.data?.invitationUrl || data.invitationUrl;
+        if (inviteUrl) {
+          copyToClipboard(inviteUrl, 'New invitation link copied to clipboard!');
+        } else {
+          showToast('Invitation re-generated.', 'success');
+        }
+        loadUsers();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ─── ROLES & PERMISSIONS MANAGEMENT ──────────────────────────
+
+    async function loadRoles() {
+      try {
+        const [rolesRes, permsRes] = await Promise.all([
+          fetch('/api/admin/roles', { credentials: 'include' }),
+          fetch('/api/admin/permissions', { credentials: 'include' }),
+        ]);
+
+        if (!rolesRes.ok || !permsRes.ok) throw new Error('Failed to load roles and permissions matrix');
+
+        const rolesData = await rolesRes.json();
+        const permsData = await permsRes.json();
+
+        allRolesCache = rolesData.data?.roles || rolesData.roles || [];
+        allPermissionsCache = permsData.data?.permissions || permsData.permissions || [];
+        permissionGroupsCache = permsData.data?.groups || permsData.groups || [];
+
+        renderRolesCards(allRolesCache);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function renderRolesCards(roles) {
+      const grid = document.getElementById('roles-cards-grid');
+      if (!grid) return;
+
+      grid.innerHTML = roles.map(r => {
+        const isSystem = Boolean(r.isSystem);
+        const perms = r.permissions || [];
+        const topPerms = perms.slice(0, 4);
+        const remainingCount = perms.length - topPerms.length;
+
+        let roleColor = 'cyan';
+        if (r.name === 'OWNER') roleColor = 'emerald';
+        else if (r.name === 'ADMIN') roleColor = 'purple';
+        else if (r.name === 'EDITOR') roleColor = 'blue';
+        else if (r.name === 'VIEWER') roleColor = 'slate';
+
+        return `
+          <div class="p-5 rounded-xl bg-brand-sidebar border border-brand-border space-y-4 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-1 rounded-md text-xs font-mono font-bold border ${roleColor === 'emerald' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : roleColor === 'purple' ? 'bg-purple-500/10 text-purple-300 border-purple-500/20' : roleColor === 'blue' ? 'bg-blue-500/10 text-blue-300 border-blue-500/20' : 'bg-slate-800 text-slate-300 border-slate-700'}">
+                  ${escapeHtml(r.name)}
+                </span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-brand-border text-slate-400">
+                  ${isSystem ? 'System Defined' : 'Custom Role'}
+                </span>
+              </div>
+
+              <div>
+                <p class="text-xs text-slate-300 font-medium line-clamp-2">${escapeHtml(r.description || 'No description provided')}</p>
+                <div class="flex items-center gap-1.5 mt-2">
+                  <span class="text-[11px] font-mono text-cyan-400 font-bold">${perms.length} / 32</span>
+                  <span class="text-[11px] text-slate-500">permissions granted</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5 pt-2 border-t border-brand-border/60">
+                <p class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Assigned Capabilities:</p>
+                <div class="flex flex-wrap gap-1">
+                  ${topPerms.map(p => `<span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900/80 border border-brand-border text-slate-300">${escapeHtml(p)}</span>`).join('')}
+                  ${remainingCount > 0 ? `<span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900/80 border border-brand-border text-cyan-400">+${remainingCount} more</span>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-3 border-t border-brand-border">
+              <button onclick="duplicateRoleAction('${escapeHtml(r.id || r._id)}', '${escapeHtml(r.name)}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition-colors" title="Duplicate Role">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="openRoleEditorModal('${escapeHtml(r.id || r._id)}')" class="px-3 py-1.5 rounded-lg bg-cyan-600/10 hover:bg-cyan-600/20 text-cyan-300 text-xs font-semibold border border-cyan-500/20 transition-all flex items-center gap-1.5">
+                <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+                <span>Configure</span>
+              </button>
+              ${!isSystem ? `
+                <button onclick="deleteRoleAction('${escapeHtml(r.id || r._id)}', '${escapeHtml(r.name)}')" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs transition-colors" title="Delete Role">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function openRoleEditorModal(roleId) {
+      const modal = document.getElementById('role-editor-modal');
+      const titleEl = document.getElementById('rem-title');
+      const idInput = document.getElementById('rem-role-id');
+      const nameInput = document.getElementById('rem-name');
+      const descInput = document.getElementById('rem-desc');
+
+      if (roleId) {
+        const role = allRolesCache.find(r => (r.id || r._id) === roleId);
+        if (!role) return;
+
+        if (titleEl) titleEl.textContent = `Configure Role: ${role.name}`;
+        if (idInput) idInput.value = role.id || role._id;
+        if (nameInput) {
+          nameInput.value = role.name;
+          nameInput.disabled = Boolean(role.isSystem);
+        }
+        if (descInput) descInput.value = role.description || '';
+        currentRoleEditingPerms = new Set(role.permissions || []);
+      } else {
+        if (titleEl) titleEl.textContent = 'Create Custom Sovereign Role';
+        if (idInput) idInput.value = '';
+        if (nameInput) {
+          nameInput.value = '';
+          nameInput.disabled = false;
+        }
+        if (descInput) descInput.value = '';
+        currentRoleEditingPerms = new Set();
+      }
+
+      renderPermissionGroupsEditor();
+      updateRolePermCounter();
+
+      if (modal) modal.classList.add('open');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeRoleEditorModal() {
+      const modal = document.getElementById('role-editor-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function updateRolePermCounter() {
+      const counter = document.getElementById('rem-counter');
+      if (counter) counter.textContent = `${currentRoleEditingPerms.size} / 32 Selected`;
+    }
+
+    function renderPermissionGroupsEditor() {
+      const container = document.getElementById('rem-permission-groups');
+      if (!container) return;
+
+      const groups = permissionGroupsCache.length > 0 ? permissionGroupsCache : [
+        { category: 'CONTENT', label: 'Content Management', permissions: [{ id: 'content.view', label: 'View Content' }, { id: 'content.create', label: 'Create Content' }, { id: 'content.edit', label: 'Edit Content' }, { id: 'content.delete', label: 'Delete Content' }, { id: 'content.publish', label: 'Publish Content' }] },
+        { category: 'MEDIA', label: 'Media Library', permissions: [{ id: 'media.view', label: 'View Media' }, { id: 'media.upload', label: 'Upload Media' }, { id: 'media.delete', label: 'Delete Media' }] },
+        { category: 'RESUME', label: 'Resume & ATS', permissions: [{ id: 'resume.view', label: 'View Resumes' }, { id: 'resume.upload', label: 'Upload Resumes' }, { id: 'resume.delete', label: 'Delete Resumes' }] },
+        { category: 'MESSAGES', label: 'Contact Messages', permissions: [{ id: 'messages.view', label: 'View Inquiries' }, { id: 'messages.manage', label: 'Manage & Archive' }, { id: 'messages.delete', label: 'Delete Messages' }] },
+        { category: 'ANALYTICS', label: 'Analytics Telemetry', permissions: [{ id: 'analytics.view', label: 'View Traffic Insights' }, { id: 'analytics.export', label: 'Export Analytics' }] },
+        { category: 'SCHEDULING', label: 'Content Automation', permissions: [{ id: 'scheduling.view', label: 'View Scheduled' }, { id: 'scheduling.manage', label: 'Create & Cancel Schedules' }] },
+        { category: 'BACKUPS', label: 'Disaster Recovery', permissions: [{ id: 'backups.view', label: 'View Backups' }, { id: 'backups.create', label: 'Snapshot Backup' }, { id: 'backups.restore', label: 'Disaster Restore' }, { id: 'backups.delete', label: 'Delete Backups' }] },
+        { category: 'SETTINGS', label: 'System Settings', permissions: [{ id: 'settings.view', label: 'View Settings' }, { id: 'settings.edit', label: 'Modify Settings' }] },
+        { category: 'USERS', label: 'Operator Management', permissions: [{ id: 'users.view', label: 'View Operators' }, { id: 'users.manage', label: 'Create, Edit & Delete Users' }] },
+        { category: 'SECURITY', label: 'Security & Audit', permissions: [{ id: 'security.view', label: 'View Telemetry & Logs' }, { id: 'security.manage', label: 'Revoke Sessions & Policies' }] },
+      ];
+
+      container.innerHTML = groups.map(g => {
+        return `
+          <div class="p-3.5 rounded-xl bg-slate-900/60 border border-brand-border space-y-2.5">
+            <div class="flex items-center justify-between pb-2 border-b border-brand-border/60">
+              <span class="text-xs font-bold text-slate-200 font-mono flex items-center gap-2">
+                <i data-lucide="shield" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>${escapeHtml(g.label || g.category)}</span>
+              </span>
+              <button type="button" onclick="toggleCategoryPermissions('${escapeHtml(g.category)}')" class="text-[10px] font-mono text-cyan-400 hover:underline">
+                Toggle Category
+              </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${(g.permissions || []).map(p => {
+                const permId = p.id || p.name || p;
+                const isChecked = currentRoleEditingPerms.has(permId);
+                return `
+                  <label class="flex items-start gap-2 p-2 rounded-lg bg-slate-800/40 hover:bg-slate-800/80 border border-brand-border/40 cursor-pointer transition-colors">
+                    <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleRolePermission('${escapeHtml(permId)}', this.checked)" class="mt-0.5 rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-0">
+                    <div>
+                      <div class="font-mono font-semibold text-slate-200 text-[11px]">${escapeHtml(permId)}</div>
+                      <div class="text-slate-400 text-[10px] leading-tight mt-0.5">${escapeHtml(p.label || p.description || '')}</div>
+                    </div>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function toggleRolePermission(permId, isChecked) {
+      if (isChecked) {
+        currentRoleEditingPerms.add(permId);
+      } else {
+        currentRoleEditingPerms.delete(permId);
+      }
+      updateRolePermCounter();
+    }
+
+    function toggleCategoryPermissions(category) {
+      const group = permissionGroupsCache.find(g => g.category === category);
+      if (!group) return;
+
+      const groupPermIds = (group.permissions || []).map(p => p.id || p.name || p);
+      const allSelected = groupPermIds.every(id => currentRoleEditingPerms.has(id));
+
+      if (allSelected) {
+        groupPermIds.forEach(id => currentRoleEditingPerms.delete(id));
+      } else {
+        groupPermIds.forEach(id => currentRoleEditingPerms.add(id));
+      }
+
+      renderPermissionGroupsEditor();
+      updateRolePermCounter();
+    }
+
+    function selectAllRolePermissions() {
+      const all = allPermissionsCache.length > 0
+        ? allPermissionsCache.map(p => p.id || p.name || p)
+        : [
+            'content.view', 'content.create', 'content.edit', 'content.delete', 'content.publish',
+            'media.view', 'media.upload', 'media.delete',
+            'resume.view', 'resume.upload', 'resume.delete',
+            'messages.view', 'messages.manage', 'messages.delete',
+            'analytics.view', 'analytics.export',
+            'scheduling.view', 'scheduling.manage',
+            'backups.view', 'backups.create', 'backups.restore', 'backups.delete',
+            'settings.view', 'settings.edit',
+            'users.view', 'users.manage',
+            'security.view', 'security.manage',
+          ];
+      all.forEach(p => currentRoleEditingPerms.add(p));
+      renderPermissionGroupsEditor();
+      updateRolePermCounter();
+    }
+
+    function clearAllRolePermissions() {
+      currentRoleEditingPerms.clear();
+      renderPermissionGroupsEditor();
+      updateRolePermCounter();
+    }
+
+    async function submitRoleEditor(e) {
+      e.preventDefault();
+      const id = document.getElementById('rem-role-id')?.value;
+      const name = document.getElementById('rem-name')?.value?.trim().toUpperCase();
+      const description = document.getElementById('rem-desc')?.value?.trim();
+      const permissions = Array.from(currentRoleEditingPerms);
+
+      if (!name) {
+        showToast('Role identifier name is required.', 'error');
+        return;
+      }
+
+      try {
+        const url = id ? `/api/admin/roles/${id}` : '/api/admin/roles';
+        const method = id ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ name, description, permissions }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to save role');
+
+        closeRoleEditorModal();
+        showToast('Role permissions matrix saved successfully.', 'success');
+        loadRoles();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function duplicateRoleAction(roleId, roleName) {
+      const newName = prompt(`Enter name for the duplicated role:`, `${roleName}_COPY`);
+      if (!newName || !newName.trim()) return;
+
+      try {
+        const res = await fetch(`/api/admin/roles/${roleId}/duplicate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ name: newName.trim().toUpperCase() }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to duplicate role');
+
+        showToast(`Role duplicated as "${newName.trim().toUpperCase()}".`, 'success');
+        loadRoles();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function deleteRoleAction(roleId, roleName) {
+      confirmDelete(`Permanently delete role "${roleName}"? Any users assigned this role will lose their custom grants.`, async () => {
+        try {
+          const res = await fetch(`/api/admin/roles/${roleId}`, {
+            method: 'DELETE',
+            credentials: 'include',
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to delete role');
+
+          showToast('Role deleted successfully.', 'success');
+          loadRoles();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      });
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // PHASE 14: SECURITY AUDIT & DIAGNOSTICS CENTER
+    // ══════════════════════════════════════════════════════════════
+
+    async function loadSecurityCenter() {
+      await Promise.all([
+        loadSecurityDashboard(),
+        loadActiveSessions(),
+        loadSecurityEvents(),
+        loadLoginHistory(),
+        loadSecuritySettings(),
+      ]);
+    }
+
+    async function loadSecurityDashboard() {
+      try {
+        const res = await fetch('/api/admin/security/dashboard', { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to load security dashboard');
+        const data = await res.json();
+        const payload = data.data || data;
+
+        if (payload.health) renderSecurityHealth(payload.health);
+
+        const metrics = payload.metrics || {};
+        const adminsEl = document.getElementById('sec-metric-admins');
+        const sessionsEl = document.getElementById('sec-metric-sessions');
+        const failedEl = document.getElementById('sec-metric-failed');
+        const eventsEl = document.getElementById('sec-metric-events');
+
+        if (adminsEl) adminsEl.textContent = metrics.activeAdmins || 1;
+        if (sessionsEl) sessionsEl.textContent = metrics.activeSessions || 1;
+        if (failedEl) failedEl.textContent = metrics.failedLogins24h || 0;
+        if (eventsEl) eventsEl.textContent = metrics.totalSecurityEventsRecorded || (payload.recentEvents?.length || 0);
+
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function renderSecurityHealth(health) {
+      const banner = document.getElementById('sec-overall-banner');
+      const icon = document.getElementById('sec-overall-icon');
+      const title = document.getElementById('sec-overall-title');
+      const sub = document.getElementById('sec-overall-sub');
+      const counter = document.getElementById('sec-checks-counter');
+      const grid = document.getElementById('sec-checks-grid');
+
+      const isGood = health.overallStatus === 'Good' || health.allGood;
+
+      if (banner && icon && title && sub && counter) {
+        if (isGood) {
+          banner.className = 'rounded-xl p-5 border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-emerald-950/30 border-emerald-500/30';
+          icon.className = 'w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0';
+          icon.innerHTML = '<i data-lucide="shield-check" class="w-6 h-6"></i>';
+          title.className = 'text-sm sm:text-base font-bold text-emerald-200';
+          title.textContent = 'Security Posture: Optimal (Good)';
+          sub.className = 'text-xs text-emerald-400/80 mt-0.5 font-mono';
+          sub.textContent = 'All 9 cryptographic and access-control defenses verified. Zero high-severity intrusions detected.';
+          counter.className = 'text-[11px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold';
+        } else {
+          banner.className = 'rounded-xl p-5 border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-amber-950/30 border-amber-500/30';
+          icon.className = 'w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0';
+          icon.innerHTML = '<i data-lucide="shield-alert" class="w-6 h-6"></i>';
+          title.className = 'text-sm sm:text-base font-bold text-amber-200';
+          title.textContent = 'Security Posture: Attention Required';
+          sub.className = 'text-xs text-amber-400/80 mt-0.5 font-mono';
+          sub.textContent = 'One or more security checks require administrative attention.';
+          counter.className = 'text-[11px] font-mono px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 font-bold';
+        }
+        counter.textContent = `${health.checksPassed || 0} / ${health.totalChecks || 9} Checks Passed`;
+      }
+
+      if (grid && health.checks) {
+        grid.innerHTML = health.checks.map(c => {
+          const pass = Boolean(c.status);
+          return `
+            <div class="p-3.5 rounded-xl bg-brand-sidebar border ${pass ? 'border-brand-border' : 'border-amber-500/30'} space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-200 flex items-center gap-2">
+                  <i data-lucide="${pass ? 'check-circle-2' : 'alert-triangle'}" class="w-4 h-4 ${pass ? 'text-emerald-400' : 'text-amber-400'}"></i>
+                  <span>${escapeHtml(c.name)}</span>
+                </span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full ${pass ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">
+                  ${pass ? 'Verified' : 'Check'}
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-400 leading-relaxed font-sans">${escapeHtml(c.explanation || '')}</p>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    async function loadActiveSessions() {
+      try {
+        const res = await fetch('/api/admin/security/sessions', { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to load active sessions');
+        const data = await res.json();
+        const sessions = data.data?.sessions || data.sessions || [];
+        renderSessions(sessions);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function renderSessions(sessions) {
+      const tbody = document.getElementById('sec-sessions-table-body');
+      const mobileContainer = document.getElementById('sec-sessions-mobile-cards');
+
+      if (!tbody && !mobileContainer) return;
+
+      if (tbody) {
+        tbody.innerHTML = sessions.map(s => {
+          const isCurrent = Boolean(s.isCurrent);
+          const icon = (s.deviceType || '').toLowerCase() === 'mobile' ? 'smartphone' : 'laptop';
+          const platform = `${s.browser || 'Browser'} on ${s.os || 'OS'}`;
+          const lastActive = s.lastActivityAt ? new Date(s.lastActivityAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recent';
+          const expires = s.expiresAt ? new Date(s.expiresAt).toLocaleDateString() : 'Active';
+
+          return `
+            <tr class="hover:bg-slate-800/20 transition-colors">
+              <td class="py-2.5 px-3">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="${icon}" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+                  <div>
+                    <div class="font-medium text-slate-200">${escapeHtml(platform)}</div>
+                    ${isCurrent ? '<span class="text-[10px] font-mono text-emerald-400 font-semibold">(Current Session)</span>' : ''}
+                  </div>
+                </div>
+              </td>
+              <td class="py-2.5 px-3 font-mono text-[11px] text-slate-300">${escapeHtml(s.userEmail)}</td>
+              <td class="py-2.5 px-3 font-mono text-[11px] text-slate-400">${escapeHtml(s.ipAddress || '—')}</td>
+              <td class="py-2.5 px-3 font-mono text-[11px] text-slate-400">${escapeHtml(lastActive)}</td>
+              <td class="py-2.5 px-3 font-mono text-[11px] text-slate-400">${escapeHtml(expires)}</td>
+              <td class="py-2.5 px-3 text-right">
+                ${!isCurrent ? `
+                  <button onclick="revokeSessionAction('${escapeHtml(s.sessionId || s.id)}')" class="px-2.5 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-[11px] font-semibold transition-colors">
+                    Revoke
+                  </button>
+                ` : `
+                  <span class="text-[11px] text-slate-500 font-mono">Active</span>
+                `}
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      if (mobileContainer) {
+        mobileContainer.innerHTML = sessions.map(s => {
+          const isCurrent = Boolean(s.isCurrent);
+          const icon = (s.deviceType || '').toLowerCase() === 'mobile' ? 'smartphone' : 'laptop';
+          return `
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-brand-border space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="${icon}" class="w-4 h-4 text-cyan-400"></i>
+                  <span class="font-bold text-slate-200 text-xs">${escapeHtml(s.browser || 'Browser')} • ${escapeHtml(s.os || 'OS')}</span>
+                </div>
+                ${isCurrent ? '<span class="text-[10px] font-mono text-emerald-400 font-bold">Current</span>' : ''}
+              </div>
+              <div class="text-[11px] font-mono text-slate-400 flex justify-between">
+                <span>${escapeHtml(s.userEmail)}</span>
+                <span>IP: ${escapeHtml(s.ipAddress || '—')}</span>
+              </div>
+              ${!isCurrent ? `
+                <div class="text-right pt-1 border-t border-brand-border/40">
+                  <button onclick="revokeSessionAction('${escapeHtml(s.sessionId || s.id)}')" class="px-2.5 py-1 rounded bg-rose-500/10 text-rose-400 text-xs font-semibold">Revoke Session</button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    async function revokeSessionAction(sessionId) {
+      try {
+        const res = await fetch(`/api/admin/security/sessions/${sessionId}/revoke`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to revoke session');
+
+        showToast('Session revoked immediately.', 'success');
+        loadActiveSessions();
+        loadSecurityDashboard();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function revokeOtherSessionsAction() {
+      confirmDelete('Revoke all other active administrative sessions? Only your current browser session will remain valid.', async () => {
+        try {
+          const res = await fetch('/api/admin/security/sessions/revoke-others', {
+            method: 'POST',
+            credentials: 'include',
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to revoke sessions');
+
+          showToast('All other sessions revoked successfully.', 'success');
+          loadActiveSessions();
+          loadSecurityDashboard();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      });
+    }
+
+    async function loadSecurityEvents() {
+      const severity = document.getElementById('sec-events-severity-filter')?.value || 'ALL';
+      const eventType = document.getElementById('sec-events-type-filter')?.value || 'ALL';
+
+      try {
+        const params = new URLSearchParams();
+        if (severity !== 'ALL') params.append('severity', severity);
+        if (eventType !== 'ALL') params.append('eventType', eventType);
+
+        const res = await fetch(`/api/admin/security/events?${params.toString()}`, { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to load security audit events');
+        const data = await res.json();
+        const events = data.data?.events || data.events || [];
+        renderSecurityEvents(events);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function renderSecurityEvents(events) {
+      const tbody = document.getElementById('sec-events-table-body');
+      const mobileContainer = document.getElementById('sec-events-mobile-cards');
+      const emptyState = document.getElementById('sec-events-empty-state');
+
+      if (emptyState) emptyState.classList.toggle('hidden', events.length > 0);
+
+      if (tbody) {
+        tbody.innerHTML = events.map(ev => {
+          const time = ev.createdAt ? new Date(ev.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+          const sev = (ev.severity || 'LOW').toUpperCase();
+
+          let sevClass = 'bg-slate-800 text-slate-300 border-slate-700';
+          if (sev === 'CRITICAL') sevClass = 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+          else if (sev === 'HIGH') sevClass = 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+          else if (sev === 'MEDIUM') sevClass = 'bg-yellow-500/10 text-yellow-300 border-yellow-500/30';
+
+          const detailsStr = typeof ev.details === 'object' ? JSON.stringify(ev.details) : String(ev.details || '');
+
+          return `
+            <tr class="hover:bg-slate-800/20 transition-colors">
+              <td class="py-2 px-3 font-mono text-[11px] text-slate-400 whitespace-nowrap">${escapeHtml(time)}</td>
+              <td class="py-2 px-3 font-mono text-[11px] font-semibold text-cyan-300">${escapeHtml(ev.eventType)}</td>
+              <td class="py-2 px-3">
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${sevClass}">
+                  ${escapeHtml(sev)}
+                </span>
+              </td>
+              <td class="py-2 px-3 font-mono text-[11px] text-slate-300">${escapeHtml(ev.userEmail || 'system')}</td>
+              <td class="py-2 px-3 text-[11px] text-slate-300 max-w-xs truncate" title="${escapeHtml(detailsStr)}">
+                <span class="font-mono text-cyan-400">${escapeHtml(ev.resource || '')}</span>
+                <span class="text-slate-400 ml-1 font-sans">${escapeHtml(detailsStr)}</span>
+              </td>
+              <td class="py-2 px-3 font-mono text-[11px] text-slate-500">${escapeHtml(ev.ipAddress || '—')}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      if (mobileContainer) {
+        mobileContainer.innerHTML = events.map(ev => {
+          const time = ev.createdAt ? new Date(ev.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+          return `
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-brand-border space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-cyan-300">${escapeHtml(ev.eventType)}</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">${escapeHtml(ev.severity || 'LOW')}</span>
+              </div>
+              <p class="text-[11px] text-slate-300 font-sans truncate">${escapeHtml(JSON.stringify(ev.details || ''))}</p>
+              <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-1 border-t border-brand-border/40">
+                <span>${escapeHtml(ev.userEmail || 'system')}</span>
+                <span>${escapeHtml(time)}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    async function loadLoginHistory() {
+      const status = document.getElementById('sec-login-status-filter')?.value || 'ALL';
+
+      try {
+        const params = new URLSearchParams();
+        if (status !== 'ALL') params.append('status', status);
+
+        const res = await fetch(`/api/admin/security/login-history?${params.toString()}`, { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to load login history');
+        const data = await res.json();
+        const history = data.data?.history || data.history || [];
+        renderLoginHistory(history);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function renderLoginHistory(history) {
+      const tbody = document.getElementById('sec-login-table-body');
+      const mobileContainer = document.getElementById('sec-login-mobile-cards');
+      const emptyState = document.getElementById('sec-login-empty-state');
+
+      if (emptyState) emptyState.classList.toggle('hidden', history.length > 0);
+
+      if (tbody) {
+        tbody.innerHTML = history.map(h => {
+          const time = h.createdAt ? new Date(h.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+          const isSuccess = (h.status || '').toLowerCase() === 'success';
+
+          return `
+            <tr class="hover:bg-slate-800/20 transition-colors">
+              <td class="py-2 px-3 font-mono text-[11px] text-slate-400 whitespace-nowrap">${escapeHtml(time)}</td>
+              <td class="py-2 px-3 font-mono text-[11px] text-slate-200">${escapeHtml(h.email || '—')}</td>
+              <td class="py-2 px-3">
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${isSuccess ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}">
+                  ${isSuccess ? 'SUCCESS' : 'FAILED'}
+                </span>
+              </td>
+              <td class="py-2 px-3 text-[11px] text-slate-400">${escapeHtml(h.browser || 'Browser')} (${escapeHtml(h.os || 'OS')})</td>
+              <td class="py-2 px-3 font-mono text-[11px] text-slate-500">${escapeHtml(h.ipAddress || '—')}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      if (mobileContainer) {
+        mobileContainer.innerHTML = history.map(h => {
+          const time = h.createdAt ? new Date(h.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+          const isSuccess = (h.status || '').toLowerCase() === 'success';
+
+          return `
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-brand-border space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-xs text-slate-200">${escapeHtml(h.email || '—')}</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${isSuccess ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}">
+                  ${isSuccess ? 'SUCCESS' : 'FAILED'}
+                </span>
+              </div>
+              <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <span>${escapeHtml(h.browser || 'Browser')} (${escapeHtml(h.os || 'OS')})</span>
+                <span>IP: ${escapeHtml(h.ipAddress || '—')}</span>
+              </div>
+              <div class="text-[10px] font-mono text-slate-500 pt-1 border-t border-brand-border/40">
+                ${escapeHtml(time)}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    async function loadSecuritySettings() {
+      try {
+        const res = await fetch('/api/admin/security/settings', { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to load security settings');
+        const data = await res.json();
+        const s = data.data?.settings || data.settings || {};
+
+        const timeoutInput = document.getElementById('sec-set-session-timeout');
+        const maxInput = document.getElementById('sec-set-max-attempts');
+        const lockoutInput = document.getElementById('sec-set-lockout-duration');
+        const retentionInput = document.getElementById('sec-set-retention-days');
+
+        if (timeoutInput && s.sessionTimeoutMinutes) timeoutInput.value = s.sessionTimeoutMinutes;
+        if (maxInput && s.maxFailedLoginAttempts) maxInput.value = s.maxFailedLoginAttempts;
+        if (lockoutInput && s.lockoutDurationMinutes) lockoutInput.value = s.lockoutDurationMinutes;
+        if (retentionInput && s.securityEventRetentionDays) retentionInput.value = s.securityEventRetentionDays;
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function submitSecuritySettings(e) {
+      e.preventDefault();
+      const sessionTimeoutMinutes = parseInt(document.getElementById('sec-set-session-timeout')?.value, 10);
+      const maxFailedLoginAttempts = parseInt(document.getElementById('sec-set-max-attempts')?.value, 10);
+      const lockoutDurationMinutes = parseInt(document.getElementById('sec-set-lockout-duration')?.value, 10);
+      const securityEventRetentionDays = parseInt(document.getElementById('sec-set-retention-days')?.value, 10);
+
+      try {
+        const res = await fetch('/api/admin/security/settings', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            sessionTimeoutMinutes,
+            maxFailedLoginAttempts,
+            lockoutDurationMinutes,
+            securityEventRetentionDays,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to update security settings');
+
+        showToast('Enforceable security parameters updated successfully.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function runSecurityCleanupAction() {
+      try {
+        const res = await fetch('/api/admin/security/cleanup', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to run security cleanup');
+
+        const count = data.data?.deletedCount || data.deletedCount || 0;
+        showToast(`Audit log cleanup completed. ${count} expired records purged.`, 'success');
+        loadSecurityEvents();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function openChangePasswordModal() {
+      const form = document.getElementById('change-password-form');
+      if (form) form.reset();
+      const modal = document.getElementById('change-password-modal');
+      if (modal) modal.classList.add('open');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeChangePasswordModal() {
+      const modal = document.getElementById('change-password-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    async function submitChangePassword(e) {
+      e.preventDefault();
+      const currentPassword = document.getElementById('cp-current')?.value;
+      const newPassword = document.getElementById('cp-new')?.value;
+      const confirmPassword = document.getElementById('cp-confirm')?.value;
+
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        showToast('All password fields are required.', 'error');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        showToast('New passwords do not match.', 'error');
+        return;
+      }
+
+      if (newPassword.length < 8) {
+        showToast('Password must be at least 8 characters in length.', 'error');
+        return;
+      }
+
+      if (!/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+        showToast('Password must contain at least one uppercase letter and one numeric digit.', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin/security/change-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ currentPassword, newPassword }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Failed to change password');
+
+        closeChangePasswordModal();
+        showToast('Password updated. All other active sessions have been invalidated.', 'success');
+        loadActiveSessions();
+        loadSecurityDashboard();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
     // ─── UTILITY HELPERS ──────────────────────────────────────
     function copyToClipboard(text, successMsg = 'Copied to clipboard!') {
       if (!text) return;
@@ -8705,6 +10414,275 @@
           </button>
           <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all">
             Save Policy
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Phase 14: Invite / Add Admin Modal -->
+  <div id="create-user-modal" onclick="if(event.target===this)closeCreateUserModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-lg mx-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="user-plus" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100 font-display">Add / Invite Administrator</h3>
+            <p class="text-[11px] text-slate-400">Grant authorized access with granular RBAC</p>
+          </div>
+        </div>
+        <button onclick="closeCreateUserModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="create-user-form" onsubmit="submitCreateUser(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Full Name</label>
+          <input type="text" id="cu-name" required placeholder="e.g. Sarah Jenkins" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Email / Username</label>
+          <input type="email" id="cu-email" required placeholder="sarah@example.com" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Assigned Role</label>
+          <select id="cu-role" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+            <option value="VIEWER">Viewer (Read-only observation)</option>
+            <option value="EDITOR">Editor (Content & portfolio editing)</option>
+            <option value="ADMIN">Admin (Broad administrative authority)</option>
+            <option value="OWNER">Owner (Full sovereign control)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Provisioning Mode</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="p-2.5 rounded-lg border border-brand-border bg-slate-900/60 cursor-pointer flex items-center gap-2">
+              <input type="radio" name="cu-mode" value="invite" checked onchange="toggleProvisioningMode(this.value)" class="text-cyan-500 focus:ring-0">
+              <span class="text-xs text-slate-300 font-medium">Send Invite Link</span>
+            </label>
+            <label class="p-2.5 rounded-lg border border-brand-border bg-slate-900/60 cursor-pointer flex items-center gap-2">
+              <input type="radio" name="cu-mode" value="direct" onchange="toggleProvisioningMode(this.value)" class="text-cyan-500 focus:ring-0">
+              <span class="text-xs text-slate-300 font-medium">Set Password Now</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="cu-password-field" class="hidden">
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Initial Temporary Password</label>
+          <input type="password" id="cu-password" placeholder="At least 8 characters" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+        </div>
+
+        <div id="cu-invite-notice" class="p-3 rounded-lg bg-cyan-950/20 border border-cyan-500/20 text-slate-400 text-[11px] space-y-1">
+          <p class="font-semibold text-cyan-300 flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>Secure Passwordless Setup Flow</span>
+          </p>
+          <p>
+            A cryptographically random, short-lived (48h) single-use setup link will be generated. The invitee will establish their own credentials.
+          </p>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-brand-border">
+          <button type="button" onclick="closeCreateUserModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+          <button type="submit" id="cu-submit-btn" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all flex items-center gap-2">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span>Create Operator Account</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Phase 14: Edit Admin User Modal -->
+  <div id="edit-user-modal" onclick="if(event.target===this)closeEditUserModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="user-cog" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100 font-display">Manage Operator Account</h3>
+            <p id="eu-email-subtitle" class="text-[11px] font-mono text-cyan-400">user@example.com</p>
+          </div>
+        </div>
+        <button onclick="closeEditUserModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="edit-user-form" onsubmit="submitEditUser(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="eu-id">
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Full Name</label>
+          <input type="text" id="eu-name" required class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Role Assignment</label>
+          <select id="eu-role" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+            <option value="VIEWER">Viewer</option>
+            <option value="EDITOR">Editor</option>
+            <option value="ADMIN">Admin</option>
+            <option value="OWNER">Owner</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Account Status</label>
+          <select id="eu-status" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+            <option value="ACTIVE">ACTIVE — Normal operational access</option>
+            <option value="INVITED">INVITED — Setup pending</option>
+            <option value="SUSPENDED">SUSPENDED — Temporary access lock</option>
+            <option value="DISABLED">DISABLED — Permanent account disable</option>
+          </select>
+        </div>
+
+        <div id="eu-warning-box" class="hidden p-3 rounded-lg bg-amber-950/30 border border-amber-500/30 text-amber-200 text-[11px]">
+          <p class="font-bold text-amber-300 flex items-center gap-1.5">
+            <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Protected Account Guardrail</span>
+          </p>
+          <p id="eu-warning-text" class="mt-0.5">Disabling or demoting the primary OWNER or final active administrator is strictly prohibited.</p>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-brand-border">
+          <button type="button" onclick="closeEditUserModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all">
+            Save Modifications
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Phase 14: Role & Permissions Matrix Editor Modal -->
+  <div id="role-editor-modal" onclick="if(event.target===this)closeRoleEditorModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-3xl mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="key" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="rem-title" class="text-sm font-bold text-slate-100 font-display">Role Permissions Matrix Editor</h3>
+            <p id="rem-subtitle" class="text-[11px] text-slate-400">Granular permission switches across 10 system resource modules</p>
+          </div>
+        </div>
+        <button onclick="closeRoleEditorModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="role-editor-form" onsubmit="submitRoleEditor(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="rem-role-id">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Role Identifier Name</label>
+            <input type="text" id="rem-name" required placeholder="e.g. CONTENT_LEAD" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 font-mono focus:outline-none focus:border-cyan-500/50 uppercase">
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-1">Description</label>
+            <input type="text" id="rem-desc" placeholder="e.g. Authors blog posts and manages project media" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+          </div>
+        </div>
+
+        <!-- Toolbar: Select All, Clear All, Counter -->
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/70 border border-brand-border">
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="selectAllRolePermissions()" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition-colors">
+              Select All (32)
+            </button>
+            <button type="button" onclick="clearAllRolePermissions()" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition-colors">
+              Clear All
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="rem-unsaved-badge" class="hidden text-[10px] text-amber-400 font-mono font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Unsaved Changes</span>
+            <span id="rem-counter" class="text-xs font-mono text-cyan-400 font-bold">0 / 32 Selected</span>
+          </div>
+        </div>
+
+        <!-- 10 Grouped Permission Checkboxes -->
+        <div id="rem-permission-groups" class="space-y-4 max-h-[50vh] overflow-y-auto p-1 pr-2">
+          <!-- Populated dynamically via renderPermissionGroupsEditor() -->
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-brand-border">
+          <button type="button" onclick="closeRoleEditorModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+          <button type="submit" id="rem-submit-btn" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all">
+            Save Permissions
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Phase 14: Change Password Modal -->
+  <div id="change-password-modal" onclick="if(event.target===this)closeChangePasswordModal()">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <i data-lucide="key" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-100 font-display">Change Operator Password</h3>
+            <p class="text-[11px] text-slate-400">Enforces strong credential policy & session invalidation</p>
+          </div>
+        </div>
+        <button onclick="closeChangePasswordModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="change-password-form" onsubmit="submitChangePassword(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Current Password</label>
+          <input type="password" id="cp-current" required placeholder="••••••••••••" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">New Password</label>
+          <input type="password" id="cp-new" required minlength="8" placeholder="At least 8 characters (mixed case + number)" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-1">Confirm New Password</label>
+          <input type="password" id="cp-confirm" required minlength="8" placeholder="Re-enter new password" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+        </div>
+
+        <div class="p-3 rounded-lg bg-slate-900/60 border border-brand-border space-y-1 text-[11px] text-slate-400">
+          <p class="font-semibold text-slate-300">Password Policy Requirements:</p>
+          <ul class="list-disc list-inside space-y-0.5 text-slate-400">
+            <li>Minimum 8 characters</li>
+            <li>At least one uppercase letter (A-Z)</li>
+            <li>At least one numeric digit (0-9)</li>
+            <li>All other active sessions will be invalidated immediately</li>
+          </ul>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-brand-border">
+          <button type="button" onclick="closeChangePasswordModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all flex items-center gap-2">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span>Update Password</span>
           </button>
         </div>
       </form>

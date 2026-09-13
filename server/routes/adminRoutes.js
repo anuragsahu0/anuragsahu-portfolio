@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { verifyToken } = require('../middleware/auth');
+const { verifyToken, requirePermission } = require('../middleware/auth');
 const { upload } = require('../services/storageService');
 
 // Controllers
@@ -150,190 +150,244 @@ const {
   getSystemHealth,
 } = require('../controllers/backupController');
 
+// Phase 14: Access Management & Security Controllers
+const {
+  getUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+  resendInvitation,
+  getPermissions,
+  getRoles,
+  createRole,
+  updateRole,
+  duplicateRole,
+  deleteRole,
+} = require('../controllers/accessController');
+const {
+  getSessions,
+  revokeSession,
+  revokeOtherSessions,
+  getSecurityEvents,
+  getLoginHistory,
+  getSecurityDashboard,
+  getSecuritySettings,
+  updateSecuritySettings,
+  runCleanup,
+  changePassword,
+} = require('../controllers/securityController');
+
 // All routes here are guarded by JWT Bearer Authentication
 router.use('/admin', verifyToken);
 
 // ─── Hero ───────────────────────────────────────────────────
-router.get('/admin/hero', getHero);
-router.put('/admin/hero', updateHero);
-router.patch('/admin/hero', updateHero);
+router.get('/admin/hero', requirePermission('profile.view'), getHero);
+router.put('/admin/hero', requirePermission('profile.edit'), updateHero);
+router.patch('/admin/hero', requirePermission('profile.edit'), updateHero);
 
 // ─── Profile ────────────────────────────────────────────────
-router.get('/admin/profile', getProfile);
-router.put('/admin/profile', updateProfile);
+router.get('/admin/profile', requirePermission('profile.view'), getProfile);
+router.put('/admin/profile', requirePermission('profile.edit'), updateProfile);
 
 // ─── About ──────────────────────────────────────────────────
-router.get('/admin/about', getAbout);
-router.put('/admin/about', updateAbout);
+router.get('/admin/about', requirePermission('about.view'), getAbout);
+router.put('/admin/about', requirePermission('about.edit'), updateAbout);
 
 // ─── Projects CRUD + Reorder ────────────────────────────────
-router.get('/admin/projects', getAdminProjects);
-router.post('/admin/projects', createProject);
-router.put('/admin/projects/reorder', reorderProjects);
-router.get('/admin/projects/:id', getProjectById);
-router.put('/admin/projects/:id', updateProject);
-router.patch('/admin/projects/:id', updateProject);
-router.delete('/admin/projects/:id', deleteProject);
-router.post('/admin/projects/:id/duplicate', duplicateProject);
-router.patch('/admin/projects/:id/status', updateProjectStatus);
+router.get('/admin/projects', requirePermission('projects.view'), getAdminProjects);
+router.post('/admin/projects', requirePermission('projects.create'), createProject);
+router.put('/admin/projects/reorder', requirePermission('projects.edit'), reorderProjects);
+router.get('/admin/projects/:id', requirePermission('projects.view'), getProjectById);
+router.put('/admin/projects/:id', requirePermission('projects.edit'), updateProject);
+router.patch('/admin/projects/:id', requirePermission('projects.edit'), updateProject);
+router.delete('/admin/projects/:id', requirePermission('projects.delete'), deleteProject);
+router.post('/admin/projects/:id/duplicate', requirePermission('projects.create'), duplicateProject);
+router.patch('/admin/projects/:id/status', requirePermission('projects.publish'), updateProjectStatus);
 
 // ─── Skills CRUD + Reorder ──────────────────────────────────
-router.get('/admin/skills', getAdminSkills);
-router.post('/admin/skills', createSkill);
-router.put('/admin/skills/reorder', reorderSkills);
-router.get('/admin/skills/:id', getSkillById);
-router.put('/admin/skills/:id', updateSkill);
-router.patch('/admin/skills/:id', updateSkill);
-router.delete('/admin/skills/:id', deleteSkill);
+router.get('/admin/skills', requirePermission('skills.view'), getAdminSkills);
+router.post('/admin/skills', requirePermission('skills.edit'), createSkill);
+router.put('/admin/skills/reorder', requirePermission('skills.edit'), reorderSkills);
+router.get('/admin/skills/:id', requirePermission('skills.view'), getSkillById);
+router.put('/admin/skills/:id', requirePermission('skills.edit'), updateSkill);
+router.patch('/admin/skills/:id', requirePermission('skills.edit'), updateSkill);
+router.delete('/admin/skills/:id', requirePermission('skills.edit'), deleteSkill);
 
 // ─── Experience CRUD + Reorder ──────────────────────────────
-router.get('/admin/experience', getAdminExperience);
-router.post('/admin/experience', createExperience);
-router.put('/admin/experience/reorder', reorderExperience);
-router.put('/admin/experience/:id', updateExperience);
-router.patch('/admin/experience/:id', updateExperience);
-router.delete('/admin/experience/:id', deleteExperience);
+router.get('/admin/experience', requirePermission('experience.view'), getAdminExperience);
+router.post('/admin/experience', requirePermission('experience.edit'), createExperience);
+router.put('/admin/experience/reorder', requirePermission('experience.edit'), reorderExperience);
+router.put('/admin/experience/:id', requirePermission('experience.edit'), updateExperience);
+router.patch('/admin/experience/:id', requirePermission('experience.edit'), updateExperience);
+router.delete('/admin/experience/:id', requirePermission('experience.edit'), deleteExperience);
 
 // ─── Education CRUD + Reorder ───────────────────────────────
-router.get('/admin/education', getAdminEducation);
-router.post('/admin/education', createEducation);
-router.put('/admin/education/reorder', reorderEducation);
-router.put('/admin/education/:id', updateEducation);
-router.patch('/admin/education/:id', updateEducation);
-router.delete('/admin/education/:id', deleteEducation);
+router.get('/admin/education', requirePermission('education.view'), getAdminEducation);
+router.post('/admin/education', requirePermission('education.edit'), createEducation);
+router.put('/admin/education/reorder', requirePermission('education.edit'), reorderEducation);
+router.put('/admin/education/:id', requirePermission('education.edit'), updateEducation);
+router.patch('/admin/education/:id', requirePermission('education.edit'), updateEducation);
+router.delete('/admin/education/:id', requirePermission('education.edit'), deleteEducation);
 
 // ─── Certificates CRUD + Reorder ────────────────────────────
-router.get('/admin/certificates', getAdminCertificates);
-router.post('/admin/certificates', createCertificate);
-router.put('/admin/certificates/reorder', reorderCertificates);
-router.put('/admin/certificates/:id', updateCertificate);
-router.patch('/admin/certificates/:id', updateCertificate);
-router.delete('/admin/certificates/:id', deleteCertificate);
+router.get('/admin/certificates', requirePermission('certificates.view'), getAdminCertificates);
+router.post('/admin/certificates', requirePermission('certificates.edit'), createCertificate);
+router.put('/admin/certificates/reorder', requirePermission('certificates.edit'), reorderCertificates);
+router.put('/admin/certificates/:id', requirePermission('certificates.edit'), updateCertificate);
+router.patch('/admin/certificates/:id', requirePermission('certificates.edit'), updateCertificate);
+router.delete('/admin/certificates/:id', requirePermission('certificates.edit'), deleteCertificate);
 
 // ─── Roadmap CRUD + Reorder ─────────────────────────────────
-router.get('/admin/roadmap', getAdminRoadmap);
-router.post('/admin/roadmap', createRoadmap);
-router.put('/admin/roadmap/reorder', reorderRoadmap);
-router.get('/admin/roadmap/:id', getRoadmapById);
-router.put('/admin/roadmap/:id', updateRoadmap);
-router.patch('/admin/roadmap/:id', updateRoadmap);
-router.delete('/admin/roadmap/:id', deleteRoadmap);
+router.get('/admin/roadmap', requirePermission('roadmap.view'), getAdminRoadmap);
+router.post('/admin/roadmap', requirePermission('roadmap.edit'), createRoadmap);
+router.put('/admin/roadmap/reorder', requirePermission('roadmap.edit'), reorderRoadmap);
+router.get('/admin/roadmap/:id', requirePermission('roadmap.view'), getRoadmapById);
+router.put('/admin/roadmap/:id', requirePermission('roadmap.edit'), updateRoadmap);
+router.patch('/admin/roadmap/:id', requirePermission('roadmap.edit'), updateRoadmap);
+router.delete('/admin/roadmap/:id', requirePermission('roadmap.edit'), deleteRoadmap);
 
 // ─── Navigation CRUD + Reorder ──────────────────────────────
-router.get('/admin/navigation', getAdminNavigation);
-router.post('/admin/navigation', createNavigation);
-router.put('/admin/navigation/reorder', reorderNavigation);
-router.put('/admin/navigation/:id', updateNavigation);
-router.patch('/admin/navigation/:id', updateNavigation);
-router.delete('/admin/navigation/:id', deleteNavigation);
+router.get('/admin/navigation', requirePermission('settings.view'), getAdminNavigation);
+router.post('/admin/navigation', requirePermission('settings.edit'), createNavigation);
+router.put('/admin/navigation/reorder', requirePermission('settings.edit'), reorderNavigation);
+router.put('/admin/navigation/:id', requirePermission('settings.edit'), updateNavigation);
+router.patch('/admin/navigation/:id', requirePermission('settings.edit'), updateNavigation);
+router.delete('/admin/navigation/:id', requirePermission('settings.edit'), deleteNavigation);
 
 // ─── Social Links CRUD + Reorder ────────────────────────────
-router.get('/admin/social-links', getAdminSocialLinks);
-router.post('/admin/social-links', createSocialLink);
-router.put('/admin/social-links/reorder', reorderSocialLinks);
-router.put('/admin/social-links/:id', updateSocialLink);
-router.patch('/admin/social-links/:id', updateSocialLink);
-router.delete('/admin/social-links/:id', deleteSocialLink);
+router.get('/admin/social-links', requirePermission('settings.view'), getAdminSocialLinks);
+router.post('/admin/social-links', requirePermission('settings.edit'), createSocialLink);
+router.put('/admin/social-links/reorder', requirePermission('settings.edit'), reorderSocialLinks);
+router.put('/admin/social-links/:id', requirePermission('settings.edit'), updateSocialLink);
+router.patch('/admin/social-links/:id', requirePermission('settings.edit'), updateSocialLink);
+router.delete('/admin/social-links/:id', requirePermission('settings.edit'), deleteSocialLink);
 
 // ─── Media Library ──────────────────────────────────────────
-router.get('/admin/media', getMedia);
-router.post('/admin/media/upload', upload.single('file'), uploadMedia);
-router.post('/admin/media', upload.single('file'), uploadMedia);
-router.get('/admin/media/:id/usage', getMediaUsage);
-router.get('/admin/media/:id', getMediaById);
-router.put('/admin/media/:id', updateMedia);
-router.patch('/admin/media/:id', updateMedia);
-router.delete('/admin/media/:id', deleteMedia);
+router.get('/admin/media', requirePermission('media.view'), getMedia);
+router.post('/admin/media/upload', requirePermission('media.upload'), upload.single('file'), uploadMedia);
+router.post('/admin/media', requirePermission('media.upload'), upload.single('file'), uploadMedia);
+router.get('/admin/media/:id/usage', requirePermission('media.view'), getMediaUsage);
+router.get('/admin/media/:id', requirePermission('media.view'), getMediaById);
+router.put('/admin/media/:id', requirePermission('media.upload'), updateMedia);
+router.patch('/admin/media/:id', requirePermission('media.upload'), updateMedia);
+router.delete('/admin/media/:id', requirePermission('media.delete'), deleteMedia);
 
 // ─── Resume Management ──────────────────────────────────────
-router.get('/admin/resume', getAdminResumes);
-router.post('/admin/resume/upload', upload.single('file'), uploadResume);
-router.patch('/admin/resume/:id/activate', setActiveResume);
-router.delete('/admin/resume/:id', deleteResume);
+router.get('/admin/resume', requirePermission('resume.view'), getAdminResumes);
+router.post('/admin/resume/upload', requirePermission('resume.manage'), upload.single('file'), uploadResume);
+router.patch('/admin/resume/:id/activate', requirePermission('resume.manage'), setActiveResume);
+router.delete('/admin/resume/:id', requirePermission('resume.manage'), deleteResume);
 
 // ─── SEO Management ─────────────────────────────────────────
-router.get('/admin/seo', getAdminSeo);
-router.put('/admin/seo', updateSeo);
-router.patch('/admin/seo', updateSeo);
+router.get('/admin/seo', requirePermission('seo.view'), getAdminSeo);
+router.put('/admin/seo', requirePermission('seo.edit'), updateSeo);
+router.patch('/admin/seo', requirePermission('seo.edit'), updateSeo);
 
 // ─── Site Settings ──────────────────────────────────────────
-router.get('/admin/settings', getAdminSettings);
-router.put('/admin/settings', updateSettings);
-router.patch('/admin/settings', updateSettings);
+router.get('/admin/settings', requirePermission('settings.view'), getAdminSettings);
+router.put('/admin/settings', requirePermission('settings.edit'), updateSettings);
+router.patch('/admin/settings', requirePermission('settings.edit'), updateSettings);
 
 // ─── Messages & Inquiries ───────────────────────────────────
-router.get('/admin/messages', getMessages);
-router.get('/admin/messages/:id', getMessageById);
-router.put('/admin/messages/:id/read', markMessageRead);
-router.patch('/admin/messages/:id/read', markMessageRead);
-router.put('/admin/messages/:id/unread', markMessageUnread);
-router.patch('/admin/messages/:id/unread', markMessageUnread);
-router.put('/admin/messages/:id/archive', archiveMessage);
-router.patch('/admin/messages/:id/archive', archiveMessage);
-router.put('/admin/messages/:id/status', updateMessageStatus);
-router.patch('/admin/messages/:id/status', updateMessageStatus);
-router.post('/admin/messages/:id/reply', replyToMessage);
-router.delete('/admin/messages/:id', deleteMessage);
+router.get('/admin/messages', requirePermission('messages.view'), getMessages);
+router.get('/admin/messages/:id', requirePermission('messages.view'), getMessageById);
+router.put('/admin/messages/:id/read', requirePermission('messages.manage'), markMessageRead);
+router.patch('/admin/messages/:id/read', requirePermission('messages.manage'), markMessageRead);
+router.put('/admin/messages/:id/unread', requirePermission('messages.manage'), markMessageUnread);
+router.patch('/admin/messages/:id/unread', requirePermission('messages.manage'), markMessageUnread);
+router.put('/admin/messages/:id/archive', requirePermission('messages.manage'), archiveMessage);
+router.patch('/admin/messages/:id/archive', requirePermission('messages.manage'), archiveMessage);
+router.put('/admin/messages/:id/status', requirePermission('messages.manage'), updateMessageStatus);
+router.patch('/admin/messages/:id/status', requirePermission('messages.manage'), updateMessageStatus);
+router.post('/admin/messages/:id/reply', requirePermission('messages.manage'), replyToMessage);
+router.delete('/admin/messages/:id', requirePermission('messages.manage'), deleteMessage);
 
 // ─── Notifications ──────────────────────────────────────────
-router.get('/admin/notifications', getNotifications);
-router.post('/admin/notifications/read-all', markAllNotificationsRead);
-router.patch('/admin/notifications/read-all', markAllNotificationsRead);
-router.patch('/admin/notifications/:id/read', markNotificationRead);
-router.put('/admin/notifications/:id/read', markNotificationRead);
-router.delete('/admin/notifications/:id', deleteNotification);
+router.get('/admin/notifications', requirePermission('notifications.view'), getNotifications);
+router.post('/admin/notifications/read-all', requirePermission('notifications.view'), markAllNotificationsRead);
+router.patch('/admin/notifications/read-all', requirePermission('notifications.view'), markAllNotificationsRead);
+router.patch('/admin/notifications/:id/read', requirePermission('notifications.view'), markNotificationRead);
+router.put('/admin/notifications/:id/read', requirePermission('notifications.view'), markNotificationRead);
+router.delete('/admin/notifications/:id', requirePermission('notifications.view'), deleteNotification);
 
 // ─── Activity Audit Log ─────────────────────────────────────
-router.get('/admin/activity', getActivityLogs);
+router.get('/admin/activity', requirePermission('activity.view'), getActivityLogs);
 
 // ─── Telemetry, Dashboard, Health & Analytics ───────────────
-router.get('/admin/dashboard', getAdminDashboardStats);
-router.get('/admin/health', getAdminHealth);
-router.get('/admin/analytics', getAdminAnalytics);
+router.get('/admin/dashboard', requirePermission('dashboard.view'), getAdminDashboardStats);
+router.get('/admin/health', requirePermission('dashboard.view'), getAdminHealth);
+router.get('/admin/analytics', requirePermission('analytics.view'), getAdminAnalytics);
 
 // ─── Phase 11: Revisions & Rollback ─────────────────────────
-router.get('/admin/revisions/:entity/:id', getRevisions);
-router.get('/admin/revisions/:entity/:id/:version', getRevisionByVersion);
-router.post('/admin/revisions/:entity/:id/compare', compareRevisions);
-router.post('/admin/revisions/:entity/:id/restore', restoreRevision);
+router.get('/admin/revisions/:entity/:id', requirePermission('projects.view'), getRevisions);
+router.get('/admin/revisions/:entity/:id/:version', requirePermission('projects.view'), getRevisionByVersion);
+router.post('/admin/revisions/:entity/:id/compare', requirePermission('projects.view'), compareRevisions);
+router.post('/admin/revisions/:entity/:id/restore', requirePermission('projects.edit'), restoreRevision);
 
 // ─── Phase 11: Drafts & Autosave ────────────────────────────
-router.post('/admin/draft/autosave', autosaveDraft);
-router.get('/admin/draft/:entity/:id', getDraft);
-router.delete('/admin/draft/:entity/:id', discardDraft);
+router.post('/admin/draft/autosave', requirePermission('projects.edit'), autosaveDraft);
+router.get('/admin/draft/:entity/:id', requirePermission('projects.view'), getDraft);
+router.delete('/admin/draft/:entity/:id', requirePermission('projects.edit'), discardDraft);
 
 // ─── Phase 11: Live Preview ─────────────────────────────────
-router.post('/admin/preview/token', generatePreviewToken);
-router.get('/admin/preview/site', getPreviewSiteData);
+router.post('/admin/preview/token', requirePermission('projects.view'), generatePreviewToken);
+router.get('/admin/preview/site', requirePermission('projects.view'), getPreviewSiteData);
 
 // ─── Phase 12: Automation & Scheduling ──────────────────────
-router.get('/admin/schedules', getSchedules);
-router.post('/admin/schedules', createSchedule);
-router.post('/admin/schedules/bulk', bulkSchedule);
-router.get('/admin/schedules/calendar', getCalendarEvents);
-router.get('/admin/schedules/health', getSchedulerHealth);
-router.post('/admin/scheduler/run', runSchedulerNow);
-router.get('/admin/schedules/:id', getScheduleById);
-router.patch('/admin/schedules/:id', updateSchedule);
-router.put('/admin/schedules/:id', updateSchedule);
-router.post('/admin/schedules/:id/cancel', cancelSchedule);
-router.post('/admin/schedules/:id/retry', retrySchedule);
-router.delete('/admin/schedules/:id', deleteSchedule);
+router.get('/admin/schedules', requirePermission('schedules.view'), getSchedules);
+router.post('/admin/schedules', requirePermission('schedules.manage'), createSchedule);
+router.post('/admin/schedules/bulk', requirePermission('schedules.manage'), bulkSchedule);
+router.get('/admin/schedules/calendar', requirePermission('schedules.view'), getCalendarEvents);
+router.get('/admin/schedules/health', requirePermission('schedules.view'), getSchedulerHealth);
+router.post('/admin/scheduler/run', requirePermission('schedules.manage'), runSchedulerNow);
+router.get('/admin/schedules/:id', requirePermission('schedules.view'), getScheduleById);
+router.patch('/admin/schedules/:id', requirePermission('schedules.manage'), updateSchedule);
+router.put('/admin/schedules/:id', requirePermission('schedules.manage'), updateSchedule);
+router.post('/admin/schedules/:id/cancel', requirePermission('schedules.manage'), cancelSchedule);
+router.post('/admin/schedules/:id/retry', requirePermission('schedules.manage'), retrySchedule);
+router.delete('/admin/schedules/:id', requirePermission('schedules.manage'), deleteSchedule);
 
 // ─── Phase 13: Backup, Restore & Disaster Recovery ──────────
-router.get('/admin/backups', getBackups);
-router.post('/admin/backups', createBackup);
-router.get('/admin/backups/health', getBackupHealth);
-router.get('/admin/backups/settings', getBackupSettings);
-router.put('/admin/backups/settings', updateBackupSettings);
-router.patch('/admin/backups/settings', updateBackupSettings);
-router.get('/admin/backups/:id', getBackupById);
-router.post('/admin/backups/:id/verify', verifyBackup);
-router.post('/admin/backups/:id/restore', restoreBackup);
-router.get('/admin/backups/:id/download', downloadBackup);
-router.delete('/admin/backups/:id', deleteBackup);
+router.get('/admin/backups', requirePermission('backups.view'), getBackups);
+router.post('/admin/backups', requirePermission('backups.create'), createBackup);
+router.get('/admin/backups/health', requirePermission('backups.view'), getBackupHealth);
+router.get('/admin/backups/settings', requirePermission('backups.view'), getBackupSettings);
+router.put('/admin/backups/settings', requirePermission('backups.create'), updateBackupSettings);
+router.patch('/admin/backups/settings', requirePermission('backups.create'), updateBackupSettings);
+router.get('/admin/backups/:id', requirePermission('backups.view'), getBackupById);
+router.post('/admin/backups/:id/verify', requirePermission('backups.view'), verifyBackup);
+router.post('/admin/backups/:id/restore', requirePermission('backups.restore'), restoreBackup);
+router.get('/admin/backups/:id/download', requirePermission('backups.view'), downloadBackup);
+router.delete('/admin/backups/:id', requirePermission('backups.delete'), deleteBackup);
 
 // ─── Phase 13: System Maintenance Center ────────────────────
-router.get('/admin/system/health', getSystemHealth);
+router.get('/admin/system/health', requirePermission('security.view'), getSystemHealth);
+
+// ─── Phase 14: Admin User Management ────────────────────────
+router.get('/admin/users', requirePermission('users.view'), getUsers);
+router.post('/admin/users', requirePermission('users.manage'), createUser);
+router.put('/admin/users/:id', requirePermission('users.manage'), updateUser);
+router.delete('/admin/users/:id', requirePermission('users.manage'), deleteUser);
+router.post('/admin/users/:id/resend-invite', requirePermission('users.manage'), resendInvitation);
+
+// ─── Phase 14: Role & Permission Management ─────────────────
+router.get('/admin/permissions', requirePermission('users.view'), getPermissions);
+router.get('/admin/roles', requirePermission('users.view'), getRoles);
+router.post('/admin/roles', requirePermission('users.manage'), createRole);
+router.put('/admin/roles/:id', requirePermission('users.manage'), updateRole);
+router.post('/admin/roles/:id/duplicate', requirePermission('users.manage'), duplicateRole);
+router.delete('/admin/roles/:id', requirePermission('users.manage'), deleteRole);
+
+// ─── Phase 14: Security Center & Session Management ─────────
+router.get('/admin/security/dashboard', requirePermission('security.view'), getSecurityDashboard);
+router.get('/admin/security/sessions', requirePermission('security.view'), getSessions);
+router.post('/admin/security/sessions/:id/revoke', requirePermission('security.manage'), revokeSession);
+router.post('/admin/security/sessions/revoke-others', requirePermission('security.view'), revokeOtherSessions);
+router.get('/admin/security/events', requirePermission('security.view'), getSecurityEvents);
+router.get('/admin/security/login-history', requirePermission('security.view'), getLoginHistory);
+router.get('/admin/security/settings', requirePermission('security.view'), getSecuritySettings);
+router.put('/admin/security/settings', requirePermission('security.manage'), updateSecuritySettings);
+router.post('/admin/security/cleanup', requirePermission('security.manage'), runCleanup);
+router.post('/admin/security/change-password', changePassword);
 
 module.exports = router;
