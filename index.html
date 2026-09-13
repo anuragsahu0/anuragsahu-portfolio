@@ -29,14 +29,14 @@
   <!-- Preload Critical Hero Image & Font Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="assets/anurag-cutout.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/anurag-portrait-sm.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
   <link rel="preload" as="image" href="assets/anurag-portrait.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
-  <link rel="preload" as="style" href="styles.css?v=20260913_ref_v3">
-  <link rel="stylesheet" href="styles.css?v=20260913_ref_v3">
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
+  <link rel="preload" as="style" href="styles.css?v=20260913_unified">
+  <link rel="stylesheet" href="styles.css?v=20260913_unified">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
   <noscript>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
   </noscript>
   
   <!-- Lucide Icons CDN (Deferred) -->
@@ -323,19 +323,12 @@
 
   <script>
     (function runCinematicPreloader() {
-      const container = document.getElementById('portfolio-preloader');
-      if (window.innerWidth <= 768) {
-        if (container) {
-          container.style.display = 'none';
-          if (container.parentNode) container.parentNode.removeChild(container);
-        }
-        return;
-      }
       let percent = 0;
       const barTop = document.getElementById('preloader-bar-top');
       const barBottom = document.getElementById('preloader-bar-bottom');
       const counter = document.getElementById('preloader-counter');
       const statusText = document.getElementById('preloader-status-text');
+      const container = document.getElementById('portfolio-preloader');
 
       const statuses = [
         { p: 25, text: '[01/04] INITIALIZING ENGINE...' },
@@ -374,11 +367,6 @@
       }, 30);
     })();
   </script>
-
-  <!-- ==============================================================
-       🖥️ DESKTOP ONLY WRAPPER (Preserves 100% of Desktop Features)
-       ============================================================== -->
-  <div id="desktop-app-wrapper" class="desktop-only">
 
   <!-- Background WebGL/Canvas Particle Field -->
   <canvas id="bg-canvas"></canvas>
@@ -787,24 +775,31 @@
       const paraEl = document.getElementById('about-char-para');
       if (!paraEl) return;
 
-      const TEXT = "With more than five years of experience in design, i focus on branding, web design, and user experience, i truly enjoy working with businesses that aim to stand out and present their best image. Let\u2019s build something incredible together!";
+      const TEXT = "Computer Science sophomore specializing in AI & ML. I build modern full-stack web applications, scalable backend systems, and explore practical machine learning models. Passionate about clean architecture, algorithms, and crafting seamless digital experiences. Let's build something incredible together!";
 
-      // Build character spans
-      const chars = TEXT.split('');
-      const totalChars = chars.length;
-
-      // Build inner HTML: each char is a wrapper <span> (holds space) with
-      // an absolutely-positioned visible <span> on top
+      // Build word & character spans so words never split mid-word across lines
+      const words = TEXT.split(' ');
+      let charIndex = 0;
       let html = '';
-      chars.forEach((ch, i) => {
-        const display = ch === ' ' ? '\u00A0' : ch;
-        html += `<span style="position:relative;display:inline-block;">` +
-                  `<span style="opacity:0.3;user-select:none;" aria-hidden="true">${display}</span>` +
-                  `<span id="ac${i}" style="position:absolute;top:0;left:0;opacity:0.85;transition:opacity 0.2s ease;">${display}</span>` +
-                `</span>`;
+
+      words.forEach((word, wIdx) => {
+        let wordHtml = '';
+        const chars = word.split('');
+        chars.forEach((ch) => {
+          wordHtml += `<span style="position:relative;display:inline-block;">` +
+                        `<span style="opacity:0.3;user-select:none;" aria-hidden="true">${ch}</span>` +
+                        `<span id="ac${charIndex}" style="position:absolute;top:0;left:0;opacity:0.85;transition:opacity 0.2s ease;">${ch}</span>` +
+                      `</span>`;
+          charIndex++;
+        });
+        html += `<span style="display:inline-block;white-space:nowrap;">${wordHtml}</span>`;
+        if (wIdx < words.length - 1) {
+          html += ' ';
+        }
       });
       paraEl.innerHTML = html;
 
+      const totalChars = charIndex;
       // Collect all visible char spans
       const charSpans = Array.from({ length: totalChars }, (_, i) => document.getElementById(`ac${i}`));
 
@@ -1266,375 +1261,6 @@
       </div>
     </div>
   </footer>
-  </div><!-- /#desktop-app-wrapper -->
-
-  <!-- ==============================================================================
-       📱 NATIVE LUXURY MOBILE EXPERIENCE (Matching Reference Mockup)
-       Active exclusively on screens <= 768px
-       ============================================================================== -->
-  <div id="mobile-app-container" class="mobile-only">
-
-    <!-- 1. STICKY TOP HEADER -->
-    <header class="m-top-header">
-      <div class="m-brand-wrap">
-        <div class="m-avatar-badge">A</div>
-        <span class="m-brand-name">Anurag</span>
-      </div>
-
-      <button id="m-menu-btn" class="m-grid-menu-btn" aria-label="Open Mobile Menu" aria-expanded="false" onclick="toggleMobileMenu()">
-        <span class="m-grid-dot"></span>
-        <span class="m-grid-dot"></span>
-        <span class="m-grid-dot"></span>
-        <span class="m-grid-dot"></span>
-      </button>
-    </header>
-
-    <!-- SLIDE-DOWN MOBILE NAVIGATION SHEET -->
-    <nav id="m-menu-sheet" class="m-menu-sheet" aria-label="Mobile Navigation Menu" aria-hidden="true">
-      <div class="m-menu-header">
-        <span class="m-menu-title font-kanit">Quick Navigation</span>
-        <button class="m-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">✕</button>
-      </div>
-      <div class="m-menu-links">
-        <a href="#m-hero" class="m-menu-link" onclick="closeMobileMenu()">
-          <span>🏠 Overview</span>
-          <span class="m-menu-arrow">➔</span>
-        </a>
-        <a href="#m-about" class="m-menu-link" onclick="closeMobileMenu()">
-          <span>👨‍💻 Specialist Engineering</span>
-          <span class="m-menu-arrow">➔</span>
-        </a>
-        <a href="#m-projects" class="m-menu-link" onclick="closeMobileMenu()">
-          <span>🚀 Selected Projects</span>
-          <span class="m-menu-arrow">➔</span>
-        </a>
-        <a href="#m-coding" class="m-menu-link" onclick="closeMobileMenu()">
-          <span>🏆 Coding Profiles</span>
-          <span class="m-menu-arrow">➔</span>
-        </a>
-        <a href="#m-contact" class="m-menu-link" onclick="closeMobileMenu()">
-          <span>📮 Contact Me</span>
-          <span class="m-menu-arrow">➔</span>
-        </a>
-      </div>
-      <div class="m-menu-footer">
-        <a href="assets/anurag-sahu-resume.pdf" download="Anurag_Sahu_Resume.pdf" class="m-menu-btn-primary font-kanit">Download Resume PDF</a>
-      </div>
-    </nav>
-    <div id="m-menu-backdrop" class="m-menu-backdrop" onclick="closeMobileMenu()"></div>
-
-    <!-- 2. HERO SECTION (SCREEN 1 OF MOCKUP) -->
-    <section id="m-hero" class="m-hero-section">
-      <!-- WARM ARCH BANNER -->
-      <div class="m-hero-banner">
-        <!-- VIBRANT CIRCLE GRAPHIC BACKDROP -->
-        <div class="m-hero-circle-backdrop">
-          <svg class="m-circle-lines" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="100" r="95" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-            <path d="M10 100 Q 100 20, 190 100" stroke="rgba(255,255,255,0.32)" stroke-width="2" fill="none"/>
-            <path d="M10 100 Q 100 180, 190 100" stroke="rgba(255,255,255,0.32)" stroke-width="2" fill="none"/>
-            <path d="M100 10 Q 30 100, 100 190" stroke="rgba(255,255,255,0.25)" stroke-width="2" fill="none"/>
-            <path d="M100 10 Q 170 100, 100 190" stroke="rgba(255,255,255,0.25)" stroke-width="2" fill="none"/>
-          </svg>
-        </div>
-
-        <!-- PORTRAIT CUTOUT (TRANSPARENT BACKGROUND) -->
-        <div class="m-hero-portrait-frame">
-          <img src="assets/anurag-cutout.webp" alt="Anurag Sahu" width="270" height="320" class="m-hero-portrait-img" loading="eager" fetchpriority="high">
-        </div>
-
-        <!-- FLOATING STAT GLASS BADGE (Mid-Right, Overlapping Cutout) -->
-        <div class="m-stat-glass-badge">
-          <div class="m-stat-item">
-            <span class="m-stat-num">2+</span>
-            <span class="m-stat-label">Years Coding ⭐</span>
-          </div>
-          <div class="m-stat-item">
-            <span class="m-stat-num">15+</span>
-            <span class="m-stat-label">Projects Built 🚀</span>
-          </div>
-          <div class="m-stat-item">
-            <span class="m-stat-num">500+</span>
-            <span class="m-stat-label">Problems Solved 🏆</span>
-          </div>
-        </div>
-
-        <!-- FLOATING EMAIL PILL BADGE (Bottom Left) -->
-        <a href="mailto:shivasahu0612@gmail.com" class="m-email-pill-badge" aria-label="Email Anurag Sahu">
-          <span class="m-email-icon">📮</span>
-          <span class="m-email-text">shivasahu0612@gmail.com</span>
-        </a>
-      </div>
-
-      <!-- HERO WHITE BIO CARD -->
-      <div class="m-hero-card">
-        <span class="m-eyebrow">Anurag Sahu</span>
-        <h1 class="m-headline font-kanit">Full-Stack & AI Engineer</h1>
-        <p class="m-subtext">
-          B.Tech CSE (AI & ML) Sophomore at Maharana Pratap Institute. Engineering scalable web platforms, clean REST microservices, and practical machine learning solutions.
-        </p>
-
-        <div class="m-hero-actions">
-          <a href="assets/anurag-sahu-resume.pdf" download="Anurag_Sahu_Resume.pdf" class="m-btn-resume font-kanit" aria-label="Download Resume PDF">
-            <span>Resume</span>
-            <span class="m-arrow-circle">➔</span>
-          </a>
-          <div class="m-call-wrapper">
-            <a href="#m-contact" class="m-btn-call" aria-label="Contact Anurag">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            </a>
-            <span class="m-call-label">Call Me Now</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. SCREEN 2 BANNER + SOCIAL CARDS (SCREEN 2 TOP MOCKUP) -->
-    <section class="m-screen2-header-section">
-      <div class="m-screen2-banner">
-        <span class="m-cursive-tag">I'm Anurag Sahu</span>
-        <img src="assets/anurag-cutout.webp" alt="Anurag Sahu" class="m-screen2-banner-img">
-      </div>
-      <div class="m-chips-grid">
-        <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="m-chip-card">
-          <div class="m-chip-icon m-icon-github">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          </div>
-          <span class="m-chip-title">GitHub</span>
-          <span class="m-chip-sub">Follow Me</span>
-        </a>
-
-        <a href="https://www.linkedin.com/in/anurag-sahu-5a46b9360/" target="_blank" rel="noopener noreferrer" class="m-chip-card">
-          <div class="m-chip-icon m-icon-linkedin">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-          </div>
-          <span class="m-chip-title">LinkedIn</span>
-          <span class="m-chip-sub">See My Work</span>
-        </a>
-
-        <a href="https://leetcode.com/u/anuragsahu0/" target="_blank" rel="noopener noreferrer" class="m-chip-card">
-          <div class="m-chip-icon m-icon-leetcode">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16.102 17.93l-2.697 2.607c-.466.467-1.111.662-1.823.662s-1.357-.195-1.824-.662l-4.332-4.363c-.467-.467-.702-1.15-.702-1.863s.235-1.357.702-1.824l4.319-4.38c.467-.467 1.125-.645 1.837-.645s1.357.195 1.823.662l2.697 2.606c.514.515 1.365.497 1.9-.038.535-.536.553-1.387.039-1.901l-2.609-2.636a5.21 5.21 0 0 0-3.85-1.428c-1.437 0-2.828.562-3.85 1.584l-4.32 4.38c-1.021 1.022-1.584 2.413-1.584 3.85s.563 2.828 1.584 3.85l4.332 4.363c1.022 1.022 2.413 1.584 3.85 1.584s2.828-.562 3.85-1.584l2.609-2.636c.514-.514.496-1.365-.039-1.901-.535-.535-1.386-.553-1.9.038zM20.811 13.01H10.666c-.744 0-1.346-.602-1.346-1.346s.602-1.346 1.346-1.346h10.145c.744 0 1.346.602 1.346 1.346s-.602 1.346-1.346 1.346z"/></svg>
-          </div>
-          <span class="m-chip-title">LeetCode</span>
-          <span class="m-chip-sub">500+ Solved</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- 4. SPECIALIST ENGINEERING / SKILLS SECTION (SCREEN 2 MIDDLE MOCKUP) -->
-    <section id="m-about" class="m-content-section">
-      <span class="m-eyebrow">Specialist Engineering</span>
-      <h2 class="m-section-title font-kanit">Modern Tech Stack</h2>
-      <p class="m-section-desc">
-        Specializing in building end-to-end full stack web platforms, clean REST microservices, and practical machine learning architectures.
-      </p>
-
-      <div class="m-skills-cluster">
-        <div class="m-skill-group">
-          <span class="m-skill-category font-kanit">Frontend Engineering</span>
-          <div class="m-skill-tags">
-            <span class="m-tag">React 18</span>
-            <span class="m-tag">Tailwind CSS</span>
-            <span class="m-tag">JavaScript (ES6+)</span>
-            <span class="m-tag">HTML5 / Modern CSS</span>
-          </div>
-        </div>
-
-        <div class="m-skill-group">
-          <span class="m-skill-category font-kanit">Backend & APIs</span>
-          <div class="m-skill-tags">
-            <span class="m-tag">Node.js</span>
-            <span class="m-tag">Express.js</span>
-            <span class="m-tag">FastAPI</span>
-            <span class="m-tag">RESTful Architecture</span>
-            <span class="m-tag">JWT Security</span>
-          </div>
-        </div>
-
-        <div class="m-skill-group">
-          <span class="m-skill-category font-kanit">AI & Machine Learning</span>
-          <div class="m-skill-tags">
-            <span class="m-tag">PyTorch</span>
-            <span class="m-tag">Python 3.12</span>
-            <span class="m-tag">NumPy / Pandas</span>
-            <span class="m-tag">Scikit-Learn</span>
-          </div>
-        </div>
-
-        <div class="m-skill-group">
-          <span class="m-skill-category font-kanit">Databases & Tools</span>
-          <div class="m-skill-tags">
-            <span class="m-tag">PostgreSQL</span>
-            <span class="m-tag">MongoDB / Mongoose</span>
-            <span class="m-tag">Git / GitHub</span>
-            <span class="m-tag">Docker</span>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top: 16px;">
-        <a href="#m-contact" class="m-btn-pill font-kanit">
-          <span>More about Me</span>
-          <span class="m-arrow">➔</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- 5. SELECTED PROJECTS SECTION (SCREEN 2 BOTTOM MOCKUP) -->
-    <section id="m-projects" class="m-content-section">
-      <span class="m-eyebrow">All Creative Works,</span>
-      <h2 class="m-section-title font-kanit">Selected Projects</h2>
-      <p class="m-section-desc">
-        It's time to see some work. Here are production-ready systems, full-stack architectures, and AI projects I've built:
-      </p>
-
-      <!-- PROJECT CARD 1 -->
-      <div class="m-project-card">
-        <div class="m-pcard-left">
-          <span class="m-pcard-tag">Enterprise System</span>
-          <h3 class="m-pcard-title font-kanit">Restaurant Management System</h3>
-          <p class="m-pcard-summary">
-            Multi-tenant restaurant POS with real-time WebSocket kitchen display, inventory control, and billing.
-          </p>
-          <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="m-pcard-link font-kanit">
-            <span>See More</span>
-            <span class="m-arrow">➔</span>
-          </a>
-        </div>
-        <div class="m-pcard-thumb m-thumb-orange">
-          <span class="m-thumb-icon">🍽️</span>
-          <span class="m-thumb-badge">POS & KDS</span>
-        </div>
-      </div>
-
-      <!-- PROJECT CARD 2 -->
-      <div class="m-project-card">
-        <div class="m-pcard-left">
-          <span class="m-pcard-tag">Full-Stack & 3D</span>
-          <h3 class="m-pcard-title font-kanit">Anti-Gravity Portfolio</h3>
-          <p class="m-pcard-summary">
-            Personal developer telemetry platform with 3D WebGL particle system, REST contact API, and live admin dashboard.
-          </p>
-          <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="m-pcard-link font-kanit">
-            <span>See More</span>
-            <span class="m-arrow">➔</span>
-          </a>
-        </div>
-        <div class="m-pcard-thumb m-thumb-blue">
-          <span class="m-thumb-icon">⚡</span>
-          <span class="m-thumb-badge">Telemetry</span>
-        </div>
-      </div>
-
-      <!-- PROJECT CARD 3 -->
-      <div class="m-project-card">
-        <div class="m-pcard-left">
-          <span class="m-pcard-tag">AI & Analytics</span>
-          <h3 class="m-pcard-title font-kanit">AI Finance Controller</h3>
-          <p class="m-pcard-summary">
-            Real-time anomaly detection, predictive budgeting curves, multi-currency ledger, and autonomous analytics.
-          </p>
-          <a href="AI-FINANCE-CONTROLLER.html" class="m-pcard-link font-kanit">
-            <span>See More</span>
-            <span class="m-arrow">➔</span>
-          </a>
-        </div>
-        <div class="m-pcard-thumb m-thumb-green">
-          <span class="m-thumb-icon">📈</span>
-          <span class="m-thumb-badge">AI Engine</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. CODING PROFILES & ACHIEVEMENTS -->
-    <section id="m-coding" class="m-content-section">
-      <span class="m-eyebrow">DSA & Problem Solving</span>
-      <h2 class="m-section-title font-kanit">Coding Profiles</h2>
-      <p class="m-section-desc">
-        Daily competitive programming and algorithmic problem solving metrics across premier coding platforms.
-      </p>
-
-      <div class="m-coding-cards">
-        <a href="https://leetcode.com/u/anuragsahu0/" target="_blank" rel="noopener noreferrer" class="m-coding-card">
-          <div class="m-coding-header">
-            <span class="m-coding-name font-kanit">LeetCode</span>
-            <span class="m-coding-badge">Active</span>
-          </div>
-          <div class="m-coding-stat">500+ Questions Solved</div>
-          <div class="m-coding-sub">Data Structures, Dynamic Programming & Graph Algorithms</div>
-        </a>
-
-        <a href="https://github.com/anuragsahu0" target="_blank" rel="noopener noreferrer" class="m-coding-card">
-          <div class="m-coding-header">
-            <span class="m-coding-name font-kanit">GitHub</span>
-            <span class="m-coding-badge">Open Source</span>
-          </div>
-          <div class="m-coding-stat">Production Repositories</div>
-          <div class="m-coding-sub">Daily commits, CI/CD pipelines, and software architectures</div>
-        </a>
-
-        <a href="https://www.hackerrank.com/profile/anuragsahu0" target="_blank" rel="noopener noreferrer" class="m-coding-card">
-          <div class="m-coding-header">
-            <span class="m-coding-name font-kanit">HackerRank</span>
-            <span class="m-coding-badge">Verified</span>
-          </div>
-          <div class="m-coding-stat">5 Stars in C++ & Problem Solving</div>
-          <div class="m-coding-sub">Core algorithmic foundation & object-oriented programming</div>
-        </a>
-      </div>
-    </section>
-
-    <!-- 7. DIRECT CONTACT FORM (SCREEN 2 CONTACT SECTION) -->
-    <section id="m-contact" class="m-content-section">
-      <div class="m-contact-card">
-        <span class="m-eyebrow">Get In Touch</span>
-        <h2 class="m-section-title font-kanit" style="font-size: 1.65rem;">Let's Build Together</h2>
-        <p class="m-section-desc" style="margin-bottom: 18px;">
-          Available for Summer 2026 internships, technical collaborations, and software engineering roles.
-        </p>
-
-        <form id="m-contact-form" onsubmit="handleMobileContactSubmit(event)" class="m-form">
-          <div class="m-form-group">
-            <label for="m-name" class="m-label">Your Name</label>
-            <input type="text" id="m-name" name="fullName" placeholder="e.g. Alex Smith" required class="m-input">
-          </div>
-
-          <div class="m-form-group">
-            <label for="m-email" class="m-label">Email Address</label>
-            <input type="email" id="m-email" name="email" placeholder="alex@company.com" required class="m-input">
-          </div>
-
-          <div class="m-form-group">
-            <label for="m-subject" class="m-label">Subject</label>
-            <input type="text" id="m-subject" name="subject" placeholder="Project collaboration / Internship" required class="m-input">
-          </div>
-
-          <div class="m-form-group">
-            <label for="m-message" class="m-label">Your Message</label>
-            <textarea id="m-message" name="message" rows="4" placeholder="Tell me about your project or role..." required class="m-input m-textarea"></textarea>
-          </div>
-
-          <button type="submit" id="m-submit-btn" class="m-btn-submit font-kanit">
-            <span>Send Message 🚀</span>
-          </button>
-          
-          <div id="m-form-status" class="m-form-status" style="display: none;"></div>
-        </form>
-      </div>
-    </section>
-
-    <!-- 8. MOBILE FOOTER -->
-    <footer class="m-footer">
-      <div class="m-footer-brand">
-        <div class="m-avatar-badge m-avatar-sm">A</div>
-        <span class="m-brand-name">Anurag Sahu</span>
-      </div>
-      <p class="m-footer-copy">© 2026 Anurag Sahu • Built with Passion & Precision</p>
-      <a href="mailto:shivasahu0612@gmail.com" class="m-footer-email">shivasahu0612@gmail.com</a>
-    </footer>
-
-  </div><!-- /#mobile-app-container -->
 
   <script src="app.js?v=20260829_p2_completed" type="module"></script>
   <script>
@@ -1702,100 +1328,10 @@
         if (e.key === 'Escape') closeMenu();
       });
 
-  <!-- Native Reference Mockup Mobile Controller -->
-  <script>
-    function toggleMobileMenu() {
-      const sheet = document.getElementById('m-menu-sheet');
-      const backdrop = document.getElementById('m-menu-backdrop');
-      const btn = document.getElementById('m-menu-btn');
-      if (!sheet || !backdrop) return;
-      const isOpen = sheet.classList.contains('is-open');
-      if (isOpen) {
-        closeMobileMenu();
-      } else {
-        sheet.classList.add('is-open');
-        sheet.setAttribute('aria-hidden', 'false');
-        backdrop.classList.add('is-open');
-        if (btn) btn.setAttribute('aria-expanded', 'true');
-      }
-    }
-
-    function closeMobileMenu() {
-      const sheet = document.getElementById('m-menu-sheet');
-      const backdrop = document.getElementById('m-menu-backdrop');
-      const btn = document.getElementById('m-menu-btn');
-      if (sheet) {
-        sheet.classList.remove('is-open');
-        sheet.setAttribute('aria-hidden', 'true');
-      }
-      if (backdrop) backdrop.classList.remove('is-open');
-      if (btn) btn.setAttribute('aria-expanded', 'false');
-    }
-
-    window.toggleMobileMenu = toggleMobileMenu;
-    window.closeMobileMenu = closeMobileMenu;
-
-    async function handleMobileContactSubmit(event) {
-      event.preventDefault();
-      const form = event.target;
-      const submitBtn = document.getElementById('m-submit-btn');
-      const statusDiv = document.getElementById('m-form-status');
-      
-      const formData = {
-        fullName: form.fullName.value.trim(),
-        email: form.email.value.trim(),
-        subject: form.subject.value.trim(),
-        message: form.message.value.trim()
-      };
-
-      if (!formData.fullName || !formData.email || !formData.message) {
-        if (statusDiv) {
-          statusDiv.className = 'm-form-status error';
-          statusDiv.textContent = 'Please fill out all required fields.';
-          statusDiv.style.display = 'block';
-        }
-        return;
-      }
-
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>Sending Message... ⏳</span>';
-      }
-
-      try {
-        const response = await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success !== false) {
-          form.reset();
-          if (statusDiv) {
-            statusDiv.className = 'm-form-status success';
-            statusDiv.textContent = 'Thank you! Your message has been sent directly to Anurag Sahu.';
-            statusDiv.style.display = 'block';
-          }
-        } else {
-          throw new Error(data.message || 'Submission failed');
-        }
-      } catch (err) {
-        if (statusDiv) {
-          statusDiv.className = 'm-form-status error';
-          statusDiv.innerHTML = 'Could not reach server directly. <a href="mailto:shivasahu0612@gmail.com?subject=' + encodeURIComponent(formData.subject) + '&body=' + encodeURIComponent(formData.message) + '" style="color:#EA580C;text-decoration:underline;">Click here to send direct email</a>.';
-          statusDiv.style.display = 'block';
-        }
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = '<span>Send Message 🚀</span>';
-        }
-      }
-    }
-
-    window.handleMobileContactSubmit = handleMobileContactSubmit;
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) closeMenu();
+      }, { passive: true });
+    })();
   </script>
 
 
