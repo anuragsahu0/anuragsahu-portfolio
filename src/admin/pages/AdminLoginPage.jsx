@@ -15,13 +15,14 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
 
     const emailTrimmed = email.trim();
     if (!emailTrimmed || !password) {
-      setValidationError('Please provide both administrator email and password.');
+      setValidationError('Please provide both administrator ID and password.');
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailTrimmed)) {
-      setValidationError('Please enter a valid email address.');
+    const isValidIdentifier =
+      emailTrimmed.toLowerCase() === 'anuragsahu' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed);
+    if (!isValidIdentifier) {
+      setValidationError('Please enter a valid administrator ID or email address.');
       return;
     }
 
@@ -62,16 +63,16 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <FormField label="ADMIN EMAIL" id="admin-email" required>
+            <FormField label="ADMIN ID / USERNAME" id="admin-email" required>
               <div className="relative">
                 <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   id="admin-email"
-                  type="email"
+                  type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@anuragsahu.dev"
-                  autoComplete="email"
+                  placeholder="anuragsahu"
+                  autoComplete="username"
                   required
                   className="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 font-mono transition-colors"
                 />

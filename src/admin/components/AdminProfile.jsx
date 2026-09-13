@@ -42,7 +42,7 @@ export const AdminProfile = ({ user, onLogout }) => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-56 rounded-xl bg-[#070B16] border border-slate-800 shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2">
           <div className="px-4 py-2 border-b border-slate-800/80">
-            <p className="text-xs font-semibold text-slate-100">{user?.email || 'admin@anuragsahu.dev'}</p>
+            <p className="text-xs font-semibold text-slate-100">{user?.email || 'anuragsahu@anuragsahu.dev'}</p>
             <div className="flex items-center gap-1.5 mt-1 text-[10px] font-mono text-emerald-400">
               <Shield className="w-3 h-3" />
               <span>Verified Owner Role</span>

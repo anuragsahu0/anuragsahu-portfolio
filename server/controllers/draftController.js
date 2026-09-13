@@ -60,7 +60,7 @@ const autosaveDraft = async (req, res, next) => {
     const passedBaseVersion = Number(baseVersion);
     const isConflict = !isNaN(passedBaseVersion) && passedBaseVersion > 0 && latestVersion > passedBaseVersion;
 
-    const adminEmail = req.user?.email || 'admin@anuragsahu.dev';
+    const adminEmail = req.user?.email || 'anuragsahu@anuragsahu.dev';
     const draftPayload = {
       entityType,
       entityId: strEntityId,

@@ -134,7 +134,8 @@ const getUsers = async (req, res, next) => {
       usersList.push({
         id: 'primary-owner',
         name: 'Anurag Sahu',
-        email: (process.env.ADMIN_EMAIL || 'admin@anuragsahu.dev').toLowerCase(),
+        username: (process.env.ADMIN_USERNAME || 'anuragsahu').toLowerCase(),
+        email: (process.env.ADMIN_EMAIL || 'anuragsahu@anuragsahu.dev').toLowerCase(),
         role: 'OWNER',
         status: 'ACTIVE',
         lastLoginAt: new Date(),

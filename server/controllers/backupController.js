@@ -26,7 +26,7 @@ const { sendSuccess, sendError } = require('../utils/apiResponse');
 const createBackup = async (req, res, next) => {
   try {
     const { type = 'MANUAL', scope = 'FULL', notes = '' } = req.body || {};
-    const createdBy = (req.user && req.user.email) || 'admin@anuragsahu.dev';
+    const createdBy = (req.user && req.user.email) || 'anuragsahu@anuragsahu.dev';
 
     const backup = await createBackupService({
       type,
@@ -169,7 +169,7 @@ const restoreBackup = async (req, res, next) => {
       );
     }
 
-    const adminEmail = (req.user && req.user.email) || 'admin@anuragsahu.dev';
+    const adminEmail = (req.user && req.user.email) || 'anuragsahu@anuragsahu.dev';
     const result = await restoreService({
       backupId: id,
       adminEmail,

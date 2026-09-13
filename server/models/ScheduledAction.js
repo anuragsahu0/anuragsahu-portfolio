@@ -115,8 +115,8 @@ const ScheduledActionSchema = new mongoose.Schema(
       default: {},
     },
     createdBy: {
-      id: { type: String, default: 'admin' },
-      email: { type: String, default: 'admin@anuragsahu.dev' },
+      id: { type: String, default: 'primary-owner' },
+      email: { type: String, default: 'anuragsahu@anuragsahu.dev' },
       name: { type: String, default: 'Anurag Sahu' },
     },
   },

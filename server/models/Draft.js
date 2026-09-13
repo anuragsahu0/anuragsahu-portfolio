@@ -37,7 +37,7 @@ const DraftSchema = new mongoose.Schema(
     },
     adminEmail: {
       type: String,
-      default: 'admin@anuragsahu.dev',
+      default: 'anuragsahu@anuragsahu.dev',
       trim: true,
     },
     lastSavedAt: {

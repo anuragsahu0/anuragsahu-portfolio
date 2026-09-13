@@ -35,7 +35,7 @@ const generatePreviewToken = async (req, res, next) => {
       previewId,
       entityType,
       entityId: String(entityId || 'global'),
-      adminEmail: req.user?.email || 'admin@anuragsahu.dev',
+      adminEmail: req.user?.email || 'anuragsahu@anuragsahu.dev',
     };
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' });

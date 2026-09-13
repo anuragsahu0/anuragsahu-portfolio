@@ -8,6 +8,13 @@ const UserSchema = new mongoose.Schema(
       default: 'Anurag Sahu',
       trim: true,
     },
+    username: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: 'anuragsahu',
+      index: true,
+    },
     email: {
       type: String,
       required: [true, 'Email is required'],

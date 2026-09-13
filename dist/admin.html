@@ -305,16 +305,16 @@
         <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
           <div>
             <label for="input-email" class="block text-xs font-semibold text-slate-300 tracking-wide font-mono mb-1.5">
-              ADMIN EMAIL <span class="text-rose-400">*</span>
+              ADMIN ID / USERNAME <span class="text-rose-400">*</span>
             </label>
             <div class="relative">
-              <i data-lucide="mail" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
+              <i data-lucide="user" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
               <input
                 id="input-email"
-                type="email"
+                type="text"
                 required
-                placeholder="admin@anuragsahu.com"
-                autocomplete="email"
+                placeholder="anuragsahu"
+                autocomplete="username"
                 class="w-full bg-slate-900/90 border border-brand-border rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 font-mono"
               >
             </div>
@@ -3329,9 +3329,8 @@
       errorBox.classList.add('hidden');
 
       // Frontend validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!email || !emailRegex.test(email)) {
-        errorText.textContent = 'Please enter a valid email address.';
+      if (!email) {
+        errorText.textContent = 'Administrator ID or email is required.';
         errorBox.classList.remove('hidden');
         return;
       }

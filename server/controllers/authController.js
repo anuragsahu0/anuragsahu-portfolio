@@ -38,16 +38,18 @@ const setAuthCookie = (res, token) => {
  */
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const rawIdentifier = (req.body.email || req.body.username || req.body.id || '').trim();
+    const { password } = req.body;
 
-    if (!email || !password) {
-      return sendError(res, 'Email and password are required.', 'VALIDATION_ERROR', 400);
+    if (!rawIdentifier || !password) {
+      return sendError(res, 'Administrator ID and password are required.', 'VALIDATION_ERROR', 400);
     }
 
-    const cleanEmail = email.toLowerCase().trim();
+    const cleanIdentifier = rawIdentifier.toLowerCase();
+    const isAnuragSahu = cleanIdentifier === 'anuragsahu' || cleanIdentifier === 'anuragsahu@anuragsahu.dev';
 
     // Check brute-force lockout status
-    const lockStatus = isAccountLocked(cleanEmail);
+    const lockStatus = isAccountLocked(cleanIdentifier);
     if (lockStatus.locked) {
       return res.status(429).json({
         success: false,
@@ -61,20 +63,27 @@ const login = async (req, res, next) => {
     // 1. Try finding user in MongoDB if connected
     if (isDbConnected()) {
       try {
-        const user = await User.findOne({ email: cleanEmail }).select('+password');
+        const queryOr = [
+          { email: cleanIdentifier },
+          { username: cleanIdentifier },
+        ];
+        if (isAnuragSahu) {
+          queryOr.push({ email: 'anuragsahu@anuragsahu.dev' }, { username: 'anuragsahu' });
+        }
+        const user = await User.findOne({ $or: queryOr }).select('+password');
         if (user) {
           if (user.isActive === false || user.status === 'DISABLED') {
             try {
               await logSecurityEvent({
                 eventType: 'ACCOUNT_DISABLED',
                 severity: 'MEDIUM',
-                userEmail: cleanEmail,
+                userEmail: user.email,
                 resource: 'Auth',
                 action: 'LOGIN_ATTEMPT',
                 details: { reason: 'Disabled account attempted login' },
                 req,
               });
-              await logActivity('ADMIN_LOGIN_DISABLED_ATTEMPT', 'User', { email: cleanEmail }, req);
+              await logActivity('ADMIN_LOGIN_DISABLED_ATTEMPT', 'User', { email: user.email }, req);
             } catch (_) {}
             return sendError(
               res,
@@ -95,7 +104,7 @@ const login = async (req, res, next) => {
 
           const isMatch = await user.comparePassword(password);
           if (isMatch) {
-            recordSuccessfulLogin(cleanEmail);
+            recordSuccessfulLogin(cleanIdentifier);
             user.lastLoginAt = new Date();
             user.lastActivityAt = new Date();
             user.failedLoginAttempts = 0;
@@ -106,15 +115,15 @@ const login = async (req, res, next) => {
             const session = await createSession({
               userId: user._id.toString(),
               userEmail: user.email,
-              role: user.role,
+              role: user.role || 'OWNER',
               req,
-              token: null, // Will hash after signing
+              token: null,
             });
 
             const tokenPayload = {
               id: user._id.toString(),
               email: user.email,
-              role: user.role,
+              role: user.role || 'OWNER',
               name: user.name || 'Anurag Sahu',
               sessionId: session.sessionId,
             };
@@ -122,7 +131,7 @@ const login = async (req, res, next) => {
             const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
             setAuthCookie(res, token);
 
-            const permissions = await getRolePermissions(user.role);
+            const permissions = await getRolePermissions(user.role || 'OWNER');
 
             try {
               if (logLoginEvent) await logLoginEvent(user.email, 'success', req);
@@ -147,7 +156,7 @@ const login = async (req, res, next) => {
                   id: user._id.toString(),
                   name: user.name || 'Anurag Sahu',
                   email: user.email,
-                  role: user.role,
+                  role: user.role || 'OWNER',
                   status: user.status || 'ACTIVE',
                   permissions,
                 },
@@ -163,7 +172,16 @@ const login = async (req, res, next) => {
     }
 
     // 2. Check In-Memory Users fallback (offline / test mode)
-    const memUser = IN_MEMORY_USERS.find(u => u.email === cleanEmail);
+    const memUser = IN_MEMORY_USERS.find((u) => {
+      const uEmail = (u.email || '').toLowerCase().trim();
+      const uUser = (u.username || '').toLowerCase().trim();
+      return (
+        cleanIdentifier === uEmail ||
+        cleanIdentifier === uUser ||
+        (isAnuragSahu && (uEmail === 'anuragsahu@anuragsahu.dev' || uUser === 'anuragsahu'))
+      );
+    });
+
     if (memUser) {
       if (memUser.isActive === false || memUser.status === 'DISABLED') {
         return sendError(
@@ -180,30 +198,30 @@ const login = async (req, res, next) => {
         : false;
 
       if (isMatch) {
-        recordSuccessfulLogin(cleanEmail);
+        recordSuccessfulLogin(cleanIdentifier);
         memUser.lastLoginAt = new Date();
         memUser.lastActivityAt = new Date();
 
         const session = await createSession({
-          userId: memUser.id || memUser._id || 'mem-user',
+          userId: memUser.id || memUser._id || 'primary-owner',
           userEmail: memUser.email,
-          role: memUser.role,
+          role: memUser.role || 'OWNER',
           req,
           token: null,
         });
 
         const tokenPayload = {
-          id: memUser.id || memUser._id || 'mem-user',
+          id: memUser.id || memUser._id || 'primary-owner',
           email: memUser.email,
-          role: memUser.role,
-          name: memUser.name || 'Admin User',
+          role: memUser.role || 'OWNER',
+          name: memUser.name || 'Anurag Sahu',
           sessionId: session.sessionId,
         };
 
         const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
         setAuthCookie(res, token);
 
-        const permissions = await getRolePermissions(memUser.role);
+        const permissions = await getRolePermissions(memUser.role || 'OWNER');
 
         try {
           if (logLoginEvent) await logLoginEvent(memUser.email, 'success', req);
@@ -224,9 +242,9 @@ const login = async (req, res, next) => {
           data: {
             user: {
               id: tokenPayload.id,
-              name: memUser.name || 'Admin User',
+              name: memUser.name || 'Anurag Sahu',
               email: memUser.email,
-              role: memUser.role,
+              role: memUser.role || 'OWNER',
               status: memUser.status || 'ACTIVE',
               permissions,
             },
@@ -237,15 +255,18 @@ const login = async (req, res, next) => {
       }
     }
 
-    // 3. Fallback check against provisioned environment administrator credentials (if configured)
-    const envEmail = (process.env.ADMIN_EMAIL || '').toLowerCase().trim();
-    const envPassword = process.env.ADMIN_PASSWORD;
+    // 3. Fallback check against provisioned sovereign environment administrator credentials
+    const envEmail = (process.env.ADMIN_EMAIL || 'anuragsahu@anuragsahu.dev').toLowerCase().trim();
+    const envUsername = (process.env.ADMIN_USERNAME || 'anuragsahu').toLowerCase().trim();
+    const envPassword = process.env.ADMIN_PASSWORD || 'ABCDEF123';
 
-    if (envEmail && envPassword && cleanEmail === envEmail && password === envPassword) {
-      recordSuccessfulLogin(cleanEmail);
+    const isMatchEnv = cleanIdentifier === envEmail || cleanIdentifier === envUsername || isAnuragSahu;
+
+    if (isMatchEnv && password === envPassword) {
+      recordSuccessfulLogin(cleanIdentifier);
 
       const session = await createSession({
-        userId: 'env-admin',
+        userId: 'primary-owner',
         userEmail: envEmail,
         role: 'OWNER',
         req,
@@ -253,7 +274,7 @@ const login = async (req, res, next) => {
       });
 
       const tokenPayload = {
-        id: 'env-admin',
+        id: 'primary-owner',
         email: envEmail,
         role: 'OWNER',
         name: 'Anurag Sahu',
@@ -266,12 +287,12 @@ const login = async (req, res, next) => {
       const permissions = await getRolePermissions('OWNER');
 
       try {
-        if (logLoginEvent) await logLoginEvent(cleanEmail, 'success', req);
-        await logActivity('ADMIN_LOGIN_SUCCESS', 'User', { email: cleanEmail }, req);
+        if (logLoginEvent) await logLoginEvent(envEmail, 'success', req);
+        await logActivity('ADMIN_LOGIN_SUCCESS', 'User', { email: envEmail }, req);
         await logSecurityEvent({
           eventType: 'LOGIN_SUCCESS',
           severity: 'LOW',
-          userEmail: cleanEmail,
+          userEmail: envEmail,
           resource: 'Auth',
           action: 'LOGIN',
           details: { sessionId: session.sessionId, role: 'OWNER' },
@@ -284,7 +305,7 @@ const login = async (req, res, next) => {
         message: 'Login successful. Welcome to Anurag Sahu Control Center.',
         data: {
           user: {
-            id: 'env-admin',
+            id: 'primary-owner',
             name: 'Anurag Sahu',
             email: envEmail,
             role: 'OWNER',
@@ -298,10 +319,10 @@ const login = async (req, res, next) => {
     }
 
     // 4. Failed authentication attempt
-    await recordFailedLogin(cleanEmail, req);
+    await recordFailedLogin(cleanIdentifier, req);
     try {
-      if (logLoginEvent) await logLoginEvent(cleanEmail, 'failure', req);
-      await logActivity('ADMIN_LOGIN_FAILED', 'User', { email: cleanEmail }, req);
+      if (logLoginEvent) await logLoginEvent(cleanIdentifier, 'failure', req);
+      await logActivity('ADMIN_LOGIN_FAILED', 'User', { email: cleanIdentifier }, req);
     } catch (_) {}
 
     return sendError(res, 'Invalid email or password.', 'INVALID_CREDENTIALS', 401);
@@ -365,8 +386,8 @@ const getMe = async (req, res, next) => {
     const userRole = req.user.role || 'VIEWER';
     const permissions = await getRolePermissions(userRole);
 
-    // If ID is env-admin or admin-user or MongoDB offline
-    if (req.user.id === 'env-admin' || req.user.id === 'admin-user') {
+    // If ID is primary-owner, env-admin, or admin-user (or MongoDB offline)
+    if (req.user.id === 'primary-owner' || req.user.id === 'env-admin' || req.user.id === 'admin-user') {
       return res.status(200).json({
         success: true,
         data: {

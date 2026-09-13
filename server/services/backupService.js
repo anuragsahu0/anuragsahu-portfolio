@@ -190,7 +190,7 @@ const calculateChecksum = (data) => {
  * Log an audit activity event safely
  */
 const logBackupActivity = async ({ action, backupId, description, metadata = {}, req = null }) => {
-  const adminEmail = (req && req.user && req.user.email) || 'admin@anuragsahu.dev';
+  const adminEmail = (req && req.user && req.user.email) || 'anuragsahu@anuragsahu.dev';
   const ipAddress = req ? req.ip || req.headers['x-forwarded-for'] || '127.0.0.1' : '127.0.0.1';
 
   const entry = {
@@ -530,7 +530,7 @@ const verifyBackupIntegrity = async (backupId, req = null) => {
  */
 const restoreFromBackup = async ({
   backupId,
-  adminEmail = 'admin@anuragsahu.dev',
+  adminEmail = 'anuragsahu@anuragsahu.dev',
   scheduleStrategy = 'preserve', // 'preserve', 'restore', 'cancel'
   targetCollections = null,
   req = null,

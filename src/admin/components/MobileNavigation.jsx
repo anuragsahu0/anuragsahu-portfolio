@@ -198,7 +198,7 @@ export const MobileNavigation = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold text-slate-200 truncate">
-                    {user?.email || 'admin@anuragsahu.dev'}
+                    {user?.email || 'anuragsahu@anuragsahu.dev'}
                   </p>
                   <p className="text-[10px] text-cyan-400 font-mono">Authenticated Owner</p>
                 </div>

@@ -29,8 +29,8 @@ const logActivity = async (action, targetCollection, details = {}, req = null) =
   const resourceType = targetCollection || '';
   const logEntry = {
     _id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-    adminId: req?.user?.id || 'admin',
-    adminEmail: req?.user?.email || 'admin@anuragsahu.dev',
+    adminId: req?.user?.id || 'primary-owner',
+    adminEmail: req?.user?.email || 'anuragsahu@anuragsahu.dev',
     action,
     resourceType,
     targetCollection,

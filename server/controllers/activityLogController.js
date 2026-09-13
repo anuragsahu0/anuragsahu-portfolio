@@ -4,8 +4,8 @@ const { sendSuccess } = require('../utils/apiResponse');
 const FALLBACK_LOGS = [
   {
     _id: 'act-seed-1',
-    adminId: 'admin',
-    adminEmail: 'admin@anuragsahu.dev',
+    adminId: 'primary-owner',
+    adminEmail: 'anuragsahu@anuragsahu.dev',
     action: 'SYSTEM_BOOT',
     resourceType: 'Server',
     description: 'CMS Backend Engine initialized with security middleware and database caching.',

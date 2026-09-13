@@ -16,8 +16,8 @@ const { FALLBACK_PROJECTS } = require('./projectController');
 async function logBulkActivity({ adminEmail, adminId, action, resourceType, description, metadata }) {
   const entry = {
     _id: `act-bulk-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
-    adminId: adminId || 'admin',
-    adminEmail: adminEmail || 'admin@anuragsahu.dev',
+    adminId: adminId || 'primary-owner',
+    adminEmail: adminEmail || 'anuragsahu@anuragsahu.dev',
     action,
     resourceType,
     description,

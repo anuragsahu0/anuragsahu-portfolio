@@ -18,7 +18,8 @@ const ActivityLog = require('../models/ActivityLog');
 const Resume = require('../models/Resume');
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/anti_gravity_portfolio';
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@anuragsahu.dev').toLowerCase();
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'anuragsahu@anuragsahu.dev').toLowerCase();
+const ADMIN_USERNAME = (process.env.ADMIN_USERNAME || 'anuragsahu').toLowerCase();
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'ABCDEF123';
 
 async function seed() {
@@ -28,16 +29,18 @@ async function seed() {
 
   // 1. Admin User
   console.log('👤 Seeding Admin User...');
-  await User.deleteMany({ email: { $in: [ADMIN_EMAIL, 'admin@anuragsahu.dev', 'anuragsahu'] } });
+  await User.deleteMany({ email: { $ne: ADMIN_EMAIL } });
   const adminUser = new User({
     name: 'Anurag Sahu',
+    username: ADMIN_USERNAME,
     email: ADMIN_EMAIL,
     password: ADMIN_PASSWORD,
-    role: 'admin',
+    role: 'OWNER',
+    status: 'ACTIVE',
     isActive: true,
   });
   await adminUser.save();
-  console.log(`✓ Admin User created: ${ADMIN_EMAIL}`);
+  console.log(`✓ Sovereign Admin User created: ${ADMIN_USERNAME} (${ADMIN_EMAIL})`);
 
   // 2. Profile
   console.log('📋 Seeding Profile...');

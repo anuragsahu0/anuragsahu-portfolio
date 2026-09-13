@@ -6,12 +6,20 @@ const { sendError } = require('../utils/apiResponse');
  */
 const loginRules = [
   body('email')
-    .trim()
+    .customSanitizer((val, { req }) => {
+      const candidate = val || req.body.username || req.body.id || '';
+      return typeof candidate === 'string' ? candidate.trim() : '';
+    })
     .notEmpty()
-    .withMessage('Email is required.')
-    .isEmail()
-    .withMessage('Please provide a valid email address.')
-    .normalizeEmail(),
+    .withMessage('Administrator ID or email is required.')
+    .custom((val) => {
+      const v = (val || '').toLowerCase().trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (v === 'anuragsahu' || emailRegex.test(v)) {
+        return true;
+      }
+      throw new Error('Please provide a valid email address.');
+    }),
   body('password')
     .notEmpty()
     .withMessage('Password is required.'),

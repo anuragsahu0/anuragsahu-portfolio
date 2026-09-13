@@ -176,7 +176,7 @@ const createSchedule = async (req, res, next) => {
       },
       createdBy: {
         id: req.user?.id || 'admin',
-        email: req.user?.email || 'admin@anuragsahu.dev',
+        email: req.user?.email || 'anuragsahu@anuragsahu.dev',
         name: req.user?.name || 'Anurag Sahu',
       },
     });
@@ -657,7 +657,7 @@ const bulkSchedule = async (req, res, next) => {
         notes: notes || 'Created via bulk schedule',
         createdBy: {
           id: req.user?.id || 'admin',
-          email: req.user?.email || 'admin@anuragsahu.dev',
+          email: req.user?.email || 'anuragsahu@anuragsahu.dev',
           name: req.user?.name || 'Anurag Sahu',
         },
       });

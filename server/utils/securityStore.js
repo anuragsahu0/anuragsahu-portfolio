@@ -8,8 +8,9 @@ const IN_MEMORY_USERS = [
   {
     id: 'primary-owner',
     name: 'Anurag Sahu',
-    email: (process.env.ADMIN_EMAIL || 'admin@anuragsahu.dev').toLowerCase(),
-    password: process.env.ADMIN_PASSWORD || 'Admin@AntiGravity2026',
+    username: 'anuragsahu',
+    email: (process.env.ADMIN_EMAIL || 'anuragsahu@anuragsahu.dev').toLowerCase(),
+    password: process.env.ADMIN_PASSWORD || 'ABCDEF123',
     role: 'OWNER',
     status: 'ACTIVE',
     isActive: true,

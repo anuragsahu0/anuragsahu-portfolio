@@ -263,7 +263,7 @@ const restoreRevision = async (req, res, next) => {
     }
 
     // Create NEW revision preserving full audit trail
-    const adminEmail = req.user?.email || 'admin@anuragsahu.dev';
+    const adminEmail = req.user?.email || 'anuragsahu@anuragsahu.dev';
     const newRev = await recordRevision({
       entityType: entity,
       entityId: id,
