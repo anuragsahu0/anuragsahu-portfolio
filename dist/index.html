@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <meta name="version" content="2.0.0">
+  <meta name="version" content="2.0.1">
 
   <!-- Primary SEO Meta Tags -->
   <title>Anurag Sahu — Full-Stack Developer & B.Tech CSE (AI & ML) Sophomore</title>
@@ -20,29 +20,25 @@
   <link rel="canonical" href="https://anuragsahu.com/">
 
   <!-- PWA & Favicon Link -->
-  <link rel="manifest" href="/manifest.json?v=2.0.0">
-  <link rel="apple-touch-icon" href="/assets/anurag-portrait-sm.webp?v=2.0.0">
-  <link rel="icon" type="image/webp" href="/assets/anurag-portrait-sm.webp?v=2.0.0">
+  <link rel="manifest" href="/manifest.json?v=2.0.1">
+  <link rel="apple-touch-icon" href="/assets/anurag-portrait-sm.webp?v=2.0.1">
+  <link rel="icon" type="image/webp" href="/assets/anurag-portrait-sm.webp?v=2.0.1">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://anuragsahu.com/">
   <meta property="og:title" content="Anurag Sahu — Full-Stack Developer & B.Tech CSE (AI & ML) Sophomore">
   <meta property="og:description" content="Explore Anurag Sahu's portfolio featuring full-stack web applications, Machine Learning models, interactive case studies, engineering roadmap, and laboratory.">
-  <meta property="og:image" content="https://anuragsahu.com/assets/anurag-portrait.webp?v=2.0.0">
+  <meta property="og:image" content="https://anuragsahu.com/assets/anurag-portrait.webp?v=2.0.1">
 
   <!-- Preload Critical Hero Image & Font Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="assets/anurag-portrait-sm.webp?v=2.0.0" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
-  <link rel="preload" as="image" href="assets/anurag-portrait.webp?v=2.0.0" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
-  <link rel="preload" as="style" href="styles.css?v=2.0.0">
-  <link rel="stylesheet" href="styles.css?v=2.0.0">
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
-  <noscript>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
-  </noscript>
+  <link rel="preload" as="image" href="assets/anurag-portrait-sm.webp?v=2.0.1" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/anurag-portrait.webp?v=2.0.1" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
+  <link rel="preload" as="style" href="styles.css?v=2.0.1">
+  <link rel="stylesheet" href="styles.css?v=2.0.1">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
   
   <!-- Lucide Icons CDN (Deferred) -->
   <script defer src="https://unpkg.com/lucide@latest"></script>
@@ -804,30 +800,25 @@
       });
       paraEl.innerHTML = html;
 
-      const totalChars = charIndex;
-      // Collect all visible char spans
-      const charSpans = Array.from({ length: totalChars }, (_, i) => document.getElementById(`ac${i}`));
-
       // ── Scroll handler: map section scroll progress to per-char opacity ──
       function updateCharReveal() {
-        if (!sectionEl) return;
+        if (!sectionEl || !paraEl) return;
         const rect = sectionEl.getBoundingClientRect();
         const winH = window.innerHeight;
 
         // scrollYProgress: 0 when section top hits 0.8 * winH, 1 when section bottom hits 0.2 * winH
         const sectionH = rect.height;
-        // When rect.top = winH * 0.8  =>  progress = 0
-        // When rect.bottom = winH * 0.2  =>  progress = 1
-        // rect.bottom = rect.top + sectionH
-        // At progress=0: rect.top = winH * 0.8
-        // At progress=1: rect.top = winH * 0.2 - sectionH
         const startScroll = winH * 0.8;   // rect.top value when progress=0
         const endScroll   = winH * 0.2 - sectionH;  // rect.top value when progress=1
         const progress    = Math.max(0, Math.min(1, (startScroll - rect.top) / (startScroll - endScroll)));
 
-        charSpans.forEach((span, index) => {
+        const spans = paraEl.querySelectorAll('[id^="ac"]');
+        const count = spans.length;
+        if (!count) return;
+
+        spans.forEach((span, index) => {
           if (!span) return;
-          const charProgress = index / totalChars;
+          const charProgress = index / count;
           const start = Math.max(0, charProgress - 0.1);
           const end   = Math.min(1, charProgress + 0.05);
           let opacity;
@@ -1267,12 +1258,12 @@
     </div>
   </footer>
 
-  <script src="app.js?v=2.0.0" type="module"></script>
+  <script src="app.js?v=2.0.1" type="module"></script>
 
-  <!-- Force-Update & Service Worker Auto-Sync Engine v2.0.0 -->
+  <!-- Force-Update & Service Worker Auto-Sync Engine v2.0.1 -->
   <script>
     (function initCacheBuster() {
-      const CURRENT_VERSION = '2.0.0';
+      const CURRENT_VERSION = '2.0.1';
 
       // 1. Auto-update Service Worker on page load
       if ('serviceWorker' in navigator) {

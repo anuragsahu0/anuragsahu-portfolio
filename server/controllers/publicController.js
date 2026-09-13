@@ -25,18 +25,19 @@ const JWT_SECRET = process.env.JWT_SECRET || 'anuragsahu-control-center-secret-k
 // ─── Default Fallback Payloads (Used if Database is Cold/Empty) ──────────────
 
 const DEFAULT_HERO = {
-  mainHeading: 'ENGINEERING INTELLIGENT SYSTEMS',
-  highlightedText: 'FROM ZERO TO PRODUCTION',
-  subtitle: 'Anurag Sahu — Computer Science Engineer & Full-Stack Developer',
+  mainHeading: 'Building Modern Full-Stack Systems',
+  highlightedText: '& Practical AI Solutions',
+  subtitle:
+    "Hi, I'm Anurag Sahu — a Computer Science sophomore specializing in AI & ML. I build clean, performant full-stack web applications and explore practical machine learning models.",
   description:
-    'Passionate about building production-grade full-stack platforms, deterministic financial engines, and modern distributed systems.',
-  primaryCtaLabel: 'Explore Flagship AI System',
+    "Hi, I'm Anurag Sahu — a Computer Science sophomore specializing in AI & ML. I build clean, performant full-stack web applications and explore practical machine learning models.",
+  primaryCtaLabel: 'Explore Flagship System',
   primaryCtaUrl: '/AI-FINANCE-CONTROLLER',
   secondaryCtaLabel: 'Download Resume',
   secondaryCtaUrl: '/assets/resume.pdf',
   profileImage: '/assets/anurag-portrait-sm.webp',
-  availabilityBadge: 'OPEN TO INTERNSHIP OPPORTUNITIES',
-  supportingText: 'B.Tech CSE (AI & ML) • 2022–2026',
+  availabilityBadge: 'OPEN TO SUMMER 2026 INTERNSHIPS',
+  supportingText: 'B.Tech CSE (AI & ML) • 2024–2028',
   isVisible: true,
 };
 
@@ -60,27 +61,12 @@ const DEFAULT_PROFILE = {
 const DEFAULT_ABOUT = {
   title: 'About Me',
   description:
-    'Passionate about building modern web experiences and continuously growing as a software developer.',
+    "Computer Science sophomore specializing in AI & ML. I build modern full-stack web applications, scalable backend systems, and explore practical machine learning models. Passionate about clean architecture, algorithms, and crafting seamless digital experiences. Let's build something incredible together!",
   personalNarrative: [
     {
       id: 'p1',
-      text: "Hi, I'm Anurag Sahu, a B.Tech student in Computer Science & Engineering (AI & ML) at Maharana Pratap Institute of Professional Studies.",
-      highlightWords: ['Anurag Sahu', 'Computer Science & Engineering (AI & ML)', 'Maharana Pratap Institute of Professional Studies'],
-    },
-    {
-      id: 'p2',
-      text: 'I am passionate about building modern, scalable web applications and continuously improving my problem-solving skills.',
-      highlightWords: ['modern, scalable web applications'],
-    },
-    {
-      id: 'p3',
-      text: 'My current focus is Full-Stack Development, where I work with both frontend and backend technologies to create responsive, efficient, and user-centric solutions.',
-      highlightWords: ['Full-Stack Development'],
-    },
-    {
-      id: 'p4',
-      text: 'I enjoy learning new technologies, taking on challenging projects, and writing clean, maintainable code.',
-      highlightWords: ['clean, maintainable code'],
+      text: "Computer Science sophomore specializing in AI & ML. I build modern full-stack web applications, scalable backend systems, and explore practical machine learning models. Passionate about clean architecture, algorithms, and crafting seamless digital experiences. Let's build something incredible together!",
+      highlightWords: ['Computer Science sophomore', 'AI & ML', 'full-stack web applications', 'scalable backend systems'],
     },
   ],
   learningJourney:

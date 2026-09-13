@@ -127,17 +127,26 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.01em;
 }
 
-/* Reel Signature Hero-Heading Chrome Gradient */
+/* Reel Signature Hero-Heading Platinum Chrome Gradient with Pure White Fallback */
 .hero-heading {
   font-family: var(--font-kanit);
   font-weight: 900;
   text-transform: none;
-  background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -0.02em;
-  line-height: 1;
+  color: #FFFFFF;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  word-break: normal;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .hero-heading {
+    background: linear-gradient(180deg, #FFFFFF 15%, #F1F5F9 55%, #CBD5E1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 
@@ -170,11 +179,13 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-kanit);
   font-weight: 900;
   text-transform: none;
+  color: #fbbf24;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
   background: linear-gradient(180deg, #ffffff 0%, #fde68a 35%, #fbbf24 70%, #d97706 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: -0.02em;
   display: inline-block;
   filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.35));
 }
@@ -467,8 +478,10 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-kanit);
   font-size: clamp(2.4rem, 5.5vw, 4.2rem);
   font-weight: 900;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .hero-subtitle {
@@ -1001,13 +1014,14 @@ footer {
   .hero-title {
     order: 2 !important;
     font-size: clamp(1.68rem, 7.2vw, 2.15rem) !important;
-    line-height: 1.15 !important;
-    letter-spacing: -0.015em !important;
+    line-height: 1.22 !important;
+    letter-spacing: normal !important;
     word-spacing: normal !important;
     text-wrap: balance !important;
     text-align: center !important;
-    margin: 2px 0 0 0 !important;
+    margin: 4px 0 !important;
     padding: 0 4px !important;
+    width: 100% !important;
   }
 
   /* STEP 3: Hero Portrait Showcase Card (Human Touch Right Below Headline) */
@@ -1109,12 +1123,14 @@ footer {
   .hero-heading,
   .heading-gradient {
     font-size: clamp(1.45rem, 6.5vw, 1.85rem) !important;
-    margin-bottom: 4px !important;
-    line-height: 1.15 !important;
-    letter-spacing: -0.015em !important;
+    margin-bottom: 6px !important;
+    line-height: 1.22 !important;
+    letter-spacing: normal !important;
     word-spacing: normal !important;
     text-wrap: balance !important;
-    display: inline-block !important;
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
   }
   .section-header p {
     font-size: 0.88rem !important;
@@ -1366,7 +1382,7 @@ footer {
   }
   .hero-title {
     font-size: clamp(1.75rem, 3.2vw, 2.35rem) !important;
-    line-height: 1.12 !important;
+    line-height: 1.18 !important;
   }
   .hero-subtitle {
     font-size: 0.9rem !important;
@@ -1405,14 +1421,11 @@ footer {
   }
   .hero-title {
     font-size: clamp(1.55rem, 2.8vw, 1.95rem) !important;
-    line-height: 1.1 !important;
+    line-height: 1.18 !important;
   }
   .hero-subtitle {
-    display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
-    font-size: 0.85rem !important;
+    font-size: 0.88rem !important;
+    line-height: 1.55 !important;
   }
   .hero-left-column {
     gap: 8px !important;
