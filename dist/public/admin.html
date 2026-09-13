@@ -346,6 +346,19 @@
     .cyber-card-glow {
       animation: cyberGlowPulse 3.5s ease-in-out infinite;
     }
+    @keyframes funnyShake {
+      0%   { transform: scale(1) translateX(0); }
+      15%  { transform: scale(1) translateX(-10px) rotate(-2deg); }
+      30%  { transform: scale(1) translateX(10px) rotate(2deg); }
+      45%  { transform: scale(1) translateX(-8px) rotate(-1deg); }
+      60%  { transform: scale(1) translateX(8px) rotate(1deg); }
+      75%  { transform: scale(1) translateX(-4px); }
+      90%  { transform: scale(1) translateX(4px); }
+      100% { transform: scale(1) translateX(0); }
+    }
+    #funny-roast-msg {
+      transition: opacity 0.25s ease;
+    }
     .cyber-input {
       background: #041c20;
       border: 1.5px solid #00e6c3;
@@ -689,6 +702,73 @@
 
     </div>
 
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- FUNNY FORGOT PASSWORD MODAL                                  -->
+  <!-- ============================================================ -->
+  <div id="funny-forgot-modal" class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4" onclick="if(event.target===this)closeFunnyForgotModal()">
+    <!-- Backdrop with blur -->
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+
+    <!-- Modal Box -->
+    <div id="funny-forgot-box" class="relative z-10 max-w-sm w-full bg-[#020d0f] border-2 border-rose-500 rounded-2xl overflow-hidden shadow-[0_0_60px_rgba(244,63,94,0.6)] transform scale-95 opacity-0 transition-all duration-300">
+
+      <!-- Flashing red danger top bar -->
+      <div class="bg-rose-600 px-4 py-2 flex items-center gap-2 animate-pulse">
+        <span class="text-white font-mono text-xs font-bold tracking-widest">⚠️ SYSTEM ALERT // CRITICAL SECURITY VIOLATION</span>
+      </div>
+
+      <!-- Scanline overlay -->
+      <div class="absolute inset-0 pointer-events-none opacity-10" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(244,63,94,0.3) 2px, rgba(244,63,94,0.3) 4px);"></div>
+
+      <!-- Content -->
+      <div class="relative p-6 text-center space-y-4">
+
+        <!-- Giant emoji drama -->
+        <div id="funny-emoji-spin" class="text-6xl select-none" style="display:inline-block">💀</div>
+
+        <!-- Main message -->
+        <div class="space-y-1">
+          <p class="text-rose-400 font-mono text-[10px] tracking-[0.3em] uppercase">Password Recovery Request Detected</p>
+          <h2 class="text-white font-mono font-black text-xl leading-tight">
+            AUKAAT MEIN RAHO
+          </h2>
+          <p class="text-rose-300 font-mono font-bold text-sm mt-1">
+            Chote Nahi &nbsp;•&nbsp; G**ND Pe Padenge Sotte 🥢
+          </p>
+        </div>
+
+        <!-- Separator -->
+        <div class="flex items-center gap-2 my-2">
+          <div class="flex-1 h-px bg-rose-800/60"></div>
+          <span class="text-rose-600 font-mono text-xs">[ CASE FILE #420-BHOOL-GAYE ]</span>
+          <div class="flex-1 h-px bg-rose-800/60"></div>
+        </div>
+
+        <!-- Roast messages cycling -->
+        <div id="funny-roast-msg" class="bg-rose-950/60 border border-rose-700/50 rounded-xl p-4 font-mono text-sm text-rose-200 leading-relaxed min-h-[80px] flex items-center justify-center transition-all duration-500">
+          Itna important password tha toh yaad kyun nahi rakha bhai... 🫠
+        </div>
+
+        <!-- Footer verdict -->
+        <div class="bg-[#0a0a0a] border border-rose-900/50 rounded-lg p-3 text-left space-y-1">
+          <p class="text-rose-600 font-mono text-[10px] font-bold uppercase tracking-wider">🔒 System Verdict:</p>
+          <p class="text-slate-400 font-mono text-xs">Password recovery sirf ek banda kar sakta hai — aur woh tum nahi ho. <span class="text-rose-400 font-bold">Anurag Sahu ko call karo.</span></p>
+        </div>
+
+        <!-- Close button -->
+        <button
+          onclick="closeFunnyForgotModal()"
+          class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-mono font-bold text-sm rounded-xl tracking-widest uppercase transition-all active:scale-95 shadow-[0_0_20px_rgba(244,63,94,0.5)] hover:shadow-[0_0_35px_rgba(244,63,94,0.8)]"
+        >
+          Theek Hai Bhai, Yaad Kar Lunga 😔
+        </button>
+
+        <!-- Small shame counter -->
+        <p id="funny-shame-count" class="text-rose-900 font-mono text-[10px]">Shame counter: <span id="shame-num">0</span> logon ne bhool gaya is session mein</p>
+      </div>
+    </div>
   </div>
 
   <!-- ============================================================ -->
@@ -3877,8 +3957,82 @@
       }
     }
 
+    let _shameCount = 0;
+    const _roastLines = [
+      'Itna important password tha toh yaad kyun nahi rakha bhai... 🫠',
+      'Teri ma ne bola tha — "beta password likh ke rakh." Suna nahi na? 🤦',
+      'Ladki ka number yaad rahta hai, password nahi? Priority check karo! 😭',
+      'Main sirf ek banda hoon jo password jaanta hai — Anurag Sahu. Woh main hoon. Tum nahi. 💅',
+      'Password bhool gaye? Bhai, apna janam nahi bhoolte, password bhool gaye? 🐸',
+      'SECURITY BREACH DETECTED... just kidding, tu genuinely bhool gaya hai lmao 💀',
+      'Itne saal padding mein, password nahi yaad? Technology se darr lagta hai kya? 😂',
+      'Google mein "how to remember passwords" search kar le. Wahan bhi answer nahi milega. 🫡',
+      'Tu password bhool gaya — yeh system note kar lega. Dono ke beech mat aana. 🫵',
+      'Teri aukat mein nahi hai yeh password recover karna. CASE CLOSED. 🏛️',
+    ];
+    let _roastIdx = 0;
+    let _roastInterval = null;
+
     function showForgotPasswordModal() {
-      showToast('Security Alert: Master credentials belong solely to site owner Anurag Sahu. Contact owner directly for recovery.', 'info');
+      _shameCount++;
+      const modal = document.getElementById('funny-forgot-modal');
+      const box = document.getElementById('funny-forgot-box');
+      const shameNum = document.getElementById('shame-num');
+      const roastEl = document.getElementById('funny-roast-msg');
+      const emojiEl = document.getElementById('funny-emoji-spin');
+
+      if (!modal || !box) return;
+
+      _roastIdx = Math.floor(Math.random() * _roastLines.length);
+      if (roastEl) roastEl.textContent = _roastLines[_roastIdx];
+      if (shameNum) shameNum.textContent = _shameCount;
+
+      const emojis = ['💀','🤡','😂','😭','🫠','🥲','👻','🫵','😤','🤦'];
+      if (emojiEl) emojiEl.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+      modal.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          box.style.transform = 'scale(1)';
+          box.style.opacity = '1';
+        });
+      });
+
+      if (_roastInterval) clearInterval(_roastInterval);
+      _roastInterval = setInterval(() => {
+        if (!document.getElementById('funny-forgot-modal')?.classList.contains('hidden')) {
+          _roastIdx = (_roastIdx + 1) % _roastLines.length;
+          if (roastEl) {
+            roastEl.style.opacity = '0';
+            setTimeout(() => {
+              roastEl.textContent = _roastLines[_roastIdx];
+              roastEl.style.opacity = '1';
+            }, 250);
+          }
+        } else {
+          clearInterval(_roastInterval);
+        }
+      }, 2500);
+
+      setTimeout(() => {
+        if (box) {
+          box.style.animation = 'funnyShake 0.5s ease-in-out';
+          setTimeout(() => { box.style.animation = ''; }, 500);
+        }
+      }, 800);
+    }
+
+    function closeFunnyForgotModal() {
+      const modal = document.getElementById('funny-forgot-modal');
+      const box = document.getElementById('funny-forgot-box');
+      if (!modal || !box) return;
+      if (_roastInterval) { clearInterval(_roastInterval); _roastInterval = null; }
+      box.style.transform = 'scale(0.9)';
+      box.style.opacity = '0';
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        box.style.transform = 'scale(0.95)';
+      }, 250);
     }
 
     function handleBiometricsClick() {
