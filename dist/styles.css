@@ -733,50 +733,188 @@ footer {
 }
 
 /* ==============================================================
-   14. MOBILE RESPONSIVE ADAPTATION (max-width: 991px)
+   14. PHONE OPTIMIZATION — Readability & Layout Fix
    ============================================================== */
+
+/* ── Tablet (≤ 991px): Nav + base fixes ── */
 @media (max-width: 991px) {
   *, *::before, *::after { box-sizing: border-box !important; }
   html, body { overflow-x: hidden !important; width: 100% !important; max-width: 100% !important; }
-  .container { padding-left: 16px !important; padding-right: 16px !important; width: 100% !important; max-width: 100% !important; }
-  section { padding: 50px 0 !important; }
 
+  .container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Navbar: proper width, no cramping */
   #hud-header {
     top: 8px !important;
-    width: 94% !important;
-    max-width: 440px !important;
-    padding: 8px 12px !important;
+    width: 96% !important;
+    max-width: 96vw !important;
+    padding: 8px 14px !important;
     border-radius: 9999px !important;
   }
 
+  /* Nav links: horizontal scroll (hidden scrollbar) */
   .hud-nav {
     overflow-x: auto !important;
     white-space: nowrap !important;
-    scrollbar-width: none;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
   }
-  .hud-nav::-webkit-scrollbar { display: none; }
+  .hud-nav::-webkit-scrollbar { display: none !important; }
 
   .hud-nav a {
     font-size: 0.72rem !important;
-    padding: 5px 12px !important;
+    padding: 5px 10px !important;
   }
 
+  /* Red pill: smaller on tablet */
+  #red-typewriter-pill {
+    font-size: 0.72rem !important;
+    padding: 4px 10px !important;
+    margin-left: 6px !important;
+  }
+
+  /* Hero */
   #hero {
-    padding-top: 100px !important;
+    padding-top: 90px !important;
     text-align: center !important;
   }
-
-  .hero-title {
-    font-size: clamp(1.8rem, 6.5vw, 2.5rem) !important;
-  }
-
-  .hero-actions {
-    justify-content: center !important;
-  }
-
+  .hero-actions { justify-content: center !important; }
   .btn-primary, .reel-btn, .btn-secondary {
     width: 100% !important;
     justify-content: center !important;
+  }
+}
+
+/* ── Phone (≤ 768px): Stack hero, fix grids, readable text ── */
+@media (max-width: 768px) {
+
+  /* Remove excessive letter-spacing that creates visual "gaps" in titles */
+  h1, h2, h3, h4 {
+    letter-spacing: -0.01em !important;
+  }
+  .section-title, .heading-gradient {
+    letter-spacing: -0.01em !important;
+    line-height: 1.05 !important;
+  }
+
+  /* Section titles: tighter, no extra gaps */
+  .section-header {
+    margin-bottom: 24px !important;
+  }
+  .section-header .section-title {
+    font-size: clamp(1.6rem, 7vw, 2rem) !important;
+    margin-bottom: 8px !important;
+  }
+  .section-header p {
+    font-size: 0.875rem !important;
+    line-height: 1.55 !important;
+    max-width: 100% !important;
+  }
+
+  /* Section vertical spacing */
+  section { padding: 44px 0 !important; }
+
+  /* ── HERO: Stack portrait below text ── */
+  .hero-grid-container {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .hero-left-column { order: 1 !important; }
+  .hero-portrait-showcase-container { order: 2 !important; }
+
+  /* Hero title: no extreme letter-spacing */
+  .hero-title {
+    font-size: clamp(1.75rem, 7vw, 2.4rem) !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.05 !important;
+  }
+  .hero-subtitle {
+    font-size: clamp(0.9rem, 3.5vw, 1rem) !important;
+    line-height: 1.6 !important;
+    max-width: 100% !important;
+  }
+
+  /* Portrait: appropriate height on phone */
+  .portrait-inner-frame {
+    height: clamp(240px, 55vw, 340px) !important;
+  }
+
+  /* ── GLASS PANELS: Less padding on phone ── */
+  .glass-panel { padding: 20px !important; }
+
+  /* ── SKILLS grid: already auto-fit, just ensure gap reduction ── */
+  .flip-card { height: 190px !important; }
+
+  /* ── PROJECTS: Title + badge stack nicely ── */
+  #roadmap .glass-panel > div:first-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  /* ── CONTACT: Single column ── */
+  #contact > div { grid-template-columns: 1fr !important; }
+
+  /* Form inputs: 16px prevents iOS auto-zoom */
+  input[type="text"],
+  input[type="email"],
+  textarea {
+    font-size: 16px !important;
+    width: 100% !important;
+  }
+
+  /* ── FOOTER: Stack vertically ── */
+  .footer-content {
+    flex-direction: column !important;
+    text-align: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+}
+
+/* ── Small phones (≤ 480px): Extra tightening ── */
+@media (max-width: 480px) {
+  /* Hide about corner deco (they overflow on tiny screens) */
+  #about-deco-tl, #about-deco-tr,
+  #about-deco-bl, #about-deco-br {
+    display: none !important;
+  }
+
+  /* Hero title even tighter */
+  .hero-title {
+    font-size: clamp(1.5rem, 8vw, 1.85rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  /* Portrait smaller */
+  .portrait-inner-frame {
+    height: clamp(200px, 65vw, 260px) !important;
+  }
+
+  /* Red typewriter pill: hide on very small — saves space */
+  #red-typewriter-pill { display: none !important; }
+
+  /* Section spacing tighter */
+  section { padding: 36px 0 !important; }
+
+  /* Section title */
+  .section-header .section-title {
+    font-size: clamp(1.4rem, 8vw, 1.75rem) !important;
+  }
+  .section-header { margin-bottom: 20px !important; }
+
+  /* Toast full-width */
+  #toast {
+    bottom: 12px !important;
+    right: 12px !important;
+    left: 12px !important;
+    text-align: center !important;
   }
 }
 
