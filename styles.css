@@ -743,10 +743,16 @@ footer {
 }
 
 /* ==============================================================
-   14. PHONE & TABLET OPTIMIZATION — Zero Overflow & Perfect Readability
+   14. MOBILE RESPONSIVE ENGINE — Luxury Vertical Hierarchy
    ============================================================== */
 
-/* ── Tablet & Below (≤ 991px) ── */
+/* Base Desktop State: Hide Mobile Nav Components */
+.hud-mobile-btn,
+.hud-mobile-dropdown {
+  display: none;
+}
+
+/* ── Tablet & Small Laptops (≤ 991px) ── */
 @media (max-width: 991px) {
   *, *::before, *::after {
     box-sizing: border-box !important;
@@ -758,8 +764,8 @@ footer {
   }
 
   .container {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
     width: 100% !important;
     max-width: 100% !important;
   }
@@ -771,57 +777,28 @@ footer {
 
   #hud-header {
     top: 10px !important;
-    width: calc(100% - 24px) !important;
-    max-width: 600px !important;
-    padding: 6px 14px !important;
-    border-radius: 9999px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-  }
-
-  #hud-header nav {
-    min-width: 0 !important;
-    flex: 1 1 auto !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-    margin-left: 8px !important;
-  }
-  #hud-header nav::-webkit-scrollbar {
-    display: none !important;
+    width: calc(100% - 28px) !important;
+    max-width: 680px !important;
+    padding: 8px 16px !important;
   }
 
   .hud-nav {
     display: flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-    white-space: nowrap !important;
-    list-style: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    gap: 6px !important;
   }
-
   .hud-nav a {
-    font-size: 0.72rem !important;
-    padding: 5px 10px !important;
-  }
-
-  #hero {
-    padding-top: 80px !important;
-    text-align: center !important;
-  }
-  .hero-actions {
-    justify-content: center !important;
+    font-size: 0.75rem !important;
+    padding: 5px 12px !important;
   }
 }
 
-/* ── Mobile Phone & Small Tablet (≤ 768px): Complete Zero-Overflow Optimization ── */
+/* ── Mobile Phones & Small Tablets (≤ 768px): Full Masterpiece Layout ── */
 @media (max-width: 768px) {
   html, body {
     overflow-x: hidden !important;
     width: 100% !important;
     max-width: 100% !important;
+    position: relative !important;
   }
 
   .container {
@@ -833,55 +810,309 @@ footer {
   }
 
   section {
-    padding: 28px 0 !important;
+    padding: 30px 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     overflow: hidden !important;
   }
 
-  /* ── NAVBAR: Sleek mobile pill with horizontal scroll ── */
+  /* ── 1. LUXURY MOBILE FLOATING HUD NAVBAR ── */
   #hud-header {
-    top: 8px !important;
-    width: calc(100% - 20px) !important;
+    top: 10px !important;
+    width: calc(100% - 24px) !important;
     max-width: 480px !important;
-    padding: 6px 12px !important;
+    padding: 8px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-radius: 9999px !important;
+    background: rgba(12, 10, 14, 0.88) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border: 1px solid rgba(251, 191, 36, 0.28) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(251, 191, 36, 0.12) !important;
+    z-index: 10000 !important;
   }
+
   .hud-logo {
-    font-size: 0.9rem !important;
-    gap: 5px !important;
+    font-size: 0.95rem !important;
+    gap: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
     flex-shrink: 0 !important;
   }
   .hud-logo-glyph {
-    font-size: 1rem !important;
-  }
-  .hud-nav a {
-    font-size: 0.68rem !important;
-    padding: 4px 8px !important;
+    font-size: 1.05rem !important;
   }
 
-  /* ── ZERO-GAP TITLE TYPOGRAPHY ── */
-  h1, h2, h3, h4,
-  .section-title,
-  .hero-title,
-  .hero-heading,
-  .heading-gradient {
+  .hud-desktop-nav,
+  .hud-actions,
+  #red-typewriter-pill {
+    display: none !important;
+  }
+
+  /* Sleek Glass Hamburger Toggle */
+  .hud-mobile-btn {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 4px !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 12px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important;
+  }
+  .hud-mobile-btn:active {
+    background: rgba(251, 191, 36, 0.2) !important;
+    border-color: rgba(251, 191, 36, 0.5) !important;
+  }
+  .hud-ham-bar {
+    display: block !important;
+    width: 18px !important;
+    height: 2px !important;
+    background: #ffffff !important;
+    border-radius: 2px !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .hud-mobile-btn.is-active .hud-ham-bar:nth-child(1) {
+    transform: translateY(6px) rotate(45deg) !important;
+    background: #fbbf24 !important;
+  }
+  .hud-mobile-btn.is-active .hud-ham-bar:nth-child(2) {
+    opacity: 0 !important;
+    transform: scaleX(0) !important;
+  }
+  .hud-mobile-btn.is-active .hud-ham-bar:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg) !important;
+    background: #fbbf24 !important;
+  }
+
+  /* Floating Glass Dropdown Panel */
+  .hud-mobile-dropdown {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    position: fixed !important;
+    top: 64px !important;
+    left: 50% !important;
+    transform: translateX(-50%) translateY(-10px) !important;
+    width: calc(100% - 24px) !important;
+    max-width: 480px !important;
+    z-index: 9999 !important;
+    background: rgba(12, 10, 14, 0.95) !important;
+    backdrop-filter: blur(28px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+    border: 1px solid rgba(251, 191, 36, 0.35) !important;
+    border-radius: 22px !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.92), 0 0 35px rgba(251, 191, 36, 0.18) !important;
+    padding: 10px !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  }
+  .hud-mobile-dropdown.is-open {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateX(-50%) translateY(0) !important;
+  }
+  .mobile-nav-link {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 12px 18px !important;
+    border-radius: 14px !important;
+    color: #e2e8f0 !important;
+    text-decoration: none !important;
+    font-family: var(--font-kanit) !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+    transition: all 0.18s ease !important;
+  }
+  .mobile-nav-link:active,
+  .mobile-nav-link:hover {
+    background: rgba(251, 191, 36, 0.14) !important;
+    color: #fbbf24 !important;
+    transform: translateX(4px) !important;
+  }
+  .mobile-nav-dot {
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    background: rgba(251, 191, 36, 0.35) !important;
+    transition: all 0.2s ease !important;
+  }
+  .mobile-nav-link:active .mobile-nav-dot,
+  .mobile-nav-link:hover .mobile-nav-dot {
+    background: #fbbf24 !important;
+    box-shadow: 0 0 10px #fbbf24 !important;
+    transform: scale(1.3) !important;
+  }
+
+  /* ── 2. HERO SECTION: VERTICAL PROGRESSION (The Signature Mobile Layout) ── */
+  #hero {
+    padding-top: 72px !important;
+    padding-bottom: 24px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    min-height: auto !important;
+  }
+
+  .hero-grid-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  /* Unroll the left column so its children flow naturally in single vertical order */
+  .hero-left-column {
+    display: contents !important;
+  }
+
+  /* STEP 1: Tagline Badge */
+  .hero-tagline {
+    order: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 5px 14px !important;
+    border-radius: 9999px !important;
+    background: rgba(6, 182, 212, 0.08) !important;
+    border: 1px solid rgba(6, 182, 212, 0.28) !important;
+    font-size: 0.76rem !important;
+    margin: 0 auto !important;
+    gap: 6px !important;
+    text-align: center !important;
+  }
+
+  /* STEP 2: Bold Hero Headline */
+  .hero-title {
+    order: 2 !important;
+    font-size: clamp(1.68rem, 7.2vw, 2.15rem) !important;
+    line-height: 1.15 !important;
     letter-spacing: -0.015em !important;
     word-spacing: normal !important;
-    line-height: 1.15 !important;
     text-wrap: balance !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    text-align: center !important;
+    margin: 2px 0 0 0 !important;
+    padding: 0 4px !important;
   }
 
-  /* ── COMPACT SECTION HEADERS (Zero Gap Between Title & Subtitle) ── */
+  /* STEP 3: Hero Portrait Showcase Card (Human Touch Right Below Headline) */
+  .hero-portrait-showcase-container {
+    order: 3 !important;
+    width: 100% !important;
+    max-width: 280px !important;
+    margin: 6px auto 4px auto !important;
+  }
+  .hero-portrait-showcase-container .glass-panel {
+    padding: 10px !important;
+    border-radius: 22px !important;
+    border-color: rgba(6, 182, 212, 0.35) !important;
+    box-shadow: 0 10px 30px rgba(6, 182, 212, 0.18) !important;
+  }
+  .portrait-inner-frame {
+    height: 235px !important;
+    border-radius: 16px !important;
+  }
+  .hero-portrait-showcase-container div[style*="grid-template-columns: repeat(3"] {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+    margin-top: 8px !important;
+    margin-bottom: 2px !important;
+  }
+  .hero-portrait-showcase-container div[style*="grid-template-columns: repeat(3"] a,
+  .hero-portrait-showcase-container div[style*="grid-template-columns: repeat(3"] button {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 7px 4px !important;
+    font-size: 0.72rem !important;
+    border-radius: 10px !important;
+    justify-content: center !important;
+    gap: 4px !important;
+  }
+
+  /* STEP 4: Bio / Subtitle */
+  .hero-subtitle {
+    order: 4 !important;
+    font-size: 0.92rem !important;
+    line-height: 1.6 !important;
+    color: var(--color-text-light) !important;
+    text-align: center !important;
+    max-width: 100% !important;
+    margin: 4px auto !important;
+    padding: 0 6px !important;
+  }
+
+  /* STEP 5: High-Impact Action Buttons */
+  .hero-actions {
+    order: 5 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    width: 100% !important;
+    justify-content: center !important;
+    margin: 4px 0 !important;
+  }
+  .hero-actions .btn-primary,
+  .hero-actions .reel-btn,
+  .hero-actions .btn-secondary {
+    flex: 1 1 135px !important;
+    max-width: 195px !important;
+    min-height: 44px !important;
+    padding: 10px 16px !important;
+    font-size: 0.82rem !important;
+    justify-content: center !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    border-radius: 9999px !important;
+  }
+
+  /* STEP 6: Quick Facts Compact Grid */
+  .hero-left-column .glass-panel,
+  .hero-grid-container > .glass-panel {
+    order: 6 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px 14px !important;
+    border-radius: 18px !important;
+    margin-top: 4px !important;
+  }
+  .hero-left-column .glass-panel div[style*="repeat(auto-fit"] {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* ── 3. ZERO-GAP SECTION HEADERS ── */
   .section-header {
     margin-bottom: 14px !important;
     text-align: center !important;
     width: 100% !important;
   }
-  .section-header .section-title {
+  .section-header .section-title,
+  .section-title,
+  .hero-heading,
+  .heading-gradient {
     font-size: clamp(1.45rem, 6.5vw, 1.85rem) !important;
     margin-bottom: 4px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.015em !important;
+    word-spacing: normal !important;
+    text-wrap: balance !important;
     display: inline-block !important;
   }
   .section-header p {
@@ -892,110 +1123,12 @@ footer {
     padding: 0 4px !important;
   }
 
-  /* ── HERO SECTION ── */
-  #hero {
-    padding-top: 68px !important;
-    padding-bottom: 20px !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    min-height: auto !important;
-    text-align: center !important;
-  }
-  .hero-grid-container {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 16px !important;
-    width: 100% !important;
-  }
-  .hero-left-column {
-    order: 1 !important;
-    width: 100% !important;
-    gap: 12px !important;
-    align-items: center !important;
-  }
-  .hero-tagline {
-    font-size: 0.78rem !important;
-    margin-bottom: 0 !important;
-  }
-  .hero-title {
-    font-size: clamp(1.6rem, 6.8vw, 2.1rem) !important;
-    line-height: 1.15 !important;
-    margin: 0 !important;
-  }
-  .hero-subtitle {
-    font-size: 0.92rem !important;
-    line-height: 1.55 !important;
-    color: var(--color-text-light) !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-  }
-  .hero-actions {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 10px !important;
-    width: 100% !important;
-    justify-content: center !important;
-  }
-  .hero-actions .btn-primary,
-  .hero-actions .reel-btn,
-  .hero-actions .btn-secondary {
-    flex: 1 1 135px !important;
-    max-width: 200px !important;
-    min-height: 44px !important;
-    padding: 10px 16px !important;
-    font-size: 0.8rem !important;
-    justify-content: center !important;
-    display: inline-flex !important;
-    align-items: center !important;
-  }
-  .hero-left-column .glass-panel {
-    padding: 12px 14px !important;
-    margin-top: 4px !important;
-    width: 100% !important;
-  }
-  .hero-left-column .glass-panel div[style*="repeat(auto-fit"] {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px !important;
-  }
-
-  /* Hero portrait showcase */
-  .hero-portrait-showcase-container {
-    order: 2 !important;
-    width: 100% !important;
-    max-width: 320px !important;
-    margin: 0 auto !important;
-  }
-  .hero-portrait-showcase-container .glass-panel {
-    padding: 12px !important;
-    border-radius: 20px !important;
-  }
-  .portrait-inner-frame {
-    height: clamp(230px, 52vw, 300px) !important;
-  }
-  .hero-portrait-showcase-container div[style*="grid-template-columns: repeat(3"] {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 6px !important;
-    margin-top: 10px !important;
-  }
-  .hero-portrait-showcase-container div[style*="grid-template-columns: repeat(3"] a,
-  .hero-portrait-showcase-container div[style*="grid-template-columns: repeat(3"] button {
-    flex: 1 1 0 !important;
-    min-width: 0 !important;
-    padding: 8px 4px !important;
-    font-size: 0.72rem !important;
-    justify-content: center !important;
-    gap: 4px !important;
-  }
-
-  /* ── ABOUT ME SECTION ── */
+  /* ── 4. ABOUT ME SECTION ── */
   #aboutme {
     padding: 28px 0 !important;
   }
   #aboutme > div[style*="max-width: 896px"] {
-    gap: 16px !important;
+    gap: 14px !important;
     width: 100% !important;
     padding: 0 4px !important;
   }
@@ -1004,9 +1137,10 @@ footer {
     width: 100% !important;
   }
   #about-heading {
-    font-size: clamp(1.5rem, 6.5vw, 2rem) !important;
+    font-size: clamp(1.5rem, 6.5vw, 1.95rem) !important;
     line-height: 1.15 !important;
     margin: 0 0 4px 0 !important;
+    text-align: center !important;
   }
   #about-char-para {
     font-size: 0.92rem !important;
@@ -1018,6 +1152,13 @@ footer {
   #aboutme div[style*="margin-top: -20px"] {
     margin-top: 0 !important;
     gap: 6px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+  .tag-mini {
+    font-size: 0.72rem !important;
+    padding: 4px 10px !important;
   }
   #about-deco-tl, #about-deco-tr,
   #about-deco-bl, #about-deco-br {
@@ -1032,13 +1173,14 @@ footer {
     justify-content: center !important;
   }
 
-  /* ── SKILLS SECTION ── */
+  /* ── 5. SKILLS SECTION (Engineering Lab) ── */
   #skills {
     margin-bottom: 0 !important;
     padding: 28px 0 !important;
   }
   #skills > .glass-panel {
     padding: 14px !important;
+    border-radius: 20px !important;
   }
   #skills div[style*="grid-template-columns: repeat(auto-fit, minmax(260px"] {
     display: grid !important;
@@ -1050,12 +1192,10 @@ footer {
   }
   .flip-card-front, .flip-card-back {
     padding: 14px !important;
-  }
-  .topic-watermark-icon {
-    font-size: 4rem !important;
+    border-radius: 16px !important;
   }
 
-  /* ── CODING PROFILES ── */
+  /* ── 6. CODING PROFILES ── */
   #coding-profiles {
     padding-top: 0 !important;
     margin-bottom: 0 !important;
@@ -1063,6 +1203,7 @@ footer {
   }
   #coding-profiles > .glass-panel {
     padding: 14px !important;
+    border-radius: 20px !important;
   }
   #coding-profiles div[style*="grid-template-columns: repeat(auto-fit, minmax(260px"] {
     display: grid !important;
@@ -1071,10 +1212,11 @@ footer {
   }
   #coding-profiles a.glass-panel {
     padding: 14px !important;
+    border-radius: 16px !important;
     gap: 12px !important;
   }
 
-  /* ── PROJECTS SHOWCASE ── */
+  /* ── 7. PROJECTS SHOWCASE ── */
   #roadmap {
     padding: 28px 0 !important;
   }
@@ -1089,6 +1231,7 @@ footer {
   #roadmap .glass-panel {
     padding: 16px !important;
     margin-bottom: 14px !important;
+    border-radius: 20px !important;
   }
   #roadmap .glass-panel > div:first-child {
     display: flex !important;
@@ -1117,7 +1260,7 @@ footer {
     font-size: 0.75rem !important;
   }
 
-  /* ── CONTACT SECTION ── */
+  /* ── 8. CONTACT SECTION ── */
   #contact {
     padding-top: 28px !important;
     padding-bottom: 36px !important;
@@ -1130,6 +1273,7 @@ footer {
   }
   #contact .glass-panel {
     padding: 16px !important;
+    border-radius: 20px !important;
   }
   #contact div[style*="grid-template-columns: repeat(3"] {
     display: flex !important;
@@ -1142,13 +1286,14 @@ footer {
     min-width: 0 !important;
     padding: 8px 4px !important;
     font-size: 0.72rem !important;
+    border-radius: 10px !important;
     justify-content: center !important;
     gap: 4px !important;
   }
   input[type="text"],
   input[type="email"],
   textarea {
-    font-size: 16px !important; /* Prevents iOS auto zoom */
+    font-size: 16px !important; /* Prevents iOS auto-zoom */
     width: 100% !important;
     box-sizing: border-box !important;
   }
@@ -1156,9 +1301,10 @@ footer {
     width: 100% !important;
     min-height: 44px !important;
     justify-content: center !important;
+    border-radius: 14px !important;
   }
 
-  /* ── FOOTER ── */
+  /* ── 9. FOOTER ── */
   footer {
     padding: 24px 0 !important;
   }
@@ -1172,7 +1318,7 @@ footer {
     font-size: 0.78rem !important;
   }
 
-  /* Toast */
+  /* ── 10. TOAST NOTIFICATION ── */
   #toast {
     bottom: 14px !important;
     right: 14px !important;
@@ -1181,18 +1327,19 @@ footer {
   }
 }
 
-/* ── Small phones (≤ 480px) ── */
+/* ── Small Phones (≤ 480px) ── */
 @media (max-width: 480px) {
   .hero-title {
-    font-size: clamp(1.45rem, 7.5vw, 1.85rem) !important;
+    font-size: clamp(1.48rem, 7.5vw, 1.85rem) !important;
   }
   .section-header .section-title {
     font-size: clamp(1.35rem, 7.5vw, 1.65rem) !important;
   }
   .portrait-inner-frame {
-    height: clamp(200px, 58vw, 250px) !important;
+    height: clamp(200px, 58vw, 240px) !important;
   }
 }
+
 
 
 

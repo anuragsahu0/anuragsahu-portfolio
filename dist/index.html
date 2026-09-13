@@ -31,8 +31,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="assets/anurag-portrait-sm.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
   <link rel="preload" as="image" href="assets/anurag-portrait.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
-  <link rel="preload" as="style" href="styles.css?v=20260913_responsive_prod">
-  <link rel="stylesheet" href="styles.css?v=20260913_responsive_prod">
+  <link rel="preload" as="style" href="styles.css?v=20260913_vertical_pro">
+  <link rel="stylesheet" href="styles.css?v=20260913_vertical_pro">
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
   <noscript>
@@ -379,7 +379,7 @@
       <span>ANURAG<span style="color: var(--color-nebula-cyan);">.SAHU</span></span>
     </a>
     
-    <nav aria-label="Main Navigation">
+    <nav aria-label="Main Navigation" class="hud-desktop-nav">
       <ul class="hud-nav font-kanit">
         <li><a href="#hero" class="active">Overview</a></li>
         <li><a href="#aboutme">About Me</a></li>
@@ -396,7 +396,43 @@
         <span id="red-typewriter-text" style="letter-spacing: 0.5px; display: inline-block;">Dream | Grow | Lead</span>
       </div>
     </div>
+
+    <!-- Sleek Mobile Toggle Button (<= 768px only) -->
+    <button id="hud-mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false" class="hud-mobile-btn">
+      <span class="hud-ham-bar"></span>
+      <span class="hud-ham-bar"></span>
+      <span class="hud-ham-bar"></span>
+    </button>
   </header>
+
+  <!-- Floating Glass Dropdown Menu (Mobile Only, drops right beneath the header pill) -->
+  <nav id="hud-mobile-dropdown" class="hud-mobile-dropdown glass-panel" aria-label="Mobile Navigation Menu" aria-hidden="true">
+    <a href="#hero" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>Overview</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+    <a href="#aboutme" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>About Me</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+    <a href="#skills" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>Laboratory</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+    <a href="#coding-profiles" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>Coding Profiles</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+    <a href="#roadmap" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>Projects</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+    <a href="#contact" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>Contact</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+  </nav>
+
 
   <!-- Main Container -->
   <main id="main-content" class="container">
@@ -1242,6 +1278,55 @@
       }
     });
   </script>
+
+  <!-- Sleek Mobile Floating Dropdown Controller -->
+  <script>
+    (function initMobileNav() {
+      const toggleBtn = document.getElementById('hud-mobile-toggle');
+      const dropdown = document.getElementById('hud-mobile-dropdown');
+      if (!toggleBtn || !dropdown) return;
+
+      function openMenu() {
+        dropdown.classList.add('is-open');
+        dropdown.setAttribute('aria-hidden', 'false');
+        toggleBtn.classList.add('is-active');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+      }
+
+      function closeMenu() {
+        dropdown.classList.remove('is-open');
+        dropdown.setAttribute('aria-hidden', 'true');
+        toggleBtn.classList.remove('is-active');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      }
+
+      window.closeMobileDropdown = closeMenu;
+
+      toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (dropdown.classList.contains('is-open')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!dropdown.contains(e.target) && !toggleBtn.contains(e.target)) {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeMenu();
+      });
+
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) closeMenu();
+      }, { passive: true });
+    })();
+  </script>
+
 
   <!-- 3D ROYAL GOLD PARTICLE CANVAS SYSTEM (Three.js) -->
   <script>
