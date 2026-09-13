@@ -1047,19 +1047,19 @@ footer {
     filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.22)) !important;
   }
 
-  /* Floating Stat Glass Badge (Bottom Right) */
+  /* Floating Stat Glass Badge (Mid-Right, matching mockup) */
   .m-stat-glass-badge {
     position: absolute !important;
-    right: 12px !important;
-    bottom: 18px !important;
+    right: 10px !important;
+    bottom: 64px !important;
     z-index: 3 !important;
-    background: rgba(255, 255, 255, 0.88) !important;
-    backdrop-filter: blur(14px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(16px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
     border-radius: 16px !important;
-    padding: 9px 12px !important;
+    padding: 8px 12px !important;
     border: 1px solid rgba(255, 255, 255, 0.95) !important;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1) !important;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12) !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 4px !important;
@@ -1083,35 +1083,33 @@ footer {
     color: #1E293B !important;
   }
 
-  /* Floating Email Pill Badge (Bottom Left) */
+  /* Floating Email Pill Badge (Bottom Left, matching mockup) */
   .m-email-pill-badge {
     position: absolute !important;
     left: 12px !important;
-    bottom: 18px !important;
+    bottom: 14px !important;
     z-index: 3 !important;
-    background: rgba(255, 255, 255, 0.92) !important;
+    background: rgba(255, 255, 255, 0.94) !important;
     backdrop-filter: blur(14px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
     border-radius: 9999px !important;
-    padding: 7px 11px !important;
-    border: 1px solid rgba(249, 115, 22, 0.28) !important;
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08) !important;
-    display: flex !important;
+    padding: 7px 14px !important;
+    border: 1px solid rgba(249, 115, 22, 0.3) !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08) !important;
+    display: inline-flex !important;
     align-items: center !important;
-    gap: 5px !important;
+    gap: 6px !important;
     text-decoration: none !important;
-    max-width: calc(50% - 10px) !important;
+    max-width: fit-content !important;
   }
   .m-email-icon {
-    font-size: 0.8rem !important;
+    font-size: 0.85rem !important;
   }
   .m-email-text {
-    font-size: 0.68rem !important;
+    font-size: 0.72rem !important;
     font-weight: 700 !important;
     color: #EA580C !important;
     white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
   }
 
   /* ── HERO BIO CARD ── */
