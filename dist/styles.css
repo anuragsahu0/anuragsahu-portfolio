@@ -204,6 +204,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn-primary, .reel-btn {
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
   gap: 10px;
   padding: clamp(12px, 2vw, 15px) clamp(28px, 3vw, 40px);
   border-radius: 9999px;
@@ -239,6 +240,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn-secondary {
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
   gap: 10px;
   padding: clamp(12px, 2vw, 15px) clamp(26px, 3vw, 36px);
   border-radius: 9999px;
@@ -476,9 +478,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-title {
   font-family: var(--font-kanit);
-  font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+  font-size: clamp(1.85rem, 3.4vw, 2.75rem);
   font-weight: 900;
-  line-height: 1.18;
+  line-height: 1.22;
   letter-spacing: -0.01em;
   word-break: normal;
   overflow-wrap: break-word;
@@ -1000,21 +1002,22 @@ footer {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 5px 14px !important;
+    padding: 4px 12px !important;
     border-radius: 9999px !important;
     background: rgba(6, 182, 212, 0.08) !important;
     border: 1px solid rgba(6, 182, 212, 0.28) !important;
-    font-size: 0.76rem !important;
+    font-size: 0.70rem !important;
+    white-space: nowrap !important;
     margin: 0 auto !important;
-    gap: 6px !important;
+    gap: 5px !important;
     text-align: center !important;
   }
 
   /* STEP 2: Bold Hero Headline */
   .hero-title {
     order: 2 !important;
-    font-size: clamp(1.68rem, 7.2vw, 2.15rem) !important;
-    line-height: 1.22 !important;
+    font-size: clamp(1.22rem, 5.0vw, 1.55rem) !important;
+    line-height: 1.25 !important;
     letter-spacing: normal !important;
     word-spacing: normal !important;
     text-wrap: balance !important;
@@ -1053,7 +1056,8 @@ footer {
     flex: 1 1 0 !important;
     min-width: 0 !important;
     padding: 7px 4px !important;
-    font-size: 0.72rem !important;
+    font-size: 0.70rem !important;
+    white-space: nowrap !important;
     border-radius: 10px !important;
     justify-content: center !important;
     gap: 4px !important;
@@ -1062,8 +1066,8 @@ footer {
   /* STEP 4: Bio / Subtitle */
   .hero-subtitle {
     order: 4 !important;
-    font-size: 0.92rem !important;
-    line-height: 1.6 !important;
+    font-size: 0.88rem !important;
+    line-height: 1.55 !important;
     color: var(--color-text-light) !important;
     text-align: center !important;
     max-width: 100% !important;
@@ -1077,7 +1081,7 @@ footer {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: wrap !important;
-    gap: 10px !important;
+    gap: 8px !important;
     width: 100% !important;
     justify-content: center !important;
     margin: 4px 0 !important;
@@ -1085,14 +1089,17 @@ footer {
   .hero-actions .btn-primary,
   .hero-actions .reel-btn,
   .hero-actions .btn-secondary {
-    flex: 1 1 135px !important;
-    max-width: 195px !important;
-    min-height: 44px !important;
-    padding: 10px 16px !important;
-    font-size: 0.82rem !important;
+    flex: 1 1 130px !important;
+    max-width: 100% !important;
+    min-height: 40px !important;
+    padding: 8px 12px !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.08em !important;
+    white-space: nowrap !important;
     justify-content: center !important;
     display: inline-flex !important;
     align-items: center !important;
+    gap: 6px !important;
     border-radius: 9999px !important;
   }
 
@@ -1111,6 +1118,10 @@ footer {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px !important;
   }
+  .hero-left-column .glass-panel div[style*="repeat(auto-fit"] > div {
+    white-space: nowrap !important;
+    font-size: 0.72rem !important;
+  }
 
   /* ── 3. ZERO-GAP SECTION HEADERS ── */
   .section-header {
@@ -1122,7 +1133,7 @@ footer {
   .section-title,
   .hero-heading,
   .heading-gradient {
-    font-size: clamp(1.45rem, 6.5vw, 1.85rem) !important;
+    font-size: clamp(1.28rem, 5.2vw, 1.55rem) !important;
     margin-bottom: 6px !important;
     line-height: 1.22 !important;
     letter-spacing: normal !important;
@@ -1154,13 +1165,13 @@ footer {
     width: 100% !important;
   }
   #about-heading {
-    font-size: clamp(1.5rem, 6.5vw, 1.95rem) !important;
-    line-height: 1.15 !important;
+    font-size: clamp(1.22rem, 5.0vw, 1.55rem) !important;
+    line-height: 1.18 !important;
     margin: 0 0 4px 0 !important;
     text-align: center !important;
   }
   #about-char-para {
-    font-size: 0.92rem !important;
+    font-size: 0.86rem !important;
     line-height: 1.6 !important;
     max-width: 100% !important;
     margin: 0 !important;
@@ -1174,17 +1185,20 @@ footer {
     justify-content: center !important;
   }
   .tag-mini {
-    font-size: 0.72rem !important;
-    padding: 4px 10px !important;
+    font-size: 0.68rem !important;
+    padding: 4px 8px !important;
+    white-space: nowrap !important;
   }
   #about-deco-tl, #about-deco-tr,
   #about-deco-bl, #about-deco-br {
     display: none !important;
   }
   #about-cta a {
-    min-height: 44px !important;
-    padding: 10px 24px !important;
-    font-size: 0.82rem !important;
+    min-height: 40px !important;
+    padding: 8px 20px !important;
+    font-size: 0.74rem !important;
+    letter-spacing: 0.12em !important;
+    white-space: nowrap !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -1347,10 +1361,24 @@ footer {
 /* ── Small Phones (≤ 480px) ── */
 @media (max-width: 480px) {
   .hero-title {
-    font-size: clamp(1.48rem, 7.5vw, 1.85rem) !important;
+    font-size: clamp(1.15rem, 4.6vw, 1.38rem) !important;
   }
-  .section-header .section-title {
-    font-size: clamp(1.35rem, 7.5vw, 1.65rem) !important;
+  .hero-tagline {
+    font-size: 0.68rem !important;
+    padding: 3px 10px !important;
+  }
+  .hero-actions .btn-primary,
+  .hero-actions .reel-btn,
+  .hero-actions .btn-secondary {
+    padding: 7px 10px !important;
+    font-size: 0.68rem !important;
+    letter-spacing: 0.05em !important;
+  }
+  .section-header .section-title,
+  .section-title,
+  .hero-heading,
+  .heading-gradient {
+    font-size: clamp(1.15rem, 4.8vw, 1.38rem) !important;
   }
   .portrait-inner-frame {
     height: clamp(200px, 58vw, 240px) !important;
