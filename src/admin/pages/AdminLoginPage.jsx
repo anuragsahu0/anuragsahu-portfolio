@@ -94,11 +94,11 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
         'mt-1 px-4 py-1 rounded-full bg-emerald-400 text-[#02181b] font-bold text-xs tracking-wider uppercase shadow-[0_0_20px_#10b981] animate-pulse'
       );
       playSynthSound('lock');
-    }, 2300);
+    }, 3200);
 
     const transitionTimer = setTimeout(() => {
       setHudActive(false);
-    }, 3200);
+    }, 5000);
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' || e.code === 'Space') {
@@ -160,36 +160,12 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
           <div className="absolute inset-0 pointer-events-none opacity-25 bg-[radial-gradient(#00e5cc_1px,transparent_1px)] [background-size:28px_28px]" />
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_45%,rgba(0,229,204,0.12)_0%,transparent_65%)]" />
 
-          {/* Top Bar */}
-          <div className="w-full max-w-5xl flex items-center justify-between relative z-20 pt-1">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setHudActive(false);
-              }}
-              className="px-3 py-1.5 rounded border border-cyan-500/40 bg-[#041619]/80 text-[11px] hover:bg-cyan-500/20 hover:border-cyan-400 text-cyan-300 transition-all flex items-center gap-1.5 shadow-[0_0_10px_rgba(0,229,204,0.15)]"
-            >
-              <span>Skip Scan [ESC]</span>
-              <FastForward className="w-3.5 h-3.5" />
-            </button>
-
+          {/* Top Telemetry Header */}
+          <div className="w-full max-w-5xl flex items-center justify-center relative z-20 pt-2 pointer-events-none">
             <div className="flex items-center gap-2 text-[11px] font-mono tracking-widest text-cyan-400/80">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
               <span className="tracking-[0.25em] text-cyan-300 font-semibold">RADAR ACTIVE // SCANNING</span>
             </div>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setAudioMuted(!audioMuted);
-              }}
-              className="p-1.5 rounded border border-cyan-500/40 bg-[#041619]/80 hover:bg-cyan-500/20 text-cyan-300 text-xs transition-all shadow-[0_0_10px_rgba(0,229,204,0.15)]"
-              title="Toggle audio"
-            >
-              {audioMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-            </button>
           </div>
 
           {/* Center Stage Reticle */}
@@ -277,10 +253,7 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
 
             <div className="w-64 sm:w-72 py-2.5 px-4 bg-[#051417]/90 border border-cyan-500/50 rounded-lg text-center text-xs sm:text-sm text-cyan-200 font-mono shadow-[0_0_15px_rgba(0,229,204,0.15)] flex items-center justify-center gap-1">
               <span>anuragsahu</span>
-              <span className="w-1.5 h-4 bg-cyan-400 animate-pulse inline-block" />
             </div>
-
-            <p className="text-[10px] text-cyan-500/60 tracking-wider">CLICK ANYWHERE OR PRESS ESC TO OPEN LOGIN</p>
           </div>
         </div>
       )}

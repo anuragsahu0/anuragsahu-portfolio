@@ -392,35 +392,11 @@
     <div class="absolute inset-0 pointer-events-none opacity-15 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,#000_2px,#000_4px)]"></div>
     <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_45%,rgba(0,229,204,0.12)_0%,transparent_65%)]"></div>
 
-    <!-- Top Controls & Telemetry Header -->
-    <div class="w-full max-w-5xl flex items-center justify-between relative z-20 pt-1" onclick="event.stopPropagation()">
-      <button type="button" onclick="skipHudAnimation()" class="px-3 py-1.5 rounded border border-cyan-500/40 bg-[#041619]/80 text-[11px] hover:bg-cyan-500/20 hover:border-cyan-400 text-cyan-300 transition-all flex items-center gap-1.5 shadow-[0_0_10px_rgba(0,229,204,0.15)]">
-        <span>Skip Scan [ESC]</span>
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="13 19 22 12 13 5 13 19"></polygon>
-          <polygon points="2 19 11 12 2 5 2 19"></polygon>
-        </svg>
-      </button>
-
-      <!-- Center: Clean Minimalist Radar Telemetry Status -->
+    <!-- Top Telemetry Header -->
+    <div class="w-full max-w-5xl flex items-center justify-center relative z-20 pt-2 pointer-events-none">
       <div class="flex items-center gap-2 text-[11px] font-mono tracking-widest text-cyan-400/80">
         <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
         <span class="tracking-[0.25em] text-cyan-300 font-semibold">RADAR ACTIVE // SCANNING</span>
-      </div>
-
-      <!-- Right: Sound Toggle with Inline SVG (Guaranteed rendering) -->
-      <div class="flex items-center gap-2">
-        <button type="button" id="hud-sound-toggle" onclick="toggleHudSound()" class="p-1.5 rounded border border-cyan-500/40 bg-[#041619]/80 hover:bg-cyan-500/20 text-cyan-300 text-xs transition-all shadow-[0_0_10px_rgba(0,229,204,0.15)]" title="Toggle sound fx">
-          <svg id="hud-sound-icon-on" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          </svg>
-          <svg id="hud-sound-icon-off" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <line x1="23" y1="9" x2="17" y2="15"></line>
-            <line x1="17" y1="9" x2="23" y2="15"></line>
-          </svg>
-        </button>
       </div>
     </div>
 
@@ -575,22 +551,7 @@
         </div>
       </div>
 
-      <!-- Pod 2: Chamfered Capsule with Diagonal Stripes (Image 1 & 2) -->
-      <div class="w-64 sm:w-72 relative group hover:scale-[1.02] transition-transform">
-        <div class="absolute -top-2 left-6 w-8 h-2 cyber-hatch-pattern rounded-sm opacity-60"></div>
-        <div class="absolute -bottom-2 right-6 w-8 h-2 cyber-hatch-pattern rounded-sm opacity-60"></div>
-        
-        <div class="w-full py-2.5 px-4 bg-[#051417]/80 border border-cyan-500/40 group-hover:border-cyan-400 rounded-lg text-center text-xs sm:text-sm text-cyan-400/70 group-hover:text-cyan-200 font-mono shadow-[0_0_10px_rgba(0,229,204,0.1)] flex items-center justify-center gap-2 transition-all">
-          <span id="hud-pod-pass">Password</span>
-          <svg class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-        </div>
-      </div>
 
-      <!-- Bottom Hint -->
-      <p class="text-[10px] text-cyan-400/70 tracking-wider flex items-center gap-2 hover:text-cyan-300">
-        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
-        <span>CLICK ANYWHERE OR PRESS ANY KEY TO ENTER LOGIN</span>
-      </p>
 
     </div>
 
@@ -3782,7 +3743,7 @@
       startHudTelemetryJitter();
       setTimeout(() => typeWriterEffect('hud-pod-user', 'anuragsahu', 65), 150);
 
-      // Lock stage after 1.8s
+      // Lock stage after 3.2s
       clearTimeout(hudLockTimer);
       hudLockTimer = setTimeout(() => {
         if (pill) {
@@ -3790,13 +3751,13 @@
           pill.className = 'mt-1 px-4 py-1 rounded-full bg-emerald-400 text-[#02181b] font-bold text-xs tracking-wider uppercase shadow-[0_0_20px_#10b981] transition-all duration-300 animate-pulse';
         }
         playHudSound('lock');
-      }, 1800);
+      }, 3200);
 
-      // Auto-transition after 2.8s
+      // Auto-transition to login terminal after 5.0s (5 sec)
       clearTimeout(hudAutoTransitionTimer);
       hudAutoTransitionTimer = setTimeout(() => {
         transitionHudToLogin();
-      }, 2800);
+      }, 5000);
 
       // Any keyboard interaction skips scan and focuses terminal
       const keyHandler = (e) => {
