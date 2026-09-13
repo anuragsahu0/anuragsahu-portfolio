@@ -20,9 +20,20 @@
   ],
   "routes": [
     {
+      "src": "/version.json",
+      "headers": {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0"
+      },
+      "dest": "/version.json"
+    },
+    {
       "src": "/sw.js",
       "headers": {
-        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0"
       },
       "dest": "/sw.js"
     },
@@ -62,9 +73,25 @@
     { "src": "/mobile", "dest": "/mobile.html" },
     { "src": "/mobile.html", "dest": "/mobile.html" },
     {
+      "src": "/assets/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      },
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/(.*)\\.(css|js|webp|png|jpg|jpeg|gif|svg|woff|woff2|ico)$",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      },
+      "dest": "/$1.$2"
+    },
+    {
       "src": "/(.*)",
       "headers": {
-        "Cache-Control": "public, max-age=0, must-revalidate"
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0"
       },
       "dest": "/$1"
     }

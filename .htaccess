@@ -1,0 +1,20 @@
+<IfModule mod_headers.c>
+  # 1. HTML Documents: Strict no-cache
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+
+  # 2. Service Worker & Version Manifest: Never cache
+  <FilesMatch "^(sw\.js|version\.json)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+
+  # 3. Static Assets: 1 year immutable
+  <FilesMatch "\.(css|js|jpg|jpeg|png|gif|svg|webp|woff|woff2|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>

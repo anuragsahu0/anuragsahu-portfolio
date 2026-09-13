@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0C0C0C">
 
-  
+  <!-- Cache-Busting & Fresh Content Directives -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="version" content="2.0.0">
+
   <!-- Primary SEO Meta Tags -->
   <title>Anurag Sahu — Full-Stack Developer & B.Tech CSE (AI & ML) Sophomore</title>
   <meta name="title" content="Anurag Sahu — Full-Stack Developer & B.Tech CSE (AI & ML) Sophomore">
@@ -15,24 +20,24 @@
   <link rel="canonical" href="https://anuragsahu.com/">
 
   <!-- PWA & Favicon Link -->
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" href="/assets/anurag-portrait-sm.webp">
-  <link rel="icon" type="image/webp" href="/assets/anurag-portrait-sm.webp">
+  <link rel="manifest" href="/manifest.json?v=2.0.0">
+  <link rel="apple-touch-icon" href="/assets/anurag-portrait-sm.webp?v=2.0.0">
+  <link rel="icon" type="image/webp" href="/assets/anurag-portrait-sm.webp?v=2.0.0">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://anuragsahu.com/">
   <meta property="og:title" content="Anurag Sahu — Full-Stack Developer & B.Tech CSE (AI & ML) Sophomore">
   <meta property="og:description" content="Explore Anurag Sahu's portfolio featuring full-stack web applications, Machine Learning models, interactive case studies, engineering roadmap, and laboratory.">
-  <meta property="og:image" content="https://anuragsahu.com/assets/anurag-portrait.webp">
+  <meta property="og:image" content="https://anuragsahu.com/assets/anurag-portrait.webp?v=2.0.0">
 
   <!-- Preload Critical Hero Image & Font Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="assets/anurag-portrait-sm.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
-  <link rel="preload" as="image" href="assets/anurag-portrait.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
-  <link rel="preload" as="style" href="styles.css?v=20260830_fast">
-  <link rel="stylesheet" href="styles.css?v=20260830_fast">
+  <link rel="preload" as="image" href="assets/anurag-portrait-sm.webp?v=2.0.0" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/anurag-portrait.webp?v=2.0.0" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
+  <link rel="preload" as="style" href="styles.css?v=2.0.0">
+  <link rel="stylesheet" href="styles.css?v=2.0.0">
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
   <noscript>
@@ -285,6 +290,22 @@
       color: #fbbf24;
     }
 
+    @media (max-width: 600px) {
+      .preloader-info-row {
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.68rem;
+        letter-spacing: 1px;
+      }
+      .preloader-dot-sep {
+        display: none;
+      }
+      .preloader-counter-huge {
+        font-size: clamp(3.5rem, 16vw, 5.5rem);
+      }
+    }
+
+
     .preloader-top-laser, .preloader-bottom-laser {
       position: absolute;
       left: 0;
@@ -363,7 +384,7 @@
       <span>ANURAG<span style="color: var(--color-nebula-cyan);">.SAHU</span></span>
     </a>
     
-    <nav aria-label="Main Navigation">
+    <nav aria-label="Main Navigation" class="hud-desktop-nav">
       <ul class="hud-nav font-kanit">
         <li><a href="#hero" class="active">Overview</a></li>
         <li><a href="#aboutme">About Me</a></li>
@@ -380,7 +401,43 @@
         <span id="red-typewriter-text" style="letter-spacing: 0.5px; display: inline-block;">Dream | Grow | Lead</span>
       </div>
     </div>
+
+    <!-- Sleek Mobile Toggle Button (<= 768px only) -->
+    <button id="hud-mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false" class="hud-mobile-btn">
+      <span class="hud-ham-bar"></span>
+      <span class="hud-ham-bar"></span>
+      <span class="hud-ham-bar"></span>
+    </button>
   </header>
+
+  <!-- Floating Glass Dropdown Menu (Mobile Only, drops right beneath the header pill) -->
+  <nav id="hud-mobile-dropdown" class="hud-mobile-dropdown glass-panel" aria-label="Mobile Navigation Menu" aria-hidden="true">
+    <a href="#hero" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>Overview</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+    <a href="#aboutme" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>About Me</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+    <a href="#skills" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>Laboratory</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+    <a href="#coding-profiles" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>Coding Profiles</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+    <a href="#roadmap" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>Projects</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+    <a href="#contact" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>Contact</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+  </nav>
+
 
   <!-- Main Container -->
   <main id="main-content" class="container">
@@ -448,9 +505,9 @@
             
             <div class="portrait-inner-frame" style="width: 100%; border-radius: 22px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #070400;">
               <picture>
-                <source srcSet="assets/anurag-portrait-sm.webp" media="(max-width: 768px)" type="image/webp">
-                <source srcSet="assets/anurag-portrait.webp" type="image/webp">
-                <img src="assets/anurag-portrait.jpg" alt="Professional portrait of Anurag Sahu." width="600" height="750" fetchpriority="high" loading="eager" decoding="async" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;">
+                <source srcSet="assets/anurag-portrait-sm.webp?v=2.0.0" media="(max-width: 768px)" type="image/webp">
+                <source srcSet="assets/anurag-portrait.webp?v=2.0.0" type="image/webp">
+                <img src="assets/anurag-portrait.jpg?v=2.0.0" alt="Professional portrait of Anurag Sahu." width="600" height="750" fetchpriority="high" loading="eager" decoding="async" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;">
               </picture>
             </div>
 
@@ -723,24 +780,31 @@
       const paraEl = document.getElementById('about-char-para');
       if (!paraEl) return;
 
-      const TEXT = "With more than five years of experience in design, i focus on branding, web design, and user experience, i truly enjoy working with businesses that aim to stand out and present their best image. Let\u2019s build something incredible together!";
+      const TEXT = "Computer Science sophomore specializing in AI & ML. I build modern full-stack web applications, scalable backend systems, and explore practical machine learning models. Passionate about clean architecture, algorithms, and crafting seamless digital experiences. Let's build something incredible together!";
 
-      // Build character spans
-      const chars = TEXT.split('');
-      const totalChars = chars.length;
-
-      // Build inner HTML: each char is a wrapper <span> (holds space) with
-      // an absolutely-positioned visible <span> on top
+      // Build word & character spans so words never split mid-word across lines
+      const words = TEXT.split(' ');
+      let charIndex = 0;
       let html = '';
-      chars.forEach((ch, i) => {
-        const display = ch === ' ' ? '\u00A0' : ch;
-        html += `<span style="position:relative;display:inline-block;">` +
-                  `<span style="opacity:0.3;user-select:none;" aria-hidden="true">${display}</span>` +
-                  `<span id="ac${i}" style="position:absolute;top:0;left:0;opacity:0.85;transition:opacity 0.2s ease;">${display}</span>` +
-                `</span>`;
+
+      words.forEach((word, wIdx) => {
+        let wordHtml = '';
+        const chars = word.split('');
+        chars.forEach((ch) => {
+          wordHtml += `<span style="position:relative;display:inline-block;">` +
+                        `<span style="opacity:0.3;user-select:none;" aria-hidden="true">${ch}</span>` +
+                        `<span id="ac${charIndex}" style="position:absolute;top:0;left:0;opacity:0.85;transition:opacity 0.2s ease;">${ch}</span>` +
+                      `</span>`;
+          charIndex++;
+        });
+        html += `<span style="display:inline-block;white-space:nowrap;">${wordHtml}</span>`;
+        if (wIdx < words.length - 1) {
+          html += ' ';
+        }
       });
       paraEl.innerHTML = html;
 
+      const totalChars = charIndex;
       // Collect all visible char spans
       const charSpans = Array.from({ length: totalChars }, (_, i) => document.getElementById(`ac${i}`));
 
@@ -1203,7 +1267,56 @@
     </div>
   </footer>
 
-  <script src="app.js?v=20260829_p2_completed" type="module"></script>
+  <script src="app.js?v=2.0.0" type="module"></script>
+
+  <!-- Force-Update & Service Worker Auto-Sync Engine v2.0.0 -->
+  <script>
+    (function initCacheBuster() {
+      const CURRENT_VERSION = '2.0.0';
+
+      // 1. Auto-update Service Worker on page load
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').then((registration) => {
+          registration.update().catch(() => {});
+
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            if (!newWorker) return;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('[CacheSync] New SW version installed. Force reloading...');
+                window.location.replace(window.location.pathname + '?v=' + Date.now());
+              }
+            });
+          });
+        }).catch((err) => console.warn('[SW] Registration note:', err));
+
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          console.log('[CacheSync] Service Worker controller changed.');
+        });
+      }
+
+      // 2. Query /version.json to detect newer deploy immediately
+      async function checkServerVersion() {
+        try {
+          const res = await fetch('/version.json?t=' + Date.now(), { cache: 'no-store' });
+          if (!res.ok) return;
+          const data = await res.json();
+          if (data && data.version && data.version !== CURRENT_VERSION) {
+            console.log('[CacheSync] Newer version on server:', data.version, 'Local:', CURRENT_VERSION);
+            window.location.replace(window.location.pathname + '?v=' + Date.now());
+          }
+        } catch (e) {
+          // Silent fallback
+        }
+      }
+
+      checkServerVersion();
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) checkServerVersion();
+      });
+    })();
+  </script>
   <script>
     function initIcons() {
       if (window.lucide) {
@@ -1226,6 +1339,55 @@
       }
     });
   </script>
+
+  <!-- Sleek Mobile Floating Dropdown Controller -->
+  <script>
+    (function initMobileNav() {
+      const toggleBtn = document.getElementById('hud-mobile-toggle');
+      const dropdown = document.getElementById('hud-mobile-dropdown');
+      if (!toggleBtn || !dropdown) return;
+
+      function openMenu() {
+        dropdown.classList.add('is-open');
+        dropdown.setAttribute('aria-hidden', 'false');
+        toggleBtn.classList.add('is-active');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+      }
+
+      function closeMenu() {
+        dropdown.classList.remove('is-open');
+        dropdown.setAttribute('aria-hidden', 'true');
+        toggleBtn.classList.remove('is-active');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      }
+
+      window.closeMobileDropdown = closeMenu;
+
+      toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (dropdown.classList.contains('is-open')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!dropdown.contains(e.target) && !toggleBtn.contains(e.target)) {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeMenu();
+      });
+
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) closeMenu();
+      }, { passive: true });
+    })();
+  </script>
+
 
   <!-- 3D ROYAL GOLD PARTICLE CANVAS SYSTEM (Three.js) -->
   <script>
