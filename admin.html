@@ -268,386 +268,399 @@
       from { transform: scale(0.96); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
+
+    /* ============================================================ */
+    /* HUD RADAR TARGETING BOOT ANIMATION & CYBER TERMINAL STYLES   */
+    /* ============================================================ */
+    @keyframes hudRadarSweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes hudArcBreathe {
+      0%, 100% { filter: drop-shadow(0 0 6px #00e5cc) drop-shadow(0 0 14px rgba(0,229,204,0.6)); opacity: 0.9; }
+      50% { filter: drop-shadow(0 0 10px #00e5cc) drop-shadow(0 0 22px rgba(0,229,204,0.95)); opacity: 1; }
+    }
+    @keyframes hudReticlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.012); }
+    }
+    @keyframes hudSignalMoveLeft {
+      0% { transform: translateX(110px); opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translateX(0px); opacity: 0; }
+    }
+    @keyframes hudSignalMoveRight {
+      0% { transform: translateX(0px); opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translateX(110px); opacity: 0; }
+    }
+    @keyframes cyberGlowPulse {
+      0%, 100% {
+        box-shadow: 0 0 35px rgba(0, 230, 195, 0.45), inset 0 0 30px rgba(0, 230, 195, 0.25);
+      }
+      50% {
+        box-shadow: 0 0 55px rgba(0, 230, 195, 0.7), inset 0 0 45px rgba(0, 230, 195, 0.35);
+      }
+    }
+    .hud-sweep-beam {
+      animation: hudRadarSweep 2.8s linear infinite;
+      transform-origin: center center;
+    }
+    .hud-arc-glow {
+      animation: hudArcBreathe 2.2s ease-in-out infinite;
+    }
+    .hud-reticle-pulse {
+      animation: hudReticlePulse 3s ease-in-out infinite;
+    }
+    .hud-signal-left {
+      animation: hudSignalMoveLeft 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    .hud-signal-right {
+      animation: hudSignalMoveRight 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    .cyber-hatch-pattern {
+      background-image: repeating-linear-gradient(-45deg, #00e5cc 0, #00e5cc 2px, transparent 2px, transparent 5px);
+    }
+    .cyber-card-glow {
+      animation: cyberGlowPulse 3.5s ease-in-out infinite;
+    }
+    .cyber-input {
+      background: #041c20;
+      border: 1.5px solid #00e6c3;
+      color: #00f5d4;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.2s ease;
+    }
+    .cyber-input:focus {
+      outline: none;
+      border-color: #00ffcc;
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.5), inset 0 0 10px rgba(0, 255, 204, 0.2);
+    }
+    .cyber-btn {
+      background: #032125;
+      border: 2px solid #00e6c3;
+      color: #00f5d4;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 15px rgba(0, 230, 195, 0.25);
+    }
+    .cyber-btn:hover {
+      background: #00e6c3;
+      color: #021416;
+      box-shadow: 0 0 35px rgba(0, 230, 195, 0.85);
+      transform: translateY(-1px);
+    }
+    .cyber-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 0 10px rgba(0, 230, 195, 0.5);
+    }
   </style>
 </head>
 <body class="bg-brand-bg text-slate-100 antialiased selection:bg-cyan-500/20 selection:text-cyan-300">
 
   <!-- ============================================================ -->
-  <!-- AUTHENTICATION SCREEN (Shown when logged out) -->
+  <!-- 1. HUD RADAR TARGETING BOOT ANIMATION (Images 1 & 2)         -->
   <!-- ============================================================ -->
-  <svg class="hidden" width="0" height="0">
-    <defs>
-      <linearGradient id="asBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#38bdf8" />
-        <stop offset="40%" stop-color="#06b6d4" />
-        <stop offset="75%" stop-color="#8b5cf6" />
-        <stop offset="100%" stop-color="#d946ef" />
-      </linearGradient>
-    </defs>
-  </svg>
-
-  <div id="auth-screen" class="min-h-screen bg-[#030614] text-slate-100 flex items-center justify-center p-3 sm:p-5 lg:p-7 xl:p-8 relative overflow-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
+  <div id="hud-boot-screen" class="fixed inset-0 z-50 bg-[#030708] flex flex-col items-center justify-between p-4 sm:p-7 select-none font-mono text-cyan-400 overflow-hidden transition-all duration-700">
     
-    <!-- Atmospheric Cosmic Nebula Lights -->
-    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      <div class="absolute -top-32 -left-32 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[130px]"></div>
-      <div class="absolute top-1/3 left-1/3 w-[650px] h-[650px] bg-cyan-500/10 rounded-full blur-[150px]"></div>
-      <div class="absolute -bottom-32 right-0 w-[700px] h-[700px] bg-purple-600/15 rounded-full blur-[150px]"></div>
-      <div class="absolute top-10 right-1/4 w-[450px] h-[450px] bg-indigo-500/10 rounded-full blur-[120px]"></div>
-      <!-- Subtle cosmic particle grid -->
-      <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-25"></div>
+    <!-- Cyberpunk grid backdrop & scanlines -->
+    <div class="absolute inset-0 pointer-events-none opacity-25 bg-[radial-gradient(#00e5cc_1px,transparent_1px)] [background-size:28px_28px]"></div>
+    <div class="absolute inset-0 pointer-events-none opacity-15 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,#000_2px,#000_4px)]"></div>
+    <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_45%,rgba(0,229,204,0.12)_0%,transparent_65%)]"></div>
+
+    <!-- Top Controls & Telemetry Header -->
+    <div class="w-full max-w-5xl flex items-center justify-between relative z-20 pt-1">
+      <button type="button" onclick="skipHudAnimation()" class="px-3 py-1.5 rounded border border-cyan-500/40 bg-[#041619]/80 text-[11px] hover:bg-cyan-500/20 hover:border-cyan-400 text-cyan-300 transition-all flex items-center gap-1.5 shadow-[0_0_10px_rgba(0,229,204,0.15)]">
+        <span>Skip Scan [ESC]</span>
+        <i data-lucide="fast-forward" class="w-3.5 h-3.5"></i>
+      </button>
+
+      <div class="flex flex-col items-center cursor-default">
+        <div class="flex items-center gap-1.5 text-xs sm:text-sm font-semibold tracking-widest text-cyan-300">
+          <span>User1100101</span>
+        </div>
+        <span class="text-[10px] text-cyan-400 -mt-0.5 animate-bounce">▼</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button type="button" id="hud-sound-toggle" onclick="toggleHudSound()" class="p-1.5 rounded border border-cyan-500/40 bg-[#041619]/80 hover:bg-cyan-500/20 text-cyan-300 text-xs transition-all shadow-[0_0_10px_rgba(0,229,204,0.15)]" title="Toggle sound fx">
+          <i id="hud-sound-icon" data-lucide="volume-2" class="w-4 h-4"></i>
+        </button>
+      </div>
     </div>
 
-    <!-- Main Container: 3-Pane / Responsive Grid Console (Matches Reference Design) -->
-    <div class="relative z-10 w-full max-w-[1580px] mx-auto flex flex-col lg:flex-row gap-5 xl:gap-7 items-stretch justify-center">
-
-      <!-- ========================================== -->
-      <!-- PANE 1: LEFT NAVIGATION SIDEBAR (Desktop)  -->
-      <!-- ========================================== -->
-      <aside class="hidden lg:flex w-52 xl:w-60 shrink-0 bg-[#060a1c]/85 border border-slate-800/80 rounded-3xl p-5 flex-col justify-between backdrop-blur-xl shadow-2xl">
-        <div>
-          <!-- Logo & Brand Header -->
-          <div class="flex items-center gap-3 px-1 py-1">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500/20 via-blue-500/15 to-purple-500/20 border border-cyan-500/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
-              <svg viewBox="0 0 54 44" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full filter drop-shadow-[0_0_6px_rgba(56,189,248,0.6)]">
-                <path d="M6 36 L18 8 L27 8 L36 30 L28 30 L25 21 L16 36 Z" fill="url(#asBrandGrad)" />
-                <path d="M22 28 C22 21, 40 22, 40 15 C40 10, 31 8, 26 11 L27 6 C34 4, 46 6, 46 15 C46 22, 29 22, 29 28 C29 32, 35 33, 40 31 L39 36 C32 38, 22 36, 22 28 Z" fill="url(#asBrandGrad)" opacity="0.95" />
-              </svg>
-            </div>
-            <div>
-              <h2 class="text-xs font-bold tracking-tight text-white font-sans">Anurag Sahu</h2>
-              <p class="text-[10px] text-slate-400 font-mono leading-tight mt-0.5">Personal Control Panel</p>
-            </div>
+    <!-- Center Stage: Reticle, Radar & Lateral Telemetry Ladders -->
+    <div class="relative z-20 flex items-center justify-center my-auto w-full max-w-4xl cursor-pointer" onclick="skipHudAnimation()" title="Click to enter terminal">
+      
+      <!-- Left Telemetry Rail & Ladder -->
+      <div class="hidden sm:flex items-center gap-3 xl:gap-5 pr-2">
+        <!-- Far Left Signal Pulse Rail -->
+        <div class="w-24 xl:w-36 h-8 relative flex flex-col justify-between overflow-hidden">
+          <div class="w-full border-t border-cyan-500/40 relative">
+            <span class="absolute -top-1 w-2 h-2 rounded-full bg-cyan-300 hud-signal-left shadow-[0_0_6px_#00e5cc]"></span>
           </div>
-
-          <!-- Navigation Links -->
-          <nav class="mt-8 space-y-1.5" aria-label="Sidebar preview">
-            <!-- Active: Dashboard -->
-            <div class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600/35 via-blue-500/15 to-transparent border-l-2 border-cyan-400 text-cyan-300 font-medium text-xs shadow-[0_0_15px_rgba(6,182,212,0.15)] cursor-default">
-              <i data-lucide="layout-dashboard" class="w-4 h-4 text-cyan-400 shrink-0"></i>
-              <span>Dashboard</span>
-            </div>
-            <div class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 text-xs transition-colors cursor-default">
-              <i data-lucide="layers" class="w-4 h-4 shrink-0"></i>
-              <span>Portfolio</span>
-            </div>
-            <div class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 text-xs transition-colors cursor-default">
-              <i data-lucide="briefcase" class="w-4 h-4 shrink-0"></i>
-              <span>Projects</span>
-            </div>
-            <div class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 text-xs transition-colors cursor-default">
-              <i data-lucide="bar-chart-2" class="w-4 h-4 shrink-0"></i>
-              <span>Analytics</span>
-            </div>
-            <div class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 text-xs transition-colors cursor-default">
-              <i data-lucide="mail" class="w-4 h-4 shrink-0"></i>
-              <span>Messages</span>
-            </div>
-            <div class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 text-xs transition-colors cursor-default">
-              <i data-lucide="settings" class="w-4 h-4 shrink-0"></i>
-              <span>Settings</span>
-            </div>
-          </nav>
-        </div>
-
-        <!-- Sidebar Footer Profile -->
-        <div class="pt-4 border-t border-slate-800/80">
-          <div class="flex items-center gap-2.5 px-2 py-1 mb-2">
-            <div class="relative">
-              <img src="/assets/anurag-portrait-sm.webp" alt="Anurag Sahu" class="w-8 h-8 rounded-full object-cover border border-cyan-500/30" />
-              <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#060a1c] shadow-[0_0_6px_#10b981]"></span>
-            </div>
-            <div class="truncate">
-              <p class="text-xs font-semibold text-slate-200 truncate">Anurag Sahu</p>
-              <p class="text-[10px] text-slate-400 font-mono">Owner</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-2 px-2 py-1.5 text-xs text-slate-500 font-mono select-none">
-            <i data-lucide="log-out" class="w-3.5 h-3.5 text-slate-500"></i>
-            <span>Logout</span>
+          <div class="w-full border-t border-cyan-500/40 relative">
+            <span class="absolute -top-1 w-2 h-2 rounded-full bg-cyan-300 hud-signal-left shadow-[0_0_6px_#00e5cc]" style="animation-delay: 0.9s;"></span>
           </div>
         </div>
-      </aside>
 
-      <!-- ========================================== -->
-      <!-- PANE 2: CENTER WORKSPACE PREVIEW (Desktop) -->
-      <!-- ========================================== -->
-      <main class="hidden lg:flex flex-col flex-1 bg-[#05091d]/70 border border-slate-800/80 rounded-3xl p-6 xl:p-8 backdrop-blur-xl justify-between shadow-2xl relative overflow-hidden">
+        <!-- Vertical Ladder Coordinates -->
+        <div class="flex flex-col items-end gap-1 text-[11px] font-mono select-none">
+          <span class="text-cyan-500/50" id="hud-lat-l1">0.356</span>
+          <span class="text-cyan-400/80" id="hud-lat-l2">0.357</span>
+          <div class="px-2 py-0.5 rounded border border-cyan-400 bg-cyan-500/20 text-cyan-200 font-bold shadow-[0_0_12px_rgba(0,229,204,0.5)]" id="hud-lat-l3">
+            0.358
+          </div>
+          <span class="text-cyan-400/80" id="hud-lat-l4">0.359</span>
+          <span class="text-cyan-500/50" id="hud-lat-l5">0.360</span>
+        </div>
+
+        <!-- Crosshair & Arrow Pointer -->
+        <div class="flex items-center gap-1.5 text-cyan-400 text-xs font-bold">
+          <span class="text-sm font-mono">+</span>
+          <span class="text-sm font-mono">&gt;</span>
+        </div>
+      </div>
+
+      <!-- Center HUD Reticle Radar Assembly -->
+      <div class="relative w-[300px] h-[300px] sm:w-[380px] sm:h-[380px] flex items-center justify-center shrink-0 hud-reticle-pulse">
         
-        <!-- Header Section -->
-        <div>
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <p class="text-xs text-slate-400 font-mono">Welcome Back,</p>
-              <h1 class="text-2xl xl:text-3xl font-bold text-white tracking-tight mt-0.5">
-                Anurag <span class="bg-gradient-to-r from-cyan-400 via-sky-400 to-purple-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(56,189,248,0.35)]">Sahu</span>
-              </h1>
-              <p class="text-[11px] text-slate-400 font-mono tracking-wider mt-1 flex items-center gap-2">
-                <span>Control</span> • <span>Monitor</span> • <span>Manage</span>
-              </p>
-              <p class="text-xs text-slate-400 max-w-xl mt-2 leading-relaxed">
-                Your personal portfolio is live. Stay in control of your projects, analytics and user activity — all from here.
-              </p>
-            </div>
+        <!-- Octagonal outer framing border with corner breaks -->
+        <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 380 380" fill="none">
+          <defs>
+            <filter id="hudNeonFilter" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
 
-            <!-- Top Right Badges & Controls -->
-            <div class="flex flex-col items-end gap-2.5 shrink-0">
-              <!-- System Online Status Badge -->
-              <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-mono shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <div class="text-left">
-                  <span class="font-semibold block leading-none text-emerald-300">System Online</span>
-                  <span class="text-[9px] text-emerald-400/80 block mt-0.5">All services running</span>
-                </div>
-              </div>
-              <!-- Real-time Live Clock -->
-              <div id="auth-live-clock" class="text-[11px] text-slate-400 font-mono tracking-wider">
-                <!-- Dynamically populated -->
-              </div>
-            </div>
-          </div>
+          <!-- Octagon outline -->
+          <polygon points="65,15 315,15 365,65 365,315 315,365 65,365 15,315 15,65" stroke="#00e5cc" stroke-width="1.5" stroke-opacity="0.65" fill="none" />
+          
+          <!-- Corner tick accents -->
+          <path d="M 65 15 L 65 26 M 315 15 L 315 26 M 365 65 L 354 65 M 365 315 L 354 315 M 315 365 L 315 354 M 65 365 L 65 354 M 15 315 L 26 315 M 15 65 L 26 65" stroke="#00e5cc" stroke-width="2" />
+          
+          <!-- Outer Circle with 4 Cardinal Dots -->
+          <circle cx="190" cy="190" r="135" stroke="#00e5cc" stroke-width="1.2" stroke-opacity="0.5" fill="none" />
+          <circle cx="190" cy="55" r="3.5" fill="#00e5cc" class="filter drop-shadow-[0_0_5px_#00e5cc]" />
+          <circle cx="190" cy="325" r="3.5" fill="#00e5cc" class="filter drop-shadow-[0_0_5px_#00e5cc]" />
+          <circle cx="55" cy="190" r="3.5" fill="#00e5cc" class="filter drop-shadow-[0_0_5px_#00e5cc]" />
+          <circle cx="325" cy="190" r="3.5" fill="#00e5cc" class="filter drop-shadow-[0_0_5px_#00e5cc]" />
 
-          <!-- 4 Telemetry Metric Cards with Sparklines -->
-          <div class="grid grid-cols-2 xl:grid-cols-4 gap-3.5 my-5">
-            
-            <!-- Card 1: Total Visits -->
-            <div class="p-4 rounded-2xl bg-[#080d26]/80 border border-slate-800/80 hover:border-cyan-500/40 transition-all flex flex-col justify-between group shadow-lg">
-              <div class="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center border border-cyan-500/20">
-                <i data-lucide="eye" class="w-4 h-4"></i>
-              </div>
-              <div class="mt-3">
-                <p class="text-[11px] text-slate-400 font-mono">Total Visits</p>
-                <div class="flex items-baseline justify-between mt-0.5">
-                  <span class="text-xl font-bold text-white font-mono">12.4K</span>
-                  <span class="text-[11px] font-mono text-emerald-400 flex items-center gap-0.5 font-semibold">↑ 12%</span>
-                </div>
-              </div>
-              <div class="mt-2.5 pt-2 border-t border-slate-800/60">
-                <svg class="w-full h-5 overflow-visible" viewBox="0 0 100 20" fill="none">
-                  <path d="M 0 16 Q 25 19 40 11 T 75 14 T 100 4" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" fill="none" filter="drop-shadow(0 0 4px #0284c7)"/>
-                </svg>
-              </div>
-            </div>
+          <!-- Left & Right Glowing Arc Brackets (Image 1 & 2) -->
+          <path d="M 75 130 A 135 135 0 0 0 75 250" stroke="#00e5cc" stroke-width="4.5" stroke-linecap="round" fill="none" class="hud-arc-glow" filter="url(#hudNeonFilter)" />
+          <path d="M 305 130 A 135 135 0 0 1 305 250" stroke="#00e5cc" stroke-width="4.5" stroke-linecap="round" fill="none" class="hud-arc-glow" filter="url(#hudNeonFilter)" />
 
-            <!-- Card 2: Projects Live -->
-            <div class="p-4 rounded-2xl bg-[#080d26]/80 border border-slate-800/80 hover:border-cyan-500/40 transition-all flex flex-col justify-between group shadow-lg">
-              <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20">
-                <i data-lucide="code-2" class="w-4 h-4"></i>
-              </div>
-              <div class="mt-3">
-                <p class="text-[11px] text-slate-400 font-mono">Projects Live</p>
-                <div class="flex items-baseline justify-between mt-0.5">
-                  <span class="text-xl font-bold text-white font-mono">8</span>
-                  <span class="text-[11px] font-mono text-emerald-400 flex items-center gap-0.5 font-semibold">↑ 100%</span>
-                </div>
-              </div>
-              <div class="mt-2.5 pt-2 border-t border-slate-800/60">
-                <svg class="w-full h-5 overflow-visible" viewBox="0 0 100 20" fill="none">
-                  <path d="M 0 17 Q 30 18 50 14 T 80 8 T 100 5" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" fill="none" filter="drop-shadow(0 0 4px #0284c7)"/>
-                </svg>
-              </div>
-            </div>
+          <!-- Dark Inner Circular Visor -->
+          <circle cx="190" cy="190" r="95" fill="#051214" fill-opacity="0.95" stroke="#00e5cc" stroke-width="1.2" stroke-opacity="0.45" />
+          
+          <!-- Mid Target Ring -->
+          <circle cx="190" cy="190" r="62" stroke="#00e5cc" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="0.6" fill="none" />
 
-            <!-- Card 3: Messages -->
-            <div class="p-4 rounded-2xl bg-[#080d26]/80 border border-slate-800/80 hover:border-cyan-500/40 transition-all flex flex-col justify-between group shadow-lg">
-              <div class="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20">
-                <i data-lucide="mail" class="w-4 h-4"></i>
-              </div>
-              <div class="mt-3">
-                <p class="text-[11px] text-slate-400 font-mono">Messages</p>
-                <div class="flex items-baseline justify-between mt-0.5">
-                  <span class="text-xl font-bold text-white font-mono">24</span>
-                  <span class="text-[11px] font-mono text-emerald-400 flex items-center gap-0.5 font-semibold">↑ 8%</span>
-                </div>
-              </div>
-              <div class="mt-2.5 pt-2 border-t border-slate-800/60">
-                <svg class="w-full h-5 overflow-visible" viewBox="0 0 100 20" fill="none">
-                  <path d="M 0 15 Q 25 17 55 9 T 80 13 T 100 6" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" fill="none" filter="drop-shadow(0 0 4px #0284c7)"/>
-                </svg>
-              </div>
-            </div>
+          <!-- Fine Reticle Crosshairs -->
+          <line x1="85" y1="190" x2="295" y2="190" stroke="#00e5cc" stroke-width="1" stroke-opacity="0.65" />
+          <line x1="190" y1="85" x2="190" y2="295" stroke="#00e5cc" stroke-width="1" stroke-opacity="0.65" />
 
-            <!-- Card 4: Uptime -->
-            <div class="p-4 rounded-2xl bg-[#080d26]/80 border border-slate-800/80 hover:border-cyan-500/40 transition-all flex flex-col justify-between group shadow-lg">
-              <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20">
-                <i data-lucide="zap" class="w-4 h-4"></i>
-              </div>
-              <div class="mt-3">
-                <p class="text-[11px] text-slate-400 font-mono">Uptime</p>
-                <div class="flex items-baseline justify-between mt-0.5">
-                  <span class="text-xl font-bold text-white font-mono">99.9%</span>
-                  <span class="text-[11px] font-mono text-emerald-400 flex items-center gap-0.5 font-semibold">↑ 0.1%</span>
-                </div>
-              </div>
-              <div class="mt-2.5 pt-2 border-t border-slate-800/60">
-                <svg class="w-full h-5 overflow-visible" viewBox="0 0 100 20" fill="none">
-                  <path d="M 0 14 Q 30 15 60 11 T 85 8 T 100 7" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" fill="none" filter="drop-shadow(0 0 4px #0284c7)"/>
-                </svg>
-              </div>
-            </div>
+          <!-- Center Bullseye with 4 Micro-Ticks -->
+          <circle cx="190" cy="190" r="6" stroke="#00e5cc" stroke-width="1.5" fill="none" class="filter drop-shadow-[0_0_4px_#00e5cc]" />
+          <line x1="190" y1="178" x2="190" y2="182" stroke="#00e5cc" stroke-width="1.5" />
+          <line x1="190" y1="198" x2="190" y2="202" stroke="#00e5cc" stroke-width="1.5" />
+          <line x1="178" y1="190" x2="182" y2="190" stroke="#00e5cc" stroke-width="1.5" />
+          <line x1="198" y1="190" x2="202" y2="190" stroke="#00e5cc" stroke-width="1.5" />
+        </svg>
 
-          </div>
-
-          <!-- Quick Actions Row -->
-          <div class="my-2">
-            <div class="mb-2.5">
-              <h3 class="text-xs font-semibold text-slate-200 uppercase font-mono tracking-wider">Quick Actions</h3>
-              <p class="text-[11px] text-slate-500 font-mono">Manage your portfolio elements</p>
-            </div>
-            <div class="grid grid-cols-2 xl:grid-cols-4 gap-3">
-              <div class="p-3 rounded-xl bg-[#080d26]/70 border border-slate-800/80 hover:border-cyan-500/40 transition-all flex items-center justify-between text-xs text-slate-300 group cursor-default">
-                <div class="flex items-center gap-2.5">
-                  <i data-lucide="folder" class="w-4 h-4 text-cyan-400 shrink-0"></i>
-                  <span class="font-medium text-slate-200">Manage Projects</span>
-                </div>
-                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all"></i>
-              </div>
-              <div class="p-3 rounded-xl bg-[#080d26]/70 border border-slate-800/80 hover:border-cyan-500/40 transition-all flex items-center justify-between text-xs text-slate-300 group cursor-default">
-                <div class="flex items-center gap-2.5">
-                  <i data-lucide="edit-3" class="w-4 h-4 text-cyan-400 shrink-0"></i>
-                  <span class="font-medium text-slate-200">Update Content</span>
-                </div>
-                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all"></i>
-              </div>
-              <div class="p-3 rounded-xl bg-[#080d26]/70 border border-slate-800/80 hover:border-cyan-500/40 transition-all flex items-center justify-between text-xs text-slate-300 group cursor-default">
-                <div class="flex items-center gap-2.5">
-                  <i data-lucide="bar-chart-3" class="w-4 h-4 text-cyan-400 shrink-0"></i>
-                  <span class="font-medium text-slate-200">View Analytics</span>
-                </div>
-                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all"></i>
-              </div>
-              <div class="p-3 rounded-xl bg-[#080d26]/70 border border-slate-800/80 hover:border-cyan-500/40 transition-all flex items-center justify-between text-xs text-slate-300 group cursor-default">
-                <div class="flex items-center gap-2.5">
-                  <i data-lucide="message-square" class="w-4 h-4 text-cyan-400 shrink-0"></i>
-                  <span class="font-medium text-slate-200">Check Messages</span>
-                </div>
-                <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all"></i>
-              </div>
-            </div>
-          </div>
+        <!-- 60FPS Continuous Rotating Radar Sweep Beam inside Visor -->
+        <div class="absolute w-[184px] h-[184px] rounded-full overflow-hidden pointer-events-none">
+          <div class="w-full h-full hud-sweep-beam" style="background: conic-gradient(from 0deg at 50% 50%, rgba(0, 229, 204, 0.5) 0deg, rgba(0, 229, 204, 0.05) 45deg, transparent 60deg, transparent 360deg);"></div>
         </div>
 
-        <!-- Lower Atmospheric Cosmic Aurora Artwork & Neon Script -->
-        <div class="mt-4 relative rounded-2xl h-48 xl:h-56 overflow-hidden border border-slate-800/90 bg-gradient-to-b from-[#060b24] via-[#040819] to-[#02030b] flex items-end p-5">
-          <!-- Ambient glowing lights -->
-          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/25 via-transparent to-transparent"></div>
-          <div class="absolute top-2 left-1/4 w-80 h-36 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
-          <div class="absolute top-6 right-1/4 w-72 h-32 bg-purple-500/15 rounded-full blur-3xl pointer-events-none"></div>
+      </div>
 
-          <!-- Mountain Silhouette & Water Horizon SVG -->
-          <svg class="absolute bottom-0 left-0 right-0 w-full h-28 text-[#080e2a] pointer-events-none" viewBox="0 0 800 130" preserveAspectRatio="none" fill="currentColor">
-            <!-- Back Peaks -->
-            <path d="M0,130 L0,70 L50,45 L130,68 L220,30 L310,65 L400,18 L490,60 L580,28 L670,70 L740,45 L800,75 L800,130 Z" opacity="0.35" fill="#0c1740"/>
-            <!-- Front Peaks -->
-            <path d="M0,130 L0,88 L80,65 L170,95 L270,50 L360,85 L440,35 L520,75 L620,50 L710,90 L800,80 L800,130 Z" opacity="0.6" fill="#060c22"/>
-            <!-- Water Glow Horizon Beam -->
-            <line x1="0" y1="128" x2="800" y2="128" stroke="#00f2fe" stroke-width="1.5" opacity="0.75" filter="drop-shadow(0 0 8px #00f2fe)"/>
-          </svg>
-
-          <!-- Water Reflection Horizon Accent -->
-          <div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-cyan-500/15 via-blue-500/5 to-transparent pointer-events-none"></div>
-
-          <!-- Cursive Neon Script "Dream Build Repeat" -->
-          <div class="relative z-10 select-none pb-1 pl-2">
-            <div class="font-['Caveat',_cursive] text-2xl xl:text-3xl text-cyan-200 font-bold -rotate-3 leading-tight tracking-wide filter drop-shadow-[0_0_12px_rgba(6,182,212,0.6)]">
-              Dream<br>
-              <span class="ml-3 text-cyan-100">Build</span><br>
-              <span class="ml-6 text-white relative inline-block">
-                Repeat
-                <svg class="absolute -bottom-2 -left-3 w-32 h-5 overflow-visible" viewBox="0 0 120 20" fill="none">
-                  <path d="M 5 10 Q 60 20 115 6" stroke="#c084fc" stroke-width="3.5" stroke-linecap="round" filter="drop-shadow(0 0 8px #a855f7)"/>
-                </svg>
-              </span>
-            </div>
-          </div>
-
-          <!-- Floating Live Portfolio Badge -->
-          <a href="/" target="_blank" class="absolute bottom-4 right-4 flex items-center gap-3 px-4 py-2 rounded-xl bg-[#070c24]/90 hover:bg-[#0c1438] border border-cyan-500/30 text-xs backdrop-blur-md transition-all shadow-[0_4px_25px_rgba(0,0,0,0.6)] group z-20">
-            <div class="w-7 h-7 rounded-lg bg-cyan-500/15 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
-              <i data-lucide="gem" class="w-4 h-4"></i>
-            </div>
-            <div class="text-left">
-              <p class="text-[10px] text-slate-400 font-mono">Your Portfolio</p>
-              <p class="text-xs font-semibold text-slate-100 flex items-center gap-1 group-hover:text-cyan-300 transition-colors">
-                Live at anuragsahu.com
-                <i data-lucide="external-link" class="w-3 h-3 text-cyan-400"></i>
-              </p>
-            </div>
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-1 shadow-[0_0_8px_#10b981]"></span>
-          </a>
+      <!-- Right Telemetry Rail & Ladder -->
+      <div class="hidden sm:flex items-center gap-3 xl:gap-5 pl-2">
+        <!-- Crosshair & Arrow Pointer -->
+        <div class="flex items-center gap-1.5 text-cyan-400 text-xs font-bold">
+          <span class="text-sm font-mono">&lt;</span>
+          <span class="text-sm font-mono">+</span>
         </div>
 
-      </main>
+        <!-- Vertical Ladder Coordinates -->
+        <div class="flex flex-col items-start gap-1 text-[11px] font-mono select-none">
+          <span class="text-cyan-500/50" id="hud-lat-r1">0.356</span>
+          <span class="text-cyan-400/80" id="hud-lat-r2">0.357</span>
+          <div class="px-2 py-0.5 rounded border border-cyan-400 bg-cyan-500/20 text-cyan-200 font-bold shadow-[0_0_12px_rgba(0,229,204,0.5)]" id="hud-lat-r3">
+            0.358
+          </div>
+          <span class="text-cyan-400/80" id="hud-lat-r4">0.359</span>
+          <span class="text-cyan-500/50" id="hud-lat-r5">0.360</span>
+        </div>
 
-      <!-- ========================================== -->
-      <!-- PANE 3: RIGHT "ADMIN ACCESS" LOGIN CARD    -->
-      <!-- ========================================== -->
-      <section class="w-full lg:w-[390px] xl:w-[430px] shrink-0 bg-[#06091a]/95 border border-cyan-500/25 rounded-3xl p-6 sm:p-8 xl:p-9 shadow-[0_0_60px_-10px_rgba(6,182,212,0.28)] backdrop-blur-2xl flex flex-col justify-between relative z-20">
+        <!-- Far Right Signal Pulse Rail -->
+        <div class="w-24 xl:w-36 h-8 relative flex flex-col justify-between overflow-hidden">
+          <div class="w-full border-t border-cyan-500/40 relative">
+            <span class="absolute -top-1 w-2 h-2 rounded-full bg-cyan-300 hud-signal-right shadow-[0_0_6px_#00e5cc]"></span>
+          </div>
+          <div class="w-full border-t border-cyan-500/40 relative">
+            <span class="absolute -top-1 w-2 h-2 rounded-full bg-cyan-300 hud-signal-right shadow-[0_0_6px_#00e5cc]" style="animation-delay: 0.9s;"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Section: MODE Pill & Chamfered Hex Pods -->
+    <div class="w-full max-w-md flex flex-col items-center relative z-20 pb-4 space-y-3.5">
+      
+      <!-- MODE Label & Glowing Pill -->
+      <div class="flex flex-col items-center">
+        <span class="text-[10px] text-cyan-400 uppercase tracking-widest font-semibold">MODE</span>
+        <div id="hud-mode-pill" class="mt-1 px-4 py-1 rounded-full bg-[#00e5cc] text-[#02181b] font-bold text-xs tracking-wider uppercase shadow-[0_0_15px_#00e5cc] transition-all duration-300">
+          Targeting
+        </div>
+      </div>
+
+      <!-- Pod 1: Chamfered Capsule with Diagonal Stripes (Image 1 & 2) -->
+      <div class="w-64 sm:w-72 relative">
+        <!-- Top-left diagonal slashes tab -->
+        <div class="absolute -top-2 left-6 w-8 h-2 cyber-hatch-pattern rounded-sm"></div>
+        <!-- Bottom-right diagonal slashes tab -->
+        <div class="absolute -bottom-2 right-6 w-8 h-2 cyber-hatch-pattern rounded-sm"></div>
         
-        <div>
-          <!-- Central AS Monogram Logo -->
-          <div class="flex justify-center mb-4">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500/20 via-blue-500/15 to-purple-500/25 border border-cyan-500/40 flex items-center justify-center p-3 shadow-[0_0_30px_rgba(6,182,212,0.4)]">
-              <svg viewBox="0 0 54 44" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full filter drop-shadow-[0_0_10px_rgba(56,189,248,0.7)]">
-                <path d="M6 36 L18 8 L27 8 L36 30 L28 30 L25 21 L16 36 Z" fill="url(#asBrandGrad)" />
-                <path d="M22 28 C22 21, 40 22, 40 15 C40 10, 31 8, 26 11 L27 6 C34 4, 46 6, 46 15 C46 22, 29 22, 29 28 C29 32, 35 33, 40 31 L39 36 C32 38, 22 36, 22 28 Z" fill="url(#asBrandGrad)" opacity="0.95" />
-              </svg>
-            </div>
-          </div>
+        <!-- Main Chamfered Capsule Container -->
+        <div class="w-full py-2.5 px-4 bg-[#051417]/90 border border-cyan-500/50 rounded-lg text-center text-xs sm:text-sm text-cyan-200 font-mono shadow-[0_0_15px_rgba(0,229,204,0.15)] flex items-center justify-center gap-1">
+          <span id="hud-pod-user">anuragsahu</span>
+          <span class="w-1.5 h-4 bg-cyan-400 animate-pulse inline-block"></span>
+        </div>
+      </div>
 
-          <!-- Headings -->
-          <div class="text-center mb-6">
-            <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-white font-sans">Admin Access</h2>
-            <p class="text-xs text-cyan-400 font-mono mt-1 tracking-wide">Enter your credentials to continue</p>
-          </div>
+      <!-- Pod 2: Chamfered Capsule with Diagonal Stripes (Image 1 & 2) -->
+      <div class="w-64 sm:w-72 relative">
+        <!-- Top-left diagonal slashes tab -->
+        <div class="absolute -top-2 left-6 w-8 h-2 cyber-hatch-pattern rounded-sm opacity-60"></div>
+        <!-- Bottom-right diagonal slashes tab -->
+        <div class="absolute -bottom-2 right-6 w-8 h-2 cyber-hatch-pattern rounded-sm opacity-60"></div>
+        
+        <!-- Main Chamfered Capsule Container -->
+        <div class="w-full py-2.5 px-4 bg-[#051417]/80 border border-cyan-500/40 rounded-lg text-center text-xs sm:text-sm text-cyan-400/70 font-mono shadow-[0_0_10px_rgba(0,229,204,0.1)]">
+          <span id="hud-pod-pass">Password</span>
+        </div>
+      </div>
+
+      <!-- Bottom Hint -->
+      <p class="text-[10px] text-cyan-500/60 tracking-wider">
+        CLICK ANYWHERE OR PRESS ESC TO OPEN LOGIN
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 2. CYBERNETIC TERMINAL LOGIN SCREEN (Image 3)                -->
+  <!-- ============================================================ -->
+  <div id="auth-screen" class="min-h-screen bg-[#011517] text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden selection:bg-cyan-500/30 selection:text-cyan-200 transition-all duration-500">
+    
+    <!-- Atmospheric Cyber Glows & Grid -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00e5cc]/10 rounded-full blur-[140px]"></div>
+      <div class="absolute -bottom-32 right-10 w-[500px] h-[500px] bg-[#008f82]/15 rounded-full blur-[120px]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(#00e5cc_1px,transparent_1px)] [background-size:32px_32px] opacity-15"></div>
+    </div>
+
+    <!-- Replay HUD Button in Top-Right -->
+    <button
+      type="button"
+      onclick="replayHudAnimation()"
+      class="fixed top-4 right-4 z-30 px-3 py-1.5 rounded border border-[#00e6c3]/40 bg-[#02181b]/80 text-[#00e6c3] hover:bg-[#00e6c3]/15 hover:border-[#00e6c3] text-xs font-mono transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,230,195,0.2)]"
+      title="Replay HUD Radar Targeting Animation"
+    >
+      <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
+      <span>HUD Radar</span>
+    </button>
+
+    <!-- Main Cyber Terminal Plate (Image 3) -->
+    <div class="relative z-10 w-full max-w-[430px] mx-auto select-none">
+      
+      <!-- Outer Cybernetic Chassis Container -->
+      <div class="relative bg-[#021a1d] border-2 border-[#008f82] p-5 sm:p-7 pt-9 shadow-[0_0_40px_rgba(0,143,130,0.3)]" style="clip-path: polygon(0 35px, 35px 35px, 35px 0, calc(100% - 60px) 0, 100% 60px, 100% 100%, 0 100%);">
+        
+        <!-- Top Ventilation Louvers (////) from Image 3 -->
+        <div class="absolute top-2.5 left-24 right-28 h-5 overflow-hidden pointer-events-none opacity-40">
+          <div class="w-full h-full" style="background: repeating-linear-gradient(45deg, #00e6c3 0, #00e6c3 5px, transparent 5px, transparent 14px);"></div>
+        </div>
+
+        <!-- Right edge indent notch -->
+        <div class="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-12 bg-[#008f82]"></div>
+        
+        <!-- Recessed Inner Vessel with Luminous Cyan Glow & Tabs -->
+        <div class="relative bg-[#032125] border-2 border-[#00e6c3] p-5 sm:p-7 cyber-card-glow">
+          
+          <!-- Bezel Corner Tabs -->
+          <div class="absolute -top-1 left-8 w-6 h-1.5 bg-[#00e6c3]"></div>
+          <div class="absolute -top-1 right-8 w-6 h-1.5 bg-[#00e6c3]"></div>
+          <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-[#00e6c3]"></div>
+          <div class="absolute -right-1 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-[#00e6c3]"></div>
+          <div class="absolute -bottom-1 left-12 w-8 h-1.5 bg-[#00e6c3]"></div>
 
           <!-- Error Alert Pill -->
-          <div id="login-error" class="hidden mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 flex items-start gap-2.5 text-xs text-rose-300 shadow-sm animate-in fade-in">
-            <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-rose-400 mt-0.5"></i>
+          <div id="login-error" class="hidden mb-4 p-3 rounded bg-rose-950/70 border border-rose-500/50 flex items-start gap-2.5 text-xs text-rose-300 font-mono shadow-[0_0_15px_rgba(244,63,94,0.3)] animate-in fade-in">
+            <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0 text-rose-400 mt-0.5"></i>
             <span id="login-error-text">Authentication failed.</span>
           </div>
 
-          <!-- Login Form -->
-          <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
+          <!-- Login Form (Image 3) -->
+          <form id="login-form" class="space-y-6" onsubmit="handleLogin(event)">
             
-            <!-- Email / Username Input -->
+            <!-- Username Input Box with User Silhouette Icon -->
             <div>
-              <label for="input-email" class="block text-xs font-semibold text-slate-300 font-mono mb-1.5">
-                Email / Username
-              </label>
-              <div class="relative">
-                <i data-lucide="mail" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
+              <div class="w-full flex items-center border-[1.5px] border-[#00e6c3] bg-[#041c20] rounded px-3 py-3 shadow-[0_0_10px_rgba(0,230,195,0.15)] focus-within:border-[#00ffcc] focus-within:shadow-[0_0_20px_rgba(0,255,204,0.4)] transition-all">
+                <!-- User Silhouette Icon -->
+                <div class="w-8 flex items-center justify-center text-[#00e6c3] shrink-0">
+                  <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                </div>
                 <input
                   id="input-email"
                   type="text"
                   required
-                  placeholder="anurag@example.com"
+                  value="anuragsahu"
+                  placeholder="Username"
                   autocomplete="username"
-                  class="w-full bg-[#080d24] border border-slate-800 rounded-xl pl-10 pr-4 py-3 text-xs sm:text-sm text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/70 focus:ring-1 focus:ring-cyan-500/70 font-mono transition-all"
+                  class="w-full bg-transparent border-none text-sm font-mono text-[#00f5d4] placeholder:text-[#008f82] focus:outline-none pl-2"
                 >
               </div>
             </div>
 
-            <!-- Password Input -->
+            <!-- Password Input Box with Padlock Icon & Show/Hide Toggle -->
             <div>
-              <label for="input-password" class="block text-xs font-semibold text-slate-300 font-mono mb-1.5">
-                Password
-              </label>
-              <div class="relative">
-                <i data-lucide="lock" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
+              <div class="relative w-full flex items-center border-[1.5px] border-[#00e6c3] bg-[#041c20] rounded px-3 py-3 shadow-[0_0_10px_rgba(0,230,195,0.15)] focus-within:border-[#00ffcc] focus-within:shadow-[0_0_20px_rgba(0,255,204,0.4)] transition-all">
+                <!-- Padlock Icon -->
+                <div class="w-8 flex items-center justify-center text-[#00e6c3] shrink-0">
+                  <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                  </svg>
+                </div>
                 <input
                   id="input-password"
                   type="password"
                   required
-                  placeholder="••••••••••••"
+                  placeholder="Password"
                   autocomplete="current-password"
-                  class="w-full bg-[#080d24] border border-slate-800 rounded-xl pl-10 pr-10 py-3 text-xs sm:text-sm text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/70 focus:ring-1 focus:ring-cyan-500/70 font-mono transition-all"
+                  class="w-full bg-transparent border-none text-sm font-mono text-[#00f5d4] placeholder:text-[#008f82] focus:outline-none pl-2 pr-8"
                 >
                 <button
                   type="button"
                   id="toggle-pwd-btn"
                   onclick="togglePasswordVisibility()"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors p-1"
+                  class="text-[#008f82] hover:text-[#00e6c3] transition-colors p-1 shrink-0"
                   aria-label="Toggle password visibility"
                 >
                   <i id="pwd-eye-icon" data-lucide="eye" class="w-4 h-4"></i>
@@ -655,57 +668,53 @@
               </div>
             </div>
 
-            <!-- Options: Remember Me & Forgot Password -->
-            <div class="flex items-center justify-between text-xs pt-0.5">
-              <label class="flex items-center gap-2 cursor-pointer text-slate-400 hover:text-slate-300 select-none">
-                <input type="checkbox" id="input-remember" class="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-500/50">
-                <span>Remember me</span>
+            <!-- Options Row: Stay Sign In & Forgot Password -->
+            <div class="flex items-center justify-between text-xs font-mono pt-1">
+              <label class="flex items-center gap-2 cursor-pointer text-[#00e6c3] hover:text-[#00ffcc] select-none transition-colors">
+                <input
+                  type="checkbox"
+                  id="input-remember"
+                  checked
+                  class="rounded border-[#00e6c3] bg-[#02181b] text-[#00e6c3] focus:ring-[#00e6c3]/50 focus:ring-offset-0"
+                >
+                <span>✓ Stay Sign in</span>
               </label>
-              <button type="button" onclick="showForgotPasswordModal()" class="text-cyan-400 hover:text-cyan-300 hover:underline text-xs transition-colors">
-                Forgot password?
+              <button
+                type="button"
+                onclick="showForgotPasswordModal()"
+                class="text-[#00e6c3] hover:text-[#00ffcc] hover:underline transition-colors"
+              >
+                Forgot Password?
               </button>
             </div>
 
-            <!-- Primary Gradient Button -->
-            <button
-              type="submit"
-              id="login-btn"
-              class="w-full mt-2 py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#00b4d8] via-[#0077b6] to-[#7209b7] hover:from-[#0096c7] hover:to-[#560bad] text-white font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-2.5 shadow-[0_4px_25px_rgba(0,180,216,0.35)] active:scale-[0.99]"
-            >
-              <span>Sign In</span>
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </button>
+            <!-- Primary Sign In Cyber Button -->
+            <div class="pt-3 flex justify-center">
+              <button
+                type="submit"
+                id="login-btn"
+                class="w-48 py-2.5 px-6 border-2 border-[#00e6c3] bg-[#032125] hover:bg-[#00e6c3] hover:text-[#021416] text-[#00e6c3] font-mono font-bold text-sm tracking-widest uppercase transition-all duration-200 shadow-[0_0_15px_rgba(0,230,195,0.3)] hover:shadow-[0_0_35px_rgba(0,230,195,0.85)] active:scale-95 flex items-center justify-center gap-2"
+              >
+                <span>Sign In</span>
+              </button>
+            </div>
+
           </form>
 
-          <!-- Divider -->
-          <div class="relative my-4 flex items-center justify-center">
-            <div class="border-t border-slate-800 w-full"></div>
-            <span class="bg-[#06091a] px-3 text-[11px] text-slate-500 font-mono uppercase tracking-wider relative z-10">or</span>
-          </div>
-
-          <!-- Secondary Biometrics Button -->
-          <button
-            type="button"
-            onclick="handleBiometricsClick()"
-            class="w-full py-2.5 px-4 rounded-xl border border-slate-800/90 bg-[#080d24]/70 hover:bg-[#0d1538] text-slate-300 hover:text-white transition-all flex items-center justify-between text-xs group"
-          >
-            <div class="flex items-center gap-2.5">
-              <i data-lucide="fingerprint" class="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform"></i>
-              <span>Use Biometrics</span>
-            </div>
-            <span class="px-2 py-0.5 text-[10px] font-mono rounded-full bg-slate-800/90 text-slate-400 border border-slate-700/60">Coming Soon</span>
-          </button>
         </div>
 
-        <!-- Security Notice Footer -->
-        <div class="mt-6 pt-4 border-t border-slate-800/70 flex items-center justify-center gap-2 text-[11px] text-slate-500 text-center leading-relaxed">
-          <i data-lucide="lock" class="w-3.5 h-3.5 shrink-0 text-slate-500"></i>
-          <span>This is a private access panel. Only authorized users can access this area.</span>
-        </div>
+      </div>
 
-      </section>
+      <!-- Security Notice Footer -->
+      <div class="mt-4 text-center">
+        <p class="text-[11px] text-[#00a896]/70 font-mono flex items-center justify-center gap-1.5">
+          <i data-lucide="shield" class="w-3.5 h-3.5 text-[#00e6c3]"></i>
+          <span>SECURE PROTOCOL // ANURAG SAHU CONTROL CENTER</span>
+        </p>
+      </div>
 
     </div>
+
   </div>
 
   <!-- ============================================================ -->
@@ -3612,6 +3621,174 @@
       checkAuth();
     });
 
+    let hudJitterTimer = null;
+    let hudAutoTransitionTimer = null;
+    let hudLockTimer = null;
+    let hudHasRun = false;
+    let hudAudioCtx = null;
+    let hudAudioMuted = false;
+
+    function playHudSound(type) {
+      if (hudAudioMuted) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        if (!hudAudioCtx) hudAudioCtx = new AudioContext();
+        if (hudAudioCtx.state === 'suspended') {
+          hudAudioCtx.resume().catch(() => {});
+        }
+        const now = hudAudioCtx.currentTime;
+        const osc = hudAudioCtx.createOscillator();
+        const gain = hudAudioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(hudAudioCtx.destination);
+
+        if (type === 'ping') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.exponentialRampToValueAtTime(440, now + 0.07);
+          gain.gain.setValueAtTime(0.04, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+          osc.start(now);
+          osc.stop(now + 0.07);
+        } else if (type === 'lock') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(1180, now);
+          osc.frequency.setValueAtTime(1760, now + 0.06);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.start(now);
+          osc.stop(now + 0.18);
+        }
+      } catch (_) {}
+    }
+
+    function toggleHudSound() {
+      hudAudioMuted = !hudAudioMuted;
+      const icon = document.getElementById('hud-sound-icon');
+      if (icon) {
+        icon.setAttribute('data-lucide', hudAudioMuted ? 'volume-x' : 'volume-2');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    }
+
+    function startHudTelemetryJitter() {
+      if (hudJitterTimer) clearInterval(hudJitterTimer);
+      const baseNumbers = [0.356, 0.357, 0.358, 0.359, 0.360];
+      
+      let pingCounter = 0;
+      hudJitterTimer = setInterval(() => {
+        pingCounter++;
+        if (pingCounter % 12 === 0) playHudSound('ping');
+
+        const jitter = (Math.random() - 0.5) * 0.0015;
+        for (let i = 1; i <= 5; i++) {
+          const val = (baseNumbers[i - 1] + jitter).toFixed(3);
+          const leftEl = document.getElementById(`hud-lat-l${i}`);
+          const rightEl = document.getElementById(`hud-lat-r${i}`);
+          if (leftEl) leftEl.textContent = val;
+          if (rightEl) rightEl.textContent = val;
+        }
+      }, 90);
+    }
+
+    function typeWriterEffect(elId, text, speed = 70) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.textContent = '';
+      let idx = 0;
+      const typeInterval = setInterval(() => {
+        if (idx < text.length) {
+          el.textContent += text.charAt(idx);
+          idx++;
+        } else {
+          clearInterval(typeInterval);
+        }
+      }, speed);
+    }
+
+    function initHudBootAnimation() {
+      const hudScreen = document.getElementById('hud-boot-screen');
+      const authScreen = document.getElementById('auth-screen');
+      if (!hudScreen || !authScreen) return;
+
+      hudScreen.classList.remove('hidden');
+      hudScreen.style.opacity = '1';
+      hudScreen.style.transform = 'scale(1)';
+      hudScreen.style.pointerEvents = 'auto';
+
+      authScreen.classList.add('hidden');
+      authScreen.style.opacity = '0';
+
+      const pill = document.getElementById('hud-mode-pill');
+      if (pill) {
+        pill.textContent = 'Targeting';
+        pill.className = 'mt-1 px-4 py-1 rounded-full bg-[#00e5cc] text-[#02181b] font-bold text-xs tracking-wider uppercase shadow-[0_0_15px_#00e5cc] transition-all duration-300';
+      }
+
+      startHudTelemetryJitter();
+      setTimeout(() => typeWriterEffect('hud-pod-user', 'anuragsahu', 80), 200);
+
+      // Lock stage after 2.3s
+      clearTimeout(hudLockTimer);
+      hudLockTimer = setTimeout(() => {
+        if (pill) {
+          pill.textContent = 'Target Acquired';
+          pill.className = 'mt-1 px-4 py-1 rounded-full bg-emerald-400 text-[#02181b] font-bold text-xs tracking-wider uppercase shadow-[0_0_20px_#10b981] transition-all duration-300 animate-pulse';
+        }
+        playHudSound('lock');
+      }, 2300);
+
+      // Auto-transition after 3.2s
+      clearTimeout(hudAutoTransitionTimer);
+      hudAutoTransitionTimer = setTimeout(() => {
+        transitionHudToLogin();
+      }, 3200);
+
+      const keyHandler = (e) => {
+        if (e.key === 'Escape' || e.code === 'Space') {
+          skipHudAnimation();
+          window.removeEventListener('keydown', keyHandler);
+        }
+      };
+      window.addEventListener('keydown', keyHandler, { once: true });
+    }
+
+    function transitionHudToLogin() {
+      clearTimeout(hudAutoTransitionTimer);
+      clearTimeout(hudLockTimer);
+      if (hudJitterTimer) clearInterval(hudJitterTimer);
+
+      const hudScreen = document.getElementById('hud-boot-screen');
+      const authScreen = document.getElementById('auth-screen');
+
+      if (hudScreen) {
+        hudScreen.style.opacity = '0';
+        hudScreen.style.transform = 'scale(1.08)';
+        hudScreen.style.pointerEvents = 'none';
+        setTimeout(() => hudScreen.classList.add('hidden'), 650);
+      }
+
+      if (authScreen) {
+        authScreen.classList.remove('hidden');
+        setTimeout(() => {
+          authScreen.style.opacity = '1';
+          authScreen.style.transform = 'scale(1)';
+        }, 50);
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+      hudHasRun = true;
+    }
+
+    function skipHudAnimation() {
+      transitionHudToLogin();
+    }
+
+    function replayHudAnimation() {
+      hudHasRun = false;
+      initHudBootAnimation();
+    }
+
     async function checkAuth() {
       try {
         const res = await fetch('/api/auth/me', {
@@ -3625,6 +3802,8 @@
           const user = result.data?.user || result.user;
           if (user) {
             sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+            const hudScreen = document.getElementById('hud-boot-screen');
+            if (hudScreen) hudScreen.classList.add('hidden');
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('admin-shell').classList.remove('hidden');
 
@@ -3642,11 +3821,15 @@
         console.warn('[Auth] Session verification error:', err);
       }
 
-      // If unauthenticated, transition cleanly to auth screen
+      // If unauthenticated, run HUD targeting animation first
       clearAuth();
       document.getElementById('admin-shell').classList.add('hidden');
-      document.getElementById('auth-screen').classList.remove('hidden');
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (!hudHasRun) {
+        initHudBootAnimation();
+      } else {
+        document.getElementById('auth-screen').classList.remove('hidden');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
     }
 
     async function handleLogin(e) {
@@ -3676,7 +3859,7 @@
       }
 
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span><span>Authenticating...</span>';
+      submitBtn.innerHTML = '<span class="w-4 h-4 border-2 border-cyan-400 border-t-white rounded-full animate-spin"></span><span>Authenticating...</span>';
 
       try {
         const res = await fetch('/api/auth/login', {
@@ -3706,7 +3889,7 @@
         errorBox.classList.remove('hidden');
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>Sign In</span><i data-lucide="arrow-right" class="w-4 h-4"></i>';
+        submitBtn.innerHTML = '<span>Sign In</span>';
         if (typeof lucide !== 'undefined') lucide.createIcons();
       }
     }
