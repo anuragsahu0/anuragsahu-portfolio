@@ -177,6 +177,22 @@ const {
   changePassword,
 } = require('../controllers/securityController');
 
+// Phase 15: Global Search, Command Center & Bulk Operations
+const {
+  globalSearch,
+  getRecentItems,
+  addRecentItem,
+  clearRecentItems,
+  getPinnedItems,
+  addPinnedItem,
+  removePinnedItem,
+} = require('../controllers/searchController');
+const {
+  bulkProjects,
+  bulkMessages,
+  bulkMedia,
+} = require('../controllers/bulkController');
+
 // All routes here are guarded by JWT Bearer Authentication
 router.use('/admin', verifyToken);
 
@@ -389,5 +405,19 @@ router.get('/admin/security/settings', requirePermission('security.view'), getSe
 router.put('/admin/security/settings', requirePermission('security.manage'), updateSecuritySettings);
 router.post('/admin/security/cleanup', requirePermission('security.manage'), runCleanup);
 router.post('/admin/security/change-password', changePassword);
+
+// ─── Phase 15: Global Search & Command Center ────────────────
+router.get('/admin/search', globalSearch);
+router.get('/admin/preferences/recent', getRecentItems);
+router.post('/admin/preferences/recent', addRecentItem);
+router.delete('/admin/preferences/recent', clearRecentItems);
+router.get('/admin/preferences/pinned', getPinnedItems);
+router.post('/admin/preferences/pinned', addPinnedItem);
+router.delete('/admin/preferences/pinned/:id', removePinnedItem);
+
+// ─── Phase 15: Safe Bulk Operations ─────────────────────────
+router.post('/admin/bulk/projects', requirePermission('projects.edit'), bulkProjects);
+router.post('/admin/bulk/messages', requirePermission('messages.manage'), bulkMessages);
+router.post('/admin/bulk/media', requirePermission('media.delete'), bulkMedia);
 
 module.exports = router;

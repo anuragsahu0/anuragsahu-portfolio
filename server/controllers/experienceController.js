@@ -204,4 +204,5 @@ module.exports = {
   updateExperience,
   deleteExperience,
   reorderExperience,
+  FALLBACK_EXPERIENCES,
 };

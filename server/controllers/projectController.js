@@ -662,4 +662,5 @@ module.exports = {
   updateProjectStatus,
   // legacy alias
   getAllProjects: getPublicProjects,
+  FALLBACK_PROJECTS,
 };

@@ -322,4 +322,5 @@ module.exports = {
   create: createRoadmap,
   update: updateRoadmap,
   remove: deleteRoadmap,
+  FALLBACK_ROADMAP,
 };

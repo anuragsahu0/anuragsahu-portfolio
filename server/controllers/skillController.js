@@ -277,4 +277,5 @@ module.exports = {
   create: createSkill,
   update: updateSkill,
   remove: deleteSkill,
+  FALLBACK_SKILLS,
 };

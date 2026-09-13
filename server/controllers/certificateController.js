@@ -229,4 +229,5 @@ module.exports = {
   updateCertificate,
   deleteCertificate,
   reorderCertificates,
+  FALLBACK_CERTIFICATES,
 };

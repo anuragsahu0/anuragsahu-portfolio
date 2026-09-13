@@ -238,4 +238,5 @@ module.exports = {
   create: createEducation,
   update: updateEducation,
   remove: deleteEducation,
+  FALLBACK_EDUCATION,
 };

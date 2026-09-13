@@ -153,8 +153,7 @@
     #cms-toast.toast-error { background: #450a0a; color: #fca5a5; border: 1px solid #7f1d1d; }
     #cms-toast.toast-hidden { opacity: 0; transform: translateY(8px); }
 
-    /* Responsive Modal System: Bottom Sheet on Mobile (<640px), Centered Modal on Desktop (>=640px) */
-    #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal, #revision-history-modal, #revision-compare-modal, #restore-confirm-modal, #publish-confirm-modal, #conflict-modal, #preview-modal, #schedule-action-modal, #schedule-details-modal, #bulk-schedule-modal, #create-backup-modal, #backup-details-modal, #disaster-restore-modal, #backup-settings-modal, #create-user-modal, #edit-user-modal, #role-editor-modal, #change-password-modal {
+    #cms-modal, #confirm-modal, #media-upload-modal, #media-detail-modal, #resume-upload-modal, #mediapicker-modal, #message-detail-modal, #revision-history-modal, #revision-compare-modal, #restore-confirm-modal, #publish-confirm-modal, #conflict-modal, #preview-modal, #schedule-action-modal, #schedule-details-modal, #bulk-schedule-modal, #create-backup-modal, #backup-details-modal, #disaster-restore-modal, #backup-settings-modal, #create-user-modal, #edit-user-modal, #role-editor-modal, #change-password-modal, #command-center-modal, #bulk-confirm-modal {
       position: fixed;
       inset: 0;
       z-index: 8500;
@@ -165,7 +164,7 @@
       justify-content: center;
       padding: 0;
     }
-    #cms-modal.open, #confirm-modal.open, #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open, #revision-history-modal.open, #revision-compare-modal.open, #restore-confirm-modal.open, #publish-confirm-modal.open, #conflict-modal.open, #preview-modal.open, #schedule-action-modal.open, #schedule-details-modal.open, #bulk-schedule-modal.open, #create-backup-modal.open, #backup-details-modal.open, #disaster-restore-modal.open, #backup-settings-modal.open, #create-user-modal.open, #edit-user-modal.open, #role-editor-modal.open, #change-password-modal.open {
+    #cms-modal.open, #confirm-modal.open, #media-upload-modal.open, #media-detail-modal.open, #resume-upload-modal.open, #mediapicker-modal.open, #message-detail-modal.open, #revision-history-modal.open, #revision-compare-modal.open, #restore-confirm-modal.open, #publish-confirm-modal.open, #conflict-modal.open, #preview-modal.open, #schedule-action-modal.open, #schedule-details-modal.open, #bulk-schedule-modal.open, #create-backup-modal.open, #backup-details-modal.open, #disaster-restore-modal.open, #backup-settings-modal.open, #create-user-modal.open, #edit-user-modal.open, #role-editor-modal.open, #change-password-modal.open, #command-center-modal.open, #bulk-confirm-modal.open {
       display: flex;
     }
     @media (min-width: 640px) {
@@ -199,7 +198,9 @@
     #create-user-modal > div,
     #edit-user-modal > div,
     #role-editor-modal > div,
-    #change-password-modal > div {
+    #change-password-modal > div,
+    #command-center-modal > div,
+    #bulk-confirm-modal > div {
       background: #070B16;
       border: 1px solid #141E33;
       border-top-left-radius: 20px;
@@ -251,6 +252,8 @@
       #edit-user-modal > div { max-width: 500px; }
       #role-editor-modal > div { max-width: 780px; }
       #change-password-modal > div { max-width: 480px; }
+      #command-center-modal > div { max-width: 720px; }
+      #bulk-confirm-modal > div { max-width: 500px; }
       #preview-modal > div { max-width: 1040px; width: 95vw; height: 90vh; height: 90dvh; padding: 0; overflow: hidden; display: flex; flex-direction: column; }
       .diff-badge-added { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
       .diff-badge-removed { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
@@ -578,7 +581,23 @@
           </div>
         </div>
 
+        <!-- Desktop Global Search & Command Center Trigger -->
+        <div class="hidden md:flex items-center flex-1 max-w-sm mx-4">
+          <button id="cmd-center-trigger-btn" onclick="openCommandCenter()" class="w-full flex items-center justify-between gap-2 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-brand-border text-slate-400 hover:text-slate-200 hover:border-cyan-500/40 text-xs transition-all shadow-sm group" title="Global Search & Command Center (⌘K)">
+            <div class="flex items-center gap-2 truncate">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-cyan-400 shrink-0 group-hover:text-cyan-300"></i>
+              <span class="truncate text-[11px]">Search or command...</span>
+            </div>
+            <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] font-mono text-slate-400 border border-brand-border shrink-0 group-hover:border-cyan-500/30">⌘K</kbd>
+          </button>
+        </div>
+
         <div class="flex items-center gap-3">
+          <!-- Mobile Search Trigger -->
+          <button id="cmd-center-mobile-btn" onclick="openCommandCenter()" class="md:hidden p-2 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-slate-800 transition-colors" title="Search & Commands" aria-label="Global Search">
+            <i data-lucide="search" class="w-4 h-4"></i>
+          </button>
+
           <div class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono">
             <i data-lucide="activity" class="w-3 h-3 animate-pulse"></i>
             <span id="health-status">API: ONLINE</span>
@@ -1050,7 +1069,13 @@
                 <button onclick="filterMessagesByStatus('ARCHIVED')" class="msg-status-pill px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200" data-status="ARCHIVED">ARCHIVED</button>
                 <button onclick="filterMessagesByStatus('SPAM')" class="msg-status-pill px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200" data-status="SPAM">SPAM</button>
               </div>
-              <div id="messages-summary-count" class="text-slate-500 text-[10px]">Loading count...</div>
+              <div class="flex items-center gap-3">
+                <label class="flex items-center gap-1.5 text-slate-400 text-[11px] cursor-pointer">
+                  <input type="checkbox" id="messages-select-all-cb" onchange="toggleSelectAllMessages(this.checked)" class="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-0 w-3.5 h-3.5 cursor-pointer" />
+                  <span>Select All</span>
+                </label>
+                <div id="messages-summary-count" class="text-slate-500 text-[10px]">Loading count...</div>
+              </div>
             </div>
           </div>
 
@@ -1076,6 +1101,70 @@
               <i data-lucide="plus" class="w-3.5 h-3.5"></i><span>New Project</span>
             </button>
           </div>
+
+          <!-- Projects Advanced Toolbar: Search, Filters, Bulk Selection -->
+          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-3 sm:p-4 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+              <!-- Search Input -->
+              <div class="relative lg:col-span-2">
+                <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                <input
+                  type="text"
+                  id="projects-filter-search"
+                  oninput="onProjectsFilterChange()"
+                  placeholder="Filter projects by title, slug, tech stack..."
+                  class="w-full bg-slate-900/80 border border-brand-border rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                />
+              </div>
+
+              <!-- Status Filter -->
+              <div>
+                <select id="projects-filter-status" onchange="onProjectsFilterChange()" class="w-full bg-slate-900 border border-brand-border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50">
+                  <option value="ALL">Status: All</option>
+                  <option value="WORKING">Working</option>
+                  <option value="COMPLETED">Completed</option>
+                  <option value="COMING_SOON">Coming Soon</option>
+                  <option value="PAUSED">Paused</option>
+                  <option value="ARCHIVED">Archived</option>
+                </select>
+              </div>
+
+              <!-- Visibility Filter -->
+              <div>
+                <select id="projects-filter-vis" onchange="onProjectsFilterChange()" class="w-full bg-slate-900 border border-brand-border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50">
+                  <option value="ALL">Visibility: All</option>
+                  <option value="PUBLISHED">Published</option>
+                  <option value="DRAFT">Draft</option>
+                  <option value="HIDDEN">Hidden</option>
+                </select>
+              </div>
+
+              <!-- Sort Dropdown & Clear Filters -->
+              <div class="flex items-center gap-2">
+                <select id="projects-filter-sort" onchange="onProjectsFilterChange()" class="w-full bg-slate-900 border border-brand-border rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50">
+                  <option value="order">Order (Default)</option>
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                  <option value="title">Title (A-Z)</option>
+                </select>
+                <button onclick="clearProjectsFilters()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 text-xs font-mono transition-colors whitespace-nowrap" title="Reset Filters">
+                  Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Bulk Selection Status Bar -->
+            <div class="flex items-center justify-between pt-2 border-t border-brand-border/60 text-xs text-slate-400">
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" id="projects-select-all-cb" onchange="toggleSelectAllProjects(this.checked)" class="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-0 w-3.5 h-3.5" />
+                <span class="text-[11px] font-mono">Select All Filtered</span>
+              </label>
+              <div id="projects-count-badge" class="text-[11px] font-mono text-slate-500">
+                0 projects
+              </div>
+            </div>
+          </div>
+
           <div id="projects-container" class="space-y-3">
             <div class="text-center py-12 text-xs text-slate-500 font-mono">Loading projects...</div>
           </div>
@@ -3138,11 +3227,19 @@
         orientationQuery.addListener(sync);
       }
 
-      // Escape key accessibility handler for all drawers, dropdowns, and modals
+      // Keyboard shortcuts and Escape key accessibility handler
       document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (typeof toggleCommandCenter === 'function') toggleCommandCenter();
+          return;
+        }
+
         if (e.key === 'Escape') {
           toggleMobileDrawer(false);
           if (typeof toggleNotificationDropdown === 'function') toggleNotificationDropdown(false);
+          if (typeof closeCommandCenter === 'function') closeCommandCenter();
+          if (typeof closeBulkConfirmModal === 'function') closeBulkConfirmModal();
           if (typeof closeModal === 'function') closeModal();
           if (typeof closeConfirmModal === 'function') closeConfirmModal();
           if (typeof closeUploadMediaModal === 'function') closeUploadMediaModal();
@@ -3435,6 +3532,10 @@
         loadSecurityCenter();
       } else {
         document.getElementById('tab-placeholder').classList.remove('hidden');
+      }
+
+      if (typeof updateBulkActionBar === 'function') {
+        updateBulkActionBar(tabId);
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -4045,8 +4146,15 @@
             No inquiries match your current filters.
           </div>
         `;
+        const selectAllCb = document.getElementById('messages-select-all-cb');
+        if (selectAllCb) selectAllCb.checked = false;
+        updateBulkActionBar('messages');
         return;
       }
+
+      const allMessagesSelected = msgs.length > 0 && msgs.every(m => _selectedMessageIds.has(String(m._id)));
+      const selectAllCb = document.getElementById('messages-select-all-cb');
+      if (selectAllCb) selectAllCb.checked = allMessagesSelected;
 
       container.innerHTML = msgs.map(m => {
         const id = m._id;
@@ -4056,6 +4164,7 @@
         const snippet = escapeHtml((m.message || '').substring(0, 180));
         const status = (m.status || (m.isRead ? 'READ' : 'NEW')).toUpperCase();
         const emailStatus = m.emailNotificationStatus || 'PENDING';
+        const isChecked = _selectedMessageIds.has(String(id));
 
         let statusClass = 'bg-slate-800 text-slate-400 border border-slate-700';
         if (status === 'NEW') statusClass = 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20';
@@ -4072,9 +4181,10 @@
         const isUnread = status === 'NEW' || !m.isRead;
 
         return `
-          <div class="bg-brand-sidebar border ${isUnread ? 'border-cyan-500/40 bg-cyan-950/10' : 'border-brand-border'} rounded-xl p-4 sm:p-5 transition-all space-y-3">
+          <div class="bg-brand-sidebar border ${isChecked ? 'border-cyan-500/50 bg-cyan-950/20' : (isUnread ? 'border-cyan-500/40 bg-cyan-950/10' : 'border-brand-border')} rounded-xl p-4 sm:p-5 transition-all space-y-3">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div class="flex items-center gap-2.5 flex-wrap">
+                <input type="checkbox" onchange="onMessageSelectChange('${id}', this.checked)" class="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-0 w-3.5 h-3.5 shrink-0 cursor-pointer" ${isChecked ? 'checked' : ''} />
                 <span class="text-sm font-bold text-slate-100">${sender}</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${statusClass}">${status}</span>
                 ${m.company ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-800 text-slate-400 border border-slate-700">${escapeHtml(m.company)}</span>` : ''}
@@ -4114,6 +4224,24 @@
           </div>
         `;
       }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      updateBulkActionBar('messages');
+    }
+
+    function onMessageSelectChange(id, checked) {
+      if (checked) _selectedMessageIds.add(String(id));
+      else _selectedMessageIds.delete(String(id));
+      renderMessages(_messagesCache);
+    }
+
+    function toggleSelectAllMessages(checked) {
+      if (checked) {
+        _messagesCache.forEach(m => _selectedMessageIds.add(String(m._id)));
+      } else {
+        _selectedMessageIds.clear();
+      }
+      renderMessages(_messagesCache);
     }
 
     function renderMessagesPagination() {
@@ -4896,38 +5024,168 @@
       return `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">${fields.join('')}</div>`;
     }
 
-    // ─── PROJECTS ─────────────────────────────────────────────
+    // ─── PROJECTS (Phase 15: Filter, Sort & Bulk Selection) ───────────
+    let _rawProjects = [];
+    let _selectedProjectIds = new Set();
+    let _projectsFilterState = { search: '', status: 'ALL', visibility: 'ALL', sort: 'order' };
+
     async function loadProjects() {
       const c = document.getElementById('projects-container');
-      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading...</div>';
+      if (!c) return;
+      c.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-mono">Loading projects...</div>';
       try {
+        // Restore persisted filters
+        try {
+          const saved = sessionStorage.getItem('agy_projects_filter');
+          if (saved) {
+            _projectsFilterState = Object.assign(_projectsFilterState, JSON.parse(saved));
+            const sInp = document.getElementById('projects-filter-search');
+            const stSel = document.getElementById('projects-filter-status');
+            const visSel = document.getElementById('projects-filter-vis');
+            const sortSel = document.getElementById('projects-filter-sort');
+            if (sInp) sInp.value = _projectsFilterState.search || '';
+            if (stSel) stSel.value = _projectsFilterState.status || 'ALL';
+            if (visSel) visSel.value = _projectsFilterState.visibility || 'ALL';
+            if (sortSel) sortSel.value = _projectsFilterState.sort || 'order';
+          }
+        } catch (_) {}
+
         const data = await cmsApi('GET', '/api/admin/projects');
-        const projects = data.data?.projects || data.projects || [];
-        if (!projects.length) { c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No projects yet. Create one above.</p>'; return; }
-        c.innerHTML = projects.map((p, i) => `
-          <div class="bg-brand-sidebar border border-brand-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        _rawProjects = data.data?.projects || data.projects || [];
+        filterAndRenderProjects();
+      } catch (err) {
+        c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`;
+      }
+    }
+
+    function onProjectsFilterChange() {
+      _projectsFilterState.search = document.getElementById('projects-filter-search')?.value || '';
+      _projectsFilterState.status = document.getElementById('projects-filter-status')?.value || 'ALL';
+      _projectsFilterState.visibility = document.getElementById('projects-filter-vis')?.value || 'ALL';
+      _projectsFilterState.sort = document.getElementById('projects-filter-sort')?.value || 'order';
+      try {
+        sessionStorage.setItem('agy_projects_filter', JSON.stringify(_projectsFilterState));
+      } catch (_) {}
+      filterAndRenderProjects();
+    }
+
+    function clearProjectsFilters() {
+      _projectsFilterState = { search: '', status: 'ALL', visibility: 'ALL', sort: 'order' };
+      const sInp = document.getElementById('projects-filter-search');
+      const stSel = document.getElementById('projects-filter-status');
+      const visSel = document.getElementById('projects-filter-vis');
+      const sortSel = document.getElementById('projects-filter-sort');
+      if (sInp) sInp.value = '';
+      if (stSel) stSel.value = 'ALL';
+      if (visSel) visSel.value = 'ALL';
+      if (sortSel) sortSel.value = 'order';
+      try {
+        sessionStorage.removeItem('agy_projects_filter');
+      } catch (_) {}
+      filterAndRenderProjects();
+    }
+
+    function filterAndRenderProjects() {
+      const c = document.getElementById('projects-container');
+      if (!c) return;
+
+      let filtered = [..._rawProjects];
+
+      if (_projectsFilterState.search.trim()) {
+        const q = _projectsFilterState.search.trim().toLowerCase();
+        filtered = filtered.filter(p =>
+          (p.title || '').toLowerCase().includes(q) ||
+          (p.slug || '').toLowerCase().includes(q) ||
+          (p.description || '').toLowerCase().includes(q) ||
+          (p.shortDescription || '').toLowerCase().includes(q) ||
+          (Array.isArray(p.techStack) ? p.techStack.join(' ') : '').toLowerCase().includes(q)
+        );
+      }
+
+      if (_projectsFilterState.status !== 'ALL') {
+        filtered = filtered.filter(p => (p.status || '').toUpperCase() === _projectsFilterState.status);
+      }
+
+      if (_projectsFilterState.visibility !== 'ALL') {
+        filtered = filtered.filter(p => (p.visibility || 'DRAFT').toUpperCase() === _projectsFilterState.visibility);
+      }
+
+      if (_projectsFilterState.sort === 'newest') {
+        filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      } else if (_projectsFilterState.sort === 'oldest') {
+        filtered.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+      } else if (_projectsFilterState.sort === 'title') {
+        filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+      } else {
+        filtered.sort((a, b) => (a.order || 0) - (b.order || 0));
+      }
+
+      const countBadge = document.getElementById('projects-count-badge');
+      if (countBadge) {
+        countBadge.textContent = `${filtered.length} of ${_rawProjects.length} projects`;
+      }
+
+      if (!filtered.length) {
+        c.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">No projects match the current filter criteria.</p>';
+        updateBulkActionBar('projects');
+        return;
+      }
+
+      const allFilteredSelected = filtered.length > 0 && filtered.every(p => _selectedProjectIds.has(String(p._id)));
+      const selectAllCb = document.getElementById('projects-select-all-cb');
+      if (selectAllCb) selectAllCb.checked = allFilteredSelected;
+
+      c.innerHTML = filtered.map((p, i) => {
+        const isChecked = _selectedProjectIds.has(String(p._id));
+        return `
+          <div class="bg-brand-sidebar border ${isChecked ? 'border-cyan-500/50 bg-cyan-950/10' : 'border-brand-border'} rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all">
             <div class="flex items-center gap-3 min-w-0">
+              <input type="checkbox" onchange="onProjectSelectChange('${p._id}', this.checked)" class="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-0 w-3.5 h-3.5 shrink-0 cursor-pointer" ${isChecked ? 'checked' : ''} />
               <div class="flex flex-col gap-1 shrink-0">
-                ${i > 0 ? `<button onclick="moveItem('projects','up',${i},${p._id})" class="text-slate-500 hover:text-cyan-400 text-[10px]">▲</button>` : '<span class="w-4"></span>'}
-                ${i < projects.length-1 ? `<button onclick="moveItem('projects','down',${i},${p._id})" class="text-slate-500 hover:text-cyan-400 text-[10px]">▼</button>` : '<span class="w-4"></span>'}
+                ${i > 0 ? `<button onclick="moveItem('projects','up',${i},'${p._id}')" class="text-slate-500 hover:text-cyan-400 text-[10px]">▲</button>` : '<span class="w-4"></span>'}
+                ${i < filtered.length-1 ? `<button onclick="moveItem('projects','down',${i},'${p._id}')" class="text-slate-500 hover:text-cyan-400 text-[10px]">▼</button>` : '<span class="w-4"></span>'}
               </div>
               <div class="min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
                   <span class="text-sm font-semibold text-slate-100 truncate">${escapeHtml(p.title)}</span>
                   <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${p.visibility === 'PUBLISHED' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-400'}">${p.visibility || 'DRAFT'}</span>
                   <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-900 text-slate-400">${p.status || ''}</span>
+                  ${p.category ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-800/80 text-cyan-400 border border-cyan-500/20">${escapeHtml(p.category)}</span>` : ''}
                 </div>
                 <p class="text-[11px] text-slate-400 truncate mt-0.5">${escapeHtml(p.shortDescription || p.subtitle || '')}</p>
               </div>
             </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <button onclick="editProject('${p._id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-colors">Edit</button>
-              <button onclick="confirmDelete('Delete project &quot;${escapeHtml(p.title)}&quot;?', () => deleteItem('/api/admin/projects/${p._id}', loadProjects))" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs transition-colors">Delete</button>
+            <div class="flex items-center gap-1.5 shrink-0 flex-wrap">
+              <button onclick="editProject('${p._id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-colors" title="Edit Project">Edit</button>
+              <button onclick="openRevisionHistoryModal('Project', '${p._id}', '${escapeHtml(p.title)}')" class="p-1.5 rounded-lg bg-slate-800/60 text-slate-400 hover:text-cyan-300 hover:bg-slate-700 text-xs transition-colors" title="View Revisions">
+                <i data-lucide="history" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="openScheduleActionModal('Project', '${p._id}', '${escapeHtml(p.title)}')" class="p-1.5 rounded-lg bg-slate-800/60 text-slate-400 hover:text-purple-300 hover:bg-slate-700 text-xs transition-colors" title="Schedule Action">
+                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="confirmDelete('Delete project &quot;${escapeHtml(p.title)}&quot;?', () => deleteItem('/api/admin/projects/${p._id}', loadProjects))" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs transition-colors">Delete</button>
             </div>
           </div>
-        `).join('');
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-      } catch (err) { c.innerHTML = `<p class="text-xs text-rose-400 text-center py-8">${err.message}</p>`; }
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      updateBulkActionBar('projects');
+    }
+
+    function onProjectSelectChange(id, checked) {
+      if (checked) _selectedProjectIds.add(String(id));
+      else _selectedProjectIds.delete(String(id));
+      filterAndRenderProjects();
+    }
+
+    function toggleSelectAllProjects(checked) {
+      if (checked) {
+        _rawProjects.forEach(p => _selectedProjectIds.add(String(p._id)));
+      } else {
+        _selectedProjectIds.clear();
+      }
+      filterAndRenderProjects();
     }
 
     function openProjectModal(p = {}) {
@@ -9447,6 +9705,679 @@
       }
     }
 
+    // ─── PHASE 15: GLOBAL SEARCH, COMMAND CENTER & BULK OPERATIONS ───────────
+    let _cmdOpen = false;
+    let _cmdFilterCategory = 'all';
+    let _cmdQuery = '';
+    let _cmdSearchDebounce = null;
+    let _cmdRecentItems = [];
+    let _cmdPinnedItems = [];
+    let _cmdSelectedIndex = -1;
+
+    function getCurrentUserRole() {
+      try {
+        const user = JSON.parse(sessionStorage.getItem(USER_KEY) || '{}');
+        return (user.role || 'VIEWER').toUpperCase();
+      } catch (_) {
+        return 'VIEWER';
+      }
+    }
+
+    function canUserPerform(permission) {
+      if (!permission) return true;
+      const role = getCurrentUserRole();
+      if (role === 'OWNER') return true;
+      if (role === 'ADMIN') return permission !== 'security.manage';
+      if (role === 'EDITOR') {
+        const editorPerms = ['dashboard.view', 'profile.view', 'profile.edit', 'about.view', 'about.edit', 'projects.view', 'projects.create', 'projects.edit', 'skills.view', 'skills.edit', 'experience.view', 'experience.edit', 'education.view', 'education.edit', 'certificates.view', 'certificates.edit', 'roadmap.view', 'roadmap.edit', 'media.view', 'media.upload', 'resume.view', 'seo.view', 'activity.view', 'notifications.view'];
+        return editorPerms.includes(permission);
+      }
+      if (role === 'VIEWER') {
+        return permission.endsWith('.view');
+      }
+      return false;
+    }
+
+    const SYSTEM_COMMANDS = [
+      // Navigation
+      { id: 'nav-dash', category: 'NAVIGATION', title: 'Go to Dashboard', subtitle: 'System overview & real-time telemetry', icon: 'layout-dashboard', perm: 'dashboard.view', action: () => switchTab('dashboard') },
+      { id: 'nav-projects', category: 'NAVIGATION', title: 'Go to Projects', subtitle: 'Manage portfolio projects and showcases', icon: 'folder', perm: 'projects.view', action: () => switchTab('projects') },
+      { id: 'nav-skills', category: 'NAVIGATION', title: 'Go to Skills', subtitle: 'Technical skill proficiencies and stack', icon: 'code-2', perm: 'skills.view', action: () => switchTab('skills') },
+      { id: 'nav-experience', category: 'NAVIGATION', title: 'Go to Experience', subtitle: 'Career roles and professional milestones', icon: 'briefcase', perm: 'experience.view', action: () => switchTab('experience') },
+      { id: 'nav-education', category: 'NAVIGATION', title: 'Go to Education', subtitle: 'Academic background and coursework', icon: 'graduation-cap', perm: 'education.view', action: () => switchTab('education') },
+      { id: 'nav-certs', category: 'NAVIGATION', title: 'Go to Certificates', subtitle: 'Verified certifications and credentials', icon: 'award', perm: 'certificates.view', action: () => switchTab('certificates') },
+      { id: 'nav-roadmap', category: 'NAVIGATION', title: 'Go to Roadmap', subtitle: 'Strategic development timeline and quarters', icon: 'milestone', perm: 'roadmap.view', action: () => switchTab('roadmap') },
+      { id: 'nav-media', category: 'NAVIGATION', title: 'Go to Media Library', subtitle: 'Production asset storage and uploads', icon: 'image', perm: 'media.view', action: () => switchTab('media') },
+      { id: 'nav-resume', category: 'NAVIGATION', title: 'Go to Resume Center', subtitle: 'ATS resume versions and PDF tracking', icon: 'file-text', perm: 'resume.view', action: () => switchTab('resume') },
+      { id: 'nav-messages', category: 'NAVIGATION', title: 'Go to Messages Inbox', subtitle: 'Visitor contact inquiries and admin replies', icon: 'inbox', perm: 'messages.view', action: () => switchTab('messages') },
+      { id: 'nav-analytics', category: 'NAVIGATION', title: 'Go to Analytics', subtitle: 'Audience insights and telemetry charts', icon: 'bar-chart-3', perm: 'analytics.view', action: () => switchTab('analytics') },
+      { id: 'nav-schedules', category: 'NAVIGATION', title: 'Go to Schedules', subtitle: 'Automated publishing and scheduled jobs', icon: 'clock', perm: 'schedules.view', action: () => switchTab('schedules') },
+      { id: 'nav-backups', category: 'NAVIGATION', title: 'Go to Backups', subtitle: 'Disaster recovery and database snapshots', icon: 'archive', perm: 'backups.view', action: () => switchTab('backups') },
+      { id: 'nav-access', category: 'NAVIGATION', title: 'Go to Access & Roles', subtitle: 'Operator accounts and permission matrix', icon: 'users', perm: 'users.view', action: () => switchTab('access') },
+      { id: 'nav-security', category: 'NAVIGATION', title: 'Go to Security Center', subtitle: 'Audit events, active sessions & diagnostics', icon: 'shield-check', perm: 'security.view', action: () => switchTab('security') },
+      { id: 'nav-activity', category: 'NAVIGATION', title: 'Go to Activity Log', subtitle: 'Audit log of administrative actions', icon: 'history', perm: 'activity.view', action: () => switchTab('activity') },
+      { id: 'nav-settings', category: 'NAVIGATION', title: 'Go to Settings', subtitle: 'System configuration and site metadata', icon: 'settings', perm: 'settings.view', action: () => switchTab('settings') },
+      { id: 'nav-seo', category: 'NAVIGATION', title: 'Go to SEO Settings', subtitle: 'Search optimization and meta tags', icon: 'search', perm: 'seo.view', action: () => switchTab('seo') },
+
+      // Quick Actions
+      { id: 'act-new-project', category: 'QUICK ACTIONS', title: '+ New Project', subtitle: 'Create a new portfolio showcase project', icon: 'folder-plus', perm: 'projects.create', action: () => { switchTab('projects'); openProjectModal(); } },
+      { id: 'act-new-skill', category: 'QUICK ACTIONS', title: '+ Add Skill', subtitle: 'Register a technical skill or proficiency', icon: 'plus-circle', perm: 'skills.edit', action: () => { switchTab('skills'); openSkillModal(); } },
+      { id: 'act-new-exp', category: 'QUICK ACTIONS', title: '+ Add Experience', subtitle: 'Record career experience or internship', icon: 'briefcase', perm: 'experience.edit', action: () => { switchTab('experience'); openExperienceModal(); } },
+      { id: 'act-new-cert', category: 'QUICK ACTIONS', title: '+ Add Certificate', subtitle: 'Add credential with verification link', icon: 'award', perm: 'certificates.edit', action: () => { switchTab('certificates'); openCertificateModal(); } },
+      { id: 'act-upload-media', category: 'QUICK ACTIONS', title: '+ Upload Media', subtitle: 'Upload image, banner or graphic asset', icon: 'upload-cloud', perm: 'media.upload', action: () => openUploadMediaModal() },
+      { id: 'act-upload-resume', category: 'QUICK ACTIONS', title: '+ Upload Resume', subtitle: 'Upload a new version of ATS resume PDF', icon: 'file-up', perm: 'resume.manage', action: () => openUploadResumeModal() },
+      { id: 'act-create-backup', category: 'QUICK ACTIONS', title: '+ Create Backup', subtitle: 'Generate sanitized cryptographic database snapshot', icon: 'database', perm: 'backups.create', action: () => openCreateBackupModal() },
+      { id: 'act-new-schedule', category: 'QUICK ACTIONS', title: '+ Schedule Action', subtitle: 'Queue future publish or unpublish action', icon: 'calendar-plus', perm: 'schedules.manage', action: () => openScheduleActionModal() },
+
+      // Operations & System
+      { id: 'sys-diagnostics', category: 'SYSTEM & OPERATIONS', title: 'Run Health Diagnostics', subtitle: 'Audit 8 critical operational subsystems', icon: 'activity', perm: 'security.view', action: () => { switchTab('system'); runSystemDiagnostics(); } },
+      { id: 'sys-revoke-sessions', category: 'SYSTEM & OPERATIONS', title: 'Revoke Other Sessions', subtitle: 'Invalidate all other administrative sessions', icon: 'log-out', perm: 'security.view', action: () => revokeOtherSessions() },
+      { id: 'sys-change-pass', category: 'SYSTEM & OPERATIONS', title: 'Change Password', subtitle: 'Update operator password and invalidate sibling sessions', icon: 'key', perm: null, action: () => openChangePasswordModal() },
+      { id: 'sys-mark-notifs', category: 'SYSTEM & OPERATIONS', title: 'Mark All Notifications Read', subtitle: 'Clear unread notification counter badge', icon: 'bell-off', perm: 'notifications.view', action: () => markAllNotificationsRead() },
+      { id: 'sys-view-site', category: 'SYSTEM & OPERATIONS', title: 'Open Public Website', subtitle: 'View anuragsahu.com in new tab', icon: 'external-link', perm: null, action: () => window.open('/', '_blank') },
+    ];
+
+    function openCommandCenter() {
+      _cmdOpen = true;
+      _cmdQuery = '';
+      _cmdFilterCategory = 'all';
+      _cmdSelectedIndex = -1;
+
+      const modal = document.getElementById('command-center-modal');
+      const input = document.getElementById('cmd-palette-input');
+      const clearBtn = document.getElementById('cmd-clear-btn');
+
+      if (modal) modal.classList.add('open');
+      if (input) {
+        input.value = '';
+        setTimeout(() => input.focus(), 50);
+      }
+      if (clearBtn) clearBtn.classList.add('hidden');
+
+      updateCommandCategoryPills('all');
+      loadRecentAndPinnedItems();
+      renderCommandDefaultView();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeCommandCenter() {
+      _cmdOpen = false;
+      const modal = document.getElementById('command-center-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function toggleCommandCenter() {
+      if (_cmdOpen) closeCommandCenter();
+      else openCommandCenter();
+    }
+
+    function clearCommandInput() {
+      const input = document.getElementById('cmd-palette-input');
+      if (input) input.value = '';
+      onCommandInput('');
+    }
+
+    async function loadRecentAndPinnedItems() {
+      try {
+        const [recRes, pinRes] = await Promise.all([
+          fetch('/api/admin/preferences/recent', { credentials: 'include' }).then(r => r.json()),
+          fetch('/api/admin/preferences/pinned', { credentials: 'include' }).then(r => r.json()),
+        ]);
+        _cmdRecentItems = recRes.data || [];
+        _cmdPinnedItems = pinRes.data || [];
+        if (!_cmdQuery) renderCommandDefaultView();
+      } catch (_) {}
+    }
+
+    function setCommandCategoryFilter(cat) {
+      _cmdFilterCategory = cat;
+      updateCommandCategoryPills(cat);
+      if (_cmdQuery) {
+        executeCommandSearch(_cmdQuery);
+      } else {
+        renderCommandDefaultView();
+      }
+    }
+
+    function updateCommandCategoryPills(activeCat) {
+      document.querySelectorAll('.cmd-cat-pill').forEach(btn => {
+        const cat = btn.getAttribute('data-category');
+        if (cat === activeCat) {
+          btn.className = 'cmd-cat-pill px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-semibold';
+        } else {
+          btn.className = 'cmd-cat-pill px-2.5 py-0.5 rounded-full text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors';
+        }
+      });
+    }
+
+    function onCommandInput(val) {
+      _cmdQuery = val.trim();
+      _cmdSelectedIndex = -1;
+      const clearBtn = document.getElementById('cmd-clear-btn');
+      if (clearBtn) {
+        if (_cmdQuery) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+
+      clearTimeout(_cmdSearchDebounce);
+      if (!_cmdQuery) {
+        renderCommandDefaultView();
+        return;
+      }
+
+      _cmdSearchDebounce = setTimeout(() => {
+        executeCommandSearch(_cmdQuery);
+      }, 180);
+    }
+
+    function renderCommandDefaultView() {
+      const container = document.getElementById('cmd-results-container');
+      const countEl = document.getElementById('cmd-result-count');
+      if (!container) return;
+
+      if (countEl) countEl.textContent = 'Ready';
+
+      const allowedCommands = SYSTEM_COMMANDS.filter(cmd => canUserPerform(cmd.perm));
+
+      let html = '';
+
+      // 1. PINNED ITEMS
+      if (_cmdPinnedItems && _cmdPinnedItems.length > 0) {
+        html += `
+          <div>
+            <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-brand-border/60">
+              <span class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold flex items-center gap-1.5">
+                <i data-lucide="pin" class="w-3 h-3"></i> Pinned Shortcuts
+              </span>
+            </div>
+            <div class="space-y-1">
+              ${_cmdPinnedItems.map((item, idx) => `
+                <div onclick="executePinnedItem('${item.id}')" class="cmd-item p-2.5 rounded-xl bg-slate-900/60 border border-brand-border/60 hover:border-cyan-500/40 hover:bg-cyan-500/5 cursor-pointer flex items-center justify-between gap-3 group transition-all" data-index="pin-${idx}">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+                      <i data-lucide="${item.icon || 'bookmark'}" class="w-3.5 h-3.5"></i>
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-semibold text-slate-200 group-hover:text-cyan-300 truncate">${escapeHtml(item.title)}</p>
+                      <p class="text-[10px] text-slate-500 truncate font-mono">${escapeHtml(item.subtitle || item.entityType)}</p>
+                    </div>
+                  </div>
+                  <button onclick="event.stopPropagation(); removePinnedItemAction('${item.id}')" class="text-slate-500 hover:text-rose-400 p-1 rounded" title="Unpin">
+                    <i data-lucide="x" class="w-3 h-3"></i>
+                  </button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // 2. RECENT ITEMS
+      html += `
+        <div>
+          <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-brand-border/60">
+            <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1.5">
+              <i data-lucide="clock" class="w-3 h-3"></i> Recently Viewed
+            </span>
+            ${_cmdRecentItems.length > 0 ? `<button onclick="clearRecentItemsAction()" class="text-[10px] font-mono text-cyan-400 hover:underline">Clear</button>` : ''}
+          </div>
+          ${_cmdRecentItems.length > 0 ? `
+            <div class="space-y-1">
+              ${_cmdRecentItems.map((item, idx) => `
+                <div onclick="executeRecentItem('${item.entityType}', '${item.entityId}', '${item.tab || ''}')" class="cmd-item p-2 rounded-xl bg-slate-900/40 border border-brand-border/40 hover:border-cyan-500/30 hover:bg-slate-800/60 cursor-pointer flex items-center justify-between gap-3 group transition-all" data-index="rec-${idx}">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-slate-800 text-slate-400 border border-slate-700">${item.entityType}</span>
+                    <span class="text-xs text-slate-300 group-hover:text-cyan-300 truncate">${escapeHtml(item.title)}</span>
+                  </div>
+                  <span class="text-[10px] font-mono text-slate-500 shrink-0">${item.timestamp ? new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</span>
+                </div>
+              `).join('')}
+            </div>
+          ` : `
+            <p class="text-xs text-slate-500 font-mono py-2 text-center">Nothing viewed recently.</p>
+          `}
+        </div>
+      `;
+
+      // 3. QUICK ACTIONS
+      const quickActions = allowedCommands.filter(c => c.category === 'QUICK ACTIONS');
+      if (quickActions.length > 0 && (_cmdFilterCategory === 'all' || _cmdFilterCategory === 'commands')) {
+        html += `
+          <div>
+            <div class="pb-1.5 mb-1.5 border-b border-brand-border/60">
+              <span class="text-[10px] font-mono uppercase tracking-wider text-purple-400 font-bold flex items-center gap-1.5">
+                <i data-lucide="sparkles" class="w-3 h-3"></i> Quick Actions
+              </span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${quickActions.map(cmd => `
+                <div onclick="executeCommandAction('${cmd.id}')" class="cmd-item p-2.5 rounded-xl bg-slate-900/60 border border-brand-border/60 hover:border-purple-500/40 hover:bg-purple-500/5 cursor-pointer flex items-center gap-2.5 group transition-all">
+                  <div class="w-7 h-7 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0">
+                    <i data-lucide="${cmd.icon}" class="w-3.5 h-3.5"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-semibold text-slate-200 group-hover:text-purple-300 truncate">${cmd.title}</p>
+                    <p class="text-[10px] text-slate-500 truncate">${cmd.subtitle}</p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // 4. NAVIGATION SHORTCUTS
+      const navCommands = allowedCommands.filter(c => c.category === 'NAVIGATION');
+      if (navCommands.length > 0 && (_cmdFilterCategory === 'all' || _cmdFilterCategory === 'commands')) {
+        html += `
+          <div>
+            <div class="pb-1.5 mb-1.5 border-b border-brand-border/60">
+              <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1.5">
+                <i data-lucide="compass" class="w-3 h-3"></i> Navigation
+              </span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${navCommands.map(cmd => `
+                <div onclick="executeCommandAction('${cmd.id}')" class="cmd-item p-2 rounded-xl bg-slate-900/40 border border-brand-border/40 hover:border-cyan-500/30 hover:bg-slate-800/60 cursor-pointer flex items-center gap-2.5 group transition-all">
+                  <i data-lucide="${cmd.icon}" class="w-3.5 h-3.5 text-slate-400 group-hover:text-cyan-400 shrink-0"></i>
+                  <span class="text-xs text-slate-300 group-hover:text-cyan-300 truncate">${cmd.title}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    async function executeCommandSearch(query) {
+      const container = document.getElementById('cmd-results-container');
+      const countEl = document.getElementById('cmd-result-count');
+      if (!container) return;
+
+      container.innerHTML = '<div class="text-center py-10 text-xs text-slate-500 font-mono"><span class="animate-spin inline-block mr-2">⏳</span>Searching...</div>';
+
+      try {
+        const qLower = query.toLowerCase();
+
+        // 1. Local command matches
+        const matchingCommands = SYSTEM_COMMANDS.filter(cmd => {
+          if (!canUserPerform(cmd.perm)) return false;
+          return cmd.title.toLowerCase().includes(qLower) || cmd.subtitle.toLowerCase().includes(qLower);
+        });
+
+        // 2. Fetch backend search results
+        const res = await fetch(`/api/admin/search?q=${encodeURIComponent(query)}&type=${_cmdFilterCategory}&limit=5`, {
+          credentials: 'include',
+        });
+        const json = await res.json();
+        const backendResults = json.data?.results || [];
+        const totalCount = (json.data?.totalResults || 0) + matchingCommands.length;
+
+        if (countEl) countEl.textContent = `${totalCount} match${totalCount === 1 ? '' : 'es'}`;
+
+        if (totalCount === 0) {
+          container.innerHTML = `
+            <div class="text-center py-12 space-y-2">
+              <i data-lucide="search-x" class="w-8 h-8 text-slate-600 mx-auto"></i>
+              <p class="text-xs font-semibold text-slate-300">No results found for "${escapeHtml(query)}"</p>
+              <p class="text-[11px] text-slate-500">Try checking spelling or using a different search keyword.</p>
+            </div>
+          `;
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+          return;
+        }
+
+        let html = '';
+
+        // Matching Commands Section
+        if (matchingCommands.length > 0 && (_cmdFilterCategory === 'all' || _cmdFilterCategory === 'commands')) {
+          html += `
+            <div>
+              <div class="pb-1.5 mb-1.5 border-b border-brand-border/60">
+                <span class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold">Commands (${matchingCommands.length})</span>
+              </div>
+              <div class="space-y-1">
+                ${matchingCommands.map(cmd => `
+                  <div onclick="executeCommandAction('${cmd.id}')" class="cmd-item p-2.5 rounded-xl bg-slate-900/60 border border-brand-border/60 hover:border-cyan-500/40 hover:bg-cyan-500/5 cursor-pointer flex items-center justify-between gap-3 group transition-all">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <i data-lucide="${cmd.icon}" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+                      <div class="min-w-0">
+                        <p class="text-xs font-semibold text-slate-200 group-hover:text-cyan-300 truncate">${cmd.title}</p>
+                        <p class="text-[10px] text-slate-500 truncate">${cmd.subtitle}</p>
+                      </div>
+                    </div>
+                    <span class="text-[10px] font-mono text-slate-500 shrink-0">Action ↵</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        // Database Records Section
+        if (backendResults.length > 0) {
+          html += `
+            <div>
+              <div class="pb-1.5 mb-1.5 border-b border-brand-border/60">
+                <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">Records (${backendResults.length})</span>
+              </div>
+              <div class="space-y-1.5">
+                ${backendResults.map(item => `
+                  <div onclick="openSearchResultItem('${item.entityType}', '${item.id}', '${item.tab || ''}')" class="cmd-item p-2.5 rounded-xl bg-slate-900/60 border border-brand-border/60 hover:border-cyan-500/40 hover:bg-cyan-500/5 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 group transition-all">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 shrink-0">${item.entityType}</span>
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                          <span class="text-xs font-semibold text-slate-100 group-hover:text-cyan-300 truncate">${escapeHtml(item.title)}</span>
+                          ${item.status ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-mono bg-slate-800 text-slate-400 border border-slate-700">${item.status}</span>` : ''}
+                        </div>
+                        ${item.subtitle ? `<p class="text-[10px] text-slate-400 truncate">${escapeHtml(item.subtitle)}</p>` : ''}
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center" onclick="event.stopPropagation()">
+                      ${renderResultContextActions(item)}
+                      <button onclick="pinSearchResult('${item.entityType}', '${item.id}', '${escapeHtml(item.title)}', '${item.tab || ''}')" class="p-1 text-slate-500 hover:text-cyan-400 rounded" title="Pin shortcut">
+                        <i data-lucide="pin" class="w-3 h-3"></i>
+                      </button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        container.innerHTML = html;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        container.innerHTML = `
+          <div class="text-center py-10 space-y-2">
+            <i data-lucide="alert-triangle" class="w-6 h-6 text-rose-400 mx-auto"></i>
+            <p class="text-xs text-rose-300">Search is temporarily unavailable: ${escapeHtml(err.message)}</p>
+            <button onclick="executeCommandSearch(_cmdQuery)" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200">Retry</button>
+          </div>
+        `;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    }
+
+    function renderResultContextActions(item) {
+      const t = item.entityType;
+      const id = item.id;
+      if (t === 'PROJECT') {
+        return `
+          <button onclick="closeCommandCenter(); switchTab('projects'); editProject('${id}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-mono">Edit</button>
+          <button onclick="closeCommandCenter(); openRevisionHistoryModal('Project', '${id}', '${escapeHtml(item.title)}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-mono">Revisions</button>
+        `;
+      } else if (t === 'MESSAGE') {
+        return `
+          <button onclick="closeCommandCenter(); switchTab('messages'); openMessageDetailModal('${id}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-mono">View</button>
+        `;
+      } else if (t === 'MEDIA') {
+        return `
+          <button onclick="closeCommandCenter(); switchTab('media'); openMediaDetailModal('${id}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-mono">View</button>
+        `;
+      } else if (t === 'SCHEDULE') {
+        return `
+          <button onclick="closeCommandCenter(); switchTab('schedules'); viewScheduleDetails('${id}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-mono">Details</button>
+        `;
+      } else if (t === 'BACKUP') {
+        return `
+          <button onclick="closeCommandCenter(); switchTab('backups'); openBackupDetailsModal('${id}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-mono">Inspect</button>
+        `;
+      }
+      return `<button onclick="openSearchResultItem('${t}', '${id}', '${item.tab}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 font-mono">Open</button>`;
+    }
+
+    function executeCommandAction(cmdId) {
+      const cmd = SYSTEM_COMMANDS.find(c => c.id === cmdId);
+      if (!cmd) return;
+      closeCommandCenter();
+      if (typeof cmd.action === 'function') cmd.action();
+    }
+
+    function openSearchResultItem(type, id, tab) {
+      closeCommandCenter();
+      trackRecentItem({ entityType: type, entityId: id, title: `${type}: ${id}`, tab });
+      if (tab) switchTab(tab);
+      if (type === 'PROJECT') editProject(id);
+      else if (type === 'MESSAGE') openMessageDetailModal(id);
+      else if (type === 'MEDIA') openMediaDetailModal(id);
+      else if (type === 'SCHEDULE') viewScheduleDetails(id);
+      else if (type === 'BACKUP') openBackupDetailsModal(id);
+    }
+
+    function executeRecentItem(type, id, tab) {
+      closeCommandCenter();
+      if (tab) switchTab(tab);
+      if (type === 'PROJECT') editProject(id);
+      else if (type === 'MESSAGE') openMessageDetailModal(id);
+      else if (type === 'MEDIA') openMediaDetailModal(id);
+      else if (type === 'SCHEDULE') viewScheduleDetails(id);
+      else if (type === 'BACKUP') openBackupDetailsModal(id);
+    }
+
+    function executePinnedItem(pinId) {
+      const pin = _cmdPinnedItems.find(p => p.id === pinId);
+      if (!pin) return;
+      closeCommandCenter();
+      if (pin.tab) switchTab(pin.tab);
+      if (pin.entityType === 'PROJECT' && pin.entityId) editProject(pin.entityId);
+      else if (pin.entityType === 'MESSAGE' && pin.entityId) openMessageDetailModal(pin.entityId);
+      else if (pin.entityType === 'MEDIA' && pin.entityId) openMediaDetailModal(pin.entityId);
+    }
+
+    async function trackRecentItem(item) {
+      try {
+        await fetch('/api/admin/preferences/recent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(item),
+        });
+      } catch (_) {}
+    }
+
+    async function pinSearchResult(entityType, entityId, title, tab) {
+      try {
+        await fetch('/api/admin/preferences/pinned', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ entityType, entityId, title, tab }),
+        });
+        showToast(`Pinned "${title}" to Command Center`, 'success');
+        loadRecentAndPinnedItems();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function removePinnedItemAction(pinId) {
+      try {
+        await fetch(`/api/admin/preferences/pinned/${pinId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+        showToast('Unpinned item', 'success');
+        loadRecentAndPinnedItems();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function clearRecentItemsAction() {
+      try {
+        await fetch('/api/admin/preferences/recent', {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+        _cmdRecentItems = [];
+        renderCommandDefaultView();
+        showToast('Recent items cleared', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ─── PHASE 15: BULK ACTIONS & CONFIRMATION CONTROLLER ────────────
+    let _currentBulkConfig = null;
+    let _selectedMessageIds = new Set();
+    let _selectedMediaIds = new Set();
+
+    function updateBulkActionBar(activeTab = 'projects') {
+      const bar = document.getElementById('bulk-action-bar');
+      const countEl = document.getElementById('bulk-bar-count');
+      const actionsEl = document.getElementById('bulk-bar-actions');
+      if (!bar || !countEl || !actionsEl) return;
+
+      let count = 0;
+      let actionsHtml = '';
+
+      if (activeTab === 'messages' || (_selectedMessageIds.size > 0 && activeTab !== 'projects')) {
+        count = _selectedMessageIds.size;
+        actionsHtml = `
+          <button onclick="promptBulkAction('messages', 'MARK_READ')" class="px-2.5 py-1 rounded-lg bg-cyan-600/20 text-cyan-300 hover:bg-cyan-600/30 border border-cyan-500/30 text-xs font-medium transition-colors">Mark Read</button>
+          <button onclick="promptBulkAction('messages', 'MARK_UNREAD')" class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 border border-brand-border text-xs font-medium transition-colors">Mark Unread</button>
+          <button onclick="promptBulkAction('messages', 'ARCHIVE')" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/30 text-xs font-medium transition-colors">Archive</button>
+          <button onclick="promptBulkAction('messages', 'DELETE')" class="px-2.5 py-1 rounded-lg bg-rose-600/20 text-rose-300 hover:bg-rose-600/30 border border-rose-500/30 text-xs font-medium transition-colors">Delete</button>
+        `;
+      } else {
+        count = _selectedProjectIds.size;
+        actionsHtml = `
+          <button onclick="promptBulkAction('projects', 'PUBLISH')" class="px-2.5 py-1 rounded-lg bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/30 border border-emerald-500/30 text-xs font-medium transition-colors">Publish</button>
+          <button onclick="promptBulkAction('projects', 'UNPUBLISH')" class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 border border-brand-border text-xs font-medium transition-colors">Unpublish</button>
+          <button onclick="promptBulkAction('projects', 'ARCHIVE')" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/30 text-xs font-medium transition-colors">Archive</button>
+          <button onclick="promptBulkAction('projects', 'CHANGE_CATEGORY')" class="px-2.5 py-1 rounded-lg bg-cyan-600/20 text-cyan-300 hover:bg-cyan-600/30 border border-cyan-500/30 text-xs font-medium transition-colors">Category</button>
+          <button onclick="promptBulkAction('projects', 'DELETE')" class="px-2.5 py-1 rounded-lg bg-rose-600/20 text-rose-300 hover:bg-rose-600/30 border border-rose-500/30 text-xs font-medium transition-colors">Delete</button>
+        `;
+      }
+
+      if (count > 0) {
+        countEl.textContent = `${count} selected`;
+        actionsEl.innerHTML = actionsHtml;
+        bar.classList.remove('hidden');
+      } else {
+        bar.classList.add('hidden');
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function clearBulkSelection() {
+      _selectedProjectIds.clear();
+      _selectedMessageIds.clear();
+      _selectedMediaIds.clear();
+      filterAndRenderProjects();
+      if (_messagesCache && _messagesCache.length) renderMessages(_messagesCache);
+      const selProjects = document.getElementById('projects-select-all-cb');
+      if (selProjects) selProjects.checked = false;
+      const selMessages = document.getElementById('messages-select-all-cb');
+      if (selMessages) selMessages.checked = false;
+      updateBulkActionBar('projects');
+    }
+
+    function promptBulkAction(entityType, action) {
+      let ids = [];
+      let titles = [];
+
+      if (entityType === 'projects') {
+        ids = Array.from(_selectedProjectIds);
+        titles = _rawProjects.filter(p => ids.includes(String(p._id))).map(p => p.title);
+      } else if (entityType === 'messages') {
+        ids = Array.from(_selectedMessageIds);
+        titles = ids.map(id => {
+          const m = _messagesCache.find(x => String(x._id) === String(id));
+          return m ? `${m.name || m.fullName || 'Anonymous'}: ${m.subject || 'Inquiry'}` : `Message #${id.substring(0, 8)}`;
+        });
+      }
+
+      if (!ids.length) {
+        showToast('No items selected for bulk operation', 'error');
+        return;
+      }
+
+      _currentBulkConfig = { entityType, action, ids };
+
+      const modal = document.getElementById('bulk-confirm-modal');
+      const actionEl = document.getElementById('bulk-confirm-action-name');
+      const countEl = document.getElementById('bulk-confirm-count');
+      const warningBox = document.getElementById('bulk-confirm-warning-box');
+      const catBox = document.getElementById('bulk-category-selector-container');
+      const itemsList = document.getElementById('bulk-confirm-items-list');
+
+      if (actionEl) actionEl.textContent = action;
+      if (countEl) countEl.textContent = `${ids.length} item(s)`;
+
+      if (warningBox) {
+        if (action === 'DELETE') warningBox.classList.remove('hidden');
+        else warningBox.classList.add('hidden');
+      }
+
+      if (catBox) {
+        if (action === 'CHANGE_CATEGORY') catBox.classList.remove('hidden');
+        else catBox.classList.add('hidden');
+      }
+
+      if (itemsList) {
+        itemsList.innerHTML = titles.map(t => `<div class="py-1 px-1.5 text-slate-300 truncate">${escapeHtml(t)}</div>`).join('');
+      }
+
+      if (modal) modal.classList.add('open');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeBulkConfirmModal() {
+      const modal = document.getElementById('bulk-confirm-modal');
+      if (modal) modal.classList.remove('open');
+      _currentBulkConfig = null;
+    }
+
+    async function executeConfirmedBulkAction() {
+      if (!_currentBulkConfig) return;
+      const { entityType, action, ids } = _currentBulkConfig;
+      const submitBtn = document.getElementById('bulk-confirm-submit-btn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="animate-spin mr-1.5">⏳</span> Executing...';
+      }
+
+      try {
+        const payload = { ids, action };
+        if (action === 'CHANGE_CATEGORY') {
+          payload.category = document.getElementById('bulk-target-category')?.value || 'fullstack';
+        }
+
+        const endpoint = `/api/admin/bulk/${entityType}`;
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || 'Bulk operation failed');
+
+        closeBulkConfirmModal();
+        clearBulkSelection();
+        showToast(data.data?.message || data.message || `Bulk ${action} completed successfully`, 'success');
+
+        if (entityType === 'projects') loadProjects();
+        else if (entityType === 'messages') loadMessages();
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i><span>Confirm Execution</span>';
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+      }
+    }
+
     // ─── UTILITY HELPERS ──────────────────────────────────────
     function copyToClipboard(text, successMsg = 'Copied to clipboard!') {
       if (!text) return;
@@ -10686,7 +11617,152 @@
           </button>
         </div>
       </form>
+  <!-- Phase 15: Command Center & Global Search Modal -->
+  <div id="command-center-modal" onclick="if(event.target===this)closeCommandCenter()" role="dialog" aria-modal="true" aria-label="Command Center and Global Search">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl w-full max-w-2xl mx-2 sm:mx-4 shadow-2xl flex flex-col max-h-[85vh] overflow-hidden p-0">
+      <!-- Search Input Header -->
+      <div class="p-3.5 sm:p-4 border-b border-brand-border flex items-center gap-3 bg-slate-950/60 shrink-0">
+        <i data-lucide="search" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+        <input
+          id="cmd-palette-input"
+          type="text"
+          placeholder="Search projects, messages, media, or run commands..."
+          class="w-full bg-transparent text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none font-sans"
+          oninput="onCommandInput(this.value)"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button id="cmd-clear-btn" onclick="clearCommandInput()" class="hidden p-1 text-slate-400 hover:text-slate-200" title="Clear search">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+          <kbd class="hidden sm:inline-block px-1.5 py-0.5 rounded bg-slate-900 text-[10px] font-mono text-slate-500 border border-brand-border">ESC</kbd>
+          <button onclick="closeCommandCenter()" class="sm:hidden p-1 text-slate-400 hover:text-slate-200" aria-label="Close">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Pills -->
+      <div class="px-3 sm:px-4 py-2 border-b border-brand-border/60 bg-slate-900/40 flex items-center gap-1.5 overflow-x-auto text-[11px] font-mono no-scrollbar shrink-0">
+        <button onclick="setCommandCategoryFilter('all')" class="cmd-cat-pill px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-semibold" data-category="all">All</button>
+        <button onclick="setCommandCategoryFilter('commands')" class="cmd-cat-pill px-2.5 py-0.5 rounded-full text-slate-400 hover:text-slate-200 hover:bg-slate-800" data-category="commands">Commands</button>
+        <button onclick="setCommandCategoryFilter('projects')" class="cmd-cat-pill px-2.5 py-0.5 rounded-full text-slate-400 hover:text-slate-200 hover:bg-slate-800" data-category="projects">Projects</button>
+        <button onclick="setCommandCategoryFilter('media')" class="cmd-cat-pill px-2.5 py-0.5 rounded-full text-slate-400 hover:text-slate-200 hover:bg-slate-800" data-category="media">Media</button>
+        <button onclick="setCommandCategoryFilter('messages')" class="cmd-cat-pill px-2.5 py-0.5 rounded-full text-slate-400 hover:text-slate-200 hover:bg-slate-800" data-category="messages">Messages</button>
+        <button onclick="setCommandCategoryFilter('schedules')" class="cmd-cat-pill px-2.5 py-0.5 rounded-full text-slate-400 hover:text-slate-200 hover:bg-slate-800" data-category="schedules">Schedules</button>
+        <button onclick="setCommandCategoryFilter('backups')" class="cmd-cat-pill px-2.5 py-0.5 rounded-full text-slate-400 hover:text-slate-200 hover:bg-slate-800" data-category="backups">Backups</button>
+        <button onclick="setCommandCategoryFilter('users')" class="cmd-cat-pill px-2.5 py-0.5 rounded-full text-slate-400 hover:text-slate-200 hover:bg-slate-800" data-category="users">Users</button>
+      </div>
+
+      <!-- Results Body (scrollable) -->
+      <div id="cmd-results-container" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 max-h-[55vh]">
+        <!-- Dynamically rendered via renderCommandCenter() -->
+      </div>
+
+      <!-- Footer / Keyboard Hints -->
+      <div class="px-4 py-2.5 border-t border-brand-border bg-slate-950/60 flex items-center justify-between text-[11px] font-mono text-slate-500 shrink-0">
+        <div class="flex items-center gap-3">
+          <span class="hidden sm:inline-flex items-center gap-1">
+            <kbd class="px-1 py-0.2 rounded bg-slate-900 border border-brand-border text-[9px]">↑</kbd>
+            <kbd class="px-1 py-0.2 rounded bg-slate-900 border border-brand-border text-[9px]">↓</kbd>
+            <span>Navigate</span>
+          </span>
+          <span class="hidden sm:inline-flex items-center gap-1">
+            <kbd class="px-1 py-0.2 rounded bg-slate-900 border border-brand-border text-[9px]">↵</kbd>
+            <span>Select</span>
+          </span>
+          <span class="inline-flex items-center gap-1">
+            <kbd class="px-1 py-0.2 rounded bg-slate-900 border border-brand-border text-[9px]">ESC</kbd>
+            <span>Close</span>
+          </span>
+        </div>
+        <div id="cmd-result-count" class="text-cyan-400 font-semibold">Ready</div>
+      </div>
     </div>
+  </div>
+
+  <!-- Phase 15: Bulk Operations Confirmation Modal -->
+  <div id="bulk-confirm-modal" onclick="if(event.target===this)closeBulkConfirmModal()" role="dialog" aria-modal="true" aria-label="Confirm Bulk Operation">
+    <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+        <div class="flex items-center gap-3">
+          <div id="bulk-modal-icon-container" class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+            <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="bulk-modal-title" class="text-sm font-bold text-slate-100 font-display">Confirm Bulk Operation</h3>
+            <p id="bulk-modal-subtitle" class="text-[11px] text-slate-400">Review selected items before execution</p>
+          </div>
+        </div>
+        <button onclick="closeBulkConfirmModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="p-3 rounded-lg bg-slate-900 border border-brand-border space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Action:</span>
+            <span id="bulk-confirm-action-name" class="font-mono font-bold text-cyan-400 uppercase">PUBLISH</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Selected Count:</span>
+            <span id="bulk-confirm-count" class="font-mono font-bold text-slate-200">0 items</span>
+          </div>
+        </div>
+
+        <div id="bulk-confirm-warning-box" class="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 space-y-1 hidden">
+          <p class="font-bold flex items-center gap-1.5">
+            <i data-lucide="alert-octagon" class="w-3.5 h-3.5"></i>
+            <span>Destructive Operation Warning</span>
+          </p>
+          <p id="bulk-confirm-warning-text" class="text-[11px]">This operation will permanently delete the selected items. This action cannot be undone.</p>
+        </div>
+
+        <!-- Optional Category Selector for Change Category Action -->
+        <div id="bulk-category-selector-container" class="hidden space-y-1.5">
+          <label class="block text-[11px] font-medium text-slate-400">Target Category</label>
+          <select id="bulk-target-category" class="w-full bg-slate-900 border border-brand-border rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500/50">
+            <option value="fullstack">Full-Stack Web</option>
+            <option value="ai">AI & Machine Learning</option>
+            <option value="mobile">Mobile Systems</option>
+            <option value="enterprise">Enterprise Systems</option>
+          </select>
+        </div>
+
+        <div class="max-h-36 overflow-y-auto p-2 rounded-lg bg-slate-950/60 border border-brand-border/60 divide-y divide-brand-border/40 text-[11px]" id="bulk-confirm-items-list">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-brand-border">
+          <button type="button" onclick="closeBulkConfirmModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+          <button type="button" id="bulk-confirm-submit-btn" onclick="executeConfirmedBulkAction()" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span id="bulk-confirm-submit-label">Confirm Execution</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 15: Floating Sticky Bulk Action Bar -->
+  <div id="bulk-action-bar" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#070B16] border border-cyan-500/40 rounded-2xl px-4 py-2.5 shadow-2xl flex items-center gap-3 hidden backdrop-blur-xl animate-in fade-in slide-in-from-bottom-4 duration-200">
+    <div class="flex items-center gap-2 pr-3 border-r border-brand-border">
+      <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+      <span id="bulk-bar-count" class="text-xs font-mono font-bold text-slate-100">0 selected</span>
+    </div>
+
+    <!-- Action buttons container (contextual to active tab) -->
+    <div id="bulk-bar-actions" class="flex items-center gap-1.5">
+      <!-- Populated dynamically -->
+    </div>
+
+    <button onclick="clearBulkSelection()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 text-xs font-mono transition-colors" title="Deselect All">
+      <i data-lucide="x" class="w-3.5 h-3.5"></i>
+    </button>
   </div>
 
 </body>
