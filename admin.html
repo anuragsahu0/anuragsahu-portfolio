@@ -569,22 +569,6 @@
       <div class="absolute inset-0 bg-[radial-gradient(#00e5cc_1px,transparent_1px)] [background-size:32px_32px] opacity-15"></div>
     </div>
 
-    <!-- Replay HUD Button in Top-Right -->
-    <button
-      type="button"
-      onclick="replayHudAnimation()"
-      class="fixed top-4 right-4 z-30 px-3 py-1.5 rounded border border-[#00e6c3]/40 bg-[#02181b]/80 text-[#00e6c3] hover:bg-[#00e6c3]/15 hover:border-[#00e6c3] text-xs font-mono transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,230,195,0.2)]"
-      title="Replay HUD Radar Targeting Animation"
-    >
-      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="22" y1="12" x2="18" y2="12"></line>
-        <line x1="6" y1="12" x2="2" y2="12"></line>
-        <line x1="12" y1="6" x2="12" y2="2"></line>
-        <line x1="12" y1="22" x2="12" y2="18"></line>
-      </svg>
-      <span>HUD Radar</span>
-    </button>
 
     <!-- Main Cyber Terminal Plate (Image 3) -->
     <div class="relative z-10 w-full max-w-[430px] mx-auto select-none">
@@ -636,7 +620,6 @@
                   id="input-email"
                   type="text"
                   required
-                  value="anuragsahu"
                   placeholder="Username"
                   autocomplete="username"
                   class="w-full bg-transparent border-none text-sm font-mono text-[#00f5d4] placeholder:text-[#008f82] focus:outline-none pl-2"
@@ -676,17 +659,8 @@
               </div>
             </div>
 
-            <!-- Options Row: Stay Sign In & Forgot Password -->
-            <div class="flex items-center justify-between text-xs font-mono pt-1">
-              <label class="flex items-center gap-2 cursor-pointer text-[#00e6c3] hover:text-[#00ffcc] select-none transition-colors">
-                <input
-                  type="checkbox"
-                  id="input-remember"
-                  checked
-                  class="rounded border-[#00e6c3] bg-[#02181b] text-[#00e6c3] focus:ring-[#00e6c3]/50 focus:ring-offset-0"
-                >
-                <span>✓ Stay Sign in</span>
-              </label>
+            <!-- Options Row: Forgot Password -->
+            <div class="flex items-center justify-end text-xs font-mono pt-1">
               <button
                 type="button"
                 onclick="showForgotPasswordModal()"
@@ -711,16 +685,6 @@
 
         </div>
 
-      </div>
-
-      <!-- Security Notice Footer -->
-      <div class="mt-4 text-center">
-        <p class="text-[11px] text-[#00a896]/70 font-mono flex items-center justify-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-[#00e6c3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-          </svg>
-          <span>SECURE PROTOCOL // ANURAG SAHU CONTROL CENTER</span>
-        </p>
       </div>
 
     </div>
@@ -3787,8 +3751,13 @@
         setTimeout(() => {
           authScreen.style.opacity = '1';
           authScreen.style.transform = 'scale(1)';
-          const pwd = document.getElementById('input-password');
-          if (pwd) pwd.focus();
+          const userField = document.getElementById('input-email');
+          const pwdField = document.getElementById('input-password');
+          if (userField && !userField.value) {
+            userField.focus();
+          } else if (pwdField) {
+            pwdField.focus();
+          }
         }, 80);
       }
       hudHasRun = true;
@@ -3850,7 +3819,7 @@
       e.preventDefault();
       const emailInput = document.getElementById('input-email');
       const passwordInput = document.getElementById('input-password');
-      const remember = document.getElementById('input-remember').checked;
+      const remember = document.getElementById('input-remember')?.checked ?? true;
       const errorBox = document.getElementById('login-error');
       const errorText = document.getElementById('login-error-text');
       const submitBtn = document.getElementById('login-btn');

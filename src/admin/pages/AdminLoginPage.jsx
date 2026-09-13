@@ -1,21 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import {
-  Lock,
-  AlertTriangle,
-  Eye,
-  EyeOff,
-  FastForward,
-  Volume2,
-  VolumeX,
-  Crosshair,
-  Shield,
-} from 'lucide-react';
+import { AlertTriangle, Eye, EyeOff } from 'lucide-react';
 
 export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
-  const [email, setEmail] = useState('anuragsahu');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [remember, setRemember] = useState(true);
+  const [remember] = useState(true);
   const [validationError, setValidationError] = useState('');
   const [toast, setToast] = useState(null);
 
@@ -262,17 +252,6 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
       {/* 2. CYBERNETIC TERMINAL LOGIN SCREEN (Image 3)                */}
       {/* ============================================================ */}
       <div className="relative z-10 w-full max-w-[430px] mx-auto select-none">
-        {/* Replay HUD Radar Button */}
-        <button
-          type="button"
-          onClick={() => setHudActive(true)}
-          className="fixed top-4 right-4 z-30 px-3 py-1.5 rounded border border-[#00e6c3]/40 bg-[#02181b]/80 text-[#00e6c3] hover:bg-[#00e6c3]/15 hover:border-[#00e6c3] text-xs font-mono transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,230,195,0.2)]"
-          title="Replay HUD Radar Targeting Animation"
-        >
-          <Crosshair className="w-3.5 h-3.5" />
-          <span>HUD Radar</span>
-        </button>
-
         {/* Outer Cyber Chassis Plate */}
         <div
           className="relative bg-[#021a1d] border-2 border-[#008f82] p-5 sm:p-7 pt-9 shadow-[0_0_40px_rgba(0,143,130,0.3)]"
@@ -361,16 +340,7 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
               </div>
 
               {/* Options Row */}
-              <div className="flex items-center justify-between text-xs font-mono pt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-[#00e6c3] hover:text-[#00ffcc] select-none transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={remember}
-                    onChange={(e) => setRemember(e.target.checked)}
-                    className="rounded border-[#00e6c3] bg-[#02181b] text-[#00e6c3] focus:ring-[#00e6c3]/50 focus:ring-offset-0"
-                  />
-                  <span>✓ Stay Sign in</span>
-                </label>
+              <div className="flex items-center justify-end text-xs font-mono pt-1">
                 <button
                   type="button"
                   onClick={() => showToast('Master credentials belong solely to Anurag Sahu.')}
@@ -399,14 +369,6 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
               </div>
             </form>
           </div>
-        </div>
-
-        {/* Security Notice Footer */}
-        <div className="mt-4 text-center">
-          <p className="text-[11px] text-[#00a896]/70 font-mono flex items-center justify-center gap-1.5">
-            <Shield className="w-3.5 h-3.5 text-[#00e6c3]" />
-            <span>SECURE PROTOCOL // ANURAG SAHU CONTROL CENTER</span>
-          </p>
         </div>
       </div>
     </div>
