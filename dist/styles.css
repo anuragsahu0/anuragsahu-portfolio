@@ -92,6 +92,8 @@ html {
   background-color: var(--color-canvas-bg);
   color: var(--color-text-light);
   overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -99,6 +101,9 @@ html {
 
 body {
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   line-height: 1.6;
   position: relative;
   /* contain removed for Safari layout compatibility */
@@ -108,6 +113,11 @@ body {
     radial-gradient(circle at 0% 40%, rgba(118, 33, 176, 0.06) 0%, transparent 50%),
     var(--color-canvas-bg);
 }
+
+img, picture, video, canvas, svg {
+  max-width: 100%;
+}
+
 
 /* ==============================================================================
    2. REEL TYPOGRAPHY SYSTEM & GRADIENT HEADINGS
@@ -733,13 +743,19 @@ footer {
 }
 
 /* ==============================================================
-   14. PHONE OPTIMIZATION — Readability & Zero-Gap Layout
+   14. PHONE & TABLET OPTIMIZATION — Zero Overflow & Perfect Readability
    ============================================================== */
 
-/* ── Tablet & Small Laptops (≤ 991px) ── */
+/* ── Tablet & Below (≤ 991px) ── */
 @media (max-width: 991px) {
-  *, *::before, *::after { box-sizing: border-box !important; }
-  html, body { overflow-x: hidden !important; width: 100% !important; max-width: 100% !important; }
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 
   .container {
     padding-left: 16px !important;
@@ -748,30 +764,47 @@ footer {
     max-width: 100% !important;
   }
 
-  /* Navbar */
+  #red-typewriter-pill,
+  .hud-actions {
+    display: none !important;
+  }
+
   #hud-header {
-    top: 8px !important;
-    width: 96% !important;
-    max-width: 96vw !important;
+    top: 10px !important;
+    width: calc(100% - 24px) !important;
+    max-width: 600px !important;
     padding: 6px 14px !important;
     border-radius: 9999px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  #hud-header nav {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    margin-left: 8px !important;
+  }
+  #hud-header nav::-webkit-scrollbar {
+    display: none !important;
   }
 
   .hud-nav {
-    overflow-x: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
     white-space: nowrap !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
-  .hud-nav::-webkit-scrollbar { display: none !important; }
 
   .hud-nav a {
     font-size: 0.72rem !important;
     padding: 5px 10px !important;
-  }
-
-  #red-typewriter-pill {
-    display: none !important;
   }
 
   #hero {
@@ -783,10 +816,50 @@ footer {
   }
 }
 
-/* ── Phone & Tablet (≤ 768px): Zero-gap titles, crisp readability ── */
+/* ── Mobile Phone & Small Tablet (≤ 768px): Complete Zero-Overflow Optimization ── */
 @media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 
-  /* Zero-gap title typography: clean line-height, balanced wrapping, no letter gap */
+  .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    box-sizing: border-box !important;
+  }
+
+  section {
+    padding: 28px 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  /* ── NAVBAR: Sleek mobile pill with horizontal scroll ── */
+  #hud-header {
+    top: 8px !important;
+    width: calc(100% - 20px) !important;
+    max-width: 480px !important;
+    padding: 6px 12px !important;
+  }
+  .hud-logo {
+    font-size: 0.9rem !important;
+    gap: 5px !important;
+    flex-shrink: 0 !important;
+  }
+  .hud-logo-glyph {
+    font-size: 1rem !important;
+  }
+  .hud-nav a {
+    font-size: 0.68rem !important;
+    padding: 4px 8px !important;
+  }
+
+  /* ── ZERO-GAP TITLE TYPOGRAPHY ── */
   h1, h2, h3, h4,
   .section-title,
   .hero-title,
@@ -800,46 +873,43 @@ footer {
     overflow-wrap: break-word !important;
   }
 
-  /* Compact section headers: title and subtitle tight, no gaps */
+  /* ── COMPACT SECTION HEADERS (Zero Gap Between Title & Subtitle) ── */
   .section-header {
-    margin-bottom: 16px !important;
+    margin-bottom: 14px !important;
     text-align: center !important;
+    width: 100% !important;
   }
   .section-header .section-title {
-    font-size: clamp(1.5rem, 6.8vw, 1.95rem) !important;
-    margin-bottom: 6px !important;
-    display: block !important;
+    font-size: clamp(1.45rem, 6.5vw, 1.85rem) !important;
+    margin-bottom: 4px !important;
+    display: inline-block !important;
   }
   .section-header p {
     font-size: 0.88rem !important;
-    line-height: 1.55 !important;
+    line-height: 1.5 !important;
     max-width: 100% !important;
     margin: 0 auto !important;
-  }
-
-  /* Consistent section spacing: remove giant gaps between sections */
-  section {
-    padding: 32px 0 !important;
-  }
-  #skills,
-  #coding-profiles {
-    margin-bottom: 0 !important;
-    padding-top: 0 !important;
+    padding: 0 4px !important;
   }
 
   /* ── HERO SECTION ── */
   #hero {
-    padding-top: 72px !important;
+    padding-top: 68px !important;
     padding-bottom: 20px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     min-height: auto !important;
     text-align: center !important;
   }
   .hero-grid-container {
-    grid-template-columns: 1fr !important;
+    display: flex !important;
+    flex-direction: column !important;
     gap: 16px !important;
+    width: 100% !important;
   }
   .hero-left-column {
     order: 1 !important;
+    width: 100% !important;
     gap: 12px !important;
     align-items: center !important;
   }
@@ -848,18 +918,20 @@ footer {
     margin-bottom: 0 !important;
   }
   .hero-title {
-    font-size: clamp(1.6rem, 7vw, 2.15rem) !important;
+    font-size: clamp(1.6rem, 6.8vw, 2.1rem) !important;
     line-height: 1.15 !important;
     margin: 0 !important;
   }
   .hero-subtitle {
     font-size: 0.92rem !important;
     line-height: 1.55 !important;
-    max-width: 95% !important;
+    color: var(--color-text-light) !important;
+    max-width: 100% !important;
     margin: 0 auto !important;
   }
   .hero-actions {
     display: flex !important;
+    flex-direction: row !important;
     flex-wrap: wrap !important;
     gap: 10px !important;
     width: 100% !important;
@@ -868,108 +940,222 @@ footer {
   .hero-actions .btn-primary,
   .hero-actions .reel-btn,
   .hero-actions .btn-secondary {
+    flex: 1 1 135px !important;
+    max-width: 200px !important;
     min-height: 44px !important;
-    padding: 10px 20px !important;
-    font-size: 0.82rem !important;
-    width: auto !important;
+    padding: 10px 16px !important;
+    font-size: 0.8rem !important;
+    justify-content: center !important;
     display: inline-flex !important;
     align-items: center !important;
-    justify-content: center !important;
   }
-
-  /* Hero portrait */
-  .hero-portrait-showcase-container {
-    order: 2 !important;
-    max-width: 360px !important;
-    margin: 0 auto !important;
+  .hero-left-column .glass-panel {
+    padding: 12px 14px !important;
+    margin-top: 4px !important;
     width: 100% !important;
   }
+  .hero-left-column .glass-panel div[style*="repeat(auto-fit"] {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* Hero portrait showcase */
+  .hero-portrait-showcase-container {
+    order: 2 !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
   .hero-portrait-showcase-container .glass-panel {
-    padding: 14px !important;
+    padding: 12px !important;
     border-radius: 20px !important;
   }
   .portrait-inner-frame {
-    height: clamp(230px, 50vw, 300px) !important;
+    height: clamp(230px, 52vw, 300px) !important;
+  }
+  .hero-portrait-showcase-container div[style*="grid-template-columns: repeat(3"] {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+    margin-top: 10px !important;
+  }
+  .hero-portrait-showcase-container div[style*="grid-template-columns: repeat(3"] a,
+  .hero-portrait-showcase-container div[style*="grid-template-columns: repeat(3"] button {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 8px 4px !important;
+    font-size: 0.72rem !important;
+    justify-content: center !important;
+    gap: 4px !important;
   }
 
   /* ── ABOUT ME SECTION ── */
   #aboutme {
-    padding: 32px 16px !important;
+    padding: 28px 0 !important;
+  }
+  #aboutme > div[style*="max-width: 896px"] {
+    gap: 16px !important;
+    width: 100% !important;
+    padding: 0 4px !important;
+  }
+  #aboutme div[style*="gap: clamp(20px, 3vw, 32px)"] {
+    gap: 10px !important;
+    width: 100% !important;
   }
   #about-heading {
-    font-size: clamp(1.6rem, 7vw, 2.1rem) !important;
+    font-size: clamp(1.5rem, 6.5vw, 2rem) !important;
     line-height: 1.15 !important;
-    margin-bottom: 8px !important;
+    margin: 0 0 4px 0 !important;
   }
   #about-char-para {
     font-size: 0.92rem !important;
     line-height: 1.6 !important;
-    max-width: 95% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 4px !important;
+  }
+  #aboutme div[style*="margin-top: -20px"] {
+    margin-top: 0 !important;
+    gap: 6px !important;
   }
   #about-deco-tl, #about-deco-tr,
   #about-deco-bl, #about-deco-br {
     display: none !important;
   }
-
-  /* ── GLASS PANELS & CARDS ── */
-  .glass-panel {
-    padding: 16px !important;
+  #about-cta a {
+    min-height: 44px !important;
+    padding: 10px 24px !important;
+    font-size: 0.82rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
-  #skills > .glass-panel,
-  #coding-profiles > .glass-panel {
-    padding: 16px !important;
-  }
 
-  /* Skills flip cards */
+  /* ── SKILLS SECTION ── */
+  #skills {
+    margin-bottom: 0 !important;
+    padding: 28px 0 !important;
+  }
+  #skills > .glass-panel {
+    padding: 14px !important;
+  }
+  #skills div[style*="grid-template-columns: repeat(auto-fit, minmax(260px"] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
   .flip-card {
-    height: 180px !important;
+    height: 175px !important;
+  }
+  .flip-card-front, .flip-card-back {
+    padding: 14px !important;
+  }
+  .topic-watermark-icon {
+    font-size: 4rem !important;
   }
 
-  /* Coding profile cards */
+  /* ── CODING PROFILES ── */
+  #coding-profiles {
+    padding-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 28px 0 !important;
+  }
+  #coding-profiles > .glass-panel {
+    padding: 14px !important;
+  }
+  #coding-profiles div[style*="grid-template-columns: repeat(auto-fit, minmax(260px"] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
   #coding-profiles a.glass-panel {
-    padding: 16px !important;
+    padding: 14px !important;
     gap: 12px !important;
   }
 
   /* ── PROJECTS SHOWCASE ── */
+  #roadmap {
+    padding: 28px 0 !important;
+  }
+  #roadmap .project-filters {
+    margin-top: 10px !important;
+    gap: 8px !important;
+  }
+  .filter-btn {
+    padding: 6px 14px !important;
+    font-size: 0.75rem !important;
+  }
   #roadmap .glass-panel {
-    padding: 18px !important;
+    padding: 16px !important;
     margin-bottom: 14px !important;
   }
   #roadmap .glass-panel > div:first-child {
+    display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
     gap: 6px !important;
     margin-bottom: 8px !important;
   }
   #roadmap h3 {
-    font-size: 1.2rem !important;
+    font-size: 1.15rem !important;
     line-height: 1.2 !important;
     margin: 0 !important;
   }
   #roadmap p {
     font-size: 0.88rem !important;
-    line-height: 1.55 !important;
+    line-height: 1.5 !important;
+    margin-bottom: 10px !important;
+  }
+  #roadmap .glass-panel div[style*="display: flex; gap: 12px"] {
+    gap: 8px !important;
+    margin-top: 12px !important;
+  }
+  #roadmap a.btn-primary,
+  #roadmap a.btn-secondary {
+    padding: 8px 14px !important;
+    font-size: 0.75rem !important;
   }
 
   /* ── CONTACT SECTION ── */
   #contact {
+    padding-top: 28px !important;
     padding-bottom: 36px !important;
   }
-  #contact > div {
-    grid-template-columns: 1fr !important;
+  #contact > div[style*="grid-template-columns: repeat(auto-fit, minmax(320px"] {
+    display: flex !important;
+    flex-direction: column !important;
     gap: 16px !important;
+    width: 100% !important;
   }
   #contact .glass-panel {
-    padding: 18px !important;
+    padding: 16px !important;
   }
-
-  /* Form inputs: 16px prevents iOS zoom */
+  #contact div[style*="grid-template-columns: repeat(3"] {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+  }
+  #contact div[style*="grid-template-columns: repeat(3"] a,
+  #contact div[style*="grid-template-columns: repeat(3"] button {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 8px 4px !important;
+    font-size: 0.72rem !important;
+    justify-content: center !important;
+    gap: 4px !important;
+  }
   input[type="text"],
   input[type="email"],
   textarea {
-    font-size: 16px !important;
+    font-size: 16px !important; /* Prevents iOS auto zoom */
     width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  #contact-submit-btn {
+    width: 100% !important;
+    min-height: 44px !important;
+    justify-content: center !important;
   }
 
   /* ── FOOTER ── */
@@ -977,11 +1163,13 @@ footer {
     padding: 24px 0 !important;
   }
   .footer-content {
+    display: flex !important;
     flex-direction: column !important;
     text-align: center !important;
     align-items: center !important;
-    gap: 8px !important;
-    padding: 0 16px !important;
+    gap: 6px !important;
+    padding: 0 14px !important;
+    font-size: 0.78rem !important;
   }
 
   /* Toast */
@@ -993,24 +1181,19 @@ footer {
   }
 }
 
-/* ── Small phones (≤ 480px): Extra fine-tuning ── */
+/* ── Small phones (≤ 480px) ── */
 @media (max-width: 480px) {
   .hero-title {
-    font-size: clamp(1.5rem, 7.5vw, 1.85rem) !important;
+    font-size: clamp(1.45rem, 7.5vw, 1.85rem) !important;
   }
   .section-header .section-title {
-    font-size: clamp(1.4rem, 7.5vw, 1.7rem) !important;
+    font-size: clamp(1.35rem, 7.5vw, 1.65rem) !important;
   }
   .portrait-inner-frame {
     height: clamp(200px, 58vw, 250px) !important;
   }
-  .hero-actions .btn-primary,
-  .hero-actions .reel-btn,
-  .hero-actions .btn-secondary {
-    width: 100% !important;
-    justify-content: center !important;
-  }
 }
+
 
 
 /* ==============================================================

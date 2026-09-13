@@ -31,8 +31,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="assets/anurag-portrait-sm.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
   <link rel="preload" as="image" href="assets/anurag-portrait.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
-  <link rel="preload" as="style" href="styles.css?v=20260830_fast">
-  <link rel="stylesheet" href="styles.css?v=20260830_fast">
+  <link rel="preload" as="style" href="styles.css?v=20260913_responsive_prod">
+  <link rel="stylesheet" href="styles.css?v=20260913_responsive_prod">
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
   <noscript>
@@ -284,6 +284,22 @@
     .preloader-dot-sep {
       color: #fbbf24;
     }
+
+    @media (max-width: 600px) {
+      .preloader-info-row {
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.68rem;
+        letter-spacing: 1px;
+      }
+      .preloader-dot-sep {
+        display: none;
+      }
+      .preloader-counter-huge {
+        font-size: clamp(3.5rem, 16vw, 5.5rem);
+      }
+    }
+
 
     .preloader-top-laser, .preloader-bottom-laser {
       position: absolute;
