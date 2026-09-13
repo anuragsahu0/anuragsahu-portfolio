@@ -753,6 +753,11 @@ footer {
 .desktop-only {
   display: block;
 }
+#hud-mobile-dropdown,
+.hud-mobile-dropdown,
+.hud-mobile-btn {
+  display: none !important;
+}
 
 /* ── Mobile Phones & Small Tablets (≤ 768px): Reference Mockup Native Mobile UI ── */
 @media (max-width: 768px) {
@@ -1487,12 +1492,15 @@ footer {
     font-weight: 700 !important;
     color: #334155 !important;
   }
+  #mobile-app-container input[type="text"],
+  #mobile-app-container input[type="email"],
+  #mobile-app-container textarea,
   .m-input {
     width: 100% !important;
     padding: 12px 14px !important;
     border-radius: 12px !important;
-    border: 1px solid #CBD5E1 !important;
-    background: #F8FAFC !important;
+    border: 1.5px solid #CBD5E1 !important;
+    background: #FFFFFF !important;
     color: #0F172A !important;
     font-size: 16px !important; /* Prevents iOS auto-zoom */
     font-family: inherit !important;
@@ -1500,11 +1508,16 @@ footer {
     box-sizing: border-box !important;
     transition: all 0.2s ease !important;
   }
+  #mobile-app-container input[type="text"]:focus,
+  #mobile-app-container input[type="email"]:focus,
+  #mobile-app-container textarea:focus,
   .m-input:focus {
     border-color: #F97316 !important;
     background: #FFFFFF !important;
-    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15) !important;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18) !important;
   }
+  #mobile-app-container input::placeholder,
+  #mobile-app-container textarea::placeholder,
   .m-input::placeholder {
     color: #94A3B8 !important;
     opacity: 1 !important;
