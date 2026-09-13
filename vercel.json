@@ -61,6 +61,12 @@
     },
     { "src": "/mobile", "dest": "/mobile.html" },
     { "src": "/mobile.html", "dest": "/mobile.html" },
-    { "src": "/(.*)", "dest": "/$1" }
+    {
+      "src": "/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      },
+      "dest": "/$1"
+    }
   ]
 }
