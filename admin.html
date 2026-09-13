@@ -304,8 +304,28 @@
         box-shadow: 0 0 55px rgba(0, 230, 195, 0.7), inset 0 0 45px rgba(0, 230, 195, 0.35);
       }
     }
+    @keyframes hudRotateCounter {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+    @keyframes hudPulseBlip {
+      0%, 100% { opacity: 0.15; transform: scale(0.85); }
+      50% { opacity: 1; transform: scale(1.35); filter: drop-shadow(0 0 6px #00e5cc); }
+    }
     .hud-sweep-beam {
-      animation: hudRadarSweep 2.8s linear infinite;
+      animation: hudRadarSweep 2.6s linear infinite;
+      transform-origin: center center;
+    }
+    .hud-counter-dial {
+      animation: hudRotateCounter 14s linear infinite;
+      transform-origin: center center;
+    }
+    .hud-compass-dial {
+      animation: hudRadarSweep 35s linear infinite;
+      transform-origin: center center;
+    }
+    .hud-target-blip {
+      animation: hudPulseBlip 1.8s ease-in-out infinite;
       transform-origin: center center;
     }
     .hud-arc-glow {
@@ -365,7 +385,7 @@
   <!-- ============================================================ -->
   <!-- 1. HUD RADAR TARGETING BOOT ANIMATION (Images 1 & 2)         -->
   <!-- ============================================================ -->
-  <div id="hud-boot-screen" class="fixed inset-0 z-50 bg-[#030708] flex flex-col items-center justify-between p-4 sm:p-7 select-none font-mono text-cyan-400 overflow-hidden transition-all duration-700">
+  <div id="hud-boot-screen" onclick="skipHudAnimation()" class="fixed inset-0 z-50 bg-[#030708] flex flex-col items-center justify-between p-4 sm:p-7 select-none font-mono text-cyan-400 overflow-hidden transition-all duration-700 cursor-pointer" title="Click anywhere or press any key to enter login">
     
     <!-- Cyberpunk grid backdrop & scanlines -->
     <div class="absolute inset-0 pointer-events-none opacity-25 bg-[radial-gradient(#00e5cc_1px,transparent_1px)] [background-size:28px_28px]"></div>
@@ -373,28 +393,39 @@
     <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_45%,rgba(0,229,204,0.12)_0%,transparent_65%)]"></div>
 
     <!-- Top Controls & Telemetry Header -->
-    <div class="w-full max-w-5xl flex items-center justify-between relative z-20 pt-1">
+    <div class="w-full max-w-5xl flex items-center justify-between relative z-20 pt-1" onclick="event.stopPropagation()">
       <button type="button" onclick="skipHudAnimation()" class="px-3 py-1.5 rounded border border-cyan-500/40 bg-[#041619]/80 text-[11px] hover:bg-cyan-500/20 hover:border-cyan-400 text-cyan-300 transition-all flex items-center gap-1.5 shadow-[0_0_10px_rgba(0,229,204,0.15)]">
         <span>Skip Scan [ESC]</span>
-        <i data-lucide="fast-forward" class="w-3.5 h-3.5"></i>
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 19 22 12 13 5 13 19"></polygon>
+          <polygon points="2 19 11 12 2 5 2 19"></polygon>
+        </svg>
       </button>
 
-      <div class="flex flex-col items-center cursor-default">
-        <div class="flex items-center gap-1.5 text-xs sm:text-sm font-semibold tracking-widest text-cyan-300">
-          <span>User1100101</span>
-        </div>
-        <span class="text-[10px] text-cyan-400 -mt-0.5 animate-bounce">▼</span>
+      <!-- Center: Clean Minimalist Radar Telemetry Status -->
+      <div class="flex items-center gap-2 text-[11px] font-mono tracking-widest text-cyan-400/80">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        <span class="tracking-[0.25em] text-cyan-300 font-semibold">RADAR ACTIVE // SCANNING</span>
       </div>
 
+      <!-- Right: Sound Toggle with Inline SVG (Guaranteed rendering) -->
       <div class="flex items-center gap-2">
         <button type="button" id="hud-sound-toggle" onclick="toggleHudSound()" class="p-1.5 rounded border border-cyan-500/40 bg-[#041619]/80 hover:bg-cyan-500/20 text-cyan-300 text-xs transition-all shadow-[0_0_10px_rgba(0,229,204,0.15)]" title="Toggle sound fx">
-          <i id="hud-sound-icon" data-lucide="volume-2" class="w-4 h-4"></i>
+          <svg id="hud-sound-icon-on" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg id="hud-sound-icon-off" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
         </button>
       </div>
     </div>
 
-    <!-- Center Stage: Reticle, Radar & Lateral Telemetry Ladders -->
-    <div class="relative z-20 flex items-center justify-center my-auto w-full max-w-4xl cursor-pointer" onclick="skipHudAnimation()" title="Click to enter terminal">
+    <!-- Center Stage: Reticle, Dual Rotating Radars & Lateral Telemetry Ladders -->
+    <div class="relative z-20 flex items-center justify-center my-auto w-full max-w-4xl">
       
       <!-- Left Telemetry Rail & Ladder -->
       <div class="hidden sm:flex items-center gap-3 xl:gap-5 pr-2">
@@ -410,13 +441,13 @@
 
         <!-- Vertical Ladder Coordinates -->
         <div class="flex flex-col items-end gap-1 text-[11px] font-mono select-none">
-          <span class="text-cyan-500/50" id="hud-lat-l1">0.356</span>
-          <span class="text-cyan-400/80" id="hud-lat-l2">0.357</span>
-          <div class="px-2 py-0.5 rounded border border-cyan-400 bg-cyan-500/20 text-cyan-200 font-bold shadow-[0_0_12px_rgba(0,229,204,0.5)]" id="hud-lat-l3">
+          <span class="text-cyan-500/50 transition-all duration-75" id="hud-lat-l1">0.356</span>
+          <span class="text-cyan-400/80 transition-all duration-75" id="hud-lat-l2">0.357</span>
+          <div class="px-2 py-0.5 rounded border border-cyan-400 bg-cyan-500/20 text-cyan-200 font-bold shadow-[0_0_12px_rgba(0,229,204,0.5)] transition-all duration-75" id="hud-lat-l3">
             0.358
           </div>
-          <span class="text-cyan-400/80" id="hud-lat-l4">0.359</span>
-          <span class="text-cyan-500/50" id="hud-lat-l5">0.360</span>
+          <span class="text-cyan-400/80 transition-all duration-75" id="hud-lat-l4">0.359</span>
+          <span class="text-cyan-500/50 transition-all duration-75" id="hud-lat-l5">0.360</span>
         </div>
 
         <!-- Crosshair & Arrow Pointer -->
@@ -429,7 +460,7 @@
       <!-- Center HUD Reticle Radar Assembly -->
       <div class="relative w-[300px] h-[300px] sm:w-[380px] sm:h-[380px] flex items-center justify-center shrink-0 hud-reticle-pulse">
         
-        <!-- Octagonal outer framing border with corner breaks -->
+        <!-- Enhanced Vector Reticle Assembly -->
         <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 380 380" fill="none">
           <defs>
             <filter id="hudNeonFilter" x="-20%" y="-20%" width="140%" height="140%">
@@ -441,13 +472,13 @@
             </filter>
           </defs>
 
-          <!-- Octagon outline -->
+          <!-- Octagon outer framing border with corner breaks -->
           <polygon points="65,15 315,15 365,65 365,315 315,365 65,365 15,315 15,65" stroke="#00e5cc" stroke-width="1.5" stroke-opacity="0.65" fill="none" />
           
           <!-- Corner tick accents -->
           <path d="M 65 15 L 65 26 M 315 15 L 315 26 M 365 65 L 354 65 M 365 315 L 354 315 M 315 365 L 315 354 M 65 365 L 65 354 M 15 315 L 26 315 M 15 65 L 26 65" stroke="#00e5cc" stroke-width="2" />
           
-          <!-- Outer Circle with 4 Cardinal Dots -->
+          <!-- Outer Circle with Cardinal Dots -->
           <circle cx="190" cy="190" r="135" stroke="#00e5cc" stroke-width="1.2" stroke-opacity="0.5" fill="none" />
           <circle cx="190" cy="55" r="3.5" fill="#00e5cc" class="filter drop-shadow-[0_0_5px_#00e5cc]" />
           <circle cx="190" cy="325" r="3.5" fill="#00e5cc" class="filter drop-shadow-[0_0_5px_#00e5cc]" />
@@ -468,6 +499,10 @@
           <line x1="85" y1="190" x2="295" y2="190" stroke="#00e5cc" stroke-width="1" stroke-opacity="0.65" />
           <line x1="190" y1="85" x2="190" y2="295" stroke="#00e5cc" stroke-width="1" stroke-opacity="0.65" />
 
+          <!-- Target Blips inside Visor -->
+          <circle cx="145" cy="160" r="3" fill="#00ffcc" class="hud-target-blip" />
+          <circle cx="230" cy="225" r="2.5" fill="#00ffcc" class="hud-target-blip" style="animation-delay: 0.9s;" />
+
           <!-- Center Bullseye with 4 Micro-Ticks -->
           <circle cx="190" cy="190" r="6" stroke="#00e5cc" stroke-width="1.5" fill="none" class="filter drop-shadow-[0_0_4px_#00e5cc]" />
           <line x1="190" y1="178" x2="190" y2="182" stroke="#00e5cc" stroke-width="1.5" />
@@ -476,9 +511,12 @@
           <line x1="198" y1="190" x2="202" y2="190" stroke="#00e5cc" stroke-width="1.5" />
         </svg>
 
+        <!-- Counter-Rotating Inner Calibrated Ring -->
+        <div class="absolute w-[150px] h-[150px] rounded-full border border-dashed border-cyan-400/30 pointer-events-none hud-counter-dial"></div>
+
         <!-- 60FPS Continuous Rotating Radar Sweep Beam inside Visor -->
         <div class="absolute w-[184px] h-[184px] rounded-full overflow-hidden pointer-events-none">
-          <div class="w-full h-full hud-sweep-beam" style="background: conic-gradient(from 0deg at 50% 50%, rgba(0, 229, 204, 0.5) 0deg, rgba(0, 229, 204, 0.05) 45deg, transparent 60deg, transparent 360deg);"></div>
+          <div class="w-full h-full hud-sweep-beam" style="background: conic-gradient(from 0deg at 50% 50%, rgba(0, 229, 204, 0.55) 0deg, rgba(0, 229, 204, 0.1) 45deg, transparent 65deg, transparent 360deg);"></div>
         </div>
 
       </div>
@@ -493,13 +531,13 @@
 
         <!-- Vertical Ladder Coordinates -->
         <div class="flex flex-col items-start gap-1 text-[11px] font-mono select-none">
-          <span class="text-cyan-500/50" id="hud-lat-r1">0.356</span>
-          <span class="text-cyan-400/80" id="hud-lat-r2">0.357</span>
-          <div class="px-2 py-0.5 rounded border border-cyan-400 bg-cyan-500/20 text-cyan-200 font-bold shadow-[0_0_12px_rgba(0,229,204,0.5)]" id="hud-lat-r3">
+          <span class="text-cyan-500/50 transition-all duration-75" id="hud-lat-r1">0.356</span>
+          <span class="text-cyan-400/80 transition-all duration-75" id="hud-lat-r2">0.357</span>
+          <div class="px-2 py-0.5 rounded border border-cyan-400 bg-cyan-500/20 text-cyan-200 font-bold shadow-[0_0_12px_rgba(0,229,204,0.5)] transition-all duration-75" id="hud-lat-r3">
             0.358
           </div>
-          <span class="text-cyan-400/80" id="hud-lat-r4">0.359</span>
-          <span class="text-cyan-500/50" id="hud-lat-r5">0.360</span>
+          <span class="text-cyan-400/80 transition-all duration-75" id="hud-lat-r4">0.359</span>
+          <span class="text-cyan-500/50 transition-all duration-75" id="hud-lat-r5">0.360</span>
         </div>
 
         <!-- Far Right Signal Pulse Rail -->
@@ -527,35 +565,31 @@
       </div>
 
       <!-- Pod 1: Chamfered Capsule with Diagonal Stripes (Image 1 & 2) -->
-      <div class="w-64 sm:w-72 relative">
-        <!-- Top-left diagonal slashes tab -->
+      <div class="w-64 sm:w-72 relative group hover:scale-[1.02] transition-transform">
         <div class="absolute -top-2 left-6 w-8 h-2 cyber-hatch-pattern rounded-sm"></div>
-        <!-- Bottom-right diagonal slashes tab -->
         <div class="absolute -bottom-2 right-6 w-8 h-2 cyber-hatch-pattern rounded-sm"></div>
         
-        <!-- Main Chamfered Capsule Container -->
-        <div class="w-full py-2.5 px-4 bg-[#051417]/90 border border-cyan-500/50 rounded-lg text-center text-xs sm:text-sm text-cyan-200 font-mono shadow-[0_0_15px_rgba(0,229,204,0.15)] flex items-center justify-center gap-1">
+        <div class="w-full py-2.5 px-4 bg-[#051417]/90 border border-cyan-500/50 group-hover:border-cyan-400 rounded-lg text-center text-xs sm:text-sm text-cyan-200 font-mono shadow-[0_0_15px_rgba(0,229,204,0.15)] flex items-center justify-center gap-1 transition-all">
           <span id="hud-pod-user">anuragsahu</span>
           <span class="w-1.5 h-4 bg-cyan-400 animate-pulse inline-block"></span>
         </div>
       </div>
 
       <!-- Pod 2: Chamfered Capsule with Diagonal Stripes (Image 1 & 2) -->
-      <div class="w-64 sm:w-72 relative">
-        <!-- Top-left diagonal slashes tab -->
+      <div class="w-64 sm:w-72 relative group hover:scale-[1.02] transition-transform">
         <div class="absolute -top-2 left-6 w-8 h-2 cyber-hatch-pattern rounded-sm opacity-60"></div>
-        <!-- Bottom-right diagonal slashes tab -->
         <div class="absolute -bottom-2 right-6 w-8 h-2 cyber-hatch-pattern rounded-sm opacity-60"></div>
         
-        <!-- Main Chamfered Capsule Container -->
-        <div class="w-full py-2.5 px-4 bg-[#051417]/80 border border-cyan-500/40 rounded-lg text-center text-xs sm:text-sm text-cyan-400/70 font-mono shadow-[0_0_10px_rgba(0,229,204,0.1)]">
+        <div class="w-full py-2.5 px-4 bg-[#051417]/80 border border-cyan-500/40 group-hover:border-cyan-400 rounded-lg text-center text-xs sm:text-sm text-cyan-400/70 group-hover:text-cyan-200 font-mono shadow-[0_0_10px_rgba(0,229,204,0.1)] flex items-center justify-center gap-2 transition-all">
           <span id="hud-pod-pass">Password</span>
+          <svg class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
         </div>
       </div>
 
       <!-- Bottom Hint -->
-      <p class="text-[10px] text-cyan-500/60 tracking-wider">
-        CLICK ANYWHERE OR PRESS ESC TO OPEN LOGIN
+      <p class="text-[10px] text-cyan-400/70 tracking-wider flex items-center gap-2 hover:text-cyan-300">
+        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+        <span>CLICK ANYWHERE OR PRESS ANY KEY TO ENTER LOGIN</span>
       </p>
 
     </div>
@@ -581,7 +615,13 @@
       class="fixed top-4 right-4 z-30 px-3 py-1.5 rounded border border-[#00e6c3]/40 bg-[#02181b]/80 text-[#00e6c3] hover:bg-[#00e6c3]/15 hover:border-[#00e6c3] text-xs font-mono transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,230,195,0.2)]"
       title="Replay HUD Radar Targeting Animation"
     >
-      <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="22" y1="12" x2="18" y2="12"></line>
+        <line x1="6" y1="12" x2="2" y2="12"></line>
+        <line x1="12" y1="6" x2="12" y2="2"></line>
+        <line x1="12" y1="22" x2="12" y2="18"></line>
+      </svg>
       <span>HUD Radar</span>
     </button>
 
@@ -611,7 +651,11 @@
 
           <!-- Error Alert Pill -->
           <div id="login-error" class="hidden mb-4 p-3 rounded bg-rose-950/70 border border-rose-500/50 flex items-start gap-2.5 text-xs text-rose-300 font-mono shadow-[0_0_15px_rgba(244,63,94,0.3)] animate-in fade-in">
-            <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0 text-rose-400 mt-0.5"></i>
+            <svg class="w-4 h-4 shrink-0 text-rose-400 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
             <span id="login-error-text">Authentication failed.</span>
           </div>
 
@@ -663,7 +707,10 @@
                   class="text-[#008f82] hover:text-[#00e6c3] transition-colors p-1 shrink-0"
                   aria-label="Toggle password visibility"
                 >
-                  <i id="pwd-eye-icon" data-lucide="eye" class="w-4 h-4"></i>
+                  <svg id="pwd-eye-icon" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
                 </button>
               </div>
             </div>
@@ -708,7 +755,9 @@
       <!-- Security Notice Footer -->
       <div class="mt-4 text-center">
         <p class="text-[11px] text-[#00a896]/70 font-mono flex items-center justify-center gap-1.5">
-          <i data-lucide="shield" class="w-3.5 h-3.5 text-[#00e6c3]"></i>
+          <svg class="w-3.5 h-3.5 text-[#00e6c3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
           <span>SECURE PROTOCOL // ANURAG SAHU CONTROL CENTER</span>
         </p>
       </div>
@@ -3493,12 +3542,15 @@
       if (!pwdInput) return;
       if (pwdInput.type === 'password') {
         pwdInput.type = 'text';
-        if (eyeIcon) eyeIcon.setAttribute('data-lucide', 'eye-off');
+        if (eyeIcon) {
+          eyeIcon.innerHTML = '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" y1="2" x2="22" y2="22"></line>';
+        }
       } else {
         pwdInput.type = 'password';
-        if (eyeIcon) eyeIcon.setAttribute('data-lucide', 'eye');
+        if (eyeIcon) {
+          eyeIcon.innerHTML = '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle>';
+        }
       }
-      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function clearAuth() {
@@ -3665,10 +3717,11 @@
 
     function toggleHudSound() {
       hudAudioMuted = !hudAudioMuted;
-      const icon = document.getElementById('hud-sound-icon');
-      if (icon) {
-        icon.setAttribute('data-lucide', hudAudioMuted ? 'volume-x' : 'volume-2');
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+      const onIcon = document.getElementById('hud-sound-icon-on');
+      const offIcon = document.getElementById('hud-sound-icon-off');
+      if (onIcon && offIcon) {
+        onIcon.classList.toggle('hidden', hudAudioMuted);
+        offIcon.classList.toggle('hidden', !hudAudioMuted);
       }
     }
 
@@ -3679,9 +3732,9 @@
       let pingCounter = 0;
       hudJitterTimer = setInterval(() => {
         pingCounter++;
-        if (pingCounter % 12 === 0) playHudSound('ping');
+        if (pingCounter % 14 === 0) playHudSound('ping');
 
-        const jitter = (Math.random() - 0.5) * 0.0015;
+        const jitter = (Math.random() - 0.5) * 0.0016;
         for (let i = 1; i <= 5; i++) {
           const val = (baseNumbers[i - 1] + jitter).toFixed(3);
           const leftEl = document.getElementById(`hud-lat-l${i}`);
@@ -3689,10 +3742,10 @@
           if (leftEl) leftEl.textContent = val;
           if (rightEl) rightEl.textContent = val;
         }
-      }, 90);
+      }, 85);
     }
 
-    function typeWriterEffect(elId, text, speed = 70) {
+    function typeWriterEffect(elId, text, speed = 65) {
       const el = document.getElementById(elId);
       if (!el) return;
       el.textContent = '';
@@ -3727,9 +3780,9 @@
       }
 
       startHudTelemetryJitter();
-      setTimeout(() => typeWriterEffect('hud-pod-user', 'anuragsahu', 80), 200);
+      setTimeout(() => typeWriterEffect('hud-pod-user', 'anuragsahu', 65), 150);
 
-      // Lock stage after 2.3s
+      // Lock stage after 1.8s
       clearTimeout(hudLockTimer);
       hudLockTimer = setTimeout(() => {
         if (pill) {
@@ -3737,19 +3790,18 @@
           pill.className = 'mt-1 px-4 py-1 rounded-full bg-emerald-400 text-[#02181b] font-bold text-xs tracking-wider uppercase shadow-[0_0_20px_#10b981] transition-all duration-300 animate-pulse';
         }
         playHudSound('lock');
-      }, 2300);
+      }, 1800);
 
-      // Auto-transition after 3.2s
+      // Auto-transition after 2.8s
       clearTimeout(hudAutoTransitionTimer);
       hudAutoTransitionTimer = setTimeout(() => {
         transitionHudToLogin();
-      }, 3200);
+      }, 2800);
 
+      // Any keyboard interaction skips scan and focuses terminal
       const keyHandler = (e) => {
-        if (e.key === 'Escape' || e.code === 'Space') {
-          skipHudAnimation();
-          window.removeEventListener('keydown', keyHandler);
-        }
+        skipHudAnimation();
+        window.removeEventListener('keydown', keyHandler);
       };
       window.addEventListener('keydown', keyHandler, { once: true });
     }
@@ -3766,7 +3818,7 @@
         hudScreen.style.opacity = '0';
         hudScreen.style.transform = 'scale(1.08)';
         hudScreen.style.pointerEvents = 'none';
-        setTimeout(() => hudScreen.classList.add('hidden'), 650);
+        setTimeout(() => hudScreen.classList.add('hidden'), 550);
       }
 
       if (authScreen) {
@@ -3774,8 +3826,9 @@
         setTimeout(() => {
           authScreen.style.opacity = '1';
           authScreen.style.transform = 'scale(1)';
-        }, 50);
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+          const pwd = document.getElementById('input-password');
+          if (pwd) pwd.focus();
+        }, 80);
       }
       hudHasRun = true;
     }
@@ -4660,7 +4713,7 @@
         const msgs = data.data?.messages || data.messages || [];
         _messagesCache = msgs;
         _messagesState.total = data.data?.pagination?.totalItems ?? data.total ?? msgs.length;
-        _messagesState.pages = data.data?.pagination?.totalPages ?? Math.ceil(_messagesState.total / _messagesState.limit) || 1;
+        _messagesState.pages = (data.data?.pagination?.totalPages ?? Math.ceil(_messagesState.total / _messagesState.limit)) || 1;
 
         const countSummary = document.getElementById('messages-summary-count');
         if (countSummary) countSummary.textContent = `${_messagesState.total} total inquiries`;
@@ -5138,7 +5191,7 @@
         const data = await res.json();
         const items = data.data?.notifications || data.notifications || [];
         _notificationsState.total = data.data?.pagination?.totalItems ?? data.total ?? items.length;
-        _notificationsState.pages = data.data?.pagination?.totalPages ?? Math.ceil(_notificationsState.total / _notificationsState.limit) || 1;
+        _notificationsState.pages = (data.data?.pagination?.totalPages ?? Math.ceil(_notificationsState.total / _notificationsState.limit)) || 1;
 
         const summary = document.getElementById('notif-total-summary');
         if (summary) summary.textContent = `${_notificationsState.total} notifications`;
@@ -5298,7 +5351,7 @@
         const data = await res.json();
         const logs = data.data?.logs || data.logs || [];
         _activityState.total = data.data?.pagination?.totalItems ?? data.total ?? logs.length;
-        _activityState.pages = data.data?.pagination?.totalPages ?? Math.ceil(_activityState.total / _activityState.limit) || 1;
+        _activityState.pages = (data.data?.pagination?.totalPages ?? Math.ceil(_activityState.total / _activityState.limit)) || 1;
 
         renderActivityLogs(logs);
         renderActivityPagination();

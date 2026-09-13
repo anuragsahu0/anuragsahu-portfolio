@@ -174,11 +174,9 @@ export const AdminLoginPage = ({ onLogin, isLoading, error }) => {
               <FastForward className="w-3.5 h-3.5" />
             </button>
 
-            <div className="flex flex-col items-center">
-              <span className="text-xs sm:text-sm font-semibold tracking-widest text-cyan-300">
-                User1100101
-              </span>
-              <span className="text-[10px] text-cyan-400 -mt-0.5 animate-bounce">▼</span>
+            <div className="flex items-center gap-2 text-[11px] font-mono tracking-widest text-cyan-400/80">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+              <span className="tracking-[0.25em] text-cyan-300 font-semibold">RADAR ACTIVE // SCANNING</span>
             </div>
 
             <button
