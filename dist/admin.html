@@ -1083,7 +1083,6 @@
                 </div>
               </div>
             </div>
-            </div>
           </div>
 
           <!-- 2-Column Split: Recent Projects & Communication Overview -->
@@ -1139,7 +1138,6 @@
                 <span class="text-slate-400">Privacy Telemetry Engine:</span>
                 <span class="text-emerald-400 font-mono font-semibold">Active & Anonymous</span>
               </div>
-            </div>
             </div>
           </div>
 
@@ -1548,26 +1546,26 @@
       </main>
 
       <!-- MOBILE BOTTOM NAVIGATION DOCK -->
-      <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-brand-sidebar/95 backdrop-blur-lg border-t border-brand-border px-2 py-1.5 flex items-center justify-around select-none safe-area-pb">
-        <button onclick="switchTab('dashboard')" class="mobile-dock-btn flex flex-col items-center justify-center py-1 px-2 rounded-lg text-cyan-400 font-semibold" data-tab="dashboard">
+      <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-brand-sidebar/95 backdrop-blur-lg border-t border-brand-border px-1 py-1 flex items-center justify-between select-none safe-area-pb">
+        <button onclick="switchTab('dashboard')" class="mobile-dock-btn flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-lg text-cyan-400 font-semibold" data-tab="dashboard">
           <i data-lucide="layout-dashboard" class="w-4 h-4 mb-0.5"></i>
-          <span class="text-[10px]">Dashboard</span>
+          <span class="text-[10px] tracking-tight">Dashboard</span>
         </button>
-        <button onclick="switchTab('analytics')" class="mobile-dock-btn flex flex-col items-center justify-center py-1 px-2 rounded-lg text-slate-400" data-tab="analytics">
+        <button onclick="switchTab('analytics')" class="mobile-dock-btn flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-lg text-slate-400" data-tab="analytics">
           <i data-lucide="bar-chart-3" class="w-4 h-4 mb-0.5"></i>
-          <span class="text-[10px]">Analytics</span>
+          <span class="text-[10px] tracking-tight">Analytics</span>
         </button>
-        <button onclick="switchTab('projects')" class="mobile-dock-btn flex flex-col items-center justify-center py-1 px-2 rounded-lg text-slate-400" data-tab="projects">
+        <button onclick="switchTab('projects')" class="mobile-dock-btn flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-lg text-slate-400" data-tab="projects">
           <i data-lucide="briefcase" class="w-4 h-4 mb-0.5"></i>
-          <span class="text-[10px]">Projects</span>
+          <span class="text-[10px] tracking-tight">Projects</span>
         </button>
-        <button onclick="switchTab('about')" class="mobile-dock-btn flex flex-col items-center justify-center py-1 px-2 rounded-lg text-slate-400" data-tab="about">
+        <button onclick="switchTab('about')" class="mobile-dock-btn flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-lg text-slate-400" data-tab="about">
           <i data-lucide="file-text" class="w-4 h-4 mb-0.5"></i>
-          <span class="text-[10px]">About</span>
+          <span class="text-[10px] tracking-tight">About</span>
         </button>
-        <button onclick="switchTab('profile')" class="mobile-dock-btn flex flex-col items-center justify-center py-1 px-2 rounded-lg text-slate-400" data-tab="profile">
+        <button onclick="switchTab('profile')" class="mobile-dock-btn flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-lg text-slate-400" data-tab="profile">
           <i data-lucide="user" class="w-4 h-4 mb-0.5"></i>
-          <span class="text-[10px]">Profile</span>
+          <span class="text-[10px] tracking-tight">Profile</span>
         </button>
       </nav>
 
@@ -2188,8 +2186,8 @@
       document.querySelectorAll('.mobile-dock-btn').forEach(el => {
         const isActive = el.getAttribute('data-tab') === tabId;
         el.className = isActive
-          ? 'mobile-dock-btn flex flex-col items-center justify-center py-1 px-2 rounded-lg text-cyan-400 font-semibold'
-          : 'mobile-dock-btn flex flex-col items-center justify-center py-1 px-2 rounded-lg text-slate-400';
+          ? 'mobile-dock-btn flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-lg text-cyan-400 font-semibold'
+          : 'mobile-dock-btn flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-lg text-slate-400';
       });
 
       // Update mobile drawer active classes
