@@ -1267,54 +1267,31 @@
     </div>
   </footer>
 
-  <script src="app.js?v=2.0.0" type="module"></script>
+  <script src="app.js?v=2.0.2" type="module"></script>
 
-  <!-- Force-Update & Service Worker Auto-Sync Engine v2.0.0 -->
+  <!-- Service Worker Registration & Version Sync Engine -->
   <script>
     (function initCacheBuster() {
-      const CURRENT_VERSION = '2.0.0';
-
       // 1. Auto-update Service Worker on page load
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').then((registration) => {
           registration.update().catch(() => {});
-
-          registration.addEventListener('updatefound', () => {
-            const newWorker = registration.installing;
-            if (!newWorker) return;
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('[CacheSync] New SW version installed. Force reloading...');
-                window.location.replace(window.location.pathname + '?v=' + Date.now());
-              }
-            });
-          });
         }).catch((err) => console.warn('[SW] Registration note:', err));
-
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          console.log('[CacheSync] Service Worker controller changed.');
-        });
       }
 
-      // 2. Query /version.json to detect newer deploy immediately
+      // 2. Query /version.json safely without page reload loops
       async function checkServerVersion() {
         try {
           const res = await fetch('/version.json?t=' + Date.now(), { cache: 'no-store' });
           if (!res.ok) return;
           const data = await res.json();
-          if (data && data.version && data.version !== CURRENT_VERSION) {
-            console.log('[CacheSync] Newer version on server:', data.version, 'Local:', CURRENT_VERSION);
-            window.location.replace(window.location.pathname + '?v=' + Date.now());
+          if (data && data.version) {
+            localStorage.setItem('as_site_version', data.version);
           }
-        } catch (e) {
-          // Silent fallback
-        }
+        } catch (e) {}
       }
 
       checkServerVersion();
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) checkServerVersion();
-      });
     })();
   </script>
   <script>
