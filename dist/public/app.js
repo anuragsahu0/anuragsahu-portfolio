@@ -884,13 +884,20 @@ async function initCmsIntegration() {
       if (narrativeText) {
         const paraEl = document.getElementById('about-char-para');
         if (paraEl) {
+          const words = narrativeText.split(' ');
+          let charIdx = 0;
           let html = '';
-          const chars = narrativeText.split('');
-          chars.forEach((ch, i) => {
-            const display = ch === ' ' ? '\u00A0' : ch;
-            html += `<span style="position:relative;display:inline-block;"><span style="opacity:0.3;user-select:none;" aria-hidden="true">${display}</span><span id="ac${i}" style="position:absolute;top:0;left:0;opacity:0.85;transition:opacity 0.2s ease;">${display}</span></span>`;
+          words.forEach((word, wIdx) => {
+            let wordHtml = '';
+            word.split('').forEach((ch) => {
+              wordHtml += `<span style="position:relative;display:inline-block;"><span style="opacity:0.3;user-select:none;" aria-hidden="true">${ch}</span><span id="ac${charIdx}" style="position:absolute;top:0;left:0;opacity:0.85;transition:opacity 0.2s ease;">${ch}</span></span>`;
+              charIdx++;
+            });
+            html += `<span style="display:inline-block;white-space:nowrap;">${wordHtml}</span>`;
+            if (wIdx < words.length - 1) html += ' ';
           });
           paraEl.innerHTML = html;
+          window.dispatchEvent(new Event('scroll'));
         }
       }
     }
@@ -945,7 +952,7 @@ async function initCmsIntegration() {
 
   // 1. Instant Cache Hydration (0ms Stale-While-Revalidate)
   try {
-    const rawCache = sessionStorage.getItem(CMS_SITE_CACHE_KEY);
+    const rawCache = localStorage.getItem(CMS_SITE_CACHE_KEY) || sessionStorage.getItem(CMS_SITE_CACHE_KEY);
     if (rawCache) {
       const cachedData = JSON.parse(rawCache);
       applyCmsData(cachedData);
@@ -961,6 +968,7 @@ async function initCmsIntegration() {
         applyCmsData(json.data);
         try {
           sessionStorage.setItem(CMS_SITE_CACHE_KEY, JSON.stringify(json.data));
+          localStorage.setItem(CMS_SITE_CACHE_KEY, JSON.stringify(json.data));
         } catch (e) {}
       }
     }
@@ -974,6 +982,9 @@ async function initCmsIntegration() {
       const bc = new BroadcastChannel('anurag_portfolio_realtime');
       bc.addEventListener('message', async (ev) => {
         if (ev && ev.data && (ev.data.type === 'cms_content_updated' || ev.data.type === 'project_updated')) {
+          if (ev.data.data) {
+            applyCmsData(ev.data.data);
+          }
           try {
             const res = await fetch(`${API_BASE}/public/site?_t=${Date.now()}`);
             if (res.ok) {
@@ -982,6 +993,7 @@ async function initCmsIntegration() {
                 applyCmsData(json.data);
                 try {
                   sessionStorage.setItem(CMS_SITE_CACHE_KEY, JSON.stringify(json.data));
+                  localStorage.setItem(CMS_SITE_CACHE_KEY, JSON.stringify(json.data));
                 } catch (e) {}
               }
             }
