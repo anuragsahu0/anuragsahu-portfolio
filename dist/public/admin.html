@@ -88,6 +88,32 @@
     input[type=range] {
       accent-color: #0F172A;
     }
+
+    /* Cybernetic Terminal & Roast Modal Styling */
+    @keyframes cyberGlowPulse {
+      0%, 100% {
+        box-shadow: 0 0 35px rgba(0, 230, 195, 0.45), inset 0 0 30px rgba(0, 230, 195, 0.25);
+      }
+      50% {
+        box-shadow: 0 0 55px rgba(0, 230, 195, 0.7), inset 0 0 45px rgba(0, 230, 195, 0.35);
+      }
+    }
+    .cyber-card-glow {
+      animation: cyberGlowPulse 3.5s ease-in-out infinite;
+    }
+    @keyframes funnyShake {
+      0%   { transform: scale(1) translateX(0); }
+      15%  { transform: scale(1) translateX(-10px) rotate(-2deg); }
+      30%  { transform: scale(1) translateX(10px) rotate(2deg); }
+      45%  { transform: scale(1) translateX(-8px) rotate(-1deg); }
+      60%  { transform: scale(1) translateX(8px) rotate(1deg); }
+      75%  { transform: scale(1) translateX(-4px); }
+      90%  { transform: scale(1) translateX(4px); }
+      100% { transform: scale(1) translateX(0); }
+    }
+    #funny-roast-msg {
+      transition: opacity 0.25s ease;
+    }
   </style>
 </head>
 <body class="bg-canvas min-h-screen flex flex-col antialiased">
@@ -98,73 +124,190 @@
   <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- ========================================================================= -->
-  <!-- AUTHENTICATION SCREEN (LOGIN LOCK GATEWAY)                                -->
+  <!-- AUTHENTICATION SCREEN: ZERO-TRUST CYBERNETIC LOGIN TERMINAL               -->
   <!-- ========================================================================= -->
-  <div id="auth-modal" class="fixed inset-0 z-50 bg-[#070B16] flex items-center justify-center p-4 transition-all duration-300">
-    <div class="bg-[#0D1527] border border-slate-800/80 rounded-2xl shadow-2xl w-full max-w-md p-6 sm:p-8 relative text-slate-200">
+  <div id="auth-modal" class="fixed inset-0 z-50 bg-[#011517] flex flex-col items-center justify-center p-4 relative overflow-hidden select-none font-mono transition-all duration-300">
+    
+    <!-- Atmospheric Cyber Glow Backdrop -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00e5cc]/10 rounded-full blur-[140px]"></div>
+      <div class="absolute -bottom-32 right-10 w-[500px] h-[500px] bg-[#008f82]/15 rounded-full blur-[120px]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(#00e5cc_1px,transparent_1px)] [background-size:32px_32px] opacity-15"></div>
+    </div>
+
+    <!-- Main Cyber Terminal Plate -->
+    <div class="relative z-10 w-full max-w-[440px] mx-auto select-none">
       
-      <!-- Brand & Header -->
-      <div class="text-center mb-6">
-        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white flex items-center justify-center text-xl font-bold mx-auto mb-3 shadow-lg shadow-blue-500/20">
-          AS
+      <!-- Outer Cybernetic Chassis Container -->
+      <div class="relative bg-[#021a1d] border-2 border-[#008f82] p-5 sm:p-7 pt-9 shadow-[0_0_40px_rgba(0,143,130,0.3)]" style="clip-path: polygon(0 35px, 35px 35px, 35px 0, calc(100% - 60px) 0, 100% 60px, 100% 100%, 0 100%);">
+        
+        <!-- Top Ventilation Louvers (////) -->
+        <div class="absolute top-2.5 left-24 right-28 h-5 overflow-hidden pointer-events-none opacity-40">
+          <div class="w-full h-full" style="background: repeating-linear-gradient(45deg, #00e6c3 0, #00e6c3 5px, transparent 5px, transparent 14px);"></div>
         </div>
-        <h2 class="text-xl font-bold text-white tracking-tight">Anurag Sahu Control Center</h2>
-        <p class="text-xs text-slate-400 mt-1 font-normal">Protected Administrator Gateway • Sign in to continue</p>
+
+        <!-- Right edge indent notch -->
+        <div class="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-12 bg-[#008f82]"></div>
+        
+        <!-- Recessed Inner Vessel with Luminous Cyan Glow & Tabs -->
+        <div class="relative bg-[#032125] border-2 border-[#00e6c3] p-5 sm:p-7 cyber-card-glow">
+          
+          <!-- Bezel Corner Tabs -->
+          <div class="absolute -top-1 left-8 w-6 h-1.5 bg-[#00e6c3]"></div>
+          <div class="absolute -top-1 right-8 w-6 h-1.5 bg-[#00e6c3]"></div>
+          <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-[#00e6c3]"></div>
+          <div class="absolute -right-1 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-[#00e6c3]"></div>
+          <div class="absolute -bottom-1 left-12 w-8 h-1.5 bg-[#00e6c3]"></div>
+
+          <!-- Brand & Header -->
+          <div class="text-center mb-6">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-300 font-mono font-bold text-base mx-auto mb-2.5 shadow-[0_0_20px_rgba(0,229,204,0.35)]">
+              AS
+            </div>
+            <h1 class="text-base font-bold text-white font-mono tracking-wider uppercase">ANURAG SAHU</h1>
+            <p class="text-[11px] text-cyan-400 font-mono uppercase tracking-widest mt-0.5">Air-Gapped Control Center</p>
+          </div>
+
+          <!-- Error Alert Pill -->
+          <div id="auth-error-msg" class="hidden mb-4 p-3 rounded bg-rose-950/80 border border-rose-500/60 flex items-start gap-2.5 text-xs text-rose-300 font-mono shadow-[0_0_15px_rgba(244,63,94,0.35)]">
+            <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0 text-rose-400 mt-0.5"></i>
+            <span id="auth-error-text">Access Denied: Invalid credentials. Bina pass ke no entry!</span>
+          </div>
+
+          <!-- Login Form -->
+          <form id="auth-form" class="space-y-4 font-mono text-xs" onsubmit="handleAuthLogin(event)">
+            
+            <!-- Username Input Box -->
+            <div>
+              <label class="block text-slate-300 font-bold mb-1.5 uppercase text-[10px] tracking-wider text-cyan-300/90">ADMIN USERNAME / ID</label>
+              <div class="w-full flex items-center border-[1.5px] border-[#00e6c3] bg-[#041c20] rounded px-3 py-2.5 shadow-[0_0_10px_rgba(0,230,195,0.15)] focus-within:border-[#00ffcc] focus-within:shadow-[0_0_20px_rgba(0,255,204,0.4)] transition-all">
+                <div class="w-7 flex items-center justify-center text-[#00e6c3] shrink-0">
+                  <i data-lucide="user" class="w-4 h-4 text-cyan-400"></i>
+                </div>
+                <input
+                  id="auth-username"
+                  type="text"
+                  required
+                  placeholder="Enter Admin ID"
+                  autocomplete="username"
+                  autocapitalize="none"
+                  autocorrect="off"
+                  spellcheck="false"
+                  class="w-full bg-transparent border-none text-xs sm:text-sm font-mono text-[#00f5d4] placeholder:text-[#008f82] focus:outline-none pl-2"
+                >
+              </div>
+            </div>
+
+            <!-- Password Input Box -->
+            <div>
+              <label class="block text-slate-300 font-bold mb-1.5 uppercase text-[10px] tracking-wider text-cyan-300/90">MASTER SECURITY PASSWORD</label>
+              <div class="relative w-full flex items-center border-[1.5px] border-[#00e6c3] bg-[#041c20] rounded px-3 py-2.5 shadow-[0_0_10px_rgba(0,230,195,0.15)] focus-within:border-[#00ffcc] focus-within:shadow-[0_0_20px_rgba(0,255,204,0.4)] transition-all">
+                <div class="w-7 flex items-center justify-center text-[#00e6c3] shrink-0">
+                  <i data-lucide="lock" class="w-4 h-4 text-cyan-400"></i>
+                </div>
+                <input
+                  id="auth-password"
+                  type="password"
+                  required
+                  placeholder="Enter Master Password"
+                  autocomplete="current-password"
+                  autocapitalize="none"
+                  autocorrect="off"
+                  spellcheck="false"
+                  class="w-full bg-transparent border-none text-xs sm:text-sm font-mono text-[#00f5d4] placeholder:text-[#008f82] focus:outline-none pl-2 pr-8"
+                >
+                <button
+                  type="button"
+                  id="auth-pwd-eye-btn"
+                  onclick="togglePasswordVisibility()"
+                  class="text-[#008f82] hover:text-[#00e6c3] transition-colors p-1 shrink-0 cursor-pointer"
+                  aria-label="Toggle password visibility"
+                >
+                  <i id="auth-pwd-eye-icon" data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Options Row -->
+            <div class="flex items-center justify-between text-[11px] font-mono pt-1 text-slate-400">
+              <a href="/" class="text-[#008f82] hover:text-[#00e6c3] transition-colors flex items-center gap-1">
+                <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+                <span>Live Site</span>
+              </a>
+              <button
+                type="button"
+                onclick="showForgotPasswordModal()"
+                class="text-[#00e6c3] hover:text-[#00ffcc] hover:underline transition-colors cursor-pointer"
+              >
+                Forgot Password?
+              </button>
+            </div>
+
+            <!-- Primary Sign In Cyber Button -->
+            <div class="pt-2 flex justify-center">
+              <button
+                type="submit"
+                id="auth-submit-btn"
+                class="w-full py-3 px-6 border-2 border-[#00e6c3] bg-[#032125] hover:bg-[#00e6c3] hover:text-[#021416] text-[#00e6c3] font-mono font-bold text-xs tracking-widest uppercase transition-all duration-200 shadow-[0_0_15px_rgba(0,230,195,0.3)] hover:shadow-[0_0_35px_rgba(0,230,195,0.85)] active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span>SIGN IN TO CONTROL CENTER</span>
+              </button>
+            </div>
+
+          </form>
+
+          <!-- Security note -->
+          <div class="mt-5 pt-3 border-t border-[#00e6c3]/20 flex items-center justify-between text-[10px] font-mono text-[#008f82]">
+            <span class="flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping inline-block"></span>
+              Zero-Trust Guard
+            </span>
+            <span class="text-cyan-400 font-bold">Bina Pass No Entry 🔒</span>
+          </div>
+
+        </div>
+
       </div>
 
-      <!-- Security Form -->
-      <form id="auth-form" onsubmit="handleAuthLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Administrator ID or Email</label>
-          <div class="relative">
-            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-            <input type="text" id="auth-username" required placeholder="anuragsahu" autocomplete="username" class="w-full pl-10 pr-3.5 py-2.5 bg-[#131D33] border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
-          </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- FUNNY FORGOT PASSWORD ROAST MODAL                                         -->
+  <!-- ========================================================================= -->
+  <div id="funny-forgot-modal" class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4" onclick="if(event.target===this)closeFunnyForgotModal()">
+    <div class="absolute inset-0 bg-black/85 backdrop-blur-sm"></div>
+    <div id="funny-forgot-box" class="relative z-10 max-w-sm w-full bg-[#020d0f] border-2 border-rose-500 rounded-2xl overflow-hidden shadow-[0_0_60px_rgba(244,63,94,0.6)] transform scale-95 opacity-0 transition-all duration-300">
+      <div class="absolute inset-0 pointer-events-none opacity-10" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(244,63,94,0.3) 2px, rgba(244,63,94,0.3) 4px);"></div>
+      <div class="relative p-6 text-center space-y-4">
+        <div id="funny-emoji-spin" class="text-6xl select-none" style="display:inline-block">💀</div>
+        <div class="space-y-1">
+          <p class="text-rose-400 font-mono text-[10px] tracking-[0.3em] uppercase">Password Recovery Request Detected</p>
+          <h2 class="text-white font-mono font-black text-xl leading-tight">AUKAAT MEIN RAHO</h2>
+          <p class="text-rose-300 font-mono font-bold text-sm mt-1">Chote Nahi &nbsp;•&nbsp; G**ND Pe Padenge Sotte 🥢</p>
         </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Security Password</label>
-          </div>
-          <div class="relative">
-            <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-            <input type="password" id="auth-password" required placeholder="Enter security password" autocomplete="current-password" class="w-full pl-10 pr-10 py-2.5 bg-[#131D33] border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
-            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition focus:outline-none" title="Toggle password view">
-              <i id="auth-pwd-eye-icon" data-lucide="eye" class="w-4 h-4"></i>
-            </button>
-          </div>
+        <div class="flex items-center gap-2 my-2">
+          <div class="flex-1 h-px bg-rose-800/60"></div>
+          <span class="text-rose-600 font-mono text-xs">[ CASE FILE #420-BHOOL-GAYE ]</span>
+          <div class="flex-1 h-px bg-rose-800/60"></div>
         </div>
-
-        <!-- Remember Me Checkbox -->
-        <div class="flex items-center justify-between text-xs">
-          <label class="flex items-center gap-2 cursor-pointer text-slate-400 hover:text-slate-300 select-none">
-            <input type="checkbox" id="auth-remember" checked class="w-3.5 h-3.5 rounded bg-slate-800 border-slate-700 text-blue-600 focus:ring-0 focus:ring-offset-0">
-            <span>Remember session on this device</span>
-          </label>
+        <div id="funny-roast-msg" class="bg-rose-950/60 border border-rose-700/50 rounded-xl p-4 font-mono text-sm text-rose-200 leading-relaxed min-h-[80px] flex items-center justify-center transition-all duration-500">
+          Itna important password tha toh yaad kyun nahi rakha bhai... 🫠
         </div>
-
-        <!-- Error message box -->
-        <div id="auth-error-msg" class="hidden p-3 bg-red-950/60 border border-red-500/50 rounded-xl text-xs text-red-300 font-medium"></div>
-
-        <!-- Submit Button -->
-        <button type="submit" id="auth-submit-btn" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-medium rounded-xl text-sm transition shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
-          <span>Authenticate & Enter Control Center</span>
-          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        <div class="bg-[#0a0a0a] border border-rose-900/50 rounded-lg p-3 text-left space-y-1">
+          <p class="text-rose-600 font-mono text-[10px] font-bold uppercase tracking-wider">🔒 System Verdict:</p>
+          <p class="text-slate-400 font-mono text-xs">Password recovery sirf ek banda kar sakta hai — aur woh tum nahi ho. <span class="text-rose-400 font-bold">Anurag Sahu ko call karo.</span></p>
+        </div>
+        <button
+          type="button"
+          onclick="closeFunnyForgotModal()"
+          class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-mono font-bold text-sm rounded-xl tracking-widest uppercase transition-all active:scale-95 shadow-[0_0_20px_rgba(244,63,94,0.5)] hover:shadow-[0_0_35px_rgba(244,63,94,0.8)] cursor-pointer"
+        >
+          Theek Hai Bhai, Yaad Kar Lunga 😔
         </button>
-      </form>
-
-      <!-- Bottom footer -->
-      <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-        <a href="/" class="hover:text-cyan-400 transition flex items-center gap-1.5 font-medium">
-          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-          <span>Back to Live Website</span>
-        </a>
-        <span class="text-[11px] text-slate-500 font-mono flex items-center gap-1">
-          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
-          <span>Encrypted Gateway</span>
-        </span>
       </div>
-
     </div>
   </div>
 
@@ -2155,7 +2298,7 @@
     }
 
     /* -------------------------------------------------------------------------- */
-    /* Strict Authentication & Session Gatekeeper                                 */
+    /* Strict Zero-Trust Authentication & Session Gatekeeper                       */
     /* -------------------------------------------------------------------------- */
     let realtimePollTimer = null;
 
@@ -2172,30 +2315,33 @@
       }
     }
 
+    // Always clear legacy/stale tokens on fresh startup
+    try {
+      localStorage.removeItem('as_admin_auth_user');
+      localStorage.removeItem('as_admin_jwt');
+      localStorage.removeItem('admin_session');
+      localStorage.removeItem('ag_session_vault');
+    } catch (e) {}
+
     function checkAuthentication() {
-      const savedAuth = localStorage.getItem(ADMIN_AUTH_KEY) || sessionStorage.getItem(ADMIN_AUTH_KEY);
       const authModal = document.getElementById('auth-modal');
       const appShell = document.getElementById('app-shell');
+      const isVerified = sessionStorage.getItem('as_admin_verified');
 
-      if (savedAuth) {
-        try {
-          const user = JSON.parse(savedAuth);
-          if (user && (user.role === 'admin' || user.role === 'OWNER' || user.role === 'viewer')) {
-            // Authorized session found: unlock admin panel
-            authModal.classList.add('hidden');
-            authModal.classList.remove('flex');
-            appShell.classList.remove('hidden');
+      if (isVerified === 'true') {
+        // Authenticated in this active browser session: unlock admin panel
+        authModal.classList.add('hidden');
+        authModal.classList.remove('flex');
+        appShell.classList.remove('hidden');
 
-            // Render stored IP logs immediately
-            syncAndRenderIpRegistry([], []);
-            // Start live 3-second telemetry polling
-            startRealtimePolling();
-            return true;
-          }
-        } catch (e) {}
+        // Render stored IP logs immediately
+        syncAndRenderIpRegistry([], []);
+        // Start live 3-second telemetry polling
+        startRealtimePolling();
+        return true;
       }
 
-      // Not authenticated: keep everything locked!
+      // STRICT ZERO-TRUST LOCKOUT: Bina pass ke no entry!
       stopRealtimePolling();
       appShell.classList.add('hidden');
       authModal.classList.remove('hidden');
@@ -2207,19 +2353,19 @@
       e.preventDefault();
       const username = (document.getElementById('auth-username')?.value || '').trim();
       const password = document.getElementById('auth-password')?.value || '';
-      const remember = document.getElementById('auth-remember')?.checked;
       const errorBox = document.getElementById('auth-error-msg');
+      const errorText = document.getElementById('auth-error-text');
       const submitBtn = document.getElementById('auth-submit-btn');
 
       if (!username || !password) {
-        errorBox.textContent = 'Please enter both administrator ID and password.';
+        if (errorText) errorText.textContent = 'Please enter both administrator ID and password.';
         errorBox.classList.remove('hidden');
         return;
       }
 
       errorBox.classList.add('hidden');
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span>Verifying credentials...</span>';
+      submitBtn.innerHTML = '<span>Verifying cryptographic credentials...</span>';
 
       try {
         const res = await fetch('/api/auth/login', {
@@ -2232,13 +2378,8 @@
         const json = await res.json().catch(() => ({}));
 
         if (res.ok && json.success) {
-          const userData = json.data?.user || { name: 'Anurag Sahu', role: 'admin', email: username };
-          if (remember) {
-            localStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(userData));
-          } else {
-            sessionStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(userData));
-          }
-          if (json.token) localStorage.setItem('as_admin_jwt', json.token);
+          sessionStorage.setItem('as_admin_verified', 'true');
+          if (json.token) sessionStorage.setItem('as_admin_jwt', json.token);
 
           // Unlock admin interface
           document.getElementById('auth-modal').classList.add('hidden');
@@ -2249,21 +2390,16 @@
           syncAndRenderIpRegistry([], []);
           startRealtimePolling();
 
-          showToast('Welcome back, Anurag! Admin unlocked.', 'success');
+          showToast('Access Granted. Welcome back, Anurag!', 'success');
           return;
         }
 
-        // Secure fallback for offline/local environment
+        // Direct Owner Credentials Fallback Verification
         const isOwnerId = ['anuragsahu', 'anuragsahu@anuragsahu.dev', 'admin@anuragsahu.dev', 'shivasahu0612@gmail.com'].includes(username.toLowerCase());
         const isOwnerPwd = password === 'ABCDEF123' || password === 'Admin@AntiGravity2026';
 
         if (isOwnerId && isOwnerPwd) {
-          const userData = { name: 'Anurag Sahu', role: 'admin', email: username };
-          if (remember) {
-            localStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(userData));
-          } else {
-            sessionStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(userData));
-          }
+          sessionStorage.setItem('as_admin_verified', 'true');
 
           document.getElementById('auth-modal').classList.add('hidden');
           document.getElementById('auth-modal').classList.remove('flex');
@@ -2272,17 +2408,17 @@
           syncAndRenderIpRegistry([], []);
           startRealtimePolling();
 
-          showToast('Welcome back, Anurag! Admin unlocked.', 'success');
+          showToast('Access Granted. Welcome back, Anurag!', 'success');
           return;
         }
 
-        throw new Error(json.error?.message || json.message || 'Invalid administrator ID or password. Access denied.');
+        throw new Error('Access Denied: Invalid administrator ID or password. Bina pass ke no entry!');
       } catch (err) {
-        errorBox.textContent = err.message || 'Authentication failed. Please check your credentials.';
+        if (errorText) errorText.textContent = err.message || 'Authentication failed. Access denied.';
         errorBox.classList.remove('hidden');
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>Authenticate & Enter Control Center</span><i data-lucide="arrow-right" class="w-4 h-4"></i>';
+        submitBtn.innerHTML = '<i data-lucide="shield-check" class="w-4 h-4"></i><span>SIGN IN TO CONTROL CENTER</span>';
         if (typeof lucide !== 'undefined') lucide.createIcons();
       }
     }
@@ -2301,6 +2437,85 @@
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
+    /* -------------------------------------------------------------------------- */
+    /* Funny Forgot Password Modal Handlers                                       */
+    /* -------------------------------------------------------------------------- */
+    let _shameCount = 0;
+    const _roastLines = [
+      'Itna important password tha toh yaad kyun nahi rakha bhai... 🫠',
+      'Teri ma ne bola tha — "beta password likh ke rakh." Suna nahi na? 🤦',
+      'Ladki ka number yaad rahta hai, password nahi? Priority check karo! 😭',
+      'Main sirf ek banda hoon jo password jaanta hai — Anurag Sahu. Woh main hoon. Tum nahi. 💅',
+      'Password bhool gaye? Bhai, apna janam nahi bhoolte, password bhool gaye? 🐸',
+      'SECURITY BREACH DETECTED... just kidding, tu genuinely bhool gaya hai lmao 💀',
+      'Itne saal padding mein, password nahi yaad? Technology se darr lagta hai kya? 😂',
+      'Google mein "how to remember passwords" search kar le. Wahan bhi answer nahi milega. 🫡',
+      'Tu password bhool gaya — yeh system note kar lega. Dono ke beech mat aana. 🫵',
+      'Teri aukat mein nahi hai yeh password recover karna. CASE CLOSED. 🏛️',
+    ];
+    let _roastIdx = 0;
+    let _roastInterval = null;
+
+    function showForgotPasswordModal() {
+      _shameCount++;
+      const modal = document.getElementById('funny-forgot-modal');
+      const box = document.getElementById('funny-forgot-box');
+      const roastEl = document.getElementById('funny-roast-msg');
+      const emojiEl = document.getElementById('funny-emoji-spin');
+
+      if (!modal || !box) return;
+
+      _roastIdx = Math.floor(Math.random() * _roastLines.length);
+      if (roastEl) roastEl.textContent = _roastLines[_roastIdx];
+
+      const emojis = ['💀','🤡','😂','😭','🫠','🥲','👻','🫵','😤','🤦'];
+      if (emojiEl) emojiEl.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+      modal.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          box.style.transform = 'scale(1)';
+          box.style.opacity = '1';
+        });
+      });
+
+      if (_roastInterval) clearInterval(_roastInterval);
+      _roastInterval = setInterval(() => {
+        if (!document.getElementById('funny-forgot-modal')?.classList.contains('hidden')) {
+          _roastIdx = (_roastIdx + 1) % _roastLines.length;
+          if (roastEl) {
+            roastEl.style.opacity = '0';
+            setTimeout(() => {
+              roastEl.textContent = _roastLines[_roastIdx];
+              roastEl.style.opacity = '1';
+            }, 250);
+          }
+        } else {
+          clearInterval(_roastInterval);
+        }
+      }, 2500);
+
+      setTimeout(() => {
+        if (box) {
+          box.style.animation = 'funnyShake 0.5s ease-in-out';
+          setTimeout(() => { box.style.animation = ''; }, 500);
+        }
+      }, 800);
+    }
+
+    function closeFunnyForgotModal() {
+      const modal = document.getElementById('funny-forgot-modal');
+      const box = document.getElementById('funny-forgot-box');
+      if (!modal || !box) return;
+      if (_roastInterval) { clearInterval(_roastInterval); _roastInterval = null; }
+      box.style.transform = 'scale(0.9)';
+      box.style.opacity = '0';
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        box.style.transform = 'scale(0.95)';
+      }, 250);
+    }
+
     function toggleProfileDropdown() {
       const menu = document.getElementById('profile-dropdown-menu');
       if (menu) menu.classList.toggle('hidden');
@@ -2315,8 +2530,8 @@
     });
 
     function handleSignOut() {
+      sessionStorage.clear();
       localStorage.removeItem(ADMIN_AUTH_KEY);
-      sessionStorage.removeItem(ADMIN_AUTH_KEY);
       localStorage.removeItem('as_admin_jwt');
       stopRealtimePolling();
       fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
@@ -2329,7 +2544,7 @@
       if (pInput) pInput.value = '';
       if (errBox) errBox.classList.add('hidden');
 
-      // Hide app-shell and display full-screen login barrier
+      // Hide app-shell and display full-screen cyber login terminal
       document.getElementById('app-shell').classList.add('hidden');
       const authModal = document.getElementById('auth-modal');
       authModal.classList.remove('hidden');
@@ -2338,7 +2553,7 @@
       const menu = document.getElementById('profile-dropdown-menu');
       if (menu) menu.classList.add('hidden');
 
-      showToast('Logged out securely from Admin Control Center.', 'info');
+      showToast('Logged out securely. Access locked.', 'info');
     }
 
     function showProfileDropdown() {
