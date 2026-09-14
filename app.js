@@ -30,8 +30,27 @@ document.addEventListener('DOMContentLoaded', () => {
 /* Real-Time Live Telemetry Tracking Engine                                  */
 /* -------------------------------------------------------------------------- */
 function initLiveTelemetryTracking() {
-  sendTelemetry('page_view', { path: window.location.pathname });
+  const currentPath = window.location.pathname + (window.location.hash || '');
+  sendTelemetry('page_view', { path: currentPath || '/' });
   startVisitorHeartbeat();
+
+  // Track section views on hash changes
+  window.addEventListener('hashchange', () => {
+    const hash = window.location.hash || '';
+    if (hash && hash.length > 1) {
+      sendTelemetry('page_view', { path: '/' + hash.replace('#', '') });
+    }
+  });
+
+  // Track anchor clicks for in-page navigation
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const hash = link.getAttribute('href');
+      if (hash && hash.length > 1) {
+        sendTelemetry('page_view', { path: '/' + hash.replace('#', '') });
+      }
+    });
+  });
 
   document.querySelectorAll('button, a').forEach((el) => {
     const text = (el.textContent || '').toLowerCase();
@@ -64,6 +83,24 @@ function detectVisitorDevice() {
   return `${device} • ${browser}`;
 }
 
+function getClientGeoHint() {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    let countryCode = 'IN';
+    let country = 'India';
+    if (tz.includes('Calcutta') || tz.includes('Kolkata') || tz.includes('Asia/Colombo')) {
+      countryCode = 'IN'; country = 'India';
+    } else if (tz.includes('New_York') || tz.includes('Los_Angeles') || tz.includes('Chicago')) {
+      countryCode = 'US'; country = 'United States';
+    } else if (tz.includes('London')) {
+      countryCode = 'GB'; country = 'United Kingdom';
+    }
+    return { countryCode, country, timeZone: tz };
+  } catch (e) {
+    return { countryCode: 'IN', country: 'India' };
+  }
+}
+
 function startVisitorHeartbeat() {
   let sessId = sessionStorage.getItem('as_visitor_sess');
   if (!sessId) {
@@ -72,6 +109,7 @@ function startVisitorHeartbeat() {
   }
 
   const deviceLabel = detectVisitorDevice();
+  const geo = getClientGeoHint();
 
   async function ping() {
     try {
@@ -80,8 +118,8 @@ function startVisitorHeartbeat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type: 'heartbeat',
-          path: window.location.pathname || '/',
-          metadata: { device: deviceLabel, sessId }
+          path: window.location.pathname + (window.location.hash || ''),
+          metadata: { device: deviceLabel, sessId, ...geo }
         })
       });
       if (res.ok) {
@@ -102,17 +140,28 @@ function startVisitorHeartbeat() {
 
 function sendTelemetry(type, metadata = {}) {
   try {
+    const path = metadata.path || window.location.pathname + (window.location.hash || '');
+    const geo = getClientGeoHint();
     fetch('/api/analytics/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         type,
-        path: window.location.pathname || '/',
+        path: path || '/',
         metadata: {
           ...metadata,
-          device: detectVisitorDevice()
+          ...geo,
+          device: detectVisitorDevice(),
+          referrer: document.referrer || ''
         }
       })
+    }).then(res => {
+      if (res.ok) {
+        try {
+          const bc = new BroadcastChannel('anurag_portfolio_realtime');
+          bc.postMessage({ type: 'telemetry_event', eventType: type, path: path || '/' });
+        } catch (e) {}
+      }
     }).catch(() => {});
   } catch (e) {}
 }
