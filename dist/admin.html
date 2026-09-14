@@ -419,6 +419,7 @@
                   <thead>
                     <tr class="text-slate-400 font-semibold border-b border-slate-100">
                       <th class="pb-2.5 font-medium">Time</th>
+                      <th class="pb-2.5 font-medium">IP Address</th>
                       <th class="pb-2.5 font-medium">Location</th>
                       <th class="pb-2.5 font-medium">Device</th>
                       <th class="pb-2.5 font-medium">Page</th>
@@ -426,7 +427,7 @@
                   </thead>
                   <tbody id="recent-visitors-table" class="divide-y divide-slate-50 font-normal">
                     <tr id="recent-visitors-empty">
-                      <td colspan="4" class="py-10 text-center">
+                      <td colspan="5" class="py-10 text-center">
                         <div class="flex flex-col items-center justify-center text-center">
                           <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
                             <i data-lucide="activity" class="w-4 h-4 animate-pulse"></i>
@@ -464,6 +465,84 @@
                   </tbody>
                 </table>
               </div>
+            </div>
+
+          </div>
+
+          <!-- FULL-WIDTH SECTION: PERSISTENT VISITOR IP ADDRESS REGISTRY -->
+          <!-- SAVED PERMANENTLY EVEN AFTER USER EXITS (USER JAANE KE BAAD BHI) -->
+          <div class="bg-card rounded-2xl p-6 border border-borderLight shadow-xs flex flex-col space-y-4">
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <i data-lucide="network" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 class="text-base font-bold text-slate-900">Visitor IP Address & Geolocation Registry</h3>
+                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium" title="Permanently saved in browser storage and database">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Saved & Persistent</span>
+                      </span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-0.5">Captures visitor IP addresses, exact visit times, and geolocation. Saved permanently even after the user exits.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Controls: Count, Search, Export, Clear -->
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-mono text-xs font-semibold">
+                  Saved IPs: <span id="ip-registry-total-count" class="text-blue-600">0</span>
+                </div>
+
+                <div class="relative">
+                  <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+                  <input type="text" id="ip-search-input" oninput="filterIpTable()" placeholder="Search IP or location..." class="pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 w-40 sm:w-48" />
+                </div>
+
+                <button onclick="exportIpLogsCSV()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium transition shadow-xs" title="Download spreadsheet of IP logs">
+                  <i data-lucide="download" class="w-3.5 h-3.5 text-slate-500"></i>
+                  <span>Export CSV</span>
+                </button>
+
+                <button onclick="clearIpLogsStorage()" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs font-medium transition" title="Clear local cache">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- IP Registry Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="text-slate-400 font-semibold border-b border-slate-100">
+                    <th class="pb-2.5 font-medium">IP Address</th>
+                    <th class="pb-2.5 font-medium">Location & Country</th>
+                    <th class="pb-2.5 font-medium">First Visit Time</th>
+                    <th class="pb-2.5 font-medium">Last Active</th>
+                    <th class="pb-2.5 font-medium">Page Visited</th>
+                    <th class="pb-2.5 font-medium">Device & Platform</th>
+                    <th class="pb-2.5 font-medium text-center">Hits</th>
+                    <th class="pb-2.5 font-medium text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="ip-registry-table" class="divide-y divide-slate-50 font-normal">
+                  <tr id="ip-registry-empty">
+                    <td colspan="8" class="py-10 text-center">
+                      <div class="flex flex-col items-center justify-center text-center">
+                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mb-2">
+                          <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        </div>
+                        <p class="text-xs font-medium text-slate-600">Listening for visitor IP connections...</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5 font-mono">Real IP addresses, visit times, and locations are recorded and stored permanently.</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
           </div>
@@ -992,7 +1071,8 @@
       checkAuthentication();
       initLiveVisitorsChart();
       startLiveClocks();
-      setupBroadcastListener();
+      // Immediately load and render locally saved persistent IP registry (user jaane ke baad bhi available)
+      syncAndRenderIpRegistry([], []);
 
       // Fetch 100% real telemetry immediately on load
       fetchRealtimeTelemetry();
@@ -1398,13 +1478,13 @@
         }
       }
 
-      // 4. Recent Visitors Table
+      // 4. Recent Visitors Table (5 Columns: Time, IP Address, Location, Device, Page)
       const recTable = document.getElementById('recent-visitors-table');
       if (recTable) {
         if (!data.recentVisitors || data.recentVisitors.length === 0) {
           recTable.innerHTML = `
             <tr id="recent-visitors-empty">
-              <td colspan="4" class="py-10 text-center">
+              <td colspan="5" class="py-10 text-center">
                 <div class="flex flex-col items-center justify-center text-center">
                   <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
                     <i data-lucide="activity" class="w-4 h-4 animate-pulse"></i>
@@ -1422,11 +1502,17 @@
               ? 'smartphone'
               : (devLower.includes('tablet') || devLower.includes('ipad') ? 'tablet' : 'laptop');
             const safePage = v.page || '/';
+            const safeIp = v.ipAddress || '127.0.0.1';
 
             return `
               <tr class="hover:bg-slate-50/60 transition">
                 <td class="py-2.5 font-mono text-slate-500">${v.time || 'Just now'}</td>
-                <td class="py-2.5 text-slate-700 font-medium">${v.flag || '🇮🇳'} ${v.country || 'India'}</td>
+                <td class="py-2.5 font-mono text-slate-700">
+                  <span class="inline-flex items-center gap-1 bg-slate-100/90 text-slate-800 px-2 py-0.5 rounded text-[11px] font-medium border border-slate-200/60 font-mono">
+                    ${safeIp}
+                  </span>
+                </td>
+                <td class="py-2.5 text-slate-700 font-medium">${v.location || (v.flag + ' ' + (v.country || 'India'))}</td>
                 <td class="py-2.5 text-slate-600">
                   <span class="inline-flex items-center gap-1.5"><i data-lucide="${devIcon}" class="w-3.5 h-3.5 text-slate-400"></i> ${v.device || 'Desktop'}</span>
                 </td>
@@ -1458,7 +1544,240 @@
         }
       }
 
+      // 6. Sync Persistent IP Registry (Saved permanently even after user exits!)
+      syncAndRenderIpRegistry(data.ipLogs || [], data.recentVisitors || []);
+
       if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /* Persistent IP Address & Visitor Intelligence Registry                      */
+    /* (Permanently saved in LocalStorage + Server disk/DB even after user exits) */
+    /* -------------------------------------------------------------------------- */
+    const IP_STORAGE_KEY = 'as_visitor_ip_registry';
+    let cachedIpLogs = [];
+
+    function getLocalStoredIpLogs() {
+      try {
+        const raw = localStorage.getItem(IP_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveLocalStoredIpLogs(list) {
+      try {
+        localStorage.setItem(IP_STORAGE_KEY, JSON.stringify(list.slice(0, 500)));
+      } catch (e) {}
+    }
+
+    function syncAndRenderIpRegistry(serverLogs = [], recentVisitors = []) {
+      const stored = getLocalStoredIpLogs();
+      const ipMap = new Map();
+
+      // 1. Load stored logs first
+      stored.forEach(item => {
+        if (item && item.ipAddress) ipMap.set(item.ipAddress, item);
+      });
+
+      // 2. Merge server-reported ipLogs
+      serverLogs.forEach(incoming => {
+        if (!incoming || !incoming.ipAddress) return;
+        const ex = ipMap.get(incoming.ipAddress);
+        if (ex) {
+          ex.lastSeen = incoming.lastSeen || ex.lastSeen;
+          ex.lastSeenFormatted = incoming.lastSeenFormatted || ex.lastSeenFormatted;
+          ex.location = incoming.location || ex.location;
+          ex.city = incoming.city || ex.city;
+          ex.region = incoming.region || ex.region;
+          ex.country = incoming.country || ex.country;
+          ex.flag = incoming.flag || ex.flag;
+          ex.lastPage = incoming.lastPage || ex.lastPage;
+          ex.device = incoming.device || ex.device;
+          ex.browser = incoming.browser || ex.browser;
+          ex.os = incoming.os || ex.os;
+          ex.totalHits = Math.max(ex.totalHits || 1, incoming.totalHits || 1);
+          ex.isOnline = incoming.isOnline;
+        } else {
+          ipMap.set(incoming.ipAddress, incoming);
+        }
+      });
+
+      // 3. Merge recent visitors with IP
+      recentVisitors.forEach(v => {
+        if (v && v.ipAddress && !ipMap.has(v.ipAddress)) {
+          ipMap.set(v.ipAddress, {
+            id: v.id || `ip-${Date.now()}`,
+            ipAddress: v.ipAddress,
+            location: v.location || 'India',
+            country: v.country || 'India',
+            flag: v.flag || '🇮🇳',
+            device: v.device || 'Desktop',
+            browser: v.browser || 'Unknown',
+            os: 'Web',
+            firstSeen: v.createdAt || new Date().toISOString(),
+            lastSeen: v.createdAt || new Date().toISOString(),
+            firstSeenFormatted: v.time || 'Just now',
+            lastSeenFormatted: v.time || 'Just now',
+            lastPage: v.page || '/',
+            totalHits: 1,
+            isOnline: true
+          });
+        }
+      });
+
+      // Sort by lastSeen descending
+      cachedIpLogs = Array.from(ipMap.values()).sort((a, b) => {
+        const tA = new Date(a.lastSeen || a.firstSeen || 0).getTime();
+        const tB = new Date(b.lastSeen || b.firstSeen || 0).getTime();
+        return tB - tA;
+      });
+
+      // Persist permanently in localStorage!
+      saveLocalStoredIpLogs(cachedIpLogs);
+
+      // Render
+      renderIpRegistryTable(cachedIpLogs);
+    }
+
+    function renderIpRegistryTable(list) {
+      const countEl = document.getElementById('ip-registry-total-count');
+      if (countEl) countEl.textContent = list.length;
+
+      const tbody = document.getElementById('ip-registry-table');
+      if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `
+          <tr id="ip-registry-empty">
+            <td colspan="8" class="py-10 text-center">
+              <div class="flex flex-col items-center justify-center text-center">
+                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mb-2">
+                  <i data-lucide="shield-check" class="w-4 h-4"></i>
+                </div>
+                <p class="text-xs font-medium text-slate-600">No visitor IP addresses recorded yet...</p>
+                <p class="text-[11px] text-slate-400 mt-0.5 font-mono">Visitor IPs, timestamps, and locations are saved permanently as soon as traffic arrives.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const isOnline = item.isOnline;
+        const dev = item.device || 'Desktop';
+        const devLower = dev.toLowerCase();
+        const devIcon = devLower.includes('mobile') || devLower.includes('iphone') || devLower.includes('android')
+          ? 'smartphone'
+          : (devLower.includes('tablet') || devLower.includes('ipad') ? 'tablet' : 'laptop');
+
+        const statusBadge = isOnline
+          ? `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-medium"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online Now</span>`
+          : `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[11px] font-medium"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Exited (Saved)</span>`;
+
+        const safeIp = item.ipAddress || '127.0.0.1';
+        const safeLoc = item.location || `${item.flag || '🇮🇳'} ${item.country || 'India'}`;
+        const safePage = item.lastPage || '/';
+
+        return `
+          <tr class="hover:bg-slate-50/60 transition group">
+            <td class="py-2.5 font-mono text-slate-800 font-medium">
+              <div class="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 px-2 py-0.5 rounded border border-slate-200/70 transition">
+                <span>${safeIp}</span>
+                <button onclick="copyIpToClipboard('${safeIp}')" class="opacity-60 hover:opacity-100 transition p-0.5" title="Copy IP">
+                  <i data-lucide="copy" class="w-3 h-3"></i>
+                </button>
+              </div>
+            </td>
+            <td class="py-2.5 text-slate-700 font-medium">${safeLoc}</td>
+            <td class="py-2.5 font-mono text-slate-500 text-[11px]">${item.firstSeenFormatted || 'Just now'}</td>
+            <td class="py-2.5 font-mono text-slate-700 text-[11px] font-semibold">${item.lastSeenFormatted || 'Just now'}</td>
+            <td class="py-2.5"><a href="${safePage}" target="_blank" class="text-blue-600 font-mono hover:underline">${safePage}</a></td>
+            <td class="py-2.5 text-slate-600">
+              <span class="inline-flex items-center gap-1.5"><i data-lucide="${devIcon}" class="w-3.5 h-3.5 text-slate-400"></i> ${dev}</span>
+            </td>
+            <td class="py-2.5 text-center font-mono font-semibold text-slate-700">${item.totalHits || 1}</td>
+            <td class="py-2.5 text-right">${statusBadge}</td>
+          </tr>
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function filterIpTable() {
+      const q = (document.getElementById('ip-search-input')?.value || '').toLowerCase().trim();
+      if (!q) {
+        renderIpRegistryTable(cachedIpLogs);
+        return;
+      }
+      const filtered = cachedIpLogs.filter(item => {
+        return (
+          (item.ipAddress && item.ipAddress.toLowerCase().includes(q)) ||
+          (item.location && item.location.toLowerCase().includes(q)) ||
+          (item.city && item.city.toLowerCase().includes(q)) ||
+          (item.country && item.country.toLowerCase().includes(q)) ||
+          (item.lastPage && item.lastPage.toLowerCase().includes(q)) ||
+          (item.device && item.device.toLowerCase().includes(q))
+        );
+      });
+      renderIpRegistryTable(filtered);
+    }
+
+    function copyIpToClipboard(ip) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(ip).then(() => {
+          showToast(`IP copied to clipboard: ${ip}`, 'success');
+        }).catch(() => {
+          showToast(`IP: ${ip}`, 'info');
+        });
+      } else {
+        showToast(`IP: ${ip}`, 'info');
+      }
+    }
+
+    function exportIpLogsCSV() {
+      if (!cachedIpLogs || cachedIpLogs.length === 0) {
+        showToast('No IP logs available to export.', 'info');
+        return;
+      }
+      const headers = ['IP Address', 'Location', 'City', 'Region', 'Country', 'First Seen', 'Last Active', 'Last Page', 'Device', 'Total Hits', 'Status'];
+      const rows = cachedIpLogs.map(item => [
+        `"${item.ipAddress || ''}"`,
+        `"${(item.location || '').replace(/"/g, '""')}"`,
+        `"${item.city || ''}"`,
+        `"${item.region || ''}"`,
+        `"${item.country || ''}"`,
+        `"${item.firstSeenFormatted || item.firstSeen || ''}"`,
+        `"${item.lastSeenFormatted || item.lastSeen || ''}"`,
+        `"${item.lastPage || '/'}"`,
+        `"${item.device || 'Desktop'}"`,
+        item.totalHits || 1,
+        item.isOnline ? 'Online Now' : 'Exited (Saved)'
+      ]);
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `visitor_ip_registry_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Visitor IP logs exported as CSV.', 'success');
+    }
+
+    function clearIpLogsStorage() {
+      if (confirm('Are you sure you want to clear saved visitor IP logs from this browser?')) {
+        localStorage.removeItem(IP_STORAGE_KEY);
+        cachedIpLogs = [];
+        renderIpRegistryTable([]);
+        fetch('/api/admin/analytics/ip-logs', { method: 'DELETE' }).catch(() => {});
+        showToast('Local visitor IP registry cleared.', 'info');
+      }
     }
 
     /* -------------------------------------------------------------------------- */

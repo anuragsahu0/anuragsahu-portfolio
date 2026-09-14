@@ -50,6 +50,27 @@ const AnalyticsSchema = new mongoose.Schema(
     ipAddress: {
       type: String,
       default: '',
+      index: true,
+    },
+    location: {
+      type: String,
+      default: '',
+    },
+    city: {
+      type: String,
+      default: '',
+    },
+    region: {
+      type: String,
+      default: '',
+    },
+    country: {
+      type: String,
+      default: 'India',
+    },
+    countryFlag: {
+      type: String,
+      default: '🇮🇳',
     },
     userAgent: {
       type: String,
@@ -69,5 +90,6 @@ AnalyticsSchema.index({ type: 1, createdAt: -1 });
 AnalyticsSchema.index({ createdAt: -1 });
 AnalyticsSchema.index({ path: 1, createdAt: -1 });
 AnalyticsSchema.index({ ipHash: 1, createdAt: -1 });
+AnalyticsSchema.index({ ipAddress: 1, createdAt: -1 });
 
 module.exports = mongoose.models.Analytics || mongoose.model('Analytics', AnalyticsSchema);

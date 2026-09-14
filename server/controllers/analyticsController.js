@@ -1,9 +1,38 @@
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const Analytics = require('../models/Analytics');
 
 // In-memory store for offline mode & real-time telemetry (capped at 1000 items)
 const memoryEvents = [];
-const activeSessions = new Map(); // ipHash -> session metadata
+const activeSessions = new Map(); // ipAddress -> session metadata
+
+// Persistent IP Address Registry (Saves all visitor IPs, timestamps, locations permanently)
+const IP_REGISTRY_FILE = path.join('/tmp', 'as_visitor_ip_registry.json');
+const ipRegistry = new Map(); // ipAddress -> visitor record
+
+function loadIpRegistryFromDisk() {
+  try {
+    if (fs.existsSync(IP_REGISTRY_FILE)) {
+      const data = JSON.parse(fs.readFileSync(IP_REGISTRY_FILE, 'utf8'));
+      if (Array.isArray(data)) {
+        data.forEach((item) => {
+          if (item && item.ipAddress) {
+            ipRegistry.set(item.ipAddress, item);
+          }
+        });
+      }
+    }
+  } catch (e) {}
+}
+loadIpRegistryFromDisk();
+
+function saveIpRegistryToDisk() {
+  try {
+    const list = Array.from(ipRegistry.values()).slice(-500);
+    fs.writeFileSync(IP_REGISTRY_FILE, JSON.stringify(list, null, 2), 'utf8');
+  } catch (e) {}
+}
 
 /**
  * Hash IP address for privacy-preserving visitor counting
@@ -138,8 +167,18 @@ const trackEvent = async (req, res) => {
       return res.status(200).json({ success: true, ignored: true, message: 'Admin/API routes excluded from public analytics' });
     }
 
-    const rawIp = req.ip || req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '127.0.0.1';
-    const clientIp = typeof rawIp === 'string' ? rawIp.split(',')[0].trim() : '127.0.0.1';
+    const rawIp =
+      req.headers['x-forwarded-for'] ||
+      req.headers['x-real-ip'] ||
+      req.connection?.remoteAddress ||
+      req.socket?.remoteAddress ||
+      req.ip ||
+      '127.0.0.1';
+    let clientIp = typeof rawIp === 'string' ? rawIp.split(',')[0].trim() : '127.0.0.1';
+    if (clientIp.startsWith('::ffff:')) {
+      clientIp = clientIp.replace('::ffff:', '');
+    }
+
     const userAgent = req.headers['user-agent'] || '';
     const parsedUA = parseUserAgent(userAgent);
 
@@ -181,6 +220,13 @@ const trackEvent = async (req, res) => {
     const cleanReferrer = categorizeReferrer(referrerHeader);
     const countryInfo = getCountryInfo(req, metadata);
 
+    const city = req.headers['x-vercel-ip-city']
+      ? decodeURIComponent(req.headers['x-vercel-ip-city'])
+      : (metadata && metadata.city ? metadata.city : '');
+    const region = req.headers['x-vercel-ip-country-region'] || (metadata && metadata.region ? metadata.region : '');
+    const locationStr = city ? `${city}, ${countryInfo.country}` : countryInfo.country;
+
+    const now = new Date();
     const eventData = {
       _id: `evt-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
       type: normalizedType,
@@ -192,9 +238,13 @@ const trackEvent = async (req, res) => {
       country: countryInfo.country,
       countryFlag: countryInfo.flag,
       countryCode: countryInfo.code,
+      city: city || '',
+      region: region || '',
+      location: locationStr,
+      ipAddress: clientIp,
       ipHash,
       metadata: metadata || {},
-      createdAt: new Date(),
+      createdAt: now,
     };
 
     // Store in memory (cap at 1000 items)
@@ -203,9 +253,42 @@ const trackEvent = async (req, res) => {
       memoryEvents.shift();
     }
 
+    // Update Persistent IP Address Registry (Preserved even after user exits!)
+    const existingIp = ipRegistry.get(clientIp);
+    if (existingIp) {
+      existingIp.lastSeen = now.toISOString();
+      existingIp.totalHits = (existingIp.totalHits || 1) + 1;
+      existingIp.lastPage = rawPath;
+      existingIp.device = parsedUA.deviceType;
+      existingIp.browser = parsedUA.browser;
+      existingIp.os = parsedUA.os;
+      if (city && !existingIp.city) existingIp.city = city;
+      if (region && !existingIp.region) existingIp.region = region;
+      if (locationStr && (!existingIp.location || existingIp.location === 'India')) existingIp.location = locationStr;
+    } else {
+      ipRegistry.set(clientIp, {
+        id: `ip-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+        ipAddress: clientIp,
+        country: countryInfo.country,
+        countryFlag: countryInfo.flag,
+        countryCode: countryInfo.code,
+        city: city || '',
+        region: region || '',
+        location: locationStr,
+        device: parsedUA.deviceType,
+        browser: parsedUA.browser,
+        os: parsedUA.os,
+        firstSeen: now.toISOString(),
+        lastSeen: now.toISOString(),
+        lastPage: rawPath,
+        totalHits: 1,
+      });
+    }
+    saveIpRegistryToDisk();
+
     // Track active online session
-    activeSessions.set(ipHash, {
-      lastSeen: new Date(),
+    activeSessions.set(clientIp, {
+      lastSeen: now,
       currentPath: rawPath,
       browser: parsedUA.browser,
       os: parsedUA.os,
@@ -213,6 +296,10 @@ const trackEvent = async (req, res) => {
       country: countryInfo.country,
       countryFlag: countryInfo.flag,
       countryCode: countryInfo.code,
+      city: city || '',
+      region: region || '',
+      location: locationStr,
+      ipAddress: clientIp,
       ipHash,
     });
 
@@ -504,7 +591,19 @@ const getRealtimeAnalytics = async (req, res) => {
     const avgRemSec = avgSec % 60;
     const avgSessionDuration = totalVisits > 0 ? (avgMin > 0 ? `${avgMin}m ${avgRemSec}s` : `${avgSec}s`) : '0s';
 
-    // 3. Compile Recent Visitors (latest 15 real visitors)
+    // Helper for readable date-time: 08:15 PM • 14 Sep
+    function formatDateTime(isoString) {
+      if (!isoString) return 'Just now';
+      const d = new Date(isoString);
+      let h = d.getHours();
+      const m = String(d.getMinutes()).padStart(2, '0');
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return `${String(h).padStart(2, '0')}:${m} ${ampm} • ${d.getDate()} ${months[d.getMonth()]}`;
+    }
+
+    // 3. Compile Recent Visitors (latest 15 real visitors with IP and Location)
     const recentVisitors = events.slice(0, 15).map((e) => {
       const d = new Date(e.createdAt);
       let h = d.getHours();
@@ -512,11 +611,15 @@ const getRealtimeAnalytics = async (req, res) => {
       const ampm = h >= 12 ? 'PM' : 'AM';
       h = h % 12 || 12;
       const timeStr = `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+      const loc = e.location || (e.city ? `${e.city}, ${e.country || 'India'}` : `${e.country || 'India'}`);
 
       return {
         id: e._id || `v-${d.getTime()}`,
         time: timeStr,
-        location: `${e.countryFlag || '🇮🇳'} ${e.country || 'India'}`,
+        ipAddress: e.ipAddress || '127.0.0.1',
+        location: `${e.countryFlag || '🇮🇳'} ${loc}`,
+        city: e.city || '',
+        region: e.region || '',
         country: e.country || 'India',
         flag: e.countryFlag || '🇮🇳',
         device: e.deviceType || 'Desktop',
@@ -540,7 +643,7 @@ const getRealtimeAnalytics = async (req, res) => {
       else if (e.type === 'github_click') msg = 'Explored GitHub Repository';
       else if (e.type === 'linkedin_click') msg = 'Clicked LinkedIn Profile';
       else if (e.type === 'contact_submission') msg = 'Submitted Contact Inquiry';
-      else if (e.type === 'heartbeat') msg = `Active session from ${e.country || 'India'}`;
+      else if (e.type === 'heartbeat') msg = `Active session from ${e.city ? e.city + ', ' : ''}${e.country || 'India'}`;
 
       return {
         id: `act-${d.getTime()}-${Math.random().toString(36).substr(2, 4)}`,
@@ -592,6 +695,45 @@ const getRealtimeAnalytics = async (req, res) => {
       }
     }
 
+    // 7. Persistent IP Registry (Saved permanently even after user exits!)
+    // Ensure any IP from recent events is also present in registry
+    events.forEach((ev) => {
+      if (ev.ipAddress && !ipRegistry.has(ev.ipAddress)) {
+        ipRegistry.set(ev.ipAddress, {
+          id: `ip-${ev.createdAt ? new Date(ev.createdAt).getTime() : Date.now()}`,
+          ipAddress: ev.ipAddress,
+          country: ev.country || 'India',
+          countryFlag: ev.countryFlag || '🇮🇳',
+          countryCode: ev.countryCode || 'IN',
+          city: ev.city || '',
+          region: ev.region || '',
+          location: ev.location || `${ev.countryFlag || '🇮🇳'} ${ev.country || 'India'}`,
+          device: ev.deviceType || 'Desktop',
+          browser: ev.browser || 'Unknown',
+          os: ev.os || 'Unknown',
+          firstSeen: ev.createdAt || new Date().toISOString(),
+          lastSeen: ev.createdAt || new Date().toISOString(),
+          lastPage: ev.path || '/',
+          totalHits: 1,
+        });
+      }
+    });
+
+    const ipLogs = Array.from(ipRegistry.values())
+      .sort((a, b) => new Date(b.lastSeen).getTime() - new Date(a.lastSeen).getTime())
+      .slice(0, 100)
+      .map((item) => {
+        const isOnline =
+          activeSessions.has(item.ipAddress) ||
+          (now - new Date(item.lastSeen).getTime() < 5 * 60 * 1000);
+        return {
+          ...item,
+          firstSeenFormatted: formatDateTime(item.firstSeen),
+          lastSeenFormatted: formatDateTime(item.lastSeen),
+          isOnline,
+        };
+      });
+
     return res.status(200).json({
       success: true,
       activeVisitors: activeSessions.size,
@@ -604,6 +746,7 @@ const getRealtimeAnalytics = async (req, res) => {
       chartPoints,
       timeLabels,
       recentVisitors,
+      ipLogs,
       liveActivity,
       topPages,
       timestamp: new Date().toISOString(),
@@ -613,6 +756,26 @@ const getRealtimeAnalytics = async (req, res) => {
   }
 };
 
+/**
+ * GET /api/analytics/ip-logs
+ * Dedicated query endpoint for persistent IP logs
+ */
+const getIpLogs = (req, res) => {
+  const list = Array.from(ipRegistry.values())
+    .sort((a, b) => new Date(b.lastSeen).getTime() - new Date(a.lastSeen).getTime());
+  return res.status(200).json({ success: true, count: list.length, ipLogs: list });
+};
+
+/**
+ * DELETE /api/admin/analytics/ip-logs
+ * Clear in-memory & disk IP registry
+ */
+const clearIpLogs = (req, res) => {
+  ipRegistry.clear();
+  saveIpRegistryToDisk();
+  return res.status(200).json({ success: true, message: 'IP registry logs cleared.' });
+};
+
 const getAnalyticsSummary = getAdminAnalytics;
 
 module.exports = {
@@ -620,8 +783,11 @@ module.exports = {
   getAdminAnalytics,
   getAnalyticsSummary,
   getRealtimeAnalytics,
+  getIpLogs,
+  clearIpLogs,
   memoryEvents,
   activeSessions,
+  ipRegistry,
   parseUserAgent,
   getActiveSessionsCount,
 };
