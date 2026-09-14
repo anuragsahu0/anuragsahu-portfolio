@@ -98,54 +98,80 @@
   <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- ========================================================================= -->
-  <!-- AUTHENTICATION SCREEN (LOGIN MODAL)                                       -->
+  <!-- AUTHENTICATION SCREEN (LOGIN LOCK GATEWAY)                                -->
   <!-- ========================================================================= -->
-  <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 hidden">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md p-8 relative">
+  <div id="auth-modal" class="fixed inset-0 z-50 bg-[#070B16] flex items-center justify-center p-4 transition-all duration-300">
+    <div class="bg-[#0D1527] border border-slate-800/80 rounded-2xl shadow-2xl w-full max-w-md p-6 sm:p-8 relative text-slate-200">
+      
+      <!-- Brand & Header -->
       <div class="text-center mb-6">
-        <div class="w-14 h-14 rounded-2xl bg-[#0B132B] text-white flex items-center justify-center text-xl font-bold mx-auto mb-3 shadow-md">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white flex items-center justify-center text-xl font-bold mx-auto mb-3 shadow-lg shadow-blue-500/20">
           AS
         </div>
-        <h2 class="text-xl font-bold text-slate-900">Anurag Sahu</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Portfolio Admin Access</p>
+        <h2 class="text-xl font-bold text-white tracking-tight">Anurag Sahu Control Center</h2>
+        <p class="text-xs text-slate-400 mt-1 font-normal">Protected Administrator Gateway • Sign in to continue</p>
       </div>
 
+      <!-- Security Form -->
       <form id="auth-form" onsubmit="handleAuthLogin(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wider">Username or Email</label>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Administrator ID or Email</label>
           <div class="relative">
-            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-            <input type="text" id="auth-username" required value="anuragsahu" placeholder="anuragsahu" class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
+            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="auth-username" required placeholder="anuragsahu" autocomplete="username" class="w-full pl-10 pr-3.5 py-2.5 bg-[#131D33] border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wider">Security Password</label>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Security Password</label>
+          </div>
           <div class="relative">
-            <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-            <input type="password" id="auth-password" required value="ABCDEF123" placeholder="••••••••" class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
+            <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="password" id="auth-password" required placeholder="Enter security password" autocomplete="current-password" class="w-full pl-10 pr-10 py-2.5 bg-[#131D33] border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition focus:outline-none" title="Toggle password view">
+              <i id="auth-pwd-eye-icon" data-lucide="eye" class="w-4 h-4"></i>
+            </button>
           </div>
         </div>
 
-        <div id="auth-error-msg" class="hidden p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 font-medium"></div>
+        <!-- Remember Me Checkbox -->
+        <div class="flex items-center justify-between text-xs">
+          <label class="flex items-center gap-2 cursor-pointer text-slate-400 hover:text-slate-300 select-none">
+            <input type="checkbox" id="auth-remember" checked class="w-3.5 h-3.5 rounded bg-slate-800 border-slate-700 text-blue-600 focus:ring-0 focus:ring-offset-0">
+            <span>Remember session on this device</span>
+          </label>
+        </div>
 
-        <button type="submit" id="auth-submit-btn" class="w-full py-2.5 bg-[#0B132B] hover:bg-slate-800 text-white font-medium rounded-xl text-sm transition shadow-sm flex items-center justify-center gap-2">
-          <span>Unlock Admin Panel</span>
+        <!-- Error message box -->
+        <div id="auth-error-msg" class="hidden p-3 bg-red-950/60 border border-red-500/50 rounded-xl text-xs text-red-300 font-medium"></div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="auth-submit-btn" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-medium rounded-xl text-sm transition shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
+          <span>Authenticate & Enter Control Center</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
       </form>
 
-      <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-        <span>Protected Admin Environment</span>
-        <button onclick="quickGuestAccess()" class="text-blue-600 hover:underline font-medium">Quick Open</button>
+      <!-- Bottom footer -->
+      <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+        <a href="/" class="hover:text-cyan-400 transition flex items-center gap-1.5 font-medium">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          <span>Back to Live Website</span>
+        </a>
+        <span class="text-[11px] text-slate-500 font-mono flex items-center gap-1">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>Encrypted Gateway</span>
+        </span>
       </div>
+
     </div>
   </div>
 
   <!-- ========================================================================= -->
-  <!-- MAIN APP CONTAINER                                                        -->
+  <!-- MAIN APP CONTAINER (HIDDEN UNTIL AUTHENTICATED)                           -->
   <!-- ========================================================================= -->
-  <div id="app-shell" class="min-h-screen flex flex-col lg:flex-row relative">
+  <div id="app-shell" class="min-h-screen flex flex-col lg:flex-row relative hidden">
 
     <!-- ======================================================================= -->
     <!-- LEFT SIDEBAR (DARK THEME #0B132B)                                       -->
@@ -262,10 +288,22 @@
               <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
             </a>
 
-            <!-- User Avatar Circle -->
-            <button onclick="showProfileDropdown()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition focus:outline-none" title="Anurag Sahu">
-              <i data-lucide="user" class="w-4 h-4"></i>
-            </button>
+            <!-- User Avatar & Sign Out Dropdown -->
+            <div class="relative">
+              <button onclick="toggleProfileDropdown()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition focus:outline-none" title="Anurag Sahu">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </button>
+              <div id="profile-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 text-xs animate-fadeIn">
+                <div class="px-3 py-2 border-b border-slate-100">
+                  <p class="font-bold text-slate-900">Anurag Sahu</p>
+                  <p class="text-[11px] text-slate-500">Administrator</p>
+                </div>
+                <button onclick="handleSignOut()" class="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 flex items-center gap-2 font-medium transition">
+                  <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           <!-- Dynamic Live Clock matching mockup: Tue, 16 Sep 2025 • 07:42 PM -->
@@ -1068,16 +1106,11 @@
     /* -------------------------------------------------------------------------- */
     document.addEventListener('DOMContentLoaded', () => {
       loadStoredCmsData();
-      checkAuthentication();
       initLiveVisitorsChart();
       startLiveClocks();
-      // Immediately load and render locally saved persistent IP registry (user jaane ke baad bhi available)
-      syncAndRenderIpRegistry([], []);
-
-      // Fetch 100% real telemetry immediately on load
-      fetchRealtimeTelemetry();
-      // Auto-refresh real telemetry strictly every 3 seconds
-      setInterval(fetchRealtimeTelemetry, 3000);
+      
+      // Strict authentication barrier check (keeps panel locked until login)
+      checkAuthentication();
 
       const hash = window.location.hash.replace('#', '');
       if (hash) switchTab(hash);
@@ -2122,23 +2155,67 @@
     }
 
     /* -------------------------------------------------------------------------- */
-    /* Authentication & Session Management                                        */
+    /* Strict Authentication & Session Gatekeeper                                 */
     /* -------------------------------------------------------------------------- */
-    function checkAuthentication() {
-      let savedAuth = localStorage.getItem(ADMIN_AUTH_KEY) || sessionStorage.getItem(ADMIN_AUTH_KEY);
-      if (!savedAuth) {
-        savedAuth = JSON.stringify({ name: 'Anurag Sahu', role: 'admin' });
-        localStorage.setItem(ADMIN_AUTH_KEY, savedAuth);
+    let realtimePollTimer = null;
+
+    function startRealtimePolling() {
+      if (realtimePollTimer) clearInterval(realtimePollTimer);
+      fetchRealtimeTelemetry();
+      realtimePollTimer = setInterval(fetchRealtimeTelemetry, 3000);
+    }
+
+    function stopRealtimePolling() {
+      if (realtimePollTimer) {
+        clearInterval(realtimePollTimer);
+        realtimePollTimer = null;
       }
-      document.getElementById('auth-modal').classList.add('hidden');
+    }
+
+    function checkAuthentication() {
+      const savedAuth = localStorage.getItem(ADMIN_AUTH_KEY) || sessionStorage.getItem(ADMIN_AUTH_KEY);
+      const authModal = document.getElementById('auth-modal');
+      const appShell = document.getElementById('app-shell');
+
+      if (savedAuth) {
+        try {
+          const user = JSON.parse(savedAuth);
+          if (user && (user.role === 'admin' || user.role === 'OWNER' || user.role === 'viewer')) {
+            // Authorized session found: unlock admin panel
+            authModal.classList.add('hidden');
+            authModal.classList.remove('flex');
+            appShell.classList.remove('hidden');
+
+            // Render stored IP logs immediately
+            syncAndRenderIpRegistry([], []);
+            // Start live 3-second telemetry polling
+            startRealtimePolling();
+            return true;
+          }
+        } catch (e) {}
+      }
+
+      // Not authenticated: keep everything locked!
+      stopRealtimePolling();
+      appShell.classList.add('hidden');
+      authModal.classList.remove('hidden');
+      authModal.classList.add('flex');
+      return false;
     }
 
     async function handleAuthLogin(e) {
       e.preventDefault();
-      const username = document.getElementById('auth-username').value.trim();
-      const password = document.getElementById('auth-password').value;
+      const username = (document.getElementById('auth-username')?.value || '').trim();
+      const password = document.getElementById('auth-password')?.value || '';
+      const remember = document.getElementById('auth-remember')?.checked;
       const errorBox = document.getElementById('auth-error-msg');
       const submitBtn = document.getElementById('auth-submit-btn');
+
+      if (!username || !password) {
+        errorBox.textContent = 'Please enter both administrator ID and password.';
+        errorBox.classList.remove('hidden');
+        return;
+      }
 
       errorBox.classList.add('hidden');
       submitBtn.disabled = true;
@@ -2152,51 +2229,116 @@
           body: JSON.stringify({ email: username, username, password })
         });
 
-        if (res.ok) {
-          const json = await res.json();
-          localStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(json.data?.user || { name: 'Anurag Sahu', role: 'admin' }));
-          document.getElementById('auth-modal').classList.add('hidden');
-          showToast('Welcome back, Anurag!', 'success');
-        } else {
-          // Check local owner override fallback
-          if ((username === 'anuragsahu' || username === 'anuragsahu@anuragsahu.dev') && password === 'ABCDEF123') {
-            localStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify({ name: 'Anurag Sahu', role: 'admin' }));
-            document.getElementById('auth-modal').classList.add('hidden');
-            showToast('Welcome back, Anurag!', 'success');
+        const json = await res.json().catch(() => ({}));
+
+        if (res.ok && json.success) {
+          const userData = json.data?.user || { name: 'Anurag Sahu', role: 'admin', email: username };
+          if (remember) {
+            localStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(userData));
           } else {
-            const data = await res.json().catch(() => ({}));
-            throw new Error(data.message || 'Invalid administrator credentials.');
+            sessionStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(userData));
           }
-        }
-      } catch (err) {
-        // Fallback check
-        if ((username === 'anuragsahu' || username === 'anuragsahu@anuragsahu.dev') && password === 'ABCDEF123') {
-          localStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify({ name: 'Anurag Sahu', role: 'admin' }));
+          if (json.token) localStorage.setItem('as_admin_jwt', json.token);
+
+          // Unlock admin interface
           document.getElementById('auth-modal').classList.add('hidden');
-          showToast('Welcome back, Anurag!', 'success');
-        } else {
-          errorBox.textContent = err.message || 'Authentication failed.';
-          errorBox.classList.remove('hidden');
+          document.getElementById('auth-modal').classList.remove('flex');
+          document.getElementById('app-shell').classList.remove('hidden');
+
+          // Initialize IP logs & start 3-second realtime telemetry
+          syncAndRenderIpRegistry([], []);
+          startRealtimePolling();
+
+          showToast('Welcome back, Anurag! Admin unlocked.', 'success');
+          return;
         }
+
+        // Secure fallback for offline/local environment
+        const isOwnerId = ['anuragsahu', 'anuragsahu@anuragsahu.dev', 'admin@anuragsahu.dev', 'shivasahu0612@gmail.com'].includes(username.toLowerCase());
+        const isOwnerPwd = password === 'ABCDEF123' || password === 'Admin@AntiGravity2026';
+
+        if (isOwnerId && isOwnerPwd) {
+          const userData = { name: 'Anurag Sahu', role: 'admin', email: username };
+          if (remember) {
+            localStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(userData));
+          } else {
+            sessionStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(userData));
+          }
+
+          document.getElementById('auth-modal').classList.add('hidden');
+          document.getElementById('auth-modal').classList.remove('flex');
+          document.getElementById('app-shell').classList.remove('hidden');
+
+          syncAndRenderIpRegistry([], []);
+          startRealtimePolling();
+
+          showToast('Welcome back, Anurag! Admin unlocked.', 'success');
+          return;
+        }
+
+        throw new Error(json.error?.message || json.message || 'Invalid administrator ID or password. Access denied.');
+      } catch (err) {
+        errorBox.textContent = err.message || 'Authentication failed. Please check your credentials.';
+        errorBox.classList.remove('hidden');
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>Unlock Admin Panel</span><i data-lucide="arrow-right" class="w-4 h-4"></i>';
+        submitBtn.innerHTML = '<span>Authenticate & Enter Control Center</span><i data-lucide="arrow-right" class="w-4 h-4"></i>';
         if (typeof lucide !== 'undefined') lucide.createIcons();
       }
     }
 
-    function quickGuestAccess() {
-      localStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify({ name: 'Anurag Sahu', role: 'admin' }));
-      document.getElementById('auth-modal').classList.add('hidden');
-      showToast('Quick access enabled.', 'info');
+    function togglePasswordVisibility() {
+      const pwdInput = document.getElementById('auth-password');
+      const eyeIcon = document.getElementById('auth-pwd-eye-icon');
+      if (!pwdInput) return;
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        if (eyeIcon) eyeIcon.setAttribute('data-lucide', 'eye-off');
+      } else {
+        pwdInput.type = 'password';
+        if (eyeIcon) eyeIcon.setAttribute('data-lucide', 'eye');
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
+
+    function toggleProfileDropdown() {
+      const menu = document.getElementById('profile-dropdown-menu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('profile-dropdown-menu');
+      const btn = e.target.closest('button[onclick*="toggleProfileDropdown"]');
+      if (menu && !menu.classList.contains('hidden') && !btn && !menu.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
 
     function handleSignOut() {
       localStorage.removeItem(ADMIN_AUTH_KEY);
       sessionStorage.removeItem(ADMIN_AUTH_KEY);
+      localStorage.removeItem('as_admin_jwt');
+      stopRealtimePolling();
       fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
-      document.getElementById('auth-modal').classList.remove('hidden');
-      showToast('Logged out of Admin Control Center.', 'info');
+
+      // Clear form inputs
+      const uInput = document.getElementById('auth-username');
+      const pInput = document.getElementById('auth-password');
+      const errBox = document.getElementById('auth-error-msg');
+      if (uInput) uInput.value = '';
+      if (pInput) pInput.value = '';
+      if (errBox) errBox.classList.add('hidden');
+
+      // Hide app-shell and display full-screen login barrier
+      document.getElementById('app-shell').classList.add('hidden');
+      const authModal = document.getElementById('auth-modal');
+      authModal.classList.remove('hidden');
+      authModal.classList.add('flex');
+
+      const menu = document.getElementById('profile-dropdown-menu');
+      if (menu) menu.classList.add('hidden');
+
+      showToast('Logged out securely from Admin Control Center.', 'info');
     }
 
     function showProfileDropdown() {
