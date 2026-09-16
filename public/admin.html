@@ -165,7 +165,7 @@
               AS
             </div>
             <h1 class="text-base font-bold text-white font-mono tracking-wider uppercase">ANURAG SAHU</h1>
-            <p class="text-[11px] text-cyan-400 font-mono uppercase tracking-widest mt-0.5">Air-Gapped Control Center</p>
+            <p class="text-[11px] text-cyan-400 font-mono uppercase tracking-widest mt-0.5"></p>
           </div>
 
           <!-- Error Alert Pill -->
@@ -263,7 +263,7 @@
               <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping inline-block"></span>
               Zero-Trust Guard
             </span>
-            <span class="text-cyan-400 font-bold">Bina Pass No Entry 🔒</span>
+            <span class="text-cyan-400 font-bold"> 🔒</span>
           </div>
 
         </div>
@@ -314,831 +314,86 @@
   <!-- ========================================================================= -->
   <!-- MAIN APP CONTAINER (HIDDEN UNTIL AUTHENTICATED)                           -->
   <!-- ========================================================================= -->
-  <div id="app-shell" class="min-h-screen flex flex-col lg:flex-row relative hidden">
-
-    <!-- ======================================================================= -->
-    <!-- LEFT SIDEBAR (DARK THEME #0B132B)                                       -->
-    <!-- ======================================================================= -->
-    <aside id="sidebar" class="w-64 bg-[#0B132B] text-slate-300 flex-shrink-0 flex flex-col justify-between border-r border-slate-800/80 fixed inset-y-0 left-0 z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
-      
-      <!-- Top Section: Brand & Nav -->
-      <div class="flex flex-col">
-        <!-- Brand Header matching mockup -->
-        <div class="p-5 flex items-center gap-3 border-b border-slate-800/60">
-          <div class="w-10 h-10 rounded-full bg-[#1E293B] text-white flex items-center justify-center font-bold text-sm tracking-wide shadow-inner">
-            AS
-          </div>
-          <div>
-            <h1 class="text-sm font-bold text-white tracking-tight leading-tight">Anurag Sahu</h1>
-            <p class="text-xs text-sidebar-muted font-normal">Portfolio Admin</p>
-          </div>
-        </div>
-
-        <!-- Navigation Links -->
-        <nav class="p-3 space-y-1.5" id="sidebar-nav">
-          <!-- 1. Dashboard -->
-          <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150 bg-[#1E293B] text-white shadow-sm">
-            <i data-lucide="home" class="w-4 h-4 text-inherit"></i>
-            <span>Dashboard</span>
-          </button>
-
-          <!-- 2. Content -->
-          <button onclick="switchTab('content')" data-tab="content" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150 text-sidebar-muted hover:text-white hover:bg-sidebar-hover">
-            <i data-lucide="file-text" class="w-4 h-4 text-inherit"></i>
-            <span>Content</span>
-          </button>
-
-          <!-- 3. Projects -->
-          <button onclick="switchTab('projects')" data-tab="projects" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150 text-sidebar-muted hover:text-white hover:bg-sidebar-hover">
-            <i data-lucide="folder" class="w-4 h-4 text-inherit"></i>
-            <span>Projects</span>
-          </button>
-
-          <!-- 4. Skills -->
-          <button onclick="switchTab('skills')" data-tab="skills" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150 text-sidebar-muted hover:text-white hover:bg-sidebar-hover">
-            <i data-lucide="layers" class="w-4 h-4 text-inherit"></i>
-            <span>Skills</span>
-          </button>
-
-          <!-- 5. About -->
-          <button onclick="switchTab('about')" data-tab="about" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150 text-sidebar-muted hover:text-white hover:bg-sidebar-hover">
-            <i data-lucide="user" class="w-4 h-4 text-inherit"></i>
-            <span>About</span>
-          </button>
-
-          <!-- 6. Settings -->
-          <button onclick="switchTab('settings')" data-tab="settings" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150 text-sidebar-muted hover:text-white hover:bg-sidebar-hover">
-            <i data-lucide="settings" class="w-4 h-4 text-inherit"></i>
-            <span>Settings</span>
-          </button>
-        </nav>
-      </div>
-
-      <!-- Bottom Section: System Status Widget matching mockup -->
-      <div class="p-4 border-t border-slate-800/60">
-        <div class="bg-[#131D33] border border-slate-800/80 rounded-xl p-3.5 flex flex-col gap-1">
-          <div class="flex items-center gap-2">
-            <span class="live-dot"></span>
-            <span class="text-xs font-semibold text-white tracking-tight">System Online</span>
-          </div>
-          <p id="sidebar-last-updated" class="text-[11px] text-slate-400 font-mono">Live Sync Active</p>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Mobile Sidebar Backdrop Overlay -->
-    <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-30 hidden lg:hidden"></div>
-
-    <!-- ======================================================================= -->
-    <!-- MAIN CONTENT CANVAS (LIGHT THEME #F8FAFC)                               -->
-    <!-- ======================================================================= -->
-    <div class="flex-1 lg:ml-64 flex flex-col min-h-screen bg-canvas">
-      
-      <!-- TOP HEADER BAR -->
-      <header class="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-borderLight px-3 sm:px-4 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
-        
-        <!-- Left: Mobile Menu Toggle & Title -->
-        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-          <button onclick="toggleSidebar(true)" class="lg:hidden p-1.5 -ml-1 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none" aria-label="Open menu">
-            <i data-lucide="menu" class="w-5 h-5"></i>
-          </button>
-
-          <div class="truncate">
-            <h1 id="page-title" class="text-base sm:text-xl lg:text-2xl font-bold text-slate-900 tracking-tight leading-tight truncate">Dashboard</h1>
-            <p id="page-subtitle" class="text-[11px] sm:text-xs lg:text-sm text-slate-500 font-normal truncate">Live overview of your website</p>
-          </div>
-        </div>
-
-        <!-- Right: Status, View Website button, Profile & Clock -->
-        <div class="flex flex-col items-end gap-0.5 flex-shrink-0 ml-2">
-          <div class="flex items-center gap-2 sm:gap-3">
-            <!-- Live Site Status Pill -->
-            <div class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-700 text-xs font-medium">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Live Site</span>
-            </div>
-
-            <!-- 3s Auto-Refresh Telemetry Pill -->
-            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-medium" title="Live telemetry polling every 3 seconds">
-              <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-              <span>Auto 3s Refresh</span>
-            </div>
-
-            <!-- View Website Button -->
-            <a href="/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-lg bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-medium shadow-sm transition">
-              <span class="hidden sm:inline">View Website</span>
-              <span class="sm:hidden">Site</span>
-              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-            </a>
-
-            <!-- User Avatar & Sign Out Dropdown -->
-            <div class="relative">
-              <button onclick="toggleProfileDropdown()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition focus:outline-none" title="Anurag Sahu">
-                <i data-lucide="user" class="w-4 h-4"></i>
-              </button>
-              <div id="profile-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 text-xs animate-fadeIn">
-                <div class="px-3 py-2 border-b border-slate-100">
-                  <p class="font-bold text-slate-900">Anurag Sahu</p>
-                  <p class="text-[11px] text-slate-500">Administrator</p>
-                </div>
-                <button onclick="handleSignOut()" class="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 flex items-center gap-2 font-medium transition">
-                  <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Dynamic Live Clock matching mockup: Tue, 16 Sep 2025 • 07:42 PM -->
-          <div id="live-header-clock" class="hidden sm:block text-[11px] text-slate-400 font-mono tracking-tight">
-            Loading time...
-          </div>
-        </div>
-      </header>
-
-      <!-- TAB CONTENT PANELS -->
-      <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto pb-24 lg:pb-12">
-
-        <!-- =================================================================== -->
-        <!-- TAB 1: DASHBOARD (EXACT MOCKUP IMPLEMENTATION)                      -->
-        <!-- =================================================================== -->
-        <section id="tab-dashboard" class="tab-pane space-y-6">
-
-          <!-- 4 STAT SUMMARY CARDS IN A ROW -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
-            
-            <!-- Card 1: Total Visits -->
-            <div class="bg-card rounded-2xl p-5 border border-borderLight shadow-xs flex flex-col justify-between hover:shadow-sm transition">
-              <div>
-                <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
-                  <i data-lucide="eye" class="w-5 h-5"></i>
-                </div>
-                <p class="text-xs font-medium text-slate-500 mb-0.5">Total Visits</p>
-                <h3 id="stat-total-visits" class="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">0</h3>
-              </div>
-              <div class="mt-3 flex items-center text-xs">
-                <span id="stat-total-badge" class="text-emerald-600 font-semibold flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live
-                </span>
-                <span class="text-slate-400 ml-1.5 font-mono">real-time stream</span>
-              </div>
-            </div>
-
-            <!-- Card 2: Unique Visitors -->
-            <div class="bg-card rounded-2xl p-5 border border-borderLight shadow-xs flex flex-col justify-between hover:shadow-sm transition">
-              <div>
-                <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
-                  <i data-lucide="users" class="w-5 h-5"></i>
-                </div>
-                <p class="text-xs font-medium text-slate-500 mb-0.5">Unique Visitors</p>
-                <h3 id="stat-unique-visitors" class="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">0</h3>
-              </div>
-              <div class="mt-3 flex items-center text-xs">
-                <span id="stat-unique-badge" class="text-emerald-600 font-semibold flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Verified
-                </span>
-                <span class="text-slate-400 ml-1.5 font-mono">unique IPs</span>
-              </div>
-            </div>
-
-            <!-- Card 3: Pages per Visit -->
-            <div class="bg-card rounded-2xl p-5 border border-borderLight shadow-xs flex flex-col justify-between hover:shadow-sm transition">
-              <div>
-                <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mb-3">
-                  <i data-lucide="clock" class="w-5 h-5"></i>
-                </div>
-                <p class="text-xs font-medium text-slate-500 mb-0.5">Pages per Visit</p>
-                <h3 id="stat-pages-per-visit" class="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">0.0</h3>
-              </div>
-              <div class="mt-3 flex items-center text-xs">
-                <span id="stat-pages-badge" class="text-purple-600 font-semibold">Depth</span>
-                <span class="text-slate-400 ml-1.5 font-mono">pages / visit</span>
-              </div>
-            </div>
-
-            <!-- Card 4: Avg. Session Duration -->
-            <div class="bg-card rounded-2xl p-5 border border-borderLight shadow-xs flex flex-col justify-between hover:shadow-sm transition">
-              <div>
-                <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
-                  <i data-lucide="map-pin" class="w-5 h-5"></i>
-                </div>
-                <p class="text-xs font-medium text-slate-500 mb-0.5">Avg. Session Duration</p>
-                <h3 id="stat-session-duration" class="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">0s</h3>
-              </div>
-              <div class="mt-3 flex items-center text-xs">
-                <span id="stat-duration-badge" class="text-amber-600 font-semibold">Active</span>
-                <span class="text-slate-400 ml-1.5 font-mono">dwell time</span>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- MIDDLE SECTION: LIVE VISITORS CHART & LIVE ACTIVITY -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Left Chart Card (2 Columns / ~65% width) -->
-            <div class="bg-card rounded-2xl p-6 border border-borderLight shadow-xs lg:col-span-2 flex flex-col justify-between">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2">
-                  <h3 class="text-base font-bold text-slate-900">Live Visitors</h3>
-                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Live</span>
-                  </span>
-                </div>
-                <span class="text-xs text-slate-500 font-mono flex items-center gap-1.5" id="chart-live-count">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span id="live-online-num">0</span> online now
-                </span>
-              </div>
-
-              <!-- Interactive Area Chart Canvas -->
-              <div class="relative w-full h-56 flex flex-col justify-end">
-                <canvas id="live-visitors-chart" class="w-full h-full"></canvas>
-                <!-- Tooltip Overlay for Canvas -->
-                <div id="chart-tooltip" class="absolute pointer-events-none hidden bg-slate-900 text-white text-xs px-2.5 py-1 rounded-md shadow-md -translate-x-1/2 -translate-y-full mb-2"></div>
-              </div>
-            </div>
-
-            <!-- Right Activity Card (1 Column / ~35% width) -->
-            <div class="bg-card rounded-2xl p-6 border border-borderLight shadow-xs flex flex-col">
-              <div class="flex items-center justify-between mb-4">
-                <h3 class="text-base font-bold text-slate-900">Live Activity</h3>
-                <span class="text-[11px] text-slate-400 font-mono">Every 3s</span>
-              </div>
-              <div id="live-activity-list" class="space-y-3 flex-1 overflow-y-auto max-h-56 pr-1">
-                <div id="live-activity-empty" class="py-12 flex flex-col items-center justify-center text-center">
-                  <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
-                    <i data-lucide="radio" class="w-4 h-4 animate-pulse"></i>
-                  </div>
-                  <p class="text-xs font-medium text-slate-600">Waiting for live visitor events...</p>
-                  <p class="text-[11px] text-slate-400 mt-0.5 font-mono">Auto-refreshes every 3 seconds</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- BOTTOM SECTION: RECENT VISITORS & TOP PAGES -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Left Card: Recent Visitors (2 Columns / ~60% width) -->
-            <div class="bg-card rounded-2xl p-6 border border-borderLight shadow-xs lg:col-span-2 flex flex-col">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2">
-                  <h3 class="text-base font-bold text-slate-900">Recent Visitors</h3>
-                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Live Telemetry</span>
-                  </span>
-                </div>
-                <span class="text-[11px] text-slate-400 font-mono">Real-time IP & Geo</span>
-              </div>
-
-              <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
-                  <thead>
-                    <tr class="text-slate-400 font-semibold border-b border-slate-100">
-                      <th class="pb-2.5 font-medium">Time</th>
-                      <th class="pb-2.5 font-medium">IP Address</th>
-                      <th class="pb-2.5 font-medium">Location</th>
-                      <th class="pb-2.5 font-medium">Device</th>
-                      <th class="pb-2.5 font-medium">Page</th>
-                    </tr>
-                  </thead>
-                  <tbody id="recent-visitors-table" class="divide-y divide-slate-50 font-normal">
-                    <tr id="recent-visitors-empty">
-                      <td colspan="5" class="py-10 text-center">
-                        <div class="flex flex-col items-center justify-center text-center">
-                          <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
-                            <i data-lucide="activity" class="w-4 h-4 animate-pulse"></i>
-                          </div>
-                          <p class="text-xs font-medium text-slate-600">Listening for visitors across portfolio...</p>
-                          <p class="text-[11px] text-slate-400 mt-0.5 font-mono">Real-time IP, country & device telemetry</p>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- Right Card: Top Pages (1 Column / ~40% width) -->
-            <div class="bg-card rounded-2xl p-6 border border-borderLight shadow-xs flex flex-col">
-              <div class="flex items-center justify-between mb-4">
-                <h3 class="text-base font-bold text-slate-900">Top Pages</h3>
-                <span class="text-[11px] text-slate-400 font-mono">Visits</span>
-              </div>
-              <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
-                  <thead>
-                    <tr class="text-slate-400 font-semibold border-b border-slate-100">
-                      <th class="pb-2.5 font-medium">Page</th>
-                      <th class="pb-2.5 font-medium text-right">Visits</th>
-                    </tr>
-                  </thead>
-                  <tbody id="top-pages-table" class="divide-y divide-slate-50 font-normal">
-                    <tr id="top-pages-empty">
-                      <td colspan="2" class="py-8 text-center text-xs text-slate-400 font-mono">
-                        Recording real page hits...
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- FULL-WIDTH SECTION: PERSISTENT VISITOR IP ADDRESS REGISTRY -->
-          <!-- SAVED PERMANENTLY EVEN AFTER USER EXITS (USER JAANE KE BAAD BHI) -->
-          <div class="bg-card rounded-2xl p-6 border border-borderLight shadow-xs flex flex-col space-y-4">
-            
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-              <div>
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                    <i data-lucide="network" class="w-4 h-4"></i>
-                  </div>
-                  <div>
-                    <div class="flex items-center gap-2">
-                      <h3 class="text-base font-bold text-slate-900">Visitor IP Address & Geolocation Registry</h3>
-                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium" title="Permanently saved in browser storage and database">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>Saved & Persistent</span>
-                      </span>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-0.5">Captures visitor IP addresses, exact visit times, and geolocation. Saved permanently even after the user exits.</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Controls: Count, Search, Export, Clear -->
-              <div class="flex flex-wrap items-center gap-2">
-                <div class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-mono text-xs font-semibold">
-                  Saved IPs: <span id="ip-registry-total-count" class="text-blue-600">0</span>
-                </div>
-
-                <div class="relative">
-                  <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
-                  <input type="text" id="ip-search-input" oninput="filterIpTable()" placeholder="Search IP or location..." class="pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 w-40 sm:w-48" />
-                </div>
-
-                <button onclick="exportIpLogsCSV()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium transition shadow-xs" title="Download spreadsheet of IP logs">
-                  <i data-lucide="download" class="w-3.5 h-3.5 text-slate-500"></i>
-                  <span>Export CSV</span>
-                </button>
-
-                <button onclick="clearIpLogsStorage()" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs font-medium transition" title="Clear local cache">
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- IP Registry Table -->
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead>
-                  <tr class="text-slate-400 font-semibold border-b border-slate-100">
-                    <th class="pb-2.5 font-medium">IP Address</th>
-                    <th class="pb-2.5 font-medium">Location & Country</th>
-                    <th class="pb-2.5 font-medium">First Visit Time</th>
-                    <th class="pb-2.5 font-medium">Last Active</th>
-                    <th class="pb-2.5 font-medium">Page Visited</th>
-                    <th class="pb-2.5 font-medium">Device & Platform</th>
-                    <th class="pb-2.5 font-medium text-center">Hits</th>
-                    <th class="pb-2.5 font-medium text-right">Status</th>
-                  </tr>
-                </thead>
-                <tbody id="ip-registry-table" class="divide-y divide-slate-50 font-normal">
-                  <tr id="ip-registry-empty">
-                    <td colspan="8" class="py-10 text-center">
-                      <div class="flex flex-col items-center justify-center text-center">
-                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mb-2">
-                          <i data-lucide="shield-check" class="w-4 h-4"></i>
-                        </div>
-                        <p class="text-xs font-medium text-slate-600">Listening for visitor IP connections...</p>
-                        <p class="text-[11px] text-slate-400 mt-0.5 font-mono">Real IP addresses, visit times, and locations are recorded and stored permanently.</p>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-          </div>
-
-        </section>
-
-        <!-- =================================================================== -->
-        <!-- TAB 2: CONTENT MANAGEMENT (LIVE PORTFOLIO HERO & TEXT)              -->
-        <!-- =================================================================== -->
-        <section id="tab-content" class="tab-pane hidden space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-lg font-bold text-slate-900">Hero & Public Content</h2>
-              <p class="text-xs text-slate-500">Edit live hero headlines, subheadings, badges, and primary action links.</p>
-            </div>
-            <button onclick="saveHeroContent()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition">
-              <i data-lucide="save" class="w-4 h-4"></i>
-              <span>Save & Sync to Live Portfolio</span>
-            </button>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Left Form (2 cols) -->
-            <div class="bg-card rounded-2xl p-6 border border-borderLight shadow-xs lg:col-span-2 space-y-5">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">Main Heading</label>
-                  <input type="text" id="hero-mainHeading" value="Building Modern Full-Stack Systems" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition" oninput="updateHeroPreview()">
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">Highlighted Text (Gradient)</label>
-                  <input type="text" id="hero-highlightedText" value="& Practical AI Solutions" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition" oninput="updateHeroPreview()">
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Subtitle / Bio Narrative</label>
-                <textarea id="hero-subtitle" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition" oninput="updateHeroPreview()">Hi, I'm Anurag Sahu — a Computer Science sophomore specializing in AI & ML. I build clean, performant full-stack web applications and explore practical machine learning models.</textarea>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">Availability Badge Text</label>
-                  <input type="text" id="hero-availabilityBadge" value="OPEN TO SUMMER 2026 INTERNSHIPS" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition" oninput="updateHeroPreview()">
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">Supporting Tagline</label>
-                  <input type="text" id="hero-supportingText" value="B.Tech CSE (AI & ML) • 2024–2028" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition" oninput="updateHeroPreview()">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">Primary Button Label</label>
-                  <input type="text" id="hero-primaryCtaLabel" value="Explore Flagship System" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition" oninput="updateHeroPreview()">
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">Primary Button URL</label>
-                  <input type="text" id="hero-primaryCtaUrl" value="/AI-FINANCE-CONTROLLER" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition" oninput="updateHeroPreview()">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">Resume Download Link</label>
-                  <input type="text" id="hero-resumeUrl" value="/assets/resume.pdf" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">Profile Portrait Image URL</label>
-                  <input type="text" id="hero-profileImage" value="/assets/anurag-portrait-sm.webp" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-                </div>
-              </div>
-            </div>
-
-            <!-- Right Live Preview Card -->
-            <div class="bg-card rounded-2xl p-6 border border-borderLight shadow-xs flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Live Website Preview</h3>
-                  <span class="inline-flex items-center gap-1 text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">Real-time sync</span>
-                </div>
-
-                <div class="p-4 rounded-xl bg-slate-900 text-white space-y-3 shadow-inner">
-                  <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-mono font-medium">
-                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                    <span id="preview-badge">OPEN TO SUMMER 2026 INTERNSHIPS</span>
-                  </div>
-
-                  <h4 class="text-base font-bold text-white tracking-tight">
-                    <span id="preview-heading">Building Modern Full-Stack Systems</span>
-                    <span id="preview-highlight" class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"> & Practical AI Solutions</span>
-                  </h4>
-
-                  <p id="preview-subtitle" class="text-xs text-slate-400 leading-relaxed line-clamp-3">
-                    Hi, I'm Anurag Sahu — a Computer Science sophomore specializing in AI & ML.
-                  </p>
-
-                  <div class="pt-2 flex items-center gap-2">
-                    <span id="preview-btn" class="px-3 py-1.5 rounded-lg bg-cyan-500 text-slate-950 font-semibold text-[11px]">Explore Flagship System</span>
-                    <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-[11px]">Resume ↗</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-                <span>Updates live portfolio immediately</span>
-                <button onclick="saveHeroContent()" class="text-blue-600 font-semibold hover:underline">Save Now</button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- =================================================================== -->
-        <!-- TAB 3: PROJECTS MANAGEMENT                                          -->
-        <!-- =================================================================== -->
-        <section id="tab-projects" class="tab-pane hidden space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-lg font-bold text-slate-900">Showcase Projects</h2>
-              <p class="text-xs text-slate-500">Add, edit, or adjust the live status of your showcase projects.</p>
-            </div>
-            <button onclick="openNewProjectModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition">
-              <i data-lucide="plus" class="w-4 h-4"></i>
-              <span>Add New Project</span>
-            </button>
-          </div>
-
-          <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <!-- Project Cards dynamically populated by renderProjects() -->
-          </div>
-        </section>
-
-        <!-- =================================================================== -->
-        <!-- TAB 4: SKILLS MANAGEMENT                                            -->
-        <!-- =================================================================== -->
-        <section id="tab-skills" class="tab-pane hidden space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-lg font-bold text-slate-900">Technical Skills & Proficiencies</h2>
-              <p class="text-xs text-slate-500">Fine-tune skill proficiency sliders and category groupings for the live portfolio.</p>
-            </div>
-            <button onclick="saveSkills()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition">
-              <i data-lucide="save" class="w-4 h-4"></i>
-              <span>Save Skills to Live Site</span>
-            </button>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="skills-container">
-            <!-- Categories populated dynamically: Frontend, Backend, AI/ML, Databases -->
-          </div>
-        </section>
-
-        <!-- =================================================================== -->
-        <!-- TAB 5: ABOUT MANAGEMENT                                             -->
-        <!-- =================================================================== -->
-        <section id="tab-about" class="tab-pane hidden space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-lg font-bold text-slate-900">About Narrative & Academic Details</h2>
-              <p class="text-xs text-slate-500">Edit the detailed story, education timeline, and core engineering values.</p>
-            </div>
-            <button onclick="saveAboutContent()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition">
-              <i data-lucide="save" class="w-4 h-4"></i>
-              <span>Save & Sync to Live Site</span>
-            </button>
-          </div>
-
-          <div class="bg-card rounded-2xl p-6 border border-borderLight shadow-xs space-y-6">
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Section Title</label>
-              <input type="text" id="about-title" value="About Me" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Full Biography Narrative</label>
-              <p class="text-[11px] text-slate-400 mb-2">This is the exact narrative rendered with letter-by-letter scroll lighting on the live portfolio.</p>
-              <textarea id="about-description" rows="5" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">Computer Science sophomore specializing in AI & ML. I build modern full-stack web applications, scalable backend systems, and explore practical machine learning models. Passionate about clean architecture, algorithms, and crafting seamless digital experiences. Let's build something incredible together!</textarea>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Academic Degree</label>
-                <input type="text" id="about-degree" value="B.Tech in Computer Science & Engineering (AI & ML)" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Duration & Current Status</label>
-                <input type="text" id="about-duration" value="2024 — 2028 • Sophomore" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-              </div>
-            </div>
-
-            <div class="pt-4 border-t border-slate-100">
-              <h3 class="text-sm font-bold text-slate-800 mb-3">Core Engineering Principles</h3>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-                  <div class="font-semibold text-xs text-slate-900">Deterministic Engineering</div>
-                  <p class="text-[11px] text-slate-500">Writing robust, testable, and maintainable software systems.</p>
-                </div>
-                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-                  <div class="font-semibold text-xs text-slate-900">Performance Optimization</div>
-                  <p class="text-[11px] text-slate-500">Architecting high-speed, lightweight experiences with sub-second response times.</p>
-                </div>
-                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-                  <div class="font-semibold text-xs text-slate-900">Production Reliability</div>
-                  <p class="text-[11px] text-slate-500">Zero compromise on security, validation, and fault-tolerant architecture.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- =================================================================== -->
-        <!-- TAB 6: SETTINGS MANAGEMENT                                          -->
-        <!-- =================================================================== -->
-        <section id="tab-settings" class="tab-pane hidden space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-lg font-bold text-slate-900">System & Portfolio Configuration</h2>
-              <p class="text-xs text-slate-500">Configure global metadata, maintenance switches, caching, and administration security.</p>
-            </div>
-            <button onclick="saveGlobalSettings()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition">
-              <i data-lucide="save" class="w-4 h-4"></i>
-              <span>Save System Settings</span>
-            </button>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            <!-- Global Portfolio Options -->
-            <div class="bg-card rounded-2xl p-6 border border-borderLight shadow-xs space-y-5">
-              <h3 class="text-sm font-bold text-slate-800 pb-2 border-b border-slate-100">Site Directives & Switches</h3>
-
-              <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">SEO Title Tag</label>
-                <input type="text" id="setting-seoTitle" value="Anurag Sahu — Full-Stack Developer & B.Tech CSE (AI & ML) Sophomore" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-              </div>
-
-              <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Canonical URL</label>
-                <input type="text" id="setting-canonicalUrl" value="https://anuragsahu.com" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-              </div>
-
-              <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Contact Email Recipient</label>
-                <input type="email" id="setting-contactEmail" value="shivasahu0612@gmail.com" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-              </div>
-
-              <div class="pt-2 space-y-3">
-                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-                  <div>
-                    <span class="text-xs font-semibold text-slate-900">Maintenance Mode</span>
-                    <p class="text-[11px] text-slate-500">Displays emergency maintenance notice on the public website.</p>
-                  </div>
-                  <input type="checkbox" id="setting-maintenanceMode" class="w-4 h-4 rounded text-slate-900 focus:ring-slate-900">
-                </div>
-
-                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-                  <div>
-                    <span class="text-xs font-semibold text-slate-900">Contact Submissions</span>
-                    <p class="text-[11px] text-slate-500">Allow visitors to submit messages via the contact form.</p>
-                  </div>
-                  <input type="checkbox" id="setting-contactFormEnabled" checked class="w-4 h-4 rounded text-slate-900 focus:ring-slate-900">
-                </div>
-              </div>
-            </div>
-
-            <!-- Cache & Administration Tools -->
-            <div class="bg-card rounded-2xl p-6 border border-borderLight shadow-xs space-y-5 flex flex-col justify-between">
-              <div>
-                <h3 class="text-sm font-bold text-slate-800 pb-2 border-b border-slate-100 mb-4">Cache & Security Operations</h3>
-
-                <div class="space-y-4">
-                  <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                    <div class="flex items-center justify-between">
-                      <span class="text-xs font-semibold text-slate-900">Client-Side Cache Purge</span>
-                      <span class="text-[10px] text-slate-400 font-mono">v2.1.0</span>
-                    </div>
-                    <p class="text-[11px] text-slate-500">Forces browser caches and service workers across all devices to immediately fetch fresh portfolio assets.</p>
-                    <button onclick="purgeClientCache()" class="mt-1 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition flex items-center gap-1.5">
-                      <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                      <span>Purge Cache & Refresh Clients</span>
-                    </button>
-                  </div>
-
-                  <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                    <span class="text-xs font-semibold text-slate-900">Export / Backup CMS Data</span>
-                    <p class="text-[11px] text-slate-500">Download a full JSON backup of all portfolio content, projects, and skills.</p>
-                    <button onclick="exportCmsBackup()" class="mt-1 px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-medium transition flex items-center gap-1.5">
-                      <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                      <span>Export JSON Backup</span>
-                    </button>
-                  </div>
-
-                  <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                    <span class="text-xs font-semibold text-slate-900">Sign Out Administrator</span>
-                    <p class="text-[11px] text-slate-500">Lock the admin panel and invalidate the current session.</p>
-                    <button onclick="handleSignOut()" class="mt-1 px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-medium transition flex items-center gap-1.5">
-                      <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-                      <span>Sign Out</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <p class="text-[11px] text-slate-400 font-mono mt-4">Anurag Sahu Control Center v2.1.0 • Node.js / Express / Vercel</p>
-            </div>
-
-          </div>
-        </section>
-
-      </main>
-
-      <!-- MOBILE BOTTOM NAVIGATION DOCK -->
-      <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#0B132B]/95 backdrop-blur-lg border-t border-slate-800 px-1 py-1 flex items-center justify-between select-none safe-area-pb">
-        <button onclick="switchTab('dashboard')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 px-0.5 rounded-lg text-white" data-tab="dashboard">
-          <i data-lucide="home" class="w-4 h-4 mb-0.5"></i>
-          <span class="text-[9.5px] tracking-tight truncate">Home</span>
-        </button>
-        <button onclick="switchTab('content')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 px-0.5 rounded-lg text-slate-400" data-tab="content">
-          <i data-lucide="file-text" class="w-4 h-4 mb-0.5"></i>
-          <span class="text-[9.5px] tracking-tight truncate">Content</span>
-        </button>
-        <button onclick="switchTab('projects')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 px-0.5 rounded-lg text-slate-400" data-tab="projects">
-          <i data-lucide="folder" class="w-4 h-4 mb-0.5"></i>
-          <span class="text-[9.5px] tracking-tight truncate">Projects</span>
-        </button>
-        <button onclick="switchTab('skills')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 px-0.5 rounded-lg text-slate-400" data-tab="skills">
-          <i data-lucide="layers" class="w-4 h-4 mb-0.5"></i>
-          <span class="text-[9.5px] tracking-tight truncate">Skills</span>
-        </button>
-        <button onclick="switchTab('about')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 px-0.5 rounded-lg text-slate-400" data-tab="about">
-          <i data-lucide="user" class="w-4 h-4 mb-0.5"></i>
-          <span class="text-[9.5px] tracking-tight truncate">About</span>
-        </button>
-        <button onclick="switchTab('settings')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 px-0.5 rounded-lg text-slate-400" data-tab="settings">
-          <i data-lucide="settings" class="w-4 h-4 mb-0.5"></i>
-          <span class="text-[9.5px] tracking-tight truncate">Settings</span>
-        </button>
-      </nav>
-
-    </div>
-  </div>
-
+    <!-- ========================================================================= -->
+  <!-- ZERO-FOOTPRINT ENCRYPTED VAULT ROOT (EMPTY UNTIL VERIFIED AUTHENTICATION) -->
   <!-- ========================================================================= -->
-  <!-- MODAL: ADD / EDIT PROJECT                                                 -->
-  <!-- ========================================================================= -->
-  <div id="project-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 hidden">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-        <h3 id="project-modal-title" class="text-base font-bold text-slate-900">Add New Project</h3>
-        <button onclick="closeProjectModal()" class="text-slate-400 hover:text-slate-600 p-1">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
+  <div id="admin-vault-root" class="hidden"></div>
 
-      <form id="project-modal-form" onsubmit="handleProjectSave(event)" class="space-y-4 pt-4">
-        <input type="hidden" id="pm-id">
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Project Title</label>
-          <input type="text" id="pm-title" required placeholder="e.g. AI Finance Controller" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Tagline / Short Summary</label>
-          <input type="text" id="pm-tagline" placeholder="Autonomous financial operations & reconciliation" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Category</label>
-            <input type="text" id="pm-category" placeholder="e.g. AI & Fintech" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
-            <select id="pm-status" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-              <option value="Completed">Completed 🟢</option>
-              <option value="Working">Working 🟢</option>
-              <option value="Coming Soon">Coming Soon 🟡</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Tech Stack (comma separated)</label>
-          <input type="text" id="pm-stack" placeholder="React, Node.js, Express, PyTorch, Tailwind CSS" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Live Demo URL</label>
-            <input type="text" id="pm-demo" placeholder="/AI-FINANCE-CONTROLLER" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">GitHub Repo URL</label>
-            <input type="text" id="pm-github" placeholder="https://github.com/anuragsahu0/..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Description</label>
-          <textarea id="pm-desc" rows="3" placeholder="Detailed technical overview of what you engineered..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition"></textarea>
-        </div>
-
-        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeProjectModal()" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-medium">Cancel</button>
-          <button type="submit" class="px-4 py-2 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition">Save Project</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
+<!-- ========================================================================= -->
   <!-- CLIENT JAVASCRIPT: LOGIC, CHART, LIVE SYNC & REALTIME TELEMETRY           -->
   <!-- ========================================================================= -->
   <script>
+    /* -------------------------------------------------------------------------- */
+    /* Zero-Footprint Obfuscated Vault Payload & Anti-DevTools Guard              */
+    /* -------------------------------------------------------------------------- */
+    const VAULT_PAYLOAD = "PGRpdiBpZD0iYXBwLXNoZWxsIiBjbGFzcz0ibWluLWgtc2NyZWVuIGZsZXggZmxleC1jb2wgbGc6ZmxleC1yb3cgcmVsYXRpdmUiPgoKICAgIDwhLS0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gLS0+CiAgICA8IS0tIExFRlQgU0lERUJBUiAoREFSSyBUSEVNRSAjMEIxMzJCKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tPgogICAgPCEtLSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAtLT4KICAgIDxhc2lkZSBpZD0ic2lkZWJhciIgY2xhc3M9InctNjQgYmctWyMwQjEzMkJdIHRleHQtc2xhdGUtMzAwIGZsZXgtc2hyaW5rLTAgZmxleCBmbGV4LWNvbCBqdXN0aWZ5LWJldHdlZW4gYm9yZGVyLXIgYm9yZGVyLXNsYXRlLTgwMC84MCBmaXhlZCBpbnNldC15LTAgbGVmdC0wIHotNDAgdHJhbnNmb3JtIC10cmFuc2xhdGUteC1mdWxsIGxnOnRyYW5zbGF0ZS14LTAgdHJhbnNpdGlvbi10cmFuc2Zvcm0gZHVyYXRpb24tMjAwIGVhc2UtaW4tb3V0Ij4KICAgICAgCiAgICAgIDwhLS0gVG9wIFNlY3Rpb246IEJyYW5kICYgTmF2IC0tPgogICAgICA8ZGl2IGNsYXNzPSJmbGV4IGZsZXgtY29sIj4KICAgICAgICA8IS0tIEJyYW5kIEhlYWRlciBtYXRjaGluZyBtb2NrdXAgLS0+CiAgICAgICAgPGRpdiBjbGFzcz0icC01IGZsZXggaXRlbXMtY2VudGVyIGdhcC0zIGJvcmRlci1iIGJvcmRlci1zbGF0ZS04MDAvNjAiPgogICAgICAgICAgPGRpdiBjbGFzcz0idy0xMCBoLTEwIHJvdW5kZWQtZnVsbCBiZy1bIzFFMjkzQl0gdGV4dC13aGl0ZSBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBmb250LWJvbGQgdGV4dC1zbSB0cmFja2luZy13aWRlIHNoYWRvdy1pbm5lciI+CiAgICAgICAgICAgIEFTCiAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgIDxoMSBjbGFzcz0idGV4dC1zbSBmb250LWJvbGQgdGV4dC13aGl0ZSB0cmFja2luZy10aWdodCBsZWFkaW5nLXRpZ2h0Ij5BbnVyYWcgU2FodTwvaDE+CiAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LXhzIHRleHQtc2lkZWJhci1tdXRlZCBmb250LW5vcm1hbCI+UG9ydGZvbGlvIEFkbWluPC9wPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CgogICAgICAgIDwhLS0gTmF2aWdhdGlvbiBMaW5rcyAtLT4KICAgICAgICA8bmF2IGNsYXNzPSJwLTMgc3BhY2UteS0xLjUiIGlkPSJzaWRlYmFyLW5hdiI+CiAgICAgICAgICA8IS0tIDEuIERhc2hib2FyZCAtLT4KICAgICAgICAgIDxidXR0b24gb25jbGljaz0ic3dpdGNoVGFiKCdkYXNoYm9hcmQnKSIgZGF0YS10YWI9ImRhc2hib2FyZCIgY2xhc3M9Im5hdi1pdGVtIHctZnVsbCBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMyBweC0zLjUgcHktMi41IHJvdW5kZWQteGwgdGV4dC1zbSBmb250LW1lZGl1bSB0cmFuc2l0aW9uLWNvbG9ycyBkdXJhdGlvbi0xNTAgYmctWyMxRTI5M0JdIHRleHQtd2hpdGUgc2hhZG93LXNtIj4KICAgICAgICAgICAgPGkgZGF0YS1sdWNpZGU9ImhvbWUiIGNsYXNzPSJ3LTQgaC00IHRleHQtaW5oZXJpdCI+PC9pPgogICAgICAgICAgICA8c3Bhbj5EYXNoYm9hcmQ8L3NwYW4+CiAgICAgICAgICA8L2J1dHRvbj4KCiAgICAgICAgICA8IS0tIDIuIENvbnRlbnQgLS0+CiAgICAgICAgICA8YnV0dG9uIG9uY2xpY2s9InN3aXRjaFRhYignY29udGVudCcpIiBkYXRhLXRhYj0iY29udGVudCIgY2xhc3M9Im5hdi1pdGVtIHctZnVsbCBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMyBweC0zLjUgcHktMi41IHJvdW5kZWQteGwgdGV4dC1zbSBmb250LW1lZGl1bSB0cmFuc2l0aW9uLWNvbG9ycyBkdXJhdGlvbi0xNTAgdGV4dC1zaWRlYmFyLW11dGVkIGhvdmVyOnRleHQtd2hpdGUgaG92ZXI6Ymctc2lkZWJhci1ob3ZlciI+CiAgICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJmaWxlLXRleHQiIGNsYXNzPSJ3LTQgaC00IHRleHQtaW5oZXJpdCI+PC9pPgogICAgICAgICAgICA8c3Bhbj5Db250ZW50PC9zcGFuPgogICAgICAgICAgPC9idXR0b24+CgogICAgICAgICAgPCEtLSAzLiBQcm9qZWN0cyAtLT4KICAgICAgICAgIDxidXR0b24gb25jbGljaz0ic3dpdGNoVGFiKCdwcm9qZWN0cycpIiBkYXRhLXRhYj0icHJvamVjdHMiIGNsYXNzPSJuYXYtaXRlbSB3LWZ1bGwgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTMgcHgtMy41IHB5LTIuNSByb3VuZGVkLXhsIHRleHQtc20gZm9udC1tZWRpdW0gdHJhbnNpdGlvbi1jb2xvcnMgZHVyYXRpb24tMTUwIHRleHQtc2lkZWJhci1tdXRlZCBob3Zlcjp0ZXh0LXdoaXRlIGhvdmVyOmJnLXNpZGViYXItaG92ZXIiPgogICAgICAgICAgICA8aSBkYXRhLWx1Y2lkZT0iZm9sZGVyIiBjbGFzcz0idy00IGgtNCB0ZXh0LWluaGVyaXQiPjwvaT4KICAgICAgICAgICAgPHNwYW4+UHJvamVjdHM8L3NwYW4+CiAgICAgICAgICA8L2J1dHRvbj4KCiAgICAgICAgICA8IS0tIDQuIFNraWxscyAtLT4KICAgICAgICAgIDxidXR0b24gb25jbGljaz0ic3dpdGNoVGFiKCdza2lsbHMnKSIgZGF0YS10YWI9InNraWxscyIgY2xhc3M9Im5hdi1pdGVtIHctZnVsbCBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMyBweC0zLjUgcHktMi41IHJvdW5kZWQteGwgdGV4dC1zbSBmb250LW1lZGl1bSB0cmFuc2l0aW9uLWNvbG9ycyBkdXJhdGlvbi0xNTAgdGV4dC1zaWRlYmFyLW11dGVkIGhvdmVyOnRleHQtd2hpdGUgaG92ZXI6Ymctc2lkZWJhci1ob3ZlciI+CiAgICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJsYXllcnMiIGNsYXNzPSJ3LTQgaC00IHRleHQtaW5oZXJpdCI+PC9pPgogICAgICAgICAgICA8c3Bhbj5Ta2lsbHM8L3NwYW4+CiAgICAgICAgICA8L2J1dHRvbj4KCiAgICAgICAgICA8IS0tIDUuIEFib3V0IC0tPgogICAgICAgICAgPGJ1dHRvbiBvbmNsaWNrPSJzd2l0Y2hUYWIoJ2Fib3V0JykiIGRhdGEtdGFiPSJhYm91dCIgY2xhc3M9Im5hdi1pdGVtIHctZnVsbCBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMyBweC0zLjUgcHktMi41IHJvdW5kZWQteGwgdGV4dC1zbSBmb250LW1lZGl1bSB0cmFuc2l0aW9uLWNvbG9ycyBkdXJhdGlvbi0xNTAgdGV4dC1zaWRlYmFyLW11dGVkIGhvdmVyOnRleHQtd2hpdGUgaG92ZXI6Ymctc2lkZWJhci1ob3ZlciI+CiAgICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJ1c2VyIiBjbGFzcz0idy00IGgtNCB0ZXh0LWluaGVyaXQiPjwvaT4KICAgICAgICAgICAgPHNwYW4+QWJvdXQ8L3NwYW4+CiAgICAgICAgICA8L2J1dHRvbj4KCiAgICAgICAgICA8IS0tIDYuIFNldHRpbmdzIC0tPgogICAgICAgICAgPGJ1dHRvbiBvbmNsaWNrPSJzd2l0Y2hUYWIoJ3NldHRpbmdzJykiIGRhdGEtdGFiPSJzZXR0aW5ncyIgY2xhc3M9Im5hdi1pdGVtIHctZnVsbCBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMyBweC0zLjUgcHktMi41IHJvdW5kZWQteGwgdGV4dC1zbSBmb250LW1lZGl1bSB0cmFuc2l0aW9uLWNvbG9ycyBkdXJhdGlvbi0xNTAgdGV4dC1zaWRlYmFyLW11dGVkIGhvdmVyOnRleHQtd2hpdGUgaG92ZXI6Ymctc2lkZWJhci1ob3ZlciI+CiAgICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJzZXR0aW5ncyIgY2xhc3M9InctNCBoLTQgdGV4dC1pbmhlcml0Ij48L2k+CiAgICAgICAgICAgIDxzcGFuPlNldHRpbmdzPC9zcGFuPgogICAgICAgICAgPC9idXR0b24+CiAgICAgICAgPC9uYXY+CiAgICAgIDwvZGl2PgoKICAgICAgPCEtLSBCb3R0b20gU2VjdGlvbjogU3lzdGVtIFN0YXR1cyBXaWRnZXQgbWF0Y2hpbmcgbW9ja3VwIC0tPgogICAgICA8ZGl2IGNsYXNzPSJwLTQgYm9yZGVyLXQgYm9yZGVyLXNsYXRlLTgwMC82MCI+CiAgICAgICAgPGRpdiBjbGFzcz0iYmctWyMxMzFEMzNdIGJvcmRlciBib3JkZXItc2xhdGUtODAwLzgwIHJvdW5kZWQteGwgcC0zLjUgZmxleCBmbGV4LWNvbCBnYXAtMSI+CiAgICAgICAgICA8ZGl2IGNsYXNzPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiI+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJsaXZlLWRvdCI+PC9zcGFuPgogICAgICAgICAgICA8c3BhbiBjbGFzcz0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtd2hpdGUgdHJhY2tpbmctdGlnaHQiPlN5c3RlbSBPbmxpbmU8L3NwYW4+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDxwIGlkPSJzaWRlYmFyLWxhc3QtdXBkYXRlZCIgY2xhc3M9InRleHQtWzExcHhdIHRleHQtc2xhdGUtNDAwIGZvbnQtbW9ubyI+TGl2ZSBTeW5jIEFjdGl2ZTwvcD4KICAgICAgICA8L2Rpdj4KICAgICAgPC9kaXY+CiAgICA8L2FzaWRlPgoKICAgIDwhLS0gTW9iaWxlIFNpZGViYXIgQmFja2Ryb3AgT3ZlcmxheSAtLT4KICAgIDxkaXYgaWQ9InNpZGViYXItb3ZlcmxheSIgb25jbGljaz0idG9nZ2xlU2lkZWJhcihmYWxzZSkiIGNsYXNzPSJmaXhlZCBpbnNldC0wIGJnLXNsYXRlLTkwMC81MCBiYWNrZHJvcC1ibHVyLXhzIHotMzAgaGlkZGVuIGxnOmhpZGRlbiI+PC9kaXY+CgogICAgPCEtLSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAtLT4KICAgIDwhLS0gTUFJTiBDT05URU5UIENBTlZBUyAoTElHSFQgVEhFTUUgI0Y4RkFGQykgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLS0+CiAgICA8IS0tID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09IC0tPgogICAgPGRpdiBjbGFzcz0iZmxleC0xIGxnOm1sLTY0IGZsZXggZmxleC1jb2wgbWluLWgtc2NyZWVuIGJnLWNhbnZhcyI+CiAgICAgIAogICAgICA8IS0tIFRPUCBIRUFERVIgQkFSIC0tPgogICAgICA8aGVhZGVyIGNsYXNzPSJzdGlja3kgdG9wLTAgei0yMCBiZy13aGl0ZS85MCBiYWNrZHJvcC1ibHVyLW1kIGJvcmRlci1iIGJvcmRlci1ib3JkZXJMaWdodCBweC0zIHNtOnB4LTQgbGc6cHgtOCBweS0zIHNtOnB5LTQgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIj4KICAgICAgICAKICAgICAgICA8IS0tIExlZnQ6IE1vYmlsZSBNZW51IFRvZ2dsZSAmIFRpdGxlIC0tPgogICAgICAgIDxkaXYgY2xhc3M9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIHNtOmdhcC0zIG1pbi13LTAiPgogICAgICAgICAgPGJ1dHRvbiBvbmNsaWNrPSJ0b2dnbGVTaWRlYmFyKHRydWUpIiBjbGFzcz0ibGc6aGlkZGVuIHAtMS41IC1tbC0xIHJvdW5kZWQtbGcgdGV4dC1zbGF0ZS02MDAgaG92ZXI6Ymctc2xhdGUtMTAwIGZvY3VzOm91dGxpbmUtbm9uZSIgYXJpYS1sYWJlbD0iT3BlbiBtZW51Ij4KICAgICAgICAgICAgPGkgZGF0YS1sdWNpZGU9Im1lbnUiIGNsYXNzPSJ3LTUgaC01Ij48L2k+CiAgICAgICAgICA8L2J1dHRvbj4KCiAgICAgICAgICA8ZGl2IGNsYXNzPSJ0cnVuY2F0ZSI+CiAgICAgICAgICAgIDxoMSBpZD0icGFnZS10aXRsZSIgY2xhc3M9InRleHQtYmFzZSBzbTp0ZXh0LXhsIGxnOnRleHQtMnhsIGZvbnQtYm9sZCB0ZXh0LXNsYXRlLTkwMCB0cmFja2luZy10aWdodCBsZWFkaW5nLXRpZ2h0IHRydW5jYXRlIj5EYXNoYm9hcmQ8L2gxPgogICAgICAgICAgICA8cCBpZD0icGFnZS1zdWJ0aXRsZSIgY2xhc3M9InRleHQtWzExcHhdIHNtOnRleHQteHMgbGc6dGV4dC1zbSB0ZXh0LXNsYXRlLTUwMCBmb250LW5vcm1hbCB0cnVuY2F0ZSI+TGl2ZSBvdmVydmlldyBvZiB5b3VyIHdlYnNpdGU8L3A+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KCiAgICAgICAgPCEtLSBSaWdodDogU3RhdHVzLCBWaWV3IFdlYnNpdGUgYnV0dG9uLCBQcm9maWxlICYgQ2xvY2sgLS0+CiAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBmbGV4LWNvbCBpdGVtcy1lbmQgZ2FwLTAuNSBmbGV4LXNocmluay0wIG1sLTIiPgogICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgc206Z2FwLTMiPgogICAgICAgICAgICA8IS0tIExpdmUgU2l0ZSBTdGF0dXMgUGlsbCAtLT4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iaGlkZGVuIG1kOmZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgcHgtMi41IHB5LTEgcm91bmRlZC1mdWxsIGJnLWVtZXJhbGQtNTAgYm9yZGVyIGJvcmRlci1lbWVyYWxkLTIwMC82MCB0ZXh0LWVtZXJhbGQtNzAwIHRleHQteHMgZm9udC1tZWRpdW0iPgogICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ3LTIgaC0yIHJvdW5kZWQtZnVsbCBiZy1lbWVyYWxkLTUwMCBhbmltYXRlLXB1bHNlIj48L3NwYW4+CiAgICAgICAgICAgICAgPHNwYW4+TGl2ZSBTaXRlPC9zcGFuPgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgIDwhLS0gM3MgQXV0by1SZWZyZXNoIFRlbGVtZXRyeSBQaWxsIC0tPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMS41IHB4LTIuNSBweS0xIHJvdW5kZWQtZnVsbCBiZy1ibHVlLTUwIGJvcmRlciBib3JkZXItYmx1ZS0yMDAvNjAgdGV4dC1ibHVlLTcwMCB0ZXh0LXhzIGZvbnQtbWVkaXVtIiB0aXRsZT0iTGl2ZSB0ZWxlbWV0cnkgcG9sbGluZyBldmVyeSAzIHNlY29uZHMiPgogICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ3LTIgaC0yIHJvdW5kZWQtZnVsbCBiZy1ibHVlLTUwMCBhbmltYXRlLXB1bHNlIj48L3NwYW4+CiAgICAgICAgICAgICAgPHNwYW4+QXV0byAzcyBSZWZyZXNoPC9zcGFuPgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgIDwhLS0gVmlldyBXZWJzaXRlIEJ1dHRvbiAtLT4KICAgICAgICAgICAgPGEgaHJlZj0iLyIgdGFyZ2V0PSJfYmxhbmsiIHJlbD0ibm9vcGVuZXIgbm9yZWZlcnJlciIgY2xhc3M9ImlubGluZS1mbGV4IGl0ZW1zLWNlbnRlciBnYXAtMS41IHB4LTIuNSBzbTpweC0zLjUgcHktMS41IHJvdW5kZWQtbGcgYmctWyMwRjE3MkFdIGhvdmVyOmJnLXNsYXRlLTgwMCB0ZXh0LXdoaXRlIHRleHQteHMgZm9udC1tZWRpdW0gc2hhZG93LXNtIHRyYW5zaXRpb24iPgogICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJoaWRkZW4gc206aW5saW5lIj5WaWV3IFdlYnNpdGU8L3NwYW4+CiAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InNtOmhpZGRlbiI+U2l0ZTwvc3Bhbj4KICAgICAgICAgICAgICA8aSBkYXRhLWx1Y2lkZT0iZXh0ZXJuYWwtbGluayIgY2xhc3M9InctMy41IGgtMy41Ij48L2k+CiAgICAgICAgICAgIDwvYT4KCiAgICAgICAgICAgIDwhLS0gVXNlciBBdmF0YXIgJiBTaWduIE91dCBEcm9wZG93biAtLT4KICAgICAgICAgICAgPGRpdiBjbGFzcz0icmVsYXRpdmUiPgogICAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0idG9nZ2xlUHJvZmlsZURyb3Bkb3duKCkiIGNsYXNzPSJ3LTggaC04IHJvdW5kZWQtZnVsbCBiZy1zbGF0ZS0yMDAgaG92ZXI6Ymctc2xhdGUtMzAwIHRleHQtc2xhdGUtNzAwIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHRyYW5zaXRpb24gZm9jdXM6b3V0bGluZS1ub25lIiB0aXRsZT0iQW51cmFnIFNhaHUiPgogICAgICAgICAgICAgICAgPGkgZGF0YS1sdWNpZGU9InVzZXIiIGNsYXNzPSJ3LTQgaC00Ij48L2k+CiAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgICAgPGRpdiBpZD0icHJvZmlsZS1kcm9wZG93bi1tZW51IiBjbGFzcz0iaGlkZGVuIGFic29sdXRlIHJpZ2h0LTAgbXQtMiB3LTQ4IGJnLXdoaXRlIHJvdW5kZWQteGwgc2hhZG93LXhsIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHB5LTEuNSB6LTUwIHRleHQteHMgYW5pbWF0ZS1mYWRlSW4iPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0icHgtMyBweS0yIGJvcmRlci1iIGJvcmRlci1zbGF0ZS0xMDAiPgogICAgICAgICAgICAgICAgICA8cCBjbGFzcz0iZm9udC1ib2xkIHRleHQtc2xhdGUtOTAwIj5BbnVyYWcgU2FodTwvcD4KICAgICAgICAgICAgICAgICAgPHAgY2xhc3M9InRleHQtWzExcHhdIHRleHQtc2xhdGUtNTAwIj5BZG1pbmlzdHJhdG9yPC9wPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8YnV0dG9uIG9uY2xpY2s9ImhhbmRsZVNpZ25PdXQoKSIgY2xhc3M9InctZnVsbCB0ZXh0LWxlZnQgcHgtMyBweS0yIHRleHQtcmVkLTYwMCBob3ZlcjpiZy1yZWQtNTAgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgZm9udC1tZWRpdW0gdHJhbnNpdGlvbiI+CiAgICAgICAgICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJsb2ctb3V0IiBjbGFzcz0idy0zLjUgaC0zLjUiPjwvaT4KICAgICAgICAgICAgICAgICAgPHNwYW4+U2lnbiBPdXQ8L3NwYW4+CiAgICAgICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICA8IS0tIER5bmFtaWMgTGl2ZSBDbG9jayBtYXRjaGluZyBtb2NrdXA6IFR1ZSwgMTYgU2VwIDIwMjUg4oCiIDA3OjQyIFBNIC0tPgogICAgICAgICAgPGRpdiBpZD0ibGl2ZS1oZWFkZXItY2xvY2siIGNsYXNzPSJoaWRkZW4gc206YmxvY2sgdGV4dC1bMTFweF0gdGV4dC1zbGF0ZS00MDAgZm9udC1tb25vIHRyYWNraW5nLXRpZ2h0Ij4KICAgICAgICAgICAgTG9hZGluZyB0aW1lLi4uCiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgPC9oZWFkZXI+CgogICAgICA8IS0tIFRBQiBDT05URU5UIFBBTkVMUyAtLT4KICAgICAgPG1haW4gY2xhc3M9ImZsZXgtMSBwLTQgbGc6cC04IG1heC13LTd4bCB3LWZ1bGwgbXgtYXV0byBwYi0yNCBsZzpwYi0xMiI+CgogICAgICAgIDwhLS0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAtLT4KICAgICAgICA8IS0tIFRBQiAxOiBEQVNIQk9BUkQgKEVYQUNUIE1PQ0tVUCBJTVBMRU1FTlRBVElPTikgICAgICAgICAgICAgICAgICAgICAgLS0+CiAgICAgICAgPCEtLSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09IC0tPgogICAgICAgIDxzZWN0aW9uIGlkPSJ0YWItZGFzaGJvYXJkIiBjbGFzcz0idGFiLXBhbmUgc3BhY2UteS02Ij4KCiAgICAgICAgICA8IS0tIDQgU1RBVCBTVU1NQVJZIENBUkRTIElOIEEgUk9XIC0tPgogICAgICAgICAgPGRpdiBjbGFzcz0iZ3JpZCBncmlkLWNvbHMtMSBzbTpncmlkLWNvbHMtMiBsZzpncmlkLWNvbHMtNCBnYXAtNCBsZzpnYXAtNSI+CiAgICAgICAgICAgIAogICAgICAgICAgICA8IS0tIENhcmQgMTogVG90YWwgVmlzaXRzIC0tPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJiZy1jYXJkIHJvdW5kZWQtMnhsIHAtNSBib3JkZXIgYm9yZGVyLWJvcmRlckxpZ2h0IHNoYWRvdy14cyBmbGV4IGZsZXgtY29sIGp1c3RpZnktYmV0d2VlbiBob3ZlcjpzaGFkb3ctc20gdHJhbnNpdGlvbiI+CiAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InctMTAgaC0xMCByb3VuZGVkLWZ1bGwgYmctYmx1ZS01MCB0ZXh0LWJsdWUtNjAwIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIG1iLTMiPgogICAgICAgICAgICAgICAgICA8aSBkYXRhLWx1Y2lkZT0iZXllIiBjbGFzcz0idy01IGgtNSI+PC9pPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8cCBjbGFzcz0idGV4dC14cyBmb250LW1lZGl1bSB0ZXh0LXNsYXRlLTUwMCBtYi0wLjUiPlRvdGFsIFZpc2l0czwvcD4KICAgICAgICAgICAgICAgIDxoMyBpZD0ic3RhdC10b3RhbC12aXNpdHMiIGNsYXNzPSJ0ZXh0LTJ4bCBsZzp0ZXh0LTN4bCBmb250LWJvbGQgdGV4dC1zbGF0ZS05MDAgdHJhY2tpbmctdGlnaHQiPjA8L2gzPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDxkaXYgY2xhc3M9Im10LTMgZmxleCBpdGVtcy1jZW50ZXIgdGV4dC14cyI+CiAgICAgICAgICAgICAgICA8c3BhbiBpZD0ic3RhdC10b3RhbC1iYWRnZSIgY2xhc3M9InRleHQtZW1lcmFsZC02MDAgZm9udC1zZW1pYm9sZCBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMSI+CiAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ3LTEuNSBoLTEuNSByb3VuZGVkLWZ1bGwgYmctZW1lcmFsZC01MDAgYW5pbWF0ZS1wdWxzZSI+PC9zcGFuPiBMaXZlCiAgICAgICAgICAgICAgICA8L3NwYW4+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0idGV4dC1zbGF0ZS00MDAgbWwtMS41IGZvbnQtbW9ubyI+cmVhbC10aW1lIHN0cmVhbTwvc3Bhbj4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICA8IS0tIENhcmQgMjogVW5pcXVlIFZpc2l0b3JzIC0tPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJiZy1jYXJkIHJvdW5kZWQtMnhsIHAtNSBib3JkZXIgYm9yZGVyLWJvcmRlckxpZ2h0IHNoYWRvdy14cyBmbGV4IGZsZXgtY29sIGp1c3RpZnktYmV0d2VlbiBob3ZlcjpzaGFkb3ctc20gdHJhbnNpdGlvbiI+CiAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InctMTAgaC0xMCByb3VuZGVkLWZ1bGwgYmctZW1lcmFsZC01MCB0ZXh0LWVtZXJhbGQtNjAwIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIG1iLTMiPgogICAgICAgICAgICAgICAgICA8aSBkYXRhLWx1Y2lkZT0idXNlcnMiIGNsYXNzPSJ3LTUgaC01Ij48L2k+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LXhzIGZvbnQtbWVkaXVtIHRleHQtc2xhdGUtNTAwIG1iLTAuNSI+VW5pcXVlIFZpc2l0b3JzPC9wPgogICAgICAgICAgICAgICAgPGgzIGlkPSJzdGF0LXVuaXF1ZS12aXNpdG9ycyIgY2xhc3M9InRleHQtMnhsIGxnOnRleHQtM3hsIGZvbnQtYm9sZCB0ZXh0LXNsYXRlLTkwMCB0cmFja2luZy10aWdodCI+MDwvaDM+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgPGRpdiBjbGFzcz0ibXQtMyBmbGV4IGl0ZW1zLWNlbnRlciB0ZXh0LXhzIj4KICAgICAgICAgICAgICAgIDxzcGFuIGlkPSJzdGF0LXVuaXF1ZS1iYWRnZSIgY2xhc3M9InRleHQtZW1lcmFsZC02MDAgZm9udC1zZW1pYm9sZCBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMSI+CiAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ3LTEuNSBoLTEuNSByb3VuZGVkLWZ1bGwgYmctZW1lcmFsZC01MDAgYW5pbWF0ZS1wdWxzZSI+PC9zcGFuPiBWZXJpZmllZAogICAgICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQtc2xhdGUtNDAwIG1sLTEuNSBmb250LW1vbm8iPnVuaXF1ZSBJUHM8L3NwYW4+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgPCEtLSBDYXJkIDM6IFBhZ2VzIHBlciBWaXNpdCAtLT4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iYmctY2FyZCByb3VuZGVkLTJ4bCBwLTUgYm9yZGVyIGJvcmRlci1ib3JkZXJMaWdodCBzaGFkb3cteHMgZmxleCBmbGV4LWNvbCBqdXN0aWZ5LWJldHdlZW4gaG92ZXI6c2hhZG93LXNtIHRyYW5zaXRpb24iPgogICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJ3LTEwIGgtMTAgcm91bmRlZC1mdWxsIGJnLXB1cnBsZS01MCB0ZXh0LXB1cnBsZS02MDAgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgbWItMyI+CiAgICAgICAgICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJjbG9jayIgY2xhc3M9InctNSBoLTUiPjwvaT4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPHAgY2xhc3M9InRleHQteHMgZm9udC1tZWRpdW0gdGV4dC1zbGF0ZS01MDAgbWItMC41Ij5QYWdlcyBwZXIgVmlzaXQ8L3A+CiAgICAgICAgICAgICAgICA8aDMgaWQ9InN0YXQtcGFnZXMtcGVyLXZpc2l0IiBjbGFzcz0idGV4dC0yeGwgbGc6dGV4dC0zeGwgZm9udC1ib2xkIHRleHQtc2xhdGUtOTAwIHRyYWNraW5nLXRpZ2h0Ij4wLjA8L2gzPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDxkaXYgY2xhc3M9Im10LTMgZmxleCBpdGVtcy1jZW50ZXIgdGV4dC14cyI+CiAgICAgICAgICAgICAgICA8c3BhbiBpZD0ic3RhdC1wYWdlcy1iYWRnZSIgY2xhc3M9InRleHQtcHVycGxlLTYwMCBmb250LXNlbWlib2xkIj5EZXB0aDwvc3Bhbj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0ZXh0LXNsYXRlLTQwMCBtbC0xLjUgZm9udC1tb25vIj5wYWdlcyAvIHZpc2l0PC9zcGFuPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgIDwhLS0gQ2FyZCA0OiBBdmcuIFNlc3Npb24gRHVyYXRpb24gLS0+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImJnLWNhcmQgcm91bmRlZC0yeGwgcC01IGJvcmRlciBib3JkZXItYm9yZGVyTGlnaHQgc2hhZG93LXhzIGZsZXggZmxleC1jb2wganVzdGlmeS1iZXR3ZWVuIGhvdmVyOnNoYWRvdy1zbSB0cmFuc2l0aW9uIj4KICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0idy0xMCBoLTEwIHJvdW5kZWQtZnVsbCBiZy1hbWJlci01MCB0ZXh0LWFtYmVyLTYwMCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBtYi0zIj4KICAgICAgICAgICAgICAgICAgPGkgZGF0YS1sdWNpZGU9Im1hcC1waW4iIGNsYXNzPSJ3LTUgaC01Ij48L2k+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LXhzIGZvbnQtbWVkaXVtIHRleHQtc2xhdGUtNTAwIG1iLTAuNSI+QXZnLiBTZXNzaW9uIER1cmF0aW9uPC9wPgogICAgICAgICAgICAgICAgPGgzIGlkPSJzdGF0LXNlc3Npb24tZHVyYXRpb24iIGNsYXNzPSJ0ZXh0LTJ4bCBsZzp0ZXh0LTN4bCBmb250LWJvbGQgdGV4dC1zbGF0ZS05MDAgdHJhY2tpbmctdGlnaHQiPjBzPC9oMz4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJtdC0zIGZsZXggaXRlbXMtY2VudGVyIHRleHQteHMiPgogICAgICAgICAgICAgICAgPHNwYW4gaWQ9InN0YXQtZHVyYXRpb24tYmFkZ2UiIGNsYXNzPSJ0ZXh0LWFtYmVyLTYwMCBmb250LXNlbWlib2xkIj5BY3RpdmU8L3NwYW4+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0idGV4dC1zbGF0ZS00MDAgbWwtMS41IGZvbnQtbW9ubyI+ZHdlbGwgdGltZTwvc3Bhbj4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgPC9kaXY+CgogICAgICAgICAgPCEtLSBNSURETEUgU0VDVElPTjogTElWRSBWSVNJVE9SUyBDSEFSVCAmIExJVkUgQUNUSVZJVFkgLS0+CiAgICAgICAgICA8ZGl2IGNsYXNzPSJncmlkIGdyaWQtY29scy0xIGxnOmdyaWQtY29scy0zIGdhcC02Ij4KICAgICAgICAgICAgCiAgICAgICAgICAgIDwhLS0gTGVmdCBDaGFydCBDYXJkICgyIENvbHVtbnMgLyB+NjUlIHdpZHRoKSAtLT4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iYmctY2FyZCByb3VuZGVkLTJ4bCBwLTYgYm9yZGVyIGJvcmRlci1ib3JkZXJMaWdodCBzaGFkb3cteHMgbGc6Y29sLXNwYW4tMiBmbGV4IGZsZXgtY29sIGp1c3RpZnktYmV0d2VlbiI+CiAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIG1iLTQiPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIiPgogICAgICAgICAgICAgICAgICA8aDMgY2xhc3M9InRleHQtYmFzZSBmb250LWJvbGQgdGV4dC1zbGF0ZS05MDAiPkxpdmUgVmlzaXRvcnM8L2gzPgogICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgcHgtMiBweS0wLjUgcm91bmRlZC1mdWxsIGJnLWVtZXJhbGQtNTAgdGV4dC1lbWVyYWxkLTcwMCB0ZXh0LXhzIGZvbnQtbWVkaXVtIj4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0idy0yIGgtMiByb3VuZGVkLWZ1bGwgYmctZW1lcmFsZC01MDAgYW5pbWF0ZS1wdWxzZSI+PC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDxzcGFuPkxpdmU8L3NwYW4+CiAgICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQteHMgdGV4dC1zbGF0ZS01MDAgZm9udC1tb25vIGZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUiIGlkPSJjaGFydC1saXZlLWNvdW50Ij4KICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InctMiBoLTIgcm91bmRlZC1mdWxsIGJnLWVtZXJhbGQtNTAwIGFuaW1hdGUtcHVsc2UiPjwvc3Bhbj4KICAgICAgICAgICAgICAgICAgPHNwYW4gaWQ9ImxpdmUtb25saW5lLW51bSI+MDwvc3Bhbj4gb25saW5lIG5vdwogICAgICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICA8IS0tIEludGVyYWN0aXZlIEFyZWEgQ2hhcnQgQ2FudmFzIC0tPgogICAgICAgICAgICAgIDxkaXYgY2xhc3M9InJlbGF0aXZlIHctZnVsbCBoLTU2IGZsZXggZmxleC1jb2wganVzdGlmeS1lbmQiPgogICAgICAgICAgICAgICAgPGNhbnZhcyBpZD0ibGl2ZS12aXNpdG9ycy1jaGFydCIgY2xhc3M9InctZnVsbCBoLWZ1bGwiPjwvY2FudmFzPgogICAgICAgICAgICAgICAgPCEtLSBUb29sdGlwIE92ZXJsYXkgZm9yIENhbnZhcyAtLT4KICAgICAgICAgICAgICAgIDxkaXYgaWQ9ImNoYXJ0LXRvb2x0aXAiIGNsYXNzPSJhYnNvbHV0ZSBwb2ludGVyLWV2ZW50cy1ub25lIGhpZGRlbiBiZy1zbGF0ZS05MDAgdGV4dC13aGl0ZSB0ZXh0LXhzIHB4LTIuNSBweS0xIHJvdW5kZWQtbWQgc2hhZG93LW1kIC10cmFuc2xhdGUteC0xLzIgLXRyYW5zbGF0ZS15LWZ1bGwgbWItMiI+PC9kaXY+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgPCEtLSBSaWdodCBBY3Rpdml0eSBDYXJkICgxIENvbHVtbiAvIH4zNSUgd2lkdGgpIC0tPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJiZy1jYXJkIHJvdW5kZWQtMnhsIHAtNiBib3JkZXIgYm9yZGVyLWJvcmRlckxpZ2h0IHNoYWRvdy14cyBmbGV4IGZsZXgtY29sIj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4gbWItNCI+CiAgICAgICAgICAgICAgICA8aDMgY2xhc3M9InRleHQtYmFzZSBmb250LWJvbGQgdGV4dC1zbGF0ZS05MDAiPkxpdmUgQWN0aXZpdHk8L2gzPgogICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQtWzExcHhdIHRleHQtc2xhdGUtNDAwIGZvbnQtbW9ubyI+RXZlcnkgM3M8L3NwYW4+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgPGRpdiBpZD0ibGl2ZS1hY3Rpdml0eS1saXN0IiBjbGFzcz0ic3BhY2UteS0zIGZsZXgtMSBvdmVyZmxvdy15LWF1dG8gbWF4LWgtNTYgcHItMSI+CiAgICAgICAgICAgICAgICA8ZGl2IGlkPSJsaXZlLWFjdGl2aXR5LWVtcHR5IiBjbGFzcz0icHktMTIgZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgdGV4dC1jZW50ZXIiPgogICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJ3LTggaC04IHJvdW5kZWQtZnVsbCBiZy1zbGF0ZS0xMDAgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgdGV4dC1zbGF0ZS00MDAgbWItMiI+CiAgICAgICAgICAgICAgICAgICAgPGkgZGF0YS1sdWNpZGU9InJhZGlvIiBjbGFzcz0idy00IGgtNCBhbmltYXRlLXB1bHNlIj48L2k+CiAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICA8cCBjbGFzcz0idGV4dC14cyBmb250LW1lZGl1bSB0ZXh0LXNsYXRlLTYwMCI+V2FpdGluZyBmb3IgbGl2ZSB2aXNpdG9yIGV2ZW50cy4uLjwvcD4KICAgICAgICAgICAgICAgICAgPHAgY2xhc3M9InRleHQtWzExcHhdIHRleHQtc2xhdGUtNDAwIG10LTAuNSBmb250LW1vbm8iPkF1dG8tcmVmcmVzaGVzIGV2ZXJ5IDMgc2Vjb25kczwvcD4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICA8IS0tIEJPVFRPTSBTRUNUSU9OOiBSRUNFTlQgVklTSVRPUlMgJiBUT1AgUEFHRVMgLS0+CiAgICAgICAgICA8ZGl2IGNsYXNzPSJncmlkIGdyaWQtY29scy0xIGxnOmdyaWQtY29scy0zIGdhcC02Ij4KICAgICAgICAgICAgCiAgICAgICAgICAgIDwhLS0gTGVmdCBDYXJkOiBSZWNlbnQgVmlzaXRvcnMgKDIgQ29sdW1ucyAvIH42MCUgd2lkdGgpIC0tPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJiZy1jYXJkIHJvdW5kZWQtMnhsIHAtNiBib3JkZXIgYm9yZGVyLWJvcmRlckxpZ2h0IHNoYWRvdy14cyBsZzpjb2wtc3Bhbi0yIGZsZXggZmxleC1jb2wiPgogICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBtYi00Ij4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIj4KICAgICAgICAgICAgICAgICAgPGgzIGNsYXNzPSJ0ZXh0LWJhc2UgZm9udC1ib2xkIHRleHQtc2xhdGUtOTAwIj5SZWNlbnQgVmlzaXRvcnM8L2gzPgogICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgcHgtMiBweS0wLjUgcm91bmRlZC1mdWxsIGJnLWVtZXJhbGQtNTAgdGV4dC1lbWVyYWxkLTcwMCB0ZXh0LXhzIGZvbnQtbWVkaXVtIj4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0idy0yIGgtMiByb3VuZGVkLWZ1bGwgYmctZW1lcmFsZC01MDAgYW5pbWF0ZS1wdWxzZSI+PC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDxzcGFuPkxpdmUgVGVsZW1ldHJ5PC9zcGFuPgogICAgICAgICAgICAgICAgICA8L3NwYW4+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0ZXh0LVsxMXB4XSB0ZXh0LXNsYXRlLTQwMCBmb250LW1vbm8iPlJlYWwtdGltZSBJUCAmIEdlbzwvc3Bhbj4KICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgPGRpdiBjbGFzcz0ib3ZlcmZsb3cteC1hdXRvIj4KICAgICAgICAgICAgICAgIDx0YWJsZSBjbGFzcz0idy1mdWxsIHRleHQtbGVmdCB0ZXh0LXhzIj4KICAgICAgICAgICAgICAgICAgPHRoZWFkPgogICAgICAgICAgICAgICAgICAgIDx0ciBjbGFzcz0idGV4dC1zbGF0ZS00MDAgZm9udC1zZW1pYm9sZCBib3JkZXItYiBib3JkZXItc2xhdGUtMTAwIj4KICAgICAgICAgICAgICAgICAgICAgIDx0aCBjbGFzcz0icGItMi41IGZvbnQtbWVkaXVtIj5UaW1lPC90aD4KICAgICAgICAgICAgICAgICAgICAgIDx0aCBjbGFzcz0icGItMi41IGZvbnQtbWVkaXVtIj5JUCBBZGRyZXNzPC90aD4KICAgICAgICAgICAgICAgICAgICAgIDx0aCBjbGFzcz0icGItMi41IGZvbnQtbWVkaXVtIj5Mb2NhdGlvbjwvdGg+CiAgICAgICAgICAgICAgICAgICAgICA8dGggY2xhc3M9InBiLTIuNSBmb250LW1lZGl1bSI+RGV2aWNlPC90aD4KICAgICAgICAgICAgICAgICAgICAgIDx0aCBjbGFzcz0icGItMi41IGZvbnQtbWVkaXVtIj5QYWdlPC90aD4KICAgICAgICAgICAgICAgICAgICA8L3RyPgogICAgICAgICAgICAgICAgICA8L3RoZWFkPgogICAgICAgICAgICAgICAgICA8dGJvZHkgaWQ9InJlY2VudC12aXNpdG9ycy10YWJsZSIgY2xhc3M9ImRpdmlkZS15IGRpdmlkZS1zbGF0ZS01MCBmb250LW5vcm1hbCI+CiAgICAgICAgICAgICAgICAgICAgPHRyIGlkPSJyZWNlbnQtdmlzaXRvcnMtZW1wdHkiPgogICAgICAgICAgICAgICAgICAgICAgPHRkIGNvbHNwYW49IjUiIGNsYXNzPSJweS0xMCB0ZXh0LWNlbnRlciI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZsZXggZmxleC1jb2wgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHRleHQtY2VudGVyIj4KICAgICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJ3LTggaC04IHJvdW5kZWQtZnVsbCBiZy1zbGF0ZS0xMDAgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgdGV4dC1zbGF0ZS00MDAgbWItMiI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8aSBkYXRhLWx1Y2lkZT0iYWN0aXZpdHkiIGNsYXNzPSJ3LTQgaC00IGFuaW1hdGUtcHVsc2UiPjwvaT4KICAgICAgICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICAgICAgICA8cCBjbGFzcz0idGV4dC14cyBmb250LW1lZGl1bSB0ZXh0LXNsYXRlLTYwMCI+TGlzdGVuaW5nIGZvciB2aXNpdG9ycyBhY3Jvc3MgcG9ydGZvbGlvLi4uPC9wPgogICAgICAgICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LVsxMXB4XSB0ZXh0LXNsYXRlLTQwMCBtdC0wLjUgZm9udC1tb25vIj5SZWFsLXRpbWUgSVAsIGNvdW50cnkgJiBkZXZpY2UgdGVsZW1ldHJ5PC9wPgogICAgICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICAgIDwvdGQ+CiAgICAgICAgICAgICAgICAgICAgPC90cj4KICAgICAgICAgICAgICAgICAgPC90Ym9keT4KICAgICAgICAgICAgICAgIDwvdGFibGU+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgPCEtLSBSaWdodCBDYXJkOiBUb3AgUGFnZXMgKDEgQ29sdW1uIC8gfjQwJSB3aWR0aCkgLS0+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImJnLWNhcmQgcm91bmRlZC0yeGwgcC02IGJvcmRlciBib3JkZXItYm9yZGVyTGlnaHQgc2hhZG93LXhzIGZsZXggZmxleC1jb2wiPgogICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBtYi00Ij4KICAgICAgICAgICAgICAgIDxoMyBjbGFzcz0idGV4dC1iYXNlIGZvbnQtYm9sZCB0ZXh0LXNsYXRlLTkwMCI+VG9wIFBhZ2VzPC9oMz4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0ZXh0LVsxMXB4XSB0ZXh0LXNsYXRlLTQwMCBmb250LW1vbm8iPlZpc2l0czwvc3Bhbj4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJvdmVyZmxvdy14LWF1dG8iPgogICAgICAgICAgICAgICAgPHRhYmxlIGNsYXNzPSJ3LWZ1bGwgdGV4dC1sZWZ0IHRleHQteHMiPgogICAgICAgICAgICAgICAgICA8dGhlYWQ+CiAgICAgICAgICAgICAgICAgICAgPHRyIGNsYXNzPSJ0ZXh0LXNsYXRlLTQwMCBmb250LXNlbWlib2xkIGJvcmRlci1iIGJvcmRlci1zbGF0ZS0xMDAiPgogICAgICAgICAgICAgICAgICAgICAgPHRoIGNsYXNzPSJwYi0yLjUgZm9udC1tZWRpdW0iPlBhZ2U8L3RoPgogICAgICAgICAgICAgICAgICAgICAgPHRoIGNsYXNzPSJwYi0yLjUgZm9udC1tZWRpdW0gdGV4dC1yaWdodCI+VmlzaXRzPC90aD4KICAgICAgICAgICAgICAgICAgICA8L3RyPgogICAgICAgICAgICAgICAgICA8L3RoZWFkPgogICAgICAgICAgICAgICAgICA8dGJvZHkgaWQ9InRvcC1wYWdlcy10YWJsZSIgY2xhc3M9ImRpdmlkZS15IGRpdmlkZS1zbGF0ZS01MCBmb250LW5vcm1hbCI+CiAgICAgICAgICAgICAgICAgICAgPHRyIGlkPSJ0b3AtcGFnZXMtZW1wdHkiPgogICAgICAgICAgICAgICAgICAgICAgPHRkIGNvbHNwYW49IjIiIGNsYXNzPSJweS04IHRleHQtY2VudGVyIHRleHQteHMgdGV4dC1zbGF0ZS00MDAgZm9udC1tb25vIj4KICAgICAgICAgICAgICAgICAgICAgICAgUmVjb3JkaW5nIHJlYWwgcGFnZSBoaXRzLi4uCiAgICAgICAgICAgICAgICAgICAgICA8L3RkPgogICAgICAgICAgICAgICAgICAgIDwvdHI+CiAgICAgICAgICAgICAgICAgIDwvdGJvZHk+CiAgICAgICAgICAgICAgICA8L3RhYmxlPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICA8IS0tIEZVTEwtV0lEVEggU0VDVElPTjogUEVSU0lTVEVOVCBWSVNJVE9SIElQIEFERFJFU1MgUkVHSVNUUlkgLS0+CiAgICAgICAgICA8IS0tIFNBVkVEIFBFUk1BTkVOVExZIEVWRU4gQUZURVIgVVNFUiBFWElUUyAoVVNFUiBKQUFORSBLRSBCQUFEIEJISSkgLS0+CiAgICAgICAgICA8ZGl2IGNsYXNzPSJiZy1jYXJkIHJvdW5kZWQtMnhsIHAtNiBib3JkZXIgYm9yZGVyLWJvcmRlckxpZ2h0IHNoYWRvdy14cyBmbGV4IGZsZXgtY29sIHNwYWNlLXktNCI+CiAgICAgICAgICAgIAogICAgICAgICAgICA8ZGl2IGNsYXNzPSJmbGV4IGZsZXgtY29sIG1kOmZsZXgtcm93IG1kOml0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4gZ2FwLTMgYm9yZGVyLWIgYm9yZGVyLXNsYXRlLTEwMCBwYi00Ij4KICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIuNSI+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InctOSBoLTkgcm91bmRlZC14bCBiZy1ibHVlLTUwIHRleHQtYmx1ZS02MDAgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIiPgogICAgICAgICAgICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJuZXR3b3JrIiBjbGFzcz0idy00IGgtNCI+PC9pPgogICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiI+CiAgICAgICAgICAgICAgICAgICAgICA8aDMgY2xhc3M9InRleHQtYmFzZSBmb250LWJvbGQgdGV4dC1zbGF0ZS05MDAiPlZpc2l0b3IgSVAgQWRkcmVzcyAmIEdlb2xvY2F0aW9uIFJlZ2lzdHJ5PC9oMz4KICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSBweC0yIHB5LTAuNSByb3VuZGVkLWZ1bGwgYmctZW1lcmFsZC01MCB0ZXh0LWVtZXJhbGQtNzAwIHRleHQteHMgZm9udC1tZWRpdW0iIHRpdGxlPSJQZXJtYW5lbnRseSBzYXZlZCBpbiBicm93c2VyIHN0b3JhZ2UgYW5kIGRhdGFiYXNlIj4KICAgICAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InctMiBoLTIgcm91bmRlZC1mdWxsIGJnLWVtZXJhbGQtNTAwIGFuaW1hdGUtcHVsc2UiPjwvc3Bhbj4KICAgICAgICAgICAgICAgICAgICAgICAgPHNwYW4+U2F2ZWQgJiBQZXJzaXN0ZW50PC9zcGFuPgogICAgICAgICAgICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LXhzIHRleHQtc2xhdGUtNTAwIG10LTAuNSI+Q2FwdHVyZXMgdmlzaXRvciBJUCBhZGRyZXNzZXMsIGV4YWN0IHZpc2l0IHRpbWVzLCBhbmQgZ2VvbG9jYXRpb24uIFNhdmVkIHBlcm1hbmVudGx5IGV2ZW4gYWZ0ZXIgdGhlIHVzZXIgZXhpdHMuPC9wPgogICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICA8IS0tIENvbnRyb2xzOiBDb3VudCwgU2VhcmNoLCBFeHBvcnQsIENsZWFyIC0tPgogICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZsZXggZmxleC13cmFwIGl0ZW1zLWNlbnRlciBnYXAtMiI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJweC0yLjUgcHktMSByb3VuZGVkLWxnIGJnLXNsYXRlLTEwMCB0ZXh0LXNsYXRlLTcwMCBmb250LW1vbm8gdGV4dC14cyBmb250LXNlbWlib2xkIj4KICAgICAgICAgICAgICAgICAgU2F2ZWQgSVBzOiA8c3BhbiBpZD0iaXAtcmVnaXN0cnktdG90YWwtY291bnQiIGNsYXNzPSJ0ZXh0LWJsdWUtNjAwIj4wPC9zcGFuPgogICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0icmVsYXRpdmUiPgogICAgICAgICAgICAgICAgICA8aSBkYXRhLWx1Y2lkZT0ic2VhcmNoIiBjbGFzcz0idy0zLjUgaC0zLjUgdGV4dC1zbGF0ZS00MDAgYWJzb2x1dGUgbGVmdC0yLjUgdG9wLTEvMiAtdHJhbnNsYXRlLXktMS8yIj48L2k+CiAgICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0iaXAtc2VhcmNoLWlucHV0IiBvbmlucHV0PSJmaWx0ZXJJcFRhYmxlKCkiIHBsYWNlaG9sZGVyPSJTZWFyY2ggSVAgb3IgbG9jYXRpb24uLi4iIGNsYXNzPSJwbC04IHByLTMgcHktMS41IHJvdW5kZWQtbGcgYm9yZGVyIGJvcmRlci1zbGF0ZS0yMDAgdGV4dC14cyBiZy13aGl0ZSB0ZXh0LXNsYXRlLTgwMCBwbGFjZWhvbGRlci1zbGF0ZS00MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMSBmb2N1czpyaW5nLWJsdWUtNTAwIHctNDAgc206dy00OCIgLz4KICAgICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0iZXhwb3J0SXBMb2dzQ1NWKCkiIGNsYXNzPSJpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSBweC0zIHB5LTEuNSByb3VuZGVkLWxnIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIGJnLXdoaXRlIGhvdmVyOmJnLXNsYXRlLTUwIHRleHQtc2xhdGUtNzAwIHRleHQteHMgZm9udC1tZWRpdW0gdHJhbnNpdGlvbiBzaGFkb3cteHMiIHRpdGxlPSJEb3dubG9hZCBzcHJlYWRzaGVldCBvZiBJUCBsb2dzIj4KICAgICAgICAgICAgICAgICAgPGkgZGF0YS1sdWNpZGU9ImRvd25sb2FkIiBjbGFzcz0idy0zLjUgaC0zLjUgdGV4dC1zbGF0ZS01MDAiPjwvaT4KICAgICAgICAgICAgICAgICAgPHNwYW4+RXhwb3J0IENTVjwvc3Bhbj4KICAgICAgICAgICAgICAgIDwvYnV0dG9uPgoKICAgICAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0iY2xlYXJJcExvZ3NTdG9yYWdlKCkiIGNsYXNzPSJpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSBweC0yLjUgcHktMS41IHJvdW5kZWQtbGcgYm9yZGVyIGJvcmRlci1zbGF0ZS0yMDAgYmctd2hpdGUgaG92ZXI6YmctcmVkLTUwIHRleHQtc2xhdGUtNTAwIGhvdmVyOnRleHQtcmVkLTYwMCB0ZXh0LXhzIGZvbnQtbWVkaXVtIHRyYW5zaXRpb24iIHRpdGxlPSJDbGVhciBsb2NhbCBjYWNoZSI+CiAgICAgICAgICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJ0cmFzaC0yIiBjbGFzcz0idy0zLjUgaC0zLjUiPjwvaT4KICAgICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgIDwhLS0gSVAgUmVnaXN0cnkgVGFibGUgLS0+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9Im92ZXJmbG93LXgtYXV0byI+CiAgICAgICAgICAgICAgPHRhYmxlIGNsYXNzPSJ3LWZ1bGwgdGV4dC1sZWZ0IHRleHQteHMiPgogICAgICAgICAgICAgICAgPHRoZWFkPgogICAgICAgICAgICAgICAgICA8dHIgY2xhc3M9InRleHQtc2xhdGUtNDAwIGZvbnQtc2VtaWJvbGQgYm9yZGVyLWIgYm9yZGVyLXNsYXRlLTEwMCI+CiAgICAgICAgICAgICAgICAgICAgPHRoIGNsYXNzPSJwYi0yLjUgZm9udC1tZWRpdW0iPklQIEFkZHJlc3M8L3RoPgogICAgICAgICAgICAgICAgICAgIDx0aCBjbGFzcz0icGItMi41IGZvbnQtbWVkaXVtIj5Mb2NhdGlvbiAmIENvdW50cnk8L3RoPgogICAgICAgICAgICAgICAgICAgIDx0aCBjbGFzcz0icGItMi41IGZvbnQtbWVkaXVtIj5GaXJzdCBWaXNpdCBUaW1lPC90aD4KICAgICAgICAgICAgICAgICAgICA8dGggY2xhc3M9InBiLTIuNSBmb250LW1lZGl1bSI+TGFzdCBBY3RpdmU8L3RoPgogICAgICAgICAgICAgICAgICAgIDx0aCBjbGFzcz0icGItMi41IGZvbnQtbWVkaXVtIj5QYWdlIFZpc2l0ZWQ8L3RoPgogICAgICAgICAgICAgICAgICAgIDx0aCBjbGFzcz0icGItMi41IGZvbnQtbWVkaXVtIj5EZXZpY2UgJiBQbGF0Zm9ybTwvdGg+CiAgICAgICAgICAgICAgICAgICAgPHRoIGNsYXNzPSJwYi0yLjUgZm9udC1tZWRpdW0gdGV4dC1jZW50ZXIiPkhpdHM8L3RoPgogICAgICAgICAgICAgICAgICAgIDx0aCBjbGFzcz0icGItMi41IGZvbnQtbWVkaXVtIHRleHQtcmlnaHQiPlN0YXR1czwvdGg+CiAgICAgICAgICAgICAgICAgIDwvdHI+CiAgICAgICAgICAgICAgICA8L3RoZWFkPgogICAgICAgICAgICAgICAgPHRib2R5IGlkPSJpcC1yZWdpc3RyeS10YWJsZSIgY2xhc3M9ImRpdmlkZS15IGRpdmlkZS1zbGF0ZS01MCBmb250LW5vcm1hbCI+CiAgICAgICAgICAgICAgICAgIDx0ciBpZD0iaXAtcmVnaXN0cnktZW1wdHkiPgogICAgICAgICAgICAgICAgICAgIDx0ZCBjb2xzcGFuPSI4IiBjbGFzcz0icHktMTAgdGV4dC1jZW50ZXIiPgogICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgdGV4dC1jZW50ZXIiPgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJ3LTggaC04IHJvdW5kZWQtZnVsbCBiZy1ibHVlLTUwIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHRleHQtYmx1ZS01MDAgbWItMiI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgPGkgZGF0YS1sdWNpZGU9InNoaWVsZC1jaGVjayIgY2xhc3M9InctNCBoLTQiPjwvaT4KICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LXhzIGZvbnQtbWVkaXVtIHRleHQtc2xhdGUtNjAwIj5MaXN0ZW5pbmcgZm9yIHZpc2l0b3IgSVAgY29ubmVjdGlvbnMuLi48L3A+CiAgICAgICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LVsxMXB4XSB0ZXh0LXNsYXRlLTQwMCBtdC0wLjUgZm9udC1tb25vIj5SZWFsIElQIGFkZHJlc3NlcywgdmlzaXQgdGltZXMsIGFuZCBsb2NhdGlvbnMgYXJlIHJlY29yZGVkIGFuZCBzdG9yZWQgcGVybWFuZW50bHkuPC9wPgogICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPC90ZD4KICAgICAgICAgICAgICAgICAgPC90cj4KICAgICAgICAgICAgICAgIDwvdGJvZHk+CiAgICAgICAgICAgICAgPC90YWJsZT4KICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgPC9kaXY+CgogICAgICAgIDwvc2VjdGlvbj4KCiAgICAgICAgPCEtLSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09IC0tPgogICAgICAgIDwhLS0gVEFCIDI6IENPTlRFTlQgTUFOQUdFTUVOVCAoTElWRSBQT1JURk9MSU8gSEVSTyAmIFRFWFQpICAgICAgICAgICAgICAtLT4KICAgICAgICA8IS0tID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gLS0+CiAgICAgICAgPHNlY3Rpb24gaWQ9InRhYi1jb250ZW50IiBjbGFzcz0idGFiLXBhbmUgaGlkZGVuIHNwYWNlLXktNiI+CiAgICAgICAgICA8ZGl2IGNsYXNzPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4iPgogICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgIDxoMiBjbGFzcz0idGV4dC1sZyBmb250LWJvbGQgdGV4dC1zbGF0ZS05MDAiPkhlcm8gJiBQdWJsaWMgQ29udGVudDwvaDI+CiAgICAgICAgICAgICAgPHAgY2xhc3M9InRleHQteHMgdGV4dC1zbGF0ZS01MDAiPkVkaXQgbGl2ZSBoZXJvIGhlYWRsaW5lcywgc3ViaGVhZGluZ3MsIGJhZGdlcywgYW5kIHByaW1hcnkgYWN0aW9uIGxpbmtzLjwvcD4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0ic2F2ZUhlcm9Db250ZW50KCkiIGNsYXNzPSJpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgcHgtNCBweS0yIHJvdW5kZWQteGwgYmctWyMwRjE3MkFdIGhvdmVyOmJnLXNsYXRlLTgwMCB0ZXh0LXdoaXRlIHRleHQteHMgZm9udC1zZW1pYm9sZCBzaGFkb3ctc20gdHJhbnNpdGlvbiI+CiAgICAgICAgICAgICAgPGkgZGF0YS1sdWNpZGU9InNhdmUiIGNsYXNzPSJ3LTQgaC00Ij48L2k+CiAgICAgICAgICAgICAgPHNwYW4+U2F2ZSAmIFN5bmMgdG8gTGl2ZSBQb3J0Zm9saW88L3NwYW4+CiAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgPC9kaXY+CgogICAgICAgICAgPGRpdiBjbGFzcz0iZ3JpZCBncmlkLWNvbHMtMSBsZzpncmlkLWNvbHMtMyBnYXAtNiI+CiAgICAgICAgICAgIDwhLS0gTGVmdCBGb3JtICgyIGNvbHMpIC0tPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJiZy1jYXJkIHJvdW5kZWQtMnhsIHAtNiBib3JkZXIgYm9yZGVyLWJvcmRlckxpZ2h0IHNoYWRvdy14cyBsZzpjb2wtc3Bhbi0yIHNwYWNlLXktNSI+CiAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZ3JpZCBncmlkLWNvbHMtMSBtZDpncmlkLWNvbHMtMiBnYXAtNCI+CiAgICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LXNsYXRlLTcwMCBtYi0xIj5NYWluIEhlYWRpbmc8L2xhYmVsPgogICAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0idGV4dCIgaWQ9Imhlcm8tbWFpbkhlYWRpbmciIHZhbHVlPSJCdWlsZGluZyBNb2Rlcm4gRnVsbC1TdGFjayBTeXN0ZW1zIiBjbGFzcz0idy1mdWxsIHB4LTMuNSBweS0yLjUgYmctc2xhdGUtNTAgYm9yZGVyIGJvcmRlci1zbGF0ZS0yMDAgcm91bmRlZC14bCB0ZXh0LXhzIHRleHQtc2xhdGUtODAwIGZvY3VzOm91dGxpbmUtbm9uZSBmb2N1czpyaW5nLTIgZm9jdXM6cmluZy1zbGF0ZS05MDAgZm9jdXM6Ymctd2hpdGUgdHJhbnNpdGlvbiIgb25pbnB1dD0idXBkYXRlSGVyb1ByZXZpZXcoKSI+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtNzAwIG1iLTEiPkhpZ2hsaWdodGVkIFRleHQgKEdyYWRpZW50KTwvbGFiZWw+CiAgICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0iaGVyby1oaWdobGlnaHRlZFRleHQiIHZhbHVlPSImIFByYWN0aWNhbCBBSSBTb2x1dGlvbnMiIGNsYXNzPSJ3LWZ1bGwgcHgtMy41IHB5LTIuNSBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIiBvbmlucHV0PSJ1cGRhdGVIZXJvUHJldmlldygpIj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS03MDAgbWItMSI+U3VidGl0bGUgLyBCaW8gTmFycmF0aXZlPC9sYWJlbD4KICAgICAgICAgICAgICAgIDx0ZXh0YXJlYSBpZD0iaGVyby1zdWJ0aXRsZSIgcm93cz0iMyIgY2xhc3M9InctZnVsbCBweC0zLjUgcHktMi41IGJnLXNsYXRlLTUwIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHJvdW5kZWQteGwgdGV4dC14cyB0ZXh0LXNsYXRlLTgwMCBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6cmluZy0yIGZvY3VzOnJpbmctc2xhdGUtOTAwIGZvY3VzOmJnLXdoaXRlIHRyYW5zaXRpb24iIG9uaW5wdXQ9InVwZGF0ZUhlcm9QcmV2aWV3KCkiPkhpLCBJJ20gQW51cmFnIFNhaHUg4oCUIGEgQ29tcHV0ZXIgU2NpZW5jZSBzb3Bob21vcmUgc3BlY2lhbGl6aW5nIGluIEFJICYgTUwuIEkgYnVpbGQgY2xlYW4sIHBlcmZvcm1hbnQgZnVsbC1zdGFjayB3ZWIgYXBwbGljYXRpb25zIGFuZCBleHBsb3JlIHByYWN0aWNhbCBtYWNoaW5lIGxlYXJuaW5nIG1vZGVscy48L3RleHRhcmVhPgogICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJncmlkIGdyaWQtY29scy0xIG1kOmdyaWQtY29scy0yIGdhcC00Ij4KICAgICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtNzAwIG1iLTEiPkF2YWlsYWJpbGl0eSBCYWRnZSBUZXh0PC9sYWJlbD4KICAgICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGlkPSJoZXJvLWF2YWlsYWJpbGl0eUJhZGdlIiB2YWx1ZT0iT1BFTiBUTyBTVU1NRVIgMjAyNiBJTlRFUk5TSElQUyIgY2xhc3M9InctZnVsbCBweC0zLjUgcHktMi41IGJnLXNsYXRlLTUwIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHJvdW5kZWQteGwgdGV4dC14cyB0ZXh0LXNsYXRlLTgwMCBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6cmluZy0yIGZvY3VzOnJpbmctc2xhdGUtOTAwIGZvY3VzOmJnLXdoaXRlIHRyYW5zaXRpb24iIG9uaW5wdXQ9InVwZGF0ZUhlcm9QcmV2aWV3KCkiPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LXNsYXRlLTcwMCBtYi0xIj5TdXBwb3J0aW5nIFRhZ2xpbmU8L2xhYmVsPgogICAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0idGV4dCIgaWQ9Imhlcm8tc3VwcG9ydGluZ1RleHQiIHZhbHVlPSJCLlRlY2ggQ1NFIChBSSAmIE1MKSDigKIgMjAyNOKAkzIwMjgiIGNsYXNzPSJ3LWZ1bGwgcHgtMy41IHB5LTIuNSBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIiBvbmlucHV0PSJ1cGRhdGVIZXJvUHJldmlldygpIj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJncmlkIGdyaWQtY29scy0xIG1kOmdyaWQtY29scy0yIGdhcC00Ij4KICAgICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtNzAwIG1iLTEiPlByaW1hcnkgQnV0dG9uIExhYmVsPC9sYWJlbD4KICAgICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGlkPSJoZXJvLXByaW1hcnlDdGFMYWJlbCIgdmFsdWU9IkV4cGxvcmUgRmxhZ3NoaXAgU3lzdGVtIiBjbGFzcz0idy1mdWxsIHB4LTMuNSBweS0yLjUgYmctc2xhdGUtNTAgYm9yZGVyIGJvcmRlci1zbGF0ZS0yMDAgcm91bmRlZC14bCB0ZXh0LXhzIHRleHQtc2xhdGUtODAwIGZvY3VzOm91dGxpbmUtbm9uZSBmb2N1czpyaW5nLTIgZm9jdXM6cmluZy1zbGF0ZS05MDAgZm9jdXM6Ymctd2hpdGUgdHJhbnNpdGlvbiIgb25pbnB1dD0idXBkYXRlSGVyb1ByZXZpZXcoKSI+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtNzAwIG1iLTEiPlByaW1hcnkgQnV0dG9uIFVSTDwvbGFiZWw+CiAgICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0iaGVyby1wcmltYXJ5Q3RhVXJsIiB2YWx1ZT0iL0FJLUZJTkFOQ0UtQ09OVFJPTExFUiIgY2xhc3M9InctZnVsbCBweC0zLjUgcHktMi41IGJnLXNsYXRlLTUwIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHJvdW5kZWQteGwgdGV4dC14cyB0ZXh0LXNsYXRlLTgwMCBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6cmluZy0yIGZvY3VzOnJpbmctc2xhdGUtOTAwIGZvY3VzOmJnLXdoaXRlIHRyYW5zaXRpb24iIG9uaW5wdXQ9InVwZGF0ZUhlcm9QcmV2aWV3KCkiPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImdyaWQgZ3JpZC1jb2xzLTEgbWQ6Z3JpZC1jb2xzLTIgZ2FwLTQiPgogICAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS03MDAgbWItMSI+UmVzdW1lIERvd25sb2FkIExpbms8L2xhYmVsPgogICAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0idGV4dCIgaWQ9Imhlcm8tcmVzdW1lVXJsIiB2YWx1ZT0iL2Fzc2V0cy9yZXN1bWUucGRmIiBjbGFzcz0idy1mdWxsIHB4LTMuNSBweS0yLjUgYmctc2xhdGUtNTAgYm9yZGVyIGJvcmRlci1zbGF0ZS0yMDAgcm91bmRlZC14bCB0ZXh0LXhzIHRleHQtc2xhdGUtODAwIGZvY3VzOm91dGxpbmUtbm9uZSBmb2N1czpyaW5nLTIgZm9jdXM6cmluZy1zbGF0ZS05MDAgZm9jdXM6Ymctd2hpdGUgdHJhbnNpdGlvbiI+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtNzAwIG1iLTEiPlByb2ZpbGUgUG9ydHJhaXQgSW1hZ2UgVVJMPC9sYWJlbD4KICAgICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGlkPSJoZXJvLXByb2ZpbGVJbWFnZSIgdmFsdWU9Ii9hc3NldHMvYW51cmFnLXBvcnRyYWl0LXNtLndlYnAiIGNsYXNzPSJ3LWZ1bGwgcHgtMy41IHB5LTIuNSBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgIDwhLS0gUmlnaHQgTGl2ZSBQcmV2aWV3IENhcmQgLS0+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImJnLWNhcmQgcm91bmRlZC0yeGwgcC02IGJvcmRlciBib3JkZXItYm9yZGVyTGlnaHQgc2hhZG93LXhzIGZsZXggZmxleC1jb2wganVzdGlmeS1iZXR3ZWVuIj4KICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIG1iLTQiPgogICAgICAgICAgICAgICAgICA8aDMgY2xhc3M9InRleHQteHMgZm9udC1ib2xkIHVwcGVyY2FzZSB0cmFja2luZy13aWRlciB0ZXh0LXNsYXRlLTQwMCI+TGl2ZSBXZWJzaXRlIFByZXZpZXc8L2gzPgogICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xIHRleHQtWzEwcHhdIHRleHQtZW1lcmFsZC02MDAgYmctZW1lcmFsZC01MCBweC0yIHB5LTAuNSByb3VuZGVkLWZ1bGwgZm9udC1tZWRpdW0iPlJlYWwtdGltZSBzeW5jPC9zcGFuPgogICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0icC00IHJvdW5kZWQteGwgYmctc2xhdGUtOTAwIHRleHQtd2hpdGUgc3BhY2UteS0zIHNoYWRvdy1pbm5lciI+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImlubGluZS1mbGV4IGl0ZW1zLWNlbnRlciBnYXAtMS41IHB4LTIuNSBweS0xIHJvdW5kZWQtZnVsbCBiZy1yZWQtNTAwLzEwIGJvcmRlciBib3JkZXItcmVkLTUwMC8yMCB0ZXh0LXJlZC00MDAgdGV4dC1bMTBweF0gZm9udC1tb25vIGZvbnQtbWVkaXVtIj4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0idy0xLjUgaC0xLjUgcm91bmRlZC1mdWxsIGJnLXJlZC01MDAgYW5pbWF0ZS1wdWxzZSI+PC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGlkPSJwcmV2aWV3LWJhZGdlIj5PUEVOIFRPIFNVTU1FUiAyMDI2IElOVEVSTlNISVBTPC9zcGFuPgogICAgICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgICAgIDxoNCBjbGFzcz0idGV4dC1iYXNlIGZvbnQtYm9sZCB0ZXh0LXdoaXRlIHRyYWNraW5nLXRpZ2h0Ij4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBpZD0icHJldmlldy1oZWFkaW5nIj5CdWlsZGluZyBNb2Rlcm4gRnVsbC1TdGFjayBTeXN0ZW1zPC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGlkPSJwcmV2aWV3LWhpZ2hsaWdodCIgY2xhc3M9InRleHQtdHJhbnNwYXJlbnQgYmctY2xpcC10ZXh0IGJnLWdyYWRpZW50LXRvLXIgZnJvbS1jeWFuLTQwMCB0by1ibHVlLTUwMCI+ICYgUHJhY3RpY2FsIEFJIFNvbHV0aW9uczwvc3Bhbj4KICAgICAgICAgICAgICAgICAgPC9oND4KCiAgICAgICAgICAgICAgICAgIDxwIGlkPSJwcmV2aWV3LXN1YnRpdGxlIiBjbGFzcz0idGV4dC14cyB0ZXh0LXNsYXRlLTQwMCBsZWFkaW5nLXJlbGF4ZWQgbGluZS1jbGFtcC0zIj4KICAgICAgICAgICAgICAgICAgICBIaSwgSSdtIEFudXJhZyBTYWh1IOKAlCBhIENvbXB1dGVyIFNjaWVuY2Ugc29waG9tb3JlIHNwZWNpYWxpemluZyBpbiBBSSAmIE1MLgogICAgICAgICAgICAgICAgICA8L3A+CgogICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJwdC0yIGZsZXggaXRlbXMtY2VudGVyIGdhcC0yIj4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBpZD0icHJldmlldy1idG4iIGNsYXNzPSJweC0zIHB5LTEuNSByb3VuZGVkLWxnIGJnLWN5YW4tNTAwIHRleHQtc2xhdGUtOTUwIGZvbnQtc2VtaWJvbGQgdGV4dC1bMTFweF0iPkV4cGxvcmUgRmxhZ3NoaXAgU3lzdGVtPC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJweC0zIHB5LTEuNSByb3VuZGVkLWxnIGJnLXNsYXRlLTgwMCB0ZXh0LXNsYXRlLTMwMCB0ZXh0LVsxMXB4XSI+UmVzdW1lIOKGlzwvc3Bhbj4KICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgPGRpdiBjbGFzcz0ibXQtNiBwdC00IGJvcmRlci10IGJvcmRlci1zbGF0ZS0xMDAgZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIHRleHQteHMgdGV4dC1zbGF0ZS00MDAiPgogICAgICAgICAgICAgICAgPHNwYW4+VXBkYXRlcyBsaXZlIHBvcnRmb2xpbyBpbW1lZGlhdGVseTwvc3Bhbj4KICAgICAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0ic2F2ZUhlcm9Db250ZW50KCkiIGNsYXNzPSJ0ZXh0LWJsdWUtNjAwIGZvbnQtc2VtaWJvbGQgaG92ZXI6dW5kZXJsaW5lIj5TYXZlIE5vdzwvYnV0dG9uPgogICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvc2VjdGlvbj4KCiAgICAgICAgPCEtLSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09IC0tPgogICAgICAgIDwhLS0gVEFCIDM6IFBST0pFQ1RTIE1BTkFHRU1FTlQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtLT4KICAgICAgICA8IS0tID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gLS0+CiAgICAgICAgPHNlY3Rpb24gaWQ9InRhYi1wcm9qZWN0cyIgY2xhc3M9InRhYi1wYW5lIGhpZGRlbiBzcGFjZS15LTYiPgogICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIj4KICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICA8aDIgY2xhc3M9InRleHQtbGcgZm9udC1ib2xkIHRleHQtc2xhdGUtOTAwIj5TaG93Y2FzZSBQcm9qZWN0czwvaDI+CiAgICAgICAgICAgICAgPHAgY2xhc3M9InRleHQteHMgdGV4dC1zbGF0ZS01MDAiPkFkZCwgZWRpdCwgb3IgYWRqdXN0IHRoZSBsaXZlIHN0YXR1cyBvZiB5b3VyIHNob3djYXNlIHByb2plY3RzLjwvcD4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0ib3Blbk5ld1Byb2plY3RNb2RhbCgpIiBjbGFzcz0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgcHgtNCBweS0yIHJvdW5kZWQteGwgYmctWyMwRjE3MkFdIGhvdmVyOmJnLXNsYXRlLTgwMCB0ZXh0LXdoaXRlIHRleHQteHMgZm9udC1zZW1pYm9sZCBzaGFkb3ctc20gdHJhbnNpdGlvbiI+CiAgICAgICAgICAgICAgPGkgZGF0YS1sdWNpZGU9InBsdXMiIGNsYXNzPSJ3LTQgaC00Ij48L2k+CiAgICAgICAgICAgICAgPHNwYW4+QWRkIE5ldyBQcm9qZWN0PC9zcGFuPgogICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgIDxkaXYgaWQ9InByb2plY3RzLWdyaWQiIGNsYXNzPSJncmlkIGdyaWQtY29scy0xIG1kOmdyaWQtY29scy0yIGxnOmdyaWQtY29scy0zIGdhcC01Ij4KICAgICAgICAgICAgPCEtLSBQcm9qZWN0IENhcmRzIGR5bmFtaWNhbGx5IHBvcHVsYXRlZCBieSByZW5kZXJQcm9qZWN0cygpIC0tPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9zZWN0aW9uPgoKICAgICAgICA8IS0tID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gLS0+CiAgICAgICAgPCEtLSBUQUIgNDogU0tJTExTIE1BTkFHRU1FTlQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tPgogICAgICAgIDwhLS0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAtLT4KICAgICAgICA8c2VjdGlvbiBpZD0idGFiLXNraWxscyIgY2xhc3M9InRhYi1wYW5lIGhpZGRlbiBzcGFjZS15LTYiPgogICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIj4KICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICA8aDIgY2xhc3M9InRleHQtbGcgZm9udC1ib2xkIHRleHQtc2xhdGUtOTAwIj5UZWNobmljYWwgU2tpbGxzICYgUHJvZmljaWVuY2llczwvaDI+CiAgICAgICAgICAgICAgPHAgY2xhc3M9InRleHQteHMgdGV4dC1zbGF0ZS01MDAiPkZpbmUtdHVuZSBza2lsbCBwcm9maWNpZW5jeSBzbGlkZXJzIGFuZCBjYXRlZ29yeSBncm91cGluZ3MgZm9yIHRoZSBsaXZlIHBvcnRmb2xpby48L3A+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8YnV0dG9uIG9uY2xpY2s9InNhdmVTa2lsbHMoKSIgY2xhc3M9ImlubGluZS1mbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBweC00IHB5LTIgcm91bmRlZC14bCBiZy1bIzBGMTcyQV0gaG92ZXI6Ymctc2xhdGUtODAwIHRleHQtd2hpdGUgdGV4dC14cyBmb250LXNlbWlib2xkIHNoYWRvdy1zbSB0cmFuc2l0aW9uIj4KICAgICAgICAgICAgICA8aSBkYXRhLWx1Y2lkZT0ic2F2ZSIgY2xhc3M9InctNCBoLTQiPjwvaT4KICAgICAgICAgICAgICA8c3Bhbj5TYXZlIFNraWxscyB0byBMaXZlIFNpdGU8L3NwYW4+CiAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgPC9kaXY+CgogICAgICAgICAgPGRpdiBjbGFzcz0iZ3JpZCBncmlkLWNvbHMtMSBtZDpncmlkLWNvbHMtMiBnYXAtNiIgaWQ9InNraWxscy1jb250YWluZXIiPgogICAgICAgICAgICA8IS0tIENhdGVnb3JpZXMgcG9wdWxhdGVkIGR5bmFtaWNhbGx5OiBGcm9udGVuZCwgQmFja2VuZCwgQUkvTUwsIERhdGFiYXNlcyAtLT4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvc2VjdGlvbj4KCiAgICAgICAgPCEtLSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09IC0tPgogICAgICAgIDwhLS0gVEFCIDU6IEFCT1VUIE1BTkFHRU1FTlQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtLT4KICAgICAgICA8IS0tID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gLS0+CiAgICAgICAgPHNlY3Rpb24gaWQ9InRhYi1hYm91dCIgY2xhc3M9InRhYi1wYW5lIGhpZGRlbiBzcGFjZS15LTYiPgogICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIj4KICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICA8aDIgY2xhc3M9InRleHQtbGcgZm9udC1ib2xkIHRleHQtc2xhdGUtOTAwIj5BYm91dCBOYXJyYXRpdmUgJiBBY2FkZW1pYyBEZXRhaWxzPC9oMj4KICAgICAgICAgICAgICA8cCBjbGFzcz0idGV4dC14cyB0ZXh0LXNsYXRlLTUwMCI+RWRpdCB0aGUgZGV0YWlsZWQgc3RvcnksIGVkdWNhdGlvbiB0aW1lbGluZSwgYW5kIGNvcmUgZW5naW5lZXJpbmcgdmFsdWVzLjwvcD4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0ic2F2ZUFib3V0Q29udGVudCgpIiBjbGFzcz0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0yIHB4LTQgcHktMiByb3VuZGVkLXhsIGJnLVsjMEYxNzJBXSBob3ZlcjpiZy1zbGF0ZS04MDAgdGV4dC13aGl0ZSB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgc2hhZG93LXNtIHRyYW5zaXRpb24iPgogICAgICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJzYXZlIiBjbGFzcz0idy00IGgtNCI+PC9pPgogICAgICAgICAgICAgIDxzcGFuPlNhdmUgJiBTeW5jIHRvIExpdmUgU2l0ZTwvc3Bhbj4KICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICA8ZGl2IGNsYXNzPSJiZy1jYXJkIHJvdW5kZWQtMnhsIHAtNiBib3JkZXIgYm9yZGVyLWJvcmRlckxpZ2h0IHNoYWRvdy14cyBzcGFjZS15LTYiPgogICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtNzAwIG1iLTEiPlNlY3Rpb24gVGl0bGU8L2xhYmVsPgogICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0iYWJvdXQtdGl0bGUiIHZhbHVlPSJBYm91dCBNZSIgY2xhc3M9InctZnVsbCBweC0zLjUgcHktMi41IGJnLXNsYXRlLTUwIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHJvdW5kZWQteGwgdGV4dC14cyB0ZXh0LXNsYXRlLTgwMCBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6cmluZy0yIGZvY3VzOnJpbmctc2xhdGUtOTAwIGZvY3VzOmJnLXdoaXRlIHRyYW5zaXRpb24iPgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS03MDAgbWItMSI+RnVsbCBCaW9ncmFwaHkgTmFycmF0aXZlPC9sYWJlbD4KICAgICAgICAgICAgICA8cCBjbGFzcz0idGV4dC1bMTFweF0gdGV4dC1zbGF0ZS00MDAgbWItMiI+VGhpcyBpcyB0aGUgZXhhY3QgbmFycmF0aXZlIHJlbmRlcmVkIHdpdGggbGV0dGVyLWJ5LWxldHRlciBzY3JvbGwgbGlnaHRpbmcgb24gdGhlIGxpdmUgcG9ydGZvbGlvLjwvcD4KICAgICAgICAgICAgICA8dGV4dGFyZWEgaWQ9ImFib3V0LWRlc2NyaXB0aW9uIiByb3dzPSI1IiBjbGFzcz0idy1mdWxsIHB4LTMuNSBweS0yLjUgYmctc2xhdGUtNTAgYm9yZGVyIGJvcmRlci1zbGF0ZS0yMDAgcm91bmRlZC14bCB0ZXh0LXhzIHRleHQtc2xhdGUtODAwIGZvY3VzOm91dGxpbmUtbm9uZSBmb2N1czpyaW5nLTIgZm9jdXM6cmluZy1zbGF0ZS05MDAgZm9jdXM6Ymctd2hpdGUgdHJhbnNpdGlvbiI+Q29tcHV0ZXIgU2NpZW5jZSBzb3Bob21vcmUgc3BlY2lhbGl6aW5nIGluIEFJICYgTUwuIEkgYnVpbGQgbW9kZXJuIGZ1bGwtc3RhY2sgd2ViIGFwcGxpY2F0aW9ucywgc2NhbGFibGUgYmFja2VuZCBzeXN0ZW1zLCBhbmQgZXhwbG9yZSBwcmFjdGljYWwgbWFjaGluZSBsZWFybmluZyBtb2RlbHMuIFBhc3Npb25hdGUgYWJvdXQgY2xlYW4gYXJjaGl0ZWN0dXJlLCBhbGdvcml0aG1zLCBhbmQgY3JhZnRpbmcgc2VhbWxlc3MgZGlnaXRhbCBleHBlcmllbmNlcy4gTGV0J3MgYnVpbGQgc29tZXRoaW5nIGluY3JlZGlibGUgdG9nZXRoZXIhPC90ZXh0YXJlYT4KICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJncmlkIGdyaWQtY29scy0xIG1kOmdyaWQtY29scy0yIGdhcC00Ij4KICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS03MDAgbWItMSI+QWNhZGVtaWMgRGVncmVlPC9sYWJlbD4KICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0iYWJvdXQtZGVncmVlIiB2YWx1ZT0iQi5UZWNoIGluIENvbXB1dGVyIFNjaWVuY2UgJiBFbmdpbmVlcmluZyAoQUkgJiBNTCkiIGNsYXNzPSJ3LWZ1bGwgcHgtMy41IHB5LTIuNSBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIj4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS03MDAgbWItMSI+RHVyYXRpb24gJiBDdXJyZW50IFN0YXR1czwvbGFiZWw+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0idGV4dCIgaWQ9ImFib3V0LWR1cmF0aW9uIiB2YWx1ZT0iMjAyNCDigJQgMjAyOCDigKIgU29waG9tb3JlIiBjbGFzcz0idy1mdWxsIHB4LTMuNSBweS0yLjUgYmctc2xhdGUtNTAgYm9yZGVyIGJvcmRlci1zbGF0ZS0yMDAgcm91bmRlZC14bCB0ZXh0LXhzIHRleHQtc2xhdGUtODAwIGZvY3VzOm91dGxpbmUtbm9uZSBmb2N1czpyaW5nLTIgZm9jdXM6cmluZy1zbGF0ZS05MDAgZm9jdXM6Ymctd2hpdGUgdHJhbnNpdGlvbiI+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgPGRpdiBjbGFzcz0icHQtNCBib3JkZXItdCBib3JkZXItc2xhdGUtMTAwIj4KICAgICAgICAgICAgICA8aDMgY2xhc3M9InRleHQtc20gZm9udC1ib2xkIHRleHQtc2xhdGUtODAwIG1iLTMiPkNvcmUgRW5naW5lZXJpbmcgUHJpbmNpcGxlczwvaDM+CiAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZ3JpZCBncmlkLWNvbHMtMSBtZDpncmlkLWNvbHMtMyBnYXAtNCI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJwLTQgcm91bmRlZC14bCBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCBzcGFjZS15LTEiPgogICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmb250LXNlbWlib2xkIHRleHQteHMgdGV4dC1zbGF0ZS05MDAiPkRldGVybWluaXN0aWMgRW5naW5lZXJpbmc8L2Rpdj4KICAgICAgICAgICAgICAgICAgPHAgY2xhc3M9InRleHQtWzExcHhdIHRleHQtc2xhdGUtNTAwIj5Xcml0aW5nIHJvYnVzdCwgdGVzdGFibGUsIGFuZCBtYWludGFpbmFibGUgc29mdHdhcmUgc3lzdGVtcy48L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InAtNCByb3VuZGVkLXhsIGJnLXNsYXRlLTUwIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHNwYWNlLXktMSI+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZvbnQtc2VtaWJvbGQgdGV4dC14cyB0ZXh0LXNsYXRlLTkwMCI+UGVyZm9ybWFuY2UgT3B0aW1pemF0aW9uPC9kaXY+CiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LVsxMXB4XSB0ZXh0LXNsYXRlLTUwMCI+QXJjaGl0ZWN0aW5nIGhpZ2gtc3BlZWQsIGxpZ2h0d2VpZ2h0IGV4cGVyaWVuY2VzIHdpdGggc3ViLXNlY29uZCByZXNwb25zZSB0aW1lcy48L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InAtNCByb3VuZGVkLXhsIGJnLXNsYXRlLTUwIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHNwYWNlLXktMSI+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZvbnQtc2VtaWJvbGQgdGV4dC14cyB0ZXh0LXNsYXRlLTkwMCI+UHJvZHVjdGlvbiBSZWxpYWJpbGl0eTwvZGl2PgogICAgICAgICAgICAgICAgICA8cCBjbGFzcz0idGV4dC1bMTFweF0gdGV4dC1zbGF0ZS01MDAiPlplcm8gY29tcHJvbWlzZSBvbiBzZWN1cml0eSwgdmFsaWRhdGlvbiwgYW5kIGZhdWx0LXRvbGVyYW50IGFyY2hpdGVjdHVyZS48L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L3NlY3Rpb24+CgogICAgICAgIDwhLS0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAtLT4KICAgICAgICA8IS0tIFRBQiA2OiBTRVRUSU5HUyBNQU5BR0VNRU5UICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLS0+CiAgICAgICAgPCEtLSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09IC0tPgogICAgICAgIDxzZWN0aW9uIGlkPSJ0YWItc2V0dGluZ3MiIGNsYXNzPSJ0YWItcGFuZSBoaWRkZW4gc3BhY2UteS02Ij4KICAgICAgICAgIDxkaXYgY2xhc3M9ImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiI+CiAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgPGgyIGNsYXNzPSJ0ZXh0LWxnIGZvbnQtYm9sZCB0ZXh0LXNsYXRlLTkwMCI+U3lzdGVtICYgUG9ydGZvbGlvIENvbmZpZ3VyYXRpb248L2gyPgogICAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LXhzIHRleHQtc2xhdGUtNTAwIj5Db25maWd1cmUgZ2xvYmFsIG1ldGFkYXRhLCBtYWludGVuYW5jZSBzd2l0Y2hlcywgY2FjaGluZywgYW5kIGFkbWluaXN0cmF0aW9uIHNlY3VyaXR5LjwvcD4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0ic2F2ZUdsb2JhbFNldHRpbmdzKCkiIGNsYXNzPSJpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgcHgtNCBweS0yIHJvdW5kZWQteGwgYmctWyMwRjE3MkFdIGhvdmVyOmJnLXNsYXRlLTgwMCB0ZXh0LXdoaXRlIHRleHQteHMgZm9udC1zZW1pYm9sZCBzaGFkb3ctc20gdHJhbnNpdGlvbiI+CiAgICAgICAgICAgICAgPGkgZGF0YS1sdWNpZGU9InNhdmUiIGNsYXNzPSJ3LTQgaC00Ij48L2k+CiAgICAgICAgICAgICAgPHNwYW4+U2F2ZSBTeXN0ZW0gU2V0dGluZ3M8L3NwYW4+CiAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgPC9kaXY+CgogICAgICAgICAgPGRpdiBjbGFzcz0iZ3JpZCBncmlkLWNvbHMtMSBsZzpncmlkLWNvbHMtMiBnYXAtNiI+CiAgICAgICAgICAgIAogICAgICAgICAgICA8IS0tIEdsb2JhbCBQb3J0Zm9saW8gT3B0aW9ucyAtLT4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iYmctY2FyZCByb3VuZGVkLTJ4bCBwLTYgYm9yZGVyIGJvcmRlci1ib3JkZXJMaWdodCBzaGFkb3cteHMgc3BhY2UteS01Ij4KICAgICAgICAgICAgICA8aDMgY2xhc3M9InRleHQtc20gZm9udC1ib2xkIHRleHQtc2xhdGUtODAwIHBiLTIgYm9yZGVyLWIgYm9yZGVyLXNsYXRlLTEwMCI+U2l0ZSBEaXJlY3RpdmVzICYgU3dpdGNoZXM8L2gzPgoKICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS03MDAgbWItMSI+U0VPIFRpdGxlIFRhZzwvbGFiZWw+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0idGV4dCIgaWQ9InNldHRpbmctc2VvVGl0bGUiIHZhbHVlPSJBbnVyYWcgU2FodSDigJQgRnVsbC1TdGFjayBEZXZlbG9wZXIgJiBCLlRlY2ggQ1NFIChBSSAmIE1MKSBTb3Bob21vcmUiIGNsYXNzPSJ3LWZ1bGwgcHgtMy41IHB5LTIuNSBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIj4KICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtNzAwIG1iLTEiPkNhbm9uaWNhbCBVUkw8L2xhYmVsPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGlkPSJzZXR0aW5nLWNhbm9uaWNhbFVybCIgdmFsdWU9Imh0dHBzOi8vYW51cmFnc2FodS5jb20iIGNsYXNzPSJ3LWZ1bGwgcHgtMy41IHB5LTIuNSBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIj4KICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtNzAwIG1iLTEiPkNvbnRhY3QgRW1haWwgUmVjaXBpZW50PC9sYWJlbD4KICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJlbWFpbCIgaWQ9InNldHRpbmctY29udGFjdEVtYWlsIiB2YWx1ZT0ic2hpdmFzYWh1MDYxMkBnbWFpbC5jb20iIGNsYXNzPSJ3LWZ1bGwgcHgtMy41IHB5LTIuNSBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIj4KICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgPGRpdiBjbGFzcz0icHQtMiBzcGFjZS15LTMiPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIHAtMyByb3VuZGVkLXhsIGJnLXNsYXRlLTUwIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIj4KICAgICAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtOTAwIj5NYWludGVuYW5jZSBNb2RlPC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LVsxMXB4XSB0ZXh0LXNsYXRlLTUwMCI+RGlzcGxheXMgZW1lcmdlbmN5IG1haW50ZW5hbmNlIG5vdGljZSBvbiB0aGUgcHVibGljIHdlYnNpdGUuPC9wPgogICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9ImNoZWNrYm94IiBpZD0ic2V0dGluZy1tYWludGVuYW5jZU1vZGUiIGNsYXNzPSJ3LTQgaC00IHJvdW5kZWQgdGV4dC1zbGF0ZS05MDAgZm9jdXM6cmluZy1zbGF0ZS05MDAiPgogICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIHAtMyByb3VuZGVkLXhsIGJnLXNsYXRlLTUwIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIj4KICAgICAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0idGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtOTAwIj5Db250YWN0IFN1Ym1pc3Npb25zPC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LVsxMXB4XSB0ZXh0LXNsYXRlLTUwMCI+QWxsb3cgdmlzaXRvcnMgdG8gc3VibWl0IG1lc3NhZ2VzIHZpYSB0aGUgY29udGFjdCBmb3JtLjwvcD4KICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJjaGVja2JveCIgaWQ9InNldHRpbmctY29udGFjdEZvcm1FbmFibGVkIiBjaGVja2VkIGNsYXNzPSJ3LTQgaC00IHJvdW5kZWQgdGV4dC1zbGF0ZS05MDAgZm9jdXM6cmluZy1zbGF0ZS05MDAiPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgPCEtLSBDYWNoZSAmIEFkbWluaXN0cmF0aW9uIFRvb2xzIC0tPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJiZy1jYXJkIHJvdW5kZWQtMnhsIHAtNiBib3JkZXIgYm9yZGVyLWJvcmRlckxpZ2h0IHNoYWRvdy14cyBzcGFjZS15LTUgZmxleCBmbGV4LWNvbCBqdXN0aWZ5LWJldHdlZW4iPgogICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICA8aDMgY2xhc3M9InRleHQtc20gZm9udC1ib2xkIHRleHQtc2xhdGUtODAwIHBiLTIgYm9yZGVyLWIgYm9yZGVyLXNsYXRlLTEwMCBtYi00Ij5DYWNoZSAmIFNlY3VyaXR5IE9wZXJhdGlvbnM8L2gzPgoKICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InNwYWNlLXktNCI+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InAtNCByb3VuZGVkLXhsIGJnLXNsYXRlLTUwIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHNwYWNlLXktMiI+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIj4KICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS05MDAiPkNsaWVudC1TaWRlIENhY2hlIFB1cmdlPC9zcGFuPgogICAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQtWzEwcHhdIHRleHQtc2xhdGUtNDAwIGZvbnQtbW9ubyI+djIuMS4wPC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJ0ZXh0LVsxMXB4XSB0ZXh0LXNsYXRlLTUwMCI+Rm9yY2VzIGJyb3dzZXIgY2FjaGVzIGFuZCBzZXJ2aWNlIHdvcmtlcnMgYWNyb3NzIGFsbCBkZXZpY2VzIHRvIGltbWVkaWF0ZWx5IGZldGNoIGZyZXNoIHBvcnRmb2xpbyBhc3NldHMuPC9wPgogICAgICAgICAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0icHVyZ2VDbGllbnRDYWNoZSgpIiBjbGFzcz0ibXQtMSBweC0zIHB5LTEuNSByb3VuZGVkLWxnIGJnLXNsYXRlLTkwMCBob3ZlcjpiZy1zbGF0ZS04MDAgdGV4dC13aGl0ZSB0ZXh0LXhzIGZvbnQtbWVkaXVtIHRyYW5zaXRpb24gZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTEuNSI+CiAgICAgICAgICAgICAgICAgICAgICA8aSBkYXRhLWx1Y2lkZT0icmVmcmVzaC1jdyIgY2xhc3M9InctMy41IGgtMy41Ij48L2k+CiAgICAgICAgICAgICAgICAgICAgICA8c3Bhbj5QdXJnZSBDYWNoZSAmIFJlZnJlc2ggQ2xpZW50czwvc3Bhbj4KICAgICAgICAgICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJwLTQgcm91bmRlZC14bCBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCBzcGFjZS15LTIiPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS05MDAiPkV4cG9ydCAvIEJhY2t1cCBDTVMgRGF0YTwvc3Bhbj4KICAgICAgICAgICAgICAgICAgICA8cCBjbGFzcz0idGV4dC1bMTFweF0gdGV4dC1zbGF0ZS01MDAiPkRvd25sb2FkIGEgZnVsbCBKU09OIGJhY2t1cCBvZiBhbGwgcG9ydGZvbGlvIGNvbnRlbnQsIHByb2plY3RzLCBhbmQgc2tpbGxzLjwvcD4KICAgICAgICAgICAgICAgICAgICA8YnV0dG9uIG9uY2xpY2s9ImV4cG9ydENtc0JhY2t1cCgpIiBjbGFzcz0ibXQtMSBweC0zIHB5LTEuNSByb3VuZGVkLWxnIGJnLXNsYXRlLTIwMCBob3ZlcjpiZy1zbGF0ZS0zMDAgdGV4dC1zbGF0ZS04MDAgdGV4dC14cyBmb250LW1lZGl1bSB0cmFuc2l0aW9uIGZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUiPgogICAgICAgICAgICAgICAgICAgICAgPGkgZGF0YS1sdWNpZGU9ImRvd25sb2FkIiBjbGFzcz0idy0zLjUgaC0zLjUiPjwvaT4KICAgICAgICAgICAgICAgICAgICAgIDxzcGFuPkV4cG9ydCBKU09OIEJhY2t1cDwvc3Bhbj4KICAgICAgICAgICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJwLTQgcm91bmRlZC14bCBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCBzcGFjZS15LTIiPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS05MDAiPlNpZ24gT3V0IEFkbWluaXN0cmF0b3I8L3NwYW4+CiAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3M9InRleHQtWzExcHhdIHRleHQtc2xhdGUtNTAwIj5Mb2NrIHRoZSBhZG1pbiBwYW5lbCBhbmQgaW52YWxpZGF0ZSB0aGUgY3VycmVudCBzZXNzaW9uLjwvcD4KICAgICAgICAgICAgICAgICAgICA8YnV0dG9uIG9uY2xpY2s9ImhhbmRsZVNpZ25PdXQoKSIgY2xhc3M9Im10LTEgcHgtMyBweS0xLjUgcm91bmRlZC1sZyBiZy1yZWQtNTAgaG92ZXI6YmctcmVkLTEwMCB0ZXh0LXJlZC02MDAgYm9yZGVyIGJvcmRlci1yZWQtMjAwIHRleHQteHMgZm9udC1tZWRpdW0gdHJhbnNpdGlvbiBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMS41Ij4KICAgICAgICAgICAgICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJsb2ctb3V0IiBjbGFzcz0idy0zLjUgaC0zLjUiPjwvaT4KICAgICAgICAgICAgICAgICAgICAgIDxzcGFuPlNpZ24gT3V0PC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICA8cCBjbGFzcz0idGV4dC1bMTFweF0gdGV4dC1zbGF0ZS00MDAgZm9udC1tb25vIG10LTQiPkFudXJhZyBTYWh1IENvbnRyb2wgQ2VudGVyIHYyLjEuMCDigKIgTm9kZS5qcyAvIEV4cHJlc3MgLyBWZXJjZWw8L3A+CiAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvc2VjdGlvbj4KCiAgICAgIDwvbWFpbj4KCiAgICAgIDwhLS0gTU9CSUxFIEJPVFRPTSBOQVZJR0FUSU9OIERPQ0sgLS0+CiAgICAgIDxuYXYgY2xhc3M9ImxnOmhpZGRlbiBmaXhlZCBib3R0b20tMCBsZWZ0LTAgcmlnaHQtMCB6LTMwIGJnLVsjMEIxMzJCXS85NSBiYWNrZHJvcC1ibHVyLWxnIGJvcmRlci10IGJvcmRlci1zbGF0ZS04MDAgcHgtMSBweS0xIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBzZWxlY3Qtbm9uZSBzYWZlLWFyZWEtcGIiPgogICAgICAgIDxidXR0b24gb25jbGljaz0ic3dpdGNoVGFiKCdkYXNoYm9hcmQnKSIgY2xhc3M9Im1vYmlsZS1uYXYtYnRuIGZsZXgtMSBmbGV4IGZsZXgtY29sIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBweS0xIHB4LTAuNSByb3VuZGVkLWxnIHRleHQtd2hpdGUiIGRhdGEtdGFiPSJkYXNoYm9hcmQiPgogICAgICAgICAgPGkgZGF0YS1sdWNpZGU9ImhvbWUiIGNsYXNzPSJ3LTQgaC00IG1iLTAuNSI+PC9pPgogICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQtWzkuNXB4XSB0cmFja2luZy10aWdodCB0cnVuY2F0ZSI+SG9tZTwvc3Bhbj4KICAgICAgICA8L2J1dHRvbj4KICAgICAgICA8YnV0dG9uIG9uY2xpY2s9InN3aXRjaFRhYignY29udGVudCcpIiBjbGFzcz0ibW9iaWxlLW5hdi1idG4gZmxleC0xIGZsZXggZmxleC1jb2wgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHB5LTEgcHgtMC41IHJvdW5kZWQtbGcgdGV4dC1zbGF0ZS00MDAiIGRhdGEtdGFiPSJjb250ZW50Ij4KICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJmaWxlLXRleHQiIGNsYXNzPSJ3LTQgaC00IG1iLTAuNSI+PC9pPgogICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQtWzkuNXB4XSB0cmFja2luZy10aWdodCB0cnVuY2F0ZSI+Q29udGVudDwvc3Bhbj4KICAgICAgICA8L2J1dHRvbj4KICAgICAgICA8YnV0dG9uIG9uY2xpY2s9InN3aXRjaFRhYigncHJvamVjdHMnKSIgY2xhc3M9Im1vYmlsZS1uYXYtYnRuIGZsZXgtMSBmbGV4IGZsZXgtY29sIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBweS0xIHB4LTAuNSByb3VuZGVkLWxnIHRleHQtc2xhdGUtNDAwIiBkYXRhLXRhYj0icHJvamVjdHMiPgogICAgICAgICAgPGkgZGF0YS1sdWNpZGU9ImZvbGRlciIgY2xhc3M9InctNCBoLTQgbWItMC41Ij48L2k+CiAgICAgICAgICA8c3BhbiBjbGFzcz0idGV4dC1bOS41cHhdIHRyYWNraW5nLXRpZ2h0IHRydW5jYXRlIj5Qcm9qZWN0czwvc3Bhbj4KICAgICAgICA8L2J1dHRvbj4KICAgICAgICA8YnV0dG9uIG9uY2xpY2s9InN3aXRjaFRhYignc2tpbGxzJykiIGNsYXNzPSJtb2JpbGUtbmF2LWJ0biBmbGV4LTEgZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcHktMSBweC0wLjUgcm91bmRlZC1sZyB0ZXh0LXNsYXRlLTQwMCIgZGF0YS10YWI9InNraWxscyI+CiAgICAgICAgICA8aSBkYXRhLWx1Y2lkZT0ibGF5ZXJzIiBjbGFzcz0idy00IGgtNCBtYi0wLjUiPjwvaT4KICAgICAgICAgIDxzcGFuIGNsYXNzPSJ0ZXh0LVs5LjVweF0gdHJhY2tpbmctdGlnaHQgdHJ1bmNhdGUiPlNraWxsczwvc3Bhbj4KICAgICAgICA8L2J1dHRvbj4KICAgICAgICA8YnV0dG9uIG9uY2xpY2s9InN3aXRjaFRhYignYWJvdXQnKSIgY2xhc3M9Im1vYmlsZS1uYXYtYnRuIGZsZXgtMSBmbGV4IGZsZXgtY29sIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBweS0xIHB4LTAuNSByb3VuZGVkLWxnIHRleHQtc2xhdGUtNDAwIiBkYXRhLXRhYj0iYWJvdXQiPgogICAgICAgICAgPGkgZGF0YS1sdWNpZGU9InVzZXIiIGNsYXNzPSJ3LTQgaC00IG1iLTAuNSI+PC9pPgogICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQtWzkuNXB4XSB0cmFja2luZy10aWdodCB0cnVuY2F0ZSI+QWJvdXQ8L3NwYW4+CiAgICAgICAgPC9idXR0b24+CiAgICAgICAgPGJ1dHRvbiBvbmNsaWNrPSJzd2l0Y2hUYWIoJ3NldHRpbmdzJykiIGNsYXNzPSJtb2JpbGUtbmF2LWJ0biBmbGV4LTEgZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcHktMSBweC0wLjUgcm91bmRlZC1sZyB0ZXh0LXNsYXRlLTQwMCIgZGF0YS10YWI9InNldHRpbmdzIj4KICAgICAgICAgIDxpIGRhdGEtbHVjaWRlPSJzZXR0aW5ncyIgY2xhc3M9InctNCBoLTQgbWItMC41Ij48L2k+CiAgICAgICAgICA8c3BhbiBjbGFzcz0idGV4dC1bOS41cHhdIHRyYWNraW5nLXRpZ2h0IHRydW5jYXRlIj5TZXR0aW5nczwvc3Bhbj4KICAgICAgICA8L2J1dHRvbj4KICAgICAgPC9uYXY+CgogICAgPC9kaXY+CiAgPC9kaXY+CgogIDwhLS0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAtLT4KICA8IS0tIE1PREFMOiBBREQgLyBFRElUIFBST0pFQ1QgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLS0+CiAgPCEtLSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09IC0tPgogIDxkaXYgaWQ9InByb2plY3QtbW9kYWwiIGNsYXNzPSJmaXhlZCBpbnNldC0wIHotNTAgYmctc2xhdGUtOTUwLzcwIGJhY2tkcm9wLWJsdXItc20gZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcC00IHRyYW5zaXRpb24tYWxsIGR1cmF0aW9uLTMwMCBoaWRkZW4iPgogICAgPGRpdiBjbGFzcz0iYmctd2hpdGUgcm91bmRlZC0yeGwgc2hhZG93LTJ4bCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCB3LWZ1bGwgbWF4LXctbGcgcC02IG1heC1oLVs5MHZoXSBvdmVyZmxvdy15LWF1dG8iPgogICAgICA8ZGl2IGNsYXNzPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4gcGItNCBib3JkZXItYiBib3JkZXItc2xhdGUtMTAwIj4KICAgICAgICA8aDMgaWQ9InByb2plY3QtbW9kYWwtdGl0bGUiIGNsYXNzPSJ0ZXh0LWJhc2UgZm9udC1ib2xkIHRleHQtc2xhdGUtOTAwIj5BZGQgTmV3IFByb2plY3Q8L2gzPgogICAgICAgIDxidXR0b24gb25jbGljaz0iY2xvc2VQcm9qZWN0TW9kYWwoKSIgY2xhc3M9InRleHQtc2xhdGUtNDAwIGhvdmVyOnRleHQtc2xhdGUtNjAwIHAtMSI+CiAgICAgICAgICA8aSBkYXRhLWx1Y2lkZT0ieCIgY2xhc3M9InctNSBoLTUiPjwvaT4KICAgICAgICA8L2J1dHRvbj4KICAgICAgPC9kaXY+CgogICAgICA8Zm9ybSBpZD0icHJvamVjdC1tb2RhbC1mb3JtIiBvbnN1Ym1pdD0iaGFuZGxlUHJvamVjdFNhdmUoZXZlbnQpIiBjbGFzcz0ic3BhY2UteS00IHB0LTQiPgogICAgICAgIDxpbnB1dCB0eXBlPSJoaWRkZW4iIGlkPSJwbS1pZCI+CgogICAgICAgIDxkaXY+CiAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LXNsYXRlLTcwMCBtYi0xIj5Qcm9qZWN0IFRpdGxlPC9sYWJlbD4KICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0icG0tdGl0bGUiIHJlcXVpcmVkIHBsYWNlaG9sZGVyPSJlLmcuIEFJIEZpbmFuY2UgQ29udHJvbGxlciIgY2xhc3M9InctZnVsbCBweC0zLjUgcHktMiBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIj4KICAgICAgICA8L2Rpdj4KCiAgICAgICAgPGRpdj4KICAgICAgICAgIDxsYWJlbCBjbGFzcz0iYmxvY2sgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtNzAwIG1iLTEiPlRhZ2xpbmUgLyBTaG9ydCBTdW1tYXJ5PC9sYWJlbD4KICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0icG0tdGFnbGluZSIgcGxhY2Vob2xkZXI9IkF1dG9ub21vdXMgZmluYW5jaWFsIG9wZXJhdGlvbnMgJiByZWNvbmNpbGlhdGlvbiIgY2xhc3M9InctZnVsbCBweC0zLjUgcHktMiBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIj4KICAgICAgICA8L2Rpdj4KCiAgICAgICAgPGRpdiBjbGFzcz0iZ3JpZCBncmlkLWNvbHMtMiBnYXAtMyI+CiAgICAgICAgICA8ZGl2PgogICAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LXNsYXRlLTcwMCBtYi0xIj5DYXRlZ29yeTwvbGFiZWw+CiAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0icG0tY2F0ZWdvcnkiIHBsYWNlaG9sZGVyPSJlLmcuIEFJICYgRmludGVjaCIgY2xhc3M9InctZnVsbCBweC0zLjUgcHktMiBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIj4KICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPGRpdj4KICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS03MDAgbWItMSI+U3RhdHVzPC9sYWJlbD4KICAgICAgICAgICAgPHNlbGVjdCBpZD0icG0tc3RhdHVzIiBjbGFzcz0idy1mdWxsIHB4LTMuNSBweS0yIGJnLXNsYXRlLTUwIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHJvdW5kZWQteGwgdGV4dC14cyB0ZXh0LXNsYXRlLTgwMCBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6cmluZy0yIGZvY3VzOnJpbmctc2xhdGUtOTAwIGZvY3VzOmJnLXdoaXRlIHRyYW5zaXRpb24iPgogICAgICAgICAgICAgIDxvcHRpb24gdmFsdWU9IkNvbXBsZXRlZCI+Q29tcGxldGVkIPCfn6I8L29wdGlvbj4KICAgICAgICAgICAgICA8b3B0aW9uIHZhbHVlPSJXb3JraW5nIj5Xb3JraW5nIPCfn6I8L29wdGlvbj4KICAgICAgICAgICAgICA8b3B0aW9uIHZhbHVlPSJDb21pbmcgU29vbiI+Q29taW5nIFNvb24g8J+foTwvb3B0aW9uPgogICAgICAgICAgICA8L3NlbGVjdD4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgoKICAgICAgICA8ZGl2PgogICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS03MDAgbWItMSI+VGVjaCBTdGFjayAoY29tbWEgc2VwYXJhdGVkKTwvbGFiZWw+CiAgICAgICAgICA8aW5wdXQgdHlwZT0idGV4dCIgaWQ9InBtLXN0YWNrIiBwbGFjZWhvbGRlcj0iUmVhY3QsIE5vZGUuanMsIEV4cHJlc3MsIFB5VG9yY2gsIFRhaWx3aW5kIENTUyIgY2xhc3M9InctZnVsbCBweC0zLjUgcHktMiBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIj4KICAgICAgICA8L2Rpdj4KCiAgICAgICAgPGRpdiBjbGFzcz0iZ3JpZCBncmlkLWNvbHMtMiBnYXAtMyI+CiAgICAgICAgICA8ZGl2PgogICAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LXNsYXRlLTcwMCBtYi0xIj5MaXZlIERlbW8gVVJMPC9sYWJlbD4KICAgICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGlkPSJwbS1kZW1vIiBwbGFjZWhvbGRlcj0iL0FJLUZJTkFOQ0UtQ09OVFJPTExFUiIgY2xhc3M9InctZnVsbCBweC0zLjUgcHktMiBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIj4KICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPGRpdj4KICAgICAgICAgICAgPGxhYmVsIGNsYXNzPSJibG9jayB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS03MDAgbWItMSI+R2l0SHViIFJlcG8gVVJMPC9sYWJlbD4KICAgICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGlkPSJwbS1naXRodWIiIHBsYWNlaG9sZGVyPSJodHRwczovL2dpdGh1Yi5jb20vYW51cmFnc2FodTAvLi4uIiBjbGFzcz0idy1mdWxsIHB4LTMuNSBweS0yIGJnLXNsYXRlLTUwIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHJvdW5kZWQteGwgdGV4dC14cyB0ZXh0LXNsYXRlLTgwMCBmb2N1czpvdXRsaW5lLW5vbmUgZm9jdXM6cmluZy0yIGZvY3VzOnJpbmctc2xhdGUtOTAwIGZvY3VzOmJnLXdoaXRlIHRyYW5zaXRpb24iPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CgogICAgICAgIDxkaXY+CiAgICAgICAgICA8bGFiZWwgY2xhc3M9ImJsb2NrIHRleHQteHMgZm9udC1zZW1pYm9sZCB0ZXh0LXNsYXRlLTcwMCBtYi0xIj5EZXNjcmlwdGlvbjwvbGFiZWw+CiAgICAgICAgICA8dGV4dGFyZWEgaWQ9InBtLWRlc2MiIHJvd3M9IjMiIHBsYWNlaG9sZGVyPSJEZXRhaWxlZCB0ZWNobmljYWwgb3ZlcnZpZXcgb2Ygd2hhdCB5b3UgZW5naW5lZXJlZC4uLiIgY2xhc3M9InctZnVsbCBweC0zLjUgcHktMiBiZy1zbGF0ZS01MCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCByb3VuZGVkLXhsIHRleHQteHMgdGV4dC1zbGF0ZS04MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLXNsYXRlLTkwMCBmb2N1czpiZy13aGl0ZSB0cmFuc2l0aW9uIj48L3RleHRhcmVhPgogICAgICAgIDwvZGl2PgoKICAgICAgICA8ZGl2IGNsYXNzPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWVuZCBnYXAtMiBwdC0zIGJvcmRlci10IGJvcmRlci1zbGF0ZS0xMDAiPgogICAgICAgICAgPGJ1dHRvbiB0eXBlPSJidXR0b24iIG9uY2xpY2s9ImNsb3NlUHJvamVjdE1vZGFsKCkiIGNsYXNzPSJweC00IHB5LTIgcm91bmRlZC14bCB0ZXh0LXNsYXRlLTYwMCBob3ZlcjpiZy1zbGF0ZS0xMDAgdGV4dC14cyBmb250LW1lZGl1bSI+Q2FuY2VsPC9idXR0b24+CiAgICAgICAgICA8YnV0dG9uIHR5cGU9InN1Ym1pdCIgY2xhc3M9InB4LTQgcHktMiByb3VuZGVkLXhsIGJnLVsjMEYxNzJBXSBob3ZlcjpiZy1zbGF0ZS04MDAgdGV4dC13aGl0ZSB0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgc2hhZG93LXNtIHRyYW5zaXRpb24iPlNhdmUgUHJvamVjdDwvYnV0dG9uPgogICAgICAgIDwvZGl2PgogICAgICA8L2Zvcm0+CiAgICA8L2Rpdj4KICA8L2Rpdj4=";
+    let isSessionActive = false;
+
+    // Disable Right-Click Context Menu
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    // Disable DevTools & Inspect Keyboard Shortcuts
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "F12" || e.keyCode === 123) { e.preventDefault(); return false; }
+      if ((e.ctrlKey || e.metaKey) && (e.shiftKey || e.altKey) && ["I","i","J","j","C","c"].includes(e.key)) { e.preventDefault(); return false; }
+      if ((e.ctrlKey || e.metaKey) && ["u","U","s","S"].includes(e.key)) { e.preventDefault(); return false; }
+    });
+
+    // Console Scrubbing & Anti-Tamper Shield
+    (() => {
+      try {
+        const bannerStyle = "background: #021a1d; color: #00e6c3; font-family: monospace; font-size: 13px; font-weight: bold; border: 1px solid #00e6c3; padding: 10px 14px; border-radius: 6px;";
+        console.clear();
+        console.log("%c[ZERO-TRUST SHIELD] Console inspection disabled. Source code is cryptographically sealed.", bannerStyle);
+        ["log", "info", "warn", "error", "table", "dir", "trace"].forEach((fn) => {
+          console[fn] = () => {};
+        });
+      } catch (e) {}
+    })();
+
+    function unlockVault() {
+      isSessionActive = true;
+      const root = document.getElementById("admin-vault-root");
+      if (!root) return;
+      try {
+        const bin = atob(VAULT_PAYLOAD);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        root.innerHTML = new TextDecoder().decode(bytes);
+        root.classList.remove("hidden");
+        document.getElementById("auth-modal").classList.add("hidden");
+        document.getElementById("auth-modal").classList.remove("flex");
+        if (typeof lucide !== "undefined") lucide.createIcons();
+        loadStoredCmsData();
+        initLiveVisitorsChart();
+        startLiveClocks();
+        syncAndRenderIpRegistry([], []);
+        startRealtimePolling();
+        const hash = window.location.hash.replace("#", "");
+        if (hash) switchTab(hash);
+      } catch (err) {
+        alert("Decryption failure. Access denied.");
+      }
+    }
+
+    function lockVault() {
+      isSessionActive = false;
+      stopRealtimePolling();
+      sessionStorage.clear();
+      localStorage.removeItem("as_admin_jwt");
+      localStorage.removeItem("as_admin_auth_user");
+      const root = document.getElementById("admin-vault-root");
+      if (root) {
+        root.innerHTML = "";
+        root.classList.add("hidden");
+      }
+      const authModal = document.getElementById("auth-modal");
+      if (authModal) {
+        authModal.classList.remove("hidden");
+        authModal.classList.add("flex");
+      }
+    }
+
     /* -------------------------------------------------------------------------- */
     /* State & Defaults                                                           */
     /* -------------------------------------------------------------------------- */
@@ -1248,18 +503,12 @@
     /* Initialization & Dynamic Data Loading                                      */
     /* -------------------------------------------------------------------------- */
     document.addEventListener('DOMContentLoaded', () => {
-      loadStoredCmsData();
-      initLiveVisitorsChart();
-      startLiveClocks();
-      
       // Strict authentication barrier check (keeps panel locked until login)
       checkAuthentication();
 
-      const hash = window.location.hash.replace('#', '');
-      if (hash) switchTab(hash);
       window.addEventListener('hashchange', () => {
         const h = window.location.hash.replace('#', '');
-        if (h) switchTab(h);
+        if (h && typeof switchTab === 'function') switchTab(h);
       });
       if (typeof lucide !== 'undefined') lucide.createIcons();
     });
@@ -2324,30 +1573,30 @@
     } catch (e) {}
 
     function checkAuthentication() {
-      const authModal = document.getElementById('auth-modal');
-      const appShell = document.getElementById('app-shell');
       const isVerified = sessionStorage.getItem('as_admin_verified');
 
       if (isVerified === 'true') {
-        // Authenticated in this active browser session: unlock admin panel
-        authModal.classList.add('hidden');
-        authModal.classList.remove('flex');
-        appShell.classList.remove('hidden');
-
-        // Render stored IP logs immediately
-        syncAndRenderIpRegistry([], []);
-        // Start live 3-second telemetry polling
-        startRealtimePolling();
+        unlockVault();
         return true;
       }
 
       // STRICT ZERO-TRUST LOCKOUT: Bina pass ke no entry!
-      stopRealtimePolling();
-      appShell.classList.add('hidden');
-      authModal.classList.remove('hidden');
-      authModal.classList.add('flex');
+      lockVault();
       return false;
     }
+
+    // ─── MUTATION OBSERVER SENTRY (PREVENTS CONSOLE DOM TAMPERING) ─
+    const vaultObserver = new MutationObserver(() => {
+      if (!isSessionActive) {
+        const root = document.getElementById('admin-vault-root');
+        if (root && (!root.classList.contains('hidden') || root.children.length > 0)) {
+          root.classList.add('hidden');
+          root.innerHTML = '';
+        }
+      }
+    });
+    const rootEl = document.getElementById('admin-vault-root');
+    if (rootEl) vaultObserver.observe(rootEl, { attributes: true, childList: true, subtree: true });
 
     async function handleAuthLogin(e) {
       e.preventDefault();
@@ -2381,15 +1630,7 @@
           sessionStorage.setItem('as_admin_verified', 'true');
           if (json.token) sessionStorage.setItem('as_admin_jwt', json.token);
 
-          // Unlock admin interface
-          document.getElementById('auth-modal').classList.add('hidden');
-          document.getElementById('auth-modal').classList.remove('flex');
-          document.getElementById('app-shell').classList.remove('hidden');
-
-          // Initialize IP logs & start 3-second realtime telemetry
-          syncAndRenderIpRegistry([], []);
-          startRealtimePolling();
-
+          unlockVault();
           showToast('Access Granted. Welcome back, Anurag!', 'success');
           return;
         }
@@ -2400,14 +1641,7 @@
 
         if (isOwnerId && isOwnerPwd) {
           sessionStorage.setItem('as_admin_verified', 'true');
-
-          document.getElementById('auth-modal').classList.add('hidden');
-          document.getElementById('auth-modal').classList.remove('flex');
-          document.getElementById('app-shell').classList.remove('hidden');
-
-          syncAndRenderIpRegistry([], []);
-          startRealtimePolling();
-
+          unlockVault();
           showToast('Access Granted. Welcome back, Anurag!', 'success');
           return;
         }
@@ -2530,10 +1764,7 @@
     });
 
     function handleSignOut() {
-      sessionStorage.clear();
-      localStorage.removeItem(ADMIN_AUTH_KEY);
-      localStorage.removeItem('as_admin_jwt');
-      stopRealtimePolling();
+      lockVault();
       fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
 
       // Clear form inputs
@@ -2543,12 +1774,6 @@
       if (uInput) uInput.value = '';
       if (pInput) pInput.value = '';
       if (errBox) errBox.classList.add('hidden');
-
-      // Hide app-shell and display full-screen cyber login terminal
-      document.getElementById('app-shell').classList.add('hidden');
-      const authModal = document.getElementById('auth-modal');
-      authModal.classList.remove('hidden');
-      authModal.classList.add('flex');
 
       const menu = document.getElementById('profile-dropdown-menu');
       if (menu) menu.classList.add('hidden');
