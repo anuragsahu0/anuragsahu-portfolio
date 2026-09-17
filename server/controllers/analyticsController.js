@@ -60,6 +60,29 @@ function saveIpRegistryToDisk() {
   } catch (e) {}
 }
 
+// Persistent YouTube-Style Visitor Activity History (Never Diluted — every visit preserved!)
+const VISITOR_HISTORY_FILE = path.join('/tmp', 'as_permanent_visitor_history.json');
+let visitorHistory = [];
+
+function loadVisitorHistoryFromDisk() {
+  try {
+    if (fs.existsSync(VISITOR_HISTORY_FILE)) {
+      const data = JSON.parse(fs.readFileSync(VISITOR_HISTORY_FILE, 'utf8'));
+      if (Array.isArray(data)) {
+        visitorHistory = data;
+      }
+    }
+  } catch (e) {}
+}
+loadVisitorHistoryFromDisk();
+
+function saveVisitorHistoryToDisk() {
+  try {
+    const list = visitorHistory.slice(0, 5000);
+    fs.writeFileSync(VISITOR_HISTORY_FILE, JSON.stringify(list, null, 2), 'utf8');
+  } catch (e) {}
+}
+
 /**
  * Hash IP address for privacy-preserving visitor counting
  */
@@ -398,6 +421,39 @@ const trackEvent = async (req, res) => {
       });
     }
     saveIpRegistryToDisk();
+
+    // Record in YouTube-Style Chronological Visitor History Stream (Never Diluted!)
+    const histEntry = {
+      id: `hist-${now.getTime()}-${Math.random().toString(36).substr(2, 5)}`,
+      ipAddress: clientIp,
+      location: locationStr,
+      city: city || '',
+      region: region || '',
+      country: countryInfo.country,
+      countryFlag: countryInfo.flag,
+      countryCode: countryInfo.code,
+      page: rawPath,
+      lastPage: rawPath,
+      device: parsedUA.deviceType,
+      deviceModel: detectedDeviceModel,
+      browser: parsedUA.browser,
+      os: parsedUA.os,
+      time: now.toISOString(),
+      timestamp: now.toISOString(),
+      timeFormatted: now.toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }),
+    };
+    visitorHistory.unshift(histEntry);
+    if (visitorHistory.length > 5000) visitorHistory.pop();
+    saveVisitorHistoryToDisk();
 
     // Track active online session
     activeSessions.set(clientIp, {
@@ -834,48 +890,85 @@ const getRealtimeAnalytics = async (req, res) => {
       }
     }
 
-    // 7. Persistent IP Registry (Never Diluted — saved permanently even after user exits!)
-    // Ensure any IP from recent events is also present in registry
-    events.forEach((ev) => {
-      if (ev.ipAddress && !ipRegistry.has(ev.ipAddress)) {
-        const devM = ev.deviceModel || parseDeviceModel(ev.userAgent || '', ev.metadata?.deviceModel || ev.metadata?.device);
-        ipRegistry.set(ev.ipAddress, {
-          id: `ip-${ev.createdAt ? new Date(ev.createdAt).getTime() : Date.now()}`,
-          ipAddress: ev.ipAddress,
-          country: ev.country || 'India',
-          countryFlag: ev.countryFlag || '🇮🇳',
-          countryCode: ev.countryCode || 'IN',
-          city: ev.city || '',
-          region: ev.region || '',
-          location: ev.location || `${ev.countryFlag || '🇮🇳'} ${ev.country || 'India'}`,
-          device: ev.deviceType || 'Desktop',
-          deviceModel: devM,
-          browser: ev.browser || 'Unknown',
-          os: ev.os || 'Unknown',
-          firstSeen: ev.createdAt || new Date().toISOString(),
-          lastSeen: ev.createdAt || new Date().toISOString(),
-          lastPage: ev.path || '/',
-          totalHits: 1,
-          visitHistory: [{ time: ev.createdAt || new Date().toISOString(), page: ev.path || '/' }],
-        });
-      }
+    // 7. Full YouTube-Style Chronological Visitor History (Every single visit preserved!)
+    const historyList = [];
+    const seenEventKeys = new Set();
+
+    // Include all historical visitor events from visitorHistory
+    visitorHistory.forEach((h) => {
+      if (!h || !h.ipAddress) return;
+      const t = h.time || h.timestamp || new Date().toISOString();
+      const key = h.id || `hist-${h.ipAddress}-${t}-${h.page || h.lastPage || '/'}`;
+      if (seenEventKeys.has(key)) return;
+      seenEventKeys.add(key);
+
+      const isOnline =
+        activeSessions.has(h.ipAddress) &&
+        (now - new Date(t).getTime() < 3 * 60 * 1000);
+
+      historyList.push({
+        id: key,
+        ipAddress: h.ipAddress,
+        location: h.location || `${h.countryFlag || '🇮🇳'} ${h.country || 'India'}`,
+        city: h.city || '',
+        region: h.region || '',
+        country: h.country || 'India',
+        countryFlag: h.countryFlag || '🇮🇳',
+        countryCode: h.countryCode || 'IN',
+        page: h.page || h.lastPage || '/',
+        lastPage: h.page || h.lastPage || '/',
+        device: h.device || 'Desktop',
+        deviceModel: h.deviceModel || parseDeviceModel('', h.device),
+        browser: h.browser || 'Unknown',
+        os: h.os || 'Unknown',
+        time: t,
+        lastSeen: t,
+        timestamp: t,
+        timeFormatted: h.timeFormatted || formatDateTime(t),
+        isOnline,
+      });
     });
 
-    const ipLogs = Array.from(ipRegistry.values())
-      .sort((a, b) => new Date(b.lastSeen).getTime() - new Date(a.lastSeen).getTime())
-      .slice(0, 2000)
-      .map((item) => {
-        const isOnline =
-          activeSessions.has(item.ipAddress) ||
-          (now - new Date(item.lastSeen).getTime() < 3 * 60 * 1000);
-        return {
-          ...item,
-          deviceModel: item.deviceModel || parseDeviceModel('', item.device),
-          firstSeenFormatted: formatDateTime(item.firstSeen),
-          lastSeenFormatted: formatDateTime(item.lastSeen),
-          isOnline,
-        };
+    // Also include all events from memory / database
+    events.forEach((ev) => {
+      if (!ev || !ev.ipAddress) return;
+      const t = ev.createdAt ? new Date(ev.createdAt).toISOString() : new Date().toISOString();
+      const key = ev._id ? String(ev._id) : (ev.id || `hist-${ev.ipAddress}-${t}-${ev.path || '/'}`);
+      if (seenEventKeys.has(key)) return;
+      seenEventKeys.add(key);
+
+      const devM = ev.deviceModel || parseDeviceModel(ev.userAgent || '', ev.metadata?.deviceModel || ev.metadata?.device);
+      const isOnline =
+        activeSessions.has(ev.ipAddress) &&
+        (now - new Date(t).getTime() < 3 * 60 * 1000);
+
+      historyList.push({
+        id: key,
+        ipAddress: ev.ipAddress,
+        location: ev.location || `${ev.countryFlag || '🇮🇳'} ${ev.country || 'India'}`,
+        city: ev.city || '',
+        region: ev.region || '',
+        country: ev.country || 'India',
+        countryFlag: ev.countryFlag || '🇮🇳',
+        countryCode: ev.countryCode || 'IN',
+        page: ev.path || '/',
+        lastPage: ev.path || '/',
+        device: ev.deviceType || 'Desktop',
+        deviceModel: devM,
+        browser: ev.browser || 'Unknown',
+        os: ev.os || 'Unknown',
+        time: t,
+        lastSeen: t,
+        timestamp: t,
+        timeFormatted: formatDateTime(t),
+        isOnline,
       });
+    });
+
+    // Sort descending by visit time (newest first)
+    historyList.sort((a, b) => new Date(b.time || b.timestamp || 0).getTime() - new Date(a.time || a.timestamp || 0).getTime());
+
+    const ipLogs = historyList.slice(0, 3000);
 
     return res.status(200).json({
       success: true,
@@ -893,6 +986,7 @@ const getRealtimeAnalytics = async (req, res) => {
       timeLabels,
       recentVisitors,
       ipLogs,
+      visitorHistory: ipLogs,
       liveActivity,
       topPages,
       timestamp: new Date().toISOString(),
@@ -904,36 +998,42 @@ const getRealtimeAnalytics = async (req, res) => {
 
 /**
  * POST /api/analytics/sync-vault
- * Allows admin panel to persist and restore full IP vault back into server memory/disk
+ * Allows admin panel to persist and restore full IP & visitor history vault back into server memory/disk
  */
 const syncVault = (req, res) => {
   try {
-    const { ipLogs = [], clientTotal = 0 } = req.body || {};
+    const { ipLogs = [], visitorHistory: clientHistory = [], clientTotal = 0 } = req.body || {};
     if (clientTotal && Number(clientTotal) > allTimeTotalVisitors) {
       allTimeTotalVisitors = Number(clientTotal);
       saveCountersToDisk();
     }
-    if (Array.isArray(ipLogs)) {
-      ipLogs.forEach((item) => {
-        if (!item || !item.ipAddress) return;
-        const ex = ipRegistry.get(item.ipAddress);
-        if (ex) {
-          ex.totalHits = Math.max(ex.totalHits || 1, item.totalHits || 1);
-          if (new Date(item.lastSeen).getTime() > new Date(ex.lastSeen).getTime()) {
-            ex.lastSeen = item.lastSeen;
-            ex.lastPage = item.lastPage || ex.lastPage;
-          }
-          if (item.deviceModel && item.deviceModel !== 'Desktop') {
-            ex.deviceModel = item.deviceModel;
-          }
-          if (Array.isArray(item.visitHistory) && item.visitHistory.length > 0) {
-            ex.visitHistory = item.visitHistory;
-          }
-        } else {
-          ipRegistry.set(item.ipAddress, item);
+    const incoming = Array.isArray(clientHistory) && clientHistory.length > 0
+      ? clientHistory
+      : (Array.isArray(ipLogs) ? ipLogs : []);
+
+    if (incoming.length > 0) {
+      const existingMap = new Map();
+      visitorHistory.forEach((h) => {
+        if (h && (h.id || h.ipAddress)) {
+          const k = h.id || `${h.ipAddress}_${h.time || h.timestamp}_${h.page || h.lastPage || '/'}`;
+          existingMap.set(k, h);
         }
       });
-      saveIpRegistryToDisk();
+      incoming.forEach((item) => {
+        if (!item || !item.ipAddress) return;
+        const k = item.id || `${item.ipAddress}_${item.time || item.timestamp || item.lastSeen}_${item.page || item.lastPage || '/'}`;
+        if (!existingMap.has(k)) {
+          existingMap.set(k, {
+            ...item,
+            id: k,
+            time: item.time || item.timestamp || item.lastSeen || new Date().toISOString(),
+          });
+        }
+      });
+      visitorHistory = Array.from(existingMap.values())
+        .sort((a, b) => new Date(b.time || b.timestamp || 0).getTime() - new Date(a.time || a.timestamp || 0).getTime())
+        .slice(0, 5000);
+      saveVisitorHistoryToDisk();
     }
     return res.status(200).json({
       success: true,
