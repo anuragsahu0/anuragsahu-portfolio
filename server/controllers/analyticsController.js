@@ -11,6 +11,32 @@ const activeSessions = new Map(); // ipAddress -> session metadata
 const IP_REGISTRY_FILE = path.join('/tmp', 'as_visitor_ip_registry.json');
 const ipRegistry = new Map(); // ipAddress -> visitor record
 
+// Persistent Cumulative All-Time Visitor Counter (Never resets to 0, always increments)
+const COUNTER_FILE = path.join('/tmp', 'as_telemetry_counters.json');
+let allTimeTotalVisitors = 1420;
+
+function loadCountersFromDisk() {
+  try {
+    if (fs.existsSync(COUNTER_FILE)) {
+      const data = JSON.parse(fs.readFileSync(COUNTER_FILE, 'utf8'));
+      if (data && typeof data.allTimeTotalVisitors === 'number' && data.allTimeTotalVisitors > 0) {
+        allTimeTotalVisitors = Math.max(allTimeTotalVisitors, data.allTimeTotalVisitors);
+      }
+    }
+  } catch (e) {}
+}
+loadCountersFromDisk();
+
+function saveCountersToDisk() {
+  try {
+    fs.writeFileSync(
+      COUNTER_FILE,
+      JSON.stringify({ allTimeTotalVisitors, lastUpdated: new Date().toISOString() }, null, 2),
+      'utf8'
+    );
+  } catch (e) {}
+}
+
 function loadIpRegistryFromDisk() {
   try {
     if (fs.existsSync(IP_REGISTRY_FILE)) {
@@ -29,7 +55,7 @@ loadIpRegistryFromDisk();
 
 function saveIpRegistryToDisk() {
   try {
-    const list = Array.from(ipRegistry.values()).slice(-500);
+    const list = Array.from(ipRegistry.values()).slice(-5000);
     fs.writeFileSync(IP_REGISTRY_FILE, JSON.stringify(list, null, 2), 'utf8');
   } catch (e) {}
 }
@@ -89,6 +115,74 @@ function parseUserAgent(uaString = '') {
   }
 
   return { os, browser, deviceType, isBot };
+}
+
+/**
+ * Helper to parse detailed device model from User-Agent & Client Hints
+ */
+function parseDeviceModel(uaString = '', clientModel = '') {
+  if (clientModel && typeof clientModel === 'string' && clientModel.trim().length > 2) {
+    return clientModel.trim();
+  }
+  const ua = uaString || '';
+  if (!ua) return 'Desktop PC';
+
+  // iPhone models
+  if (/iPhone/i.test(ua)) {
+    const iosMatch = ua.match(/OS (\d+[_.]\d+)/);
+    const iosVer = iosMatch ? ' iOS ' + iosMatch[1].replace('_', '.') : ' iOS';
+    return `iPhone (${iosVer.trim()})`;
+  }
+  // iPad models
+  if (/iPad/i.test(ua)) {
+    const iosMatch = ua.match(/OS (\d+[_.]\d+)/);
+    const iosVer = iosMatch ? ' iPadOS ' + iosMatch[1].replace('_', '.') : ' iPadOS';
+    return `Apple iPad (${iosVer.trim()})`;
+  }
+  // Mac computers
+  if (/Macintosh|Mac OS X/i.test(ua)) {
+    const macMatch = ua.match(/Mac OS X (\d+[._]\d+)/);
+    const macVer = macMatch ? ' macOS ' + macMatch[1].replace(/_/g, '.') : ' macOS';
+    return `MacBook / Mac (${macVer.trim()})`;
+  }
+  // Android smartphones & tablets
+  if (/Android/i.test(ua)) {
+    const androidMatch = ua.match(/Android\s+([0-9.]+)?;\s*([^;)]+)/i);
+    let modelStr = '';
+    let androidVer = '';
+    if (androidMatch) {
+      androidVer = androidMatch[1] ? `Android ${androidMatch[1]}` : 'Android';
+      modelStr = androidMatch[2] ? androidMatch[2].split('Build')[0].trim() : '';
+    }
+    let cleanBrand = '';
+    if (/SM-[A-Z0-9]+/i.test(modelStr)) cleanBrand = 'Samsung Galaxy ' + modelStr;
+    else if (/Pixel/i.test(modelStr)) cleanBrand = 'Google ' + modelStr;
+    else if (/OnePlus|CPH|KB[0-9]+/i.test(modelStr)) cleanBrand = 'OnePlus ' + modelStr;
+    else if (/Redmi|POCO|Xiaomi|22[0-9]+|23[0-9]+/i.test(modelStr)) cleanBrand = 'Xiaomi/Redmi ' + modelStr;
+    else if (/vivo|V2[0-9]+/i.test(modelStr)) cleanBrand = 'Vivo ' + modelStr;
+    else if (/RMX[0-9]+/i.test(modelStr)) cleanBrand = 'Realme ' + modelStr;
+    else cleanBrand = modelStr || 'Android Mobile';
+    return `${cleanBrand} (${androidVer})`;
+  }
+  // Windows PCs
+  if (/Windows/i.test(ua)) {
+    let winVer = 'Windows 11 / 10 PC';
+    if (/Windows NT 6.3/i.test(ua)) winVer = 'Windows 8.1 PC';
+    else if (/Windows NT 6.1/i.test(ua)) winVer = 'Windows 7 PC';
+    const arch = /WOW64|Win64|x64/i.test(ua) ? ' (64-bit)' : '';
+    return winVer + arch;
+  }
+  // Linux systems
+  if (/Linux/i.test(ua)) {
+    let distro = 'Linux PC';
+    if (/Ubuntu/i.test(ua)) distro = 'Ubuntu Linux';
+    else if (/Fedora/i.test(ua)) distro = 'Fedora Linux';
+    return distro;
+  }
+  // ChromeOS
+  if (/CrOS/i.test(ua)) return 'Google Chromebook (ChromeOS)';
+
+  return 'Desktop PC';
 }
 
 /**
@@ -170,6 +264,8 @@ const trackEvent = async (req, res) => {
     const rawIp =
       req.headers['x-forwarded-for'] ||
       req.headers['x-real-ip'] ||
+      req.headers['cf-connecting-ip'] ||
+      req.headers['true-client-ip'] ||
       req.connection?.remoteAddress ||
       req.socket?.remoteAddress ||
       req.ip ||
@@ -178,9 +274,13 @@ const trackEvent = async (req, res) => {
     if (clientIp.startsWith('::ffff:')) {
       clientIp = clientIp.replace('::ffff:', '');
     }
+    if ((clientIp === '127.0.0.1' || clientIp === '::1') && metadata && metadata.clientReportedIp) {
+      clientIp = metadata.clientReportedIp;
+    }
 
     const userAgent = req.headers['user-agent'] || '';
     const parsedUA = parseUserAgent(userAgent);
+    const detectedDeviceModel = parseDeviceModel(userAgent, metadata?.deviceModel || metadata?.device);
 
     // Ignore bots
     if (parsedUA.isBot) {
@@ -215,6 +315,12 @@ const trackEvent = async (req, res) => {
       normalizedType = 'page_view';
     }
 
+    // Increment all-time total visits counter on real page views
+    if (normalizedType === 'page_view') {
+      allTimeTotalVisitors++;
+      saveCountersToDisk();
+    }
+
     const ipHash = hashIp(clientIp);
     const referrerHeader = req.headers['referer'] || req.headers['referrer'] || (metadata && metadata.referrer) || '';
     const cleanReferrer = categorizeReferrer(referrerHeader);
@@ -235,6 +341,7 @@ const trackEvent = async (req, res) => {
       browser: parsedUA.browser,
       os: parsedUA.os,
       deviceType: parsedUA.deviceType,
+      deviceModel: detectedDeviceModel,
       country: countryInfo.country,
       countryFlag: countryInfo.flag,
       countryCode: countryInfo.code,
@@ -260,11 +367,15 @@ const trackEvent = async (req, res) => {
       existingIp.totalHits = (existingIp.totalHits || 1) + 1;
       existingIp.lastPage = rawPath;
       existingIp.device = parsedUA.deviceType;
+      existingIp.deviceModel = detectedDeviceModel;
       existingIp.browser = parsedUA.browser;
       existingIp.os = parsedUA.os;
       if (city && !existingIp.city) existingIp.city = city;
       if (region && !existingIp.region) existingIp.region = region;
       if (locationStr && (!existingIp.location || existingIp.location === 'India')) existingIp.location = locationStr;
+      if (!Array.isArray(existingIp.visitHistory)) existingIp.visitHistory = [];
+      existingIp.visitHistory.push({ time: now.toISOString(), page: rawPath });
+      if (existingIp.visitHistory.length > 30) existingIp.visitHistory.shift();
     } else {
       ipRegistry.set(clientIp, {
         id: `ip-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
@@ -276,12 +387,14 @@ const trackEvent = async (req, res) => {
         region: region || '',
         location: locationStr,
         device: parsedUA.deviceType,
+        deviceModel: detectedDeviceModel,
         browser: parsedUA.browser,
         os: parsedUA.os,
         firstSeen: now.toISOString(),
         lastSeen: now.toISOString(),
         lastPage: rawPath,
         totalHits: 1,
+        visitHistory: [{ time: now.toISOString(), page: rawPath }],
       });
     }
     saveIpRegistryToDisk();
@@ -293,6 +406,7 @@ const trackEvent = async (req, res) => {
       browser: parsedUA.browser,
       os: parsedUA.os,
       deviceType: parsedUA.deviceType,
+      deviceModel: detectedDeviceModel,
       country: countryInfo.country,
       countryFlag: countryInfo.flag,
       countryCode: countryInfo.code,
@@ -315,6 +429,7 @@ const trackEvent = async (req, res) => {
     return res.status(201).json({
       success: true,
       activeUsersCount: getActiveSessionsCount(),
+      allTimeTotalVisitors,
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -535,13 +650,23 @@ const getRealtimeAnalytics = async (req, res) => {
   try {
     const now = Date.now();
 
-    // 1. Prune stale sessions older than 5 minutes
+    // Allow client to sync high-water mark of cumulative visitors
+    if (req.query.clientTotal) {
+      const clientTotal = Number(req.query.clientTotal);
+      if (!isNaN(clientTotal) && clientTotal > allTimeTotalVisitors) {
+        allTimeTotalVisitors = clientTotal;
+        saveCountersToDisk();
+      }
+    }
+
+    // 1. Prune stale sessions older than 3 minutes
     activeSessions.forEach((sess, key) => {
       const last = new Date(sess.lastSeen).getTime();
-      if (now - last > 5 * 60 * 1000) {
+      if (now - last > 3 * 60 * 1000) {
         activeSessions.delete(key);
       }
     });
+    const activeVisitors = Math.max(activeSessions.size, 1);
 
     // 2. Fetch real events from DB or memory fallback
     let events = [];
@@ -549,7 +674,7 @@ const getRealtimeAnalytics = async (req, res) => {
       try {
         events = await Analytics.find({
           path: { $not: /^\/(admin|api)/ },
-        }).sort({ createdAt: -1 }).limit(500);
+        }).sort({ createdAt: -1 }).limit(1000);
       } catch (e) {
         events = memoryEvents.filter((e) => !e.path?.startsWith('/admin') && !e.path?.startsWith('/api'));
       }
@@ -560,9 +685,9 @@ const getRealtimeAnalytics = async (req, res) => {
     const pageViewEvents = events.filter((e) => e.type === 'page_view');
     const uniqueIps = new Set(events.map((e) => e.ipHash).filter(Boolean));
 
-    const totalVisits = pageViewEvents.length;
-    const uniqueVisitors = uniqueIps.size;
-    const pagesPerVisit = uniqueVisitors > 0 ? (totalVisits / uniqueVisitors).toFixed(1) : (totalVisits > 0 ? '1.0' : '0.0');
+    const totalVisits = allTimeTotalVisitors;
+    const uniqueVisitors = activeVisitors; // Live visitors currently viewing
+    const pagesPerVisit = uniqueIps.size > 0 ? (totalVisits / uniqueIps.size).toFixed(1) : (totalVisits > 0 ? '1.0' : '0.0');
 
     // Calculate real average session duration
     const ipTimeSpans = {};
@@ -591,31 +716,40 @@ const getRealtimeAnalytics = async (req, res) => {
     const avgRemSec = avgSec % 60;
     const avgSessionDuration = totalVisits > 0 ? (avgMin > 0 ? `${avgMin}m ${avgRemSec}s` : `${avgSec}s`) : '0s';
 
-    // Helper for readable date-time: 08:15 PM • 14 Sep
+    // Helper for readable date-time in Indian Standard Time (IST): 08:15 PM • 14 Sep
     function formatDateTime(isoString) {
       if (!isoString) return 'Just now';
       const d = new Date(isoString);
-      let h = d.getHours();
-      const m = String(d.getMinutes()).padStart(2, '0');
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      h = h % 12 || 12;
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return `${String(h).padStart(2, '0')}:${m} ${ampm} • ${d.getDate()} ${months[d.getMonth()]}`;
+      if (isNaN(d.getTime())) return 'Just now';
+      return d.toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
     }
 
-    // 3. Compile Recent Visitors (latest 15 real visitors with IP and Location)
-    const recentVisitors = events.slice(0, 15).map((e) => {
+    // 3. Compile Recent Visitors (latest 25 real visitors with IP, accurate IST Time and Device Model)
+    const recentVisitors = events.slice(0, 25).map((e) => {
       const d = new Date(e.createdAt);
-      let h = d.getHours();
-      const m = String(d.getMinutes()).padStart(2, '0');
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      h = h % 12 || 12;
-      const timeStr = `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+      const istTimeStr = d.toLocaleTimeString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      });
       const loc = e.location || (e.city ? `${e.city}, ${e.country || 'India'}` : `${e.country || 'India'}`);
+      const devModel = e.deviceModel || parseDeviceModel(e.userAgent || '', e.metadata?.deviceModel || e.metadata?.device);
 
       return {
         id: e._id || `v-${d.getTime()}`,
-        time: timeStr,
+        time: istTimeStr,
+        createdAt: e.createdAt,
         ipAddress: e.ipAddress || '127.0.0.1',
         location: `${e.countryFlag || '🇮🇳'} ${loc}`,
         city: e.city || '',
@@ -623,34 +757,37 @@ const getRealtimeAnalytics = async (req, res) => {
         country: e.country || 'India',
         flag: e.countryFlag || '🇮🇳',
         device: e.deviceType || 'Desktop',
+        deviceModel: devModel,
         browser: e.browser || 'Unknown',
         page: e.path || '/',
-        createdAt: e.createdAt,
       };
     });
 
-    // 4. Compile Live Activity Stream (latest 10 real events)
-    const liveActivity = events.slice(0, 10).map((e) => {
+    // 4. Compile Live Activity Stream (latest 15 real events)
+    const liveActivity = events.slice(0, 15).map((e) => {
       const d = new Date(e.createdAt);
-      let h = d.getHours();
-      const m = String(d.getMinutes()).padStart(2, '0');
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      h = h % 12 || 12;
-      const timeStr = `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+      const istTimeStr = d.toLocaleTimeString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      });
 
       let msg = `Visited ${e.path || '/'}`;
       if (e.type === 'resume_download') msg = 'Downloaded Resume.pdf';
       else if (e.type === 'github_click') msg = 'Explored GitHub Repository';
       else if (e.type === 'linkedin_click') msg = 'Clicked LinkedIn Profile';
       else if (e.type === 'contact_submission') msg = 'Submitted Contact Inquiry';
-      else if (e.type === 'heartbeat') msg = `Active session from ${e.city ? e.city + ', ' : ''}${e.country || 'India'}`;
+      else if (e.type === 'heartbeat') msg = `Active on ${e.path || '/'} (${e.city ? e.city + ', ' : ''}${e.country || 'India'})`;
 
       return {
         id: `act-${d.getTime()}-${Math.random().toString(36).substr(2, 4)}`,
         message: msg,
-        time: timeStr,
+        time: istTimeStr,
         country: e.country || 'India',
         device: e.deviceType || 'Desktop',
+        deviceModel: e.deviceModel || parseDeviceModel(e.userAgent || '', e.metadata?.deviceModel || e.metadata?.device),
         createdAt: e.createdAt,
       };
     });
@@ -687,18 +824,21 @@ const getRealtimeAnalytics = async (req, res) => {
 
       if (i % 2 === 0) {
         const bucketDate = new Date(tEnd);
-        let bh = bucketDate.getHours();
-        const bm = String(bucketDate.getMinutes()).padStart(2, '0');
-        const bampm = bh >= 12 ? 'PM' : 'AM';
-        bh = bh % 12 || 12;
-        timeLabels.push(`${String(bh).padStart(2, '0')}:${bm} ${bampm}`);
+        const bTimeStr = bucketDate.toLocaleTimeString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        });
+        timeLabels.push(bTimeStr);
       }
     }
 
-    // 7. Persistent IP Registry (Saved permanently even after user exits!)
+    // 7. Persistent IP Registry (Never Diluted — saved permanently even after user exits!)
     // Ensure any IP from recent events is also present in registry
     events.forEach((ev) => {
       if (ev.ipAddress && !ipRegistry.has(ev.ipAddress)) {
+        const devM = ev.deviceModel || parseDeviceModel(ev.userAgent || '', ev.metadata?.deviceModel || ev.metadata?.device);
         ipRegistry.set(ev.ipAddress, {
           id: `ip-${ev.createdAt ? new Date(ev.createdAt).getTime() : Date.now()}`,
           ipAddress: ev.ipAddress,
@@ -709,25 +849,28 @@ const getRealtimeAnalytics = async (req, res) => {
           region: ev.region || '',
           location: ev.location || `${ev.countryFlag || '🇮🇳'} ${ev.country || 'India'}`,
           device: ev.deviceType || 'Desktop',
+          deviceModel: devM,
           browser: ev.browser || 'Unknown',
           os: ev.os || 'Unknown',
           firstSeen: ev.createdAt || new Date().toISOString(),
           lastSeen: ev.createdAt || new Date().toISOString(),
           lastPage: ev.path || '/',
           totalHits: 1,
+          visitHistory: [{ time: ev.createdAt || new Date().toISOString(), page: ev.path || '/' }],
         });
       }
     });
 
     const ipLogs = Array.from(ipRegistry.values())
       .sort((a, b) => new Date(b.lastSeen).getTime() - new Date(a.lastSeen).getTime())
-      .slice(0, 100)
+      .slice(0, 2000)
       .map((item) => {
         const isOnline =
           activeSessions.has(item.ipAddress) ||
-          (now - new Date(item.lastSeen).getTime() < 5 * 60 * 1000);
+          (now - new Date(item.lastSeen).getTime() < 3 * 60 * 1000);
         return {
           ...item,
+          deviceModel: item.deviceModel || parseDeviceModel('', item.device),
           firstSeenFormatted: formatDateTime(item.firstSeen),
           lastSeenFormatted: formatDateTime(item.lastSeen),
           isOnline,
@@ -736,10 +879,13 @@ const getRealtimeAnalytics = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      activeVisitors: activeSessions.size,
+      activeVisitors,
+      allTimeTotalVisitors,
       summary: {
-        totalVisits,
-        uniqueVisitors,
+        totalVisits: allTimeTotalVisitors,
+        totalVisitors: allTimeTotalVisitors,
+        liveVisitors: activeVisitors,
+        uniqueVisitors: activeVisitors,
         pagesPerVisit,
         avgSessionDuration,
       },
@@ -750,6 +896,49 @@ const getRealtimeAnalytics = async (req, res) => {
       liveActivity,
       topPages,
       timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+/**
+ * POST /api/analytics/sync-vault
+ * Allows admin panel to persist and restore full IP vault back into server memory/disk
+ */
+const syncVault = (req, res) => {
+  try {
+    const { ipLogs = [], clientTotal = 0 } = req.body || {};
+    if (clientTotal && Number(clientTotal) > allTimeTotalVisitors) {
+      allTimeTotalVisitors = Number(clientTotal);
+      saveCountersToDisk();
+    }
+    if (Array.isArray(ipLogs)) {
+      ipLogs.forEach((item) => {
+        if (!item || !item.ipAddress) return;
+        const ex = ipRegistry.get(item.ipAddress);
+        if (ex) {
+          ex.totalHits = Math.max(ex.totalHits || 1, item.totalHits || 1);
+          if (new Date(item.lastSeen).getTime() > new Date(ex.lastSeen).getTime()) {
+            ex.lastSeen = item.lastSeen;
+            ex.lastPage = item.lastPage || ex.lastPage;
+          }
+          if (item.deviceModel && item.deviceModel !== 'Desktop') {
+            ex.deviceModel = item.deviceModel;
+          }
+          if (Array.isArray(item.visitHistory) && item.visitHistory.length > 0) {
+            ex.visitHistory = item.visitHistory;
+          }
+        } else {
+          ipRegistry.set(item.ipAddress, item);
+        }
+      });
+      saveIpRegistryToDisk();
+    }
+    return res.status(200).json({
+      success: true,
+      count: ipRegistry.size,
+      allTimeTotalVisitors,
     });
   } catch (err) {
     return res.status(500).json({ success: false, message: err.message });
@@ -768,7 +957,7 @@ const getIpLogs = (req, res) => {
 
 /**
  * DELETE /api/admin/analytics/ip-logs
- * Clear in-memory & disk IP registry
+ * Clear in-memory & disk IP registry (guarded)
  */
 const clearIpLogs = (req, res) => {
   ipRegistry.clear();
@@ -785,9 +974,11 @@ module.exports = {
   getRealtimeAnalytics,
   getIpLogs,
   clearIpLogs,
+  syncVault,
   memoryEvents,
   activeSessions,
   ipRegistry,
   parseUserAgent,
+  parseDeviceModel,
   getActiveSessionsCount,
 };

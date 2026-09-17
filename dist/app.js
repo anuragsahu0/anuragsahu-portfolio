@@ -66,21 +66,84 @@ function initLiveTelemetryTracking() {
   });
 }
 
+let cachedDeviceModel = null;
+
 function detectVisitorDevice() {
+  if (cachedDeviceModel) return cachedDeviceModel;
   const ua = navigator.userAgent || '';
-  let device = 'Desktop PC';
-  if (/iPhone/i.test(ua)) device = 'iPhone (iOS)';
-  else if (/iPad/i.test(ua)) device = 'iPad (iOS)';
-  else if (/Android/i.test(ua)) device = 'Android Mobile';
-  else if (/Macintosh/i.test(ua)) device = 'MacBook / Mac';
-  else if (/Windows/i.test(ua)) device = 'Windows PC';
+  let model = '';
+
+  if (/iPhone/i.test(ua)) {
+    const w = window.screen ? window.screen.width : 0;
+    const h = window.screen ? window.screen.height : 0;
+    const maxD = Math.max(w, h);
+    const minD = Math.min(w, h);
+    if (minD === 430 && maxD === 932) model = 'iPhone 15/16 Pro Max';
+    else if (minD === 393 && maxD === 852) model = 'iPhone 15/16 Pro';
+    else if (minD === 428 && maxD === 926) model = 'iPhone 14 Plus / 13 Pro Max';
+    else if (minD === 390 && maxD === 844) model = 'iPhone 14 / 13 / 12';
+    else if (minD === 414 && maxD === 896) model = 'iPhone 11 / XR';
+    else if (minD === 375 && maxD === 812) model = 'iPhone 11 Pro / X / XS';
+    else if (minD === 375 && maxD === 667) model = 'iPhone SE / 8';
+    else model = 'Apple iPhone';
+
+    const iosMatch = ua.match(/OS (\d+[_.]\d+)/);
+    const iosVer = iosMatch ? ' iOS ' + iosMatch[1].replace('_', '.') : '';
+    model = `${model} (${iosVer.trim() || 'iOS'})`;
+  } else if (/iPad/i.test(ua)) {
+    model = 'Apple iPad (iPadOS)';
+  } else if (/Android/i.test(ua)) {
+    const androidMatch = ua.match(/Android\s+([0-9.]+)?;\s*([^;)]+)/i);
+    let modelStr = '';
+    let androidVer = '';
+    if (androidMatch) {
+      androidVer = androidMatch[1] ? `Android ${androidMatch[1]}` : 'Android';
+      modelStr = androidMatch[2] ? androidMatch[2].split('Build')[0].trim() : '';
+    }
+    if (/SM-[A-Z0-9]+/i.test(modelStr)) model = 'Samsung Galaxy ' + modelStr;
+    else if (/Pixel/i.test(modelStr)) model = 'Google ' + modelStr;
+    else if (/OnePlus|CPH/i.test(modelStr)) model = 'OnePlus ' + modelStr;
+    else if (/Redmi|POCO|Xiaomi/i.test(modelStr)) model = 'Xiaomi/Redmi ' + modelStr;
+    else if (/vivo|V2/i.test(modelStr)) model = 'Vivo ' + modelStr;
+    else if (/RMX/i.test(modelStr)) model = 'Realme ' + modelStr;
+    else model = modelStr || 'Android Mobile';
+    model = `${model} (${androidVer})`;
+  } else if (/Macintosh|Mac OS X/i.test(ua)) {
+    const macMatch = ua.match(/Mac OS X (\d+[._]\d+)/);
+    const macVer = macMatch ? ' macOS ' + macMatch[1].replace(/_/g, '.') : '';
+    model = `MacBook / Mac (${macVer.trim() || 'macOS'})`;
+  } else if (/Windows/i.test(ua)) {
+    let winVer = 'Windows 11 / 10 PC';
+    if (/Windows NT 6.3/i.test(ua)) winVer = 'Windows 8.1 PC';
+    else if (/Windows NT 6.1/i.test(ua)) winVer = 'Windows 7 PC';
+    const arch = /WOW64|Win64|x64/i.test(ua) ? ' (64-bit)' : '';
+    model = `${winVer}${arch}`;
+  } else if (/Linux/i.test(ua)) {
+    model = /Ubuntu/i.test(ua) ? 'Ubuntu Linux PC' : 'Linux PC';
+  } else {
+    model = 'Desktop PC';
+  }
+
+  // Check client hints if available asynchronously
+  if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+    navigator.userAgentData.getHighEntropyValues(['model']).then((hints) => {
+      if (hints && hints.model) {
+        cachedDeviceModel = { deviceModel: hints.model, label: hints.model };
+      }
+    }).catch(() => {});
+  }
 
   let browser = 'Chrome';
   if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browser = 'Safari';
   else if (/Firefox/i.test(ua)) browser = 'Firefox';
   else if (/Edg/i.test(ua)) browser = 'Edge';
 
-  return `${device} • ${browser}`;
+  cachedDeviceModel = {
+    deviceModel: model,
+    browser,
+    label: `${model} • ${browser}`,
+  };
+  return cachedDeviceModel;
 }
 
 function getClientGeoHint() {
@@ -108,7 +171,7 @@ function startVisitorHeartbeat() {
     sessionStorage.setItem('as_visitor_sess', sessId);
   }
 
-  const deviceLabel = detectVisitorDevice();
+  const devInfo = detectVisitorDevice();
   const geo = getClientGeoHint();
 
   async function ping() {
@@ -119,7 +182,13 @@ function startVisitorHeartbeat() {
         body: JSON.stringify({
           type: 'heartbeat',
           path: window.location.pathname + (window.location.hash || ''),
-          metadata: { device: deviceLabel, sessId, ...geo }
+          metadata: {
+            device: devInfo.label,
+            deviceModel: devInfo.deviceModel,
+            browser: devInfo.browser,
+            sessId,
+            ...geo,
+          }
         })
       });
       if (res.ok) {
@@ -142,6 +211,8 @@ function sendTelemetry(type, metadata = {}) {
   try {
     const path = metadata.path || window.location.pathname + (window.location.hash || '');
     const geo = getClientGeoHint();
+    const devInfo = detectVisitorDevice();
+
     fetch('/api/analytics/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -151,8 +222,10 @@ function sendTelemetry(type, metadata = {}) {
         metadata: {
           ...metadata,
           ...geo,
-          device: detectVisitorDevice(),
-          referrer: document.referrer || ''
+          device: devInfo.label,
+          deviceModel: devInfo.deviceModel,
+          browser: devInfo.browser,
+          referrer: document.referrer || '',
         }
       })
     }).then(res => {

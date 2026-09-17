@@ -6,9 +6,12 @@ const {
   getRealtimeAnalytics,
   getIpLogs,
   clearIpLogs,
+  syncVault,
 } = require('../controllers/analyticsController');
 
 router.post('/analytics/track', trackEvent);
+router.post('/analytics/sync-vault', syncVault);
+router.post('/admin/analytics/sync-vault', syncVault);
 router.get('/analytics/summary', getAnalyticsSummary);
 router.get('/analytics/realtime', getRealtimeAnalytics);
 router.get('/admin/analytics/realtime', getRealtimeAnalytics);

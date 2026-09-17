@@ -42,6 +42,11 @@ const AnalyticsSchema = new mongoose.Schema(
       enum: ['Desktop', 'Mobile', 'Tablet', 'Unknown'],
       default: 'Desktop',
     },
+    deviceModel: {
+      type: String,
+      default: '',
+      index: true,
+    },
     ipHash: {
       type: String,
       default: '',
