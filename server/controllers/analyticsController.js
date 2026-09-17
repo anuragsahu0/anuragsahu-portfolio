@@ -422,9 +422,10 @@ const trackEvent = async (req, res) => {
     }
     saveIpRegistryToDisk();
 
-    // Record in YouTube-Style Chronological Visitor History Stream (Never Diluted!)
+    // Record in YouTube-Style Chronological Visitor History Stream (Deduplicated strictly by IP!)
+    const existingHistIdx = visitorHistory.findIndex((h) => h && h.ipAddress === clientIp);
     const histEntry = {
-      id: `hist-${now.getTime()}-${Math.random().toString(36).substr(2, 5)}`,
+      id: `ip-${clientIp}`,
       ipAddress: clientIp,
       location: locationStr,
       city: city || '',
@@ -440,6 +441,7 @@ const trackEvent = async (req, res) => {
       os: parsedUA.os,
       time: now.toISOString(),
       timestamp: now.toISOString(),
+      lastSeen: now.toISOString(),
       timeFormatted: now.toLocaleString('en-IN', {
         timeZone: 'Asia/Kolkata',
         hour: '2-digit',
@@ -451,6 +453,9 @@ const trackEvent = async (req, res) => {
         year: 'numeric',
       }),
     };
+    if (existingHistIdx >= 0) {
+      visitorHistory.splice(existingHistIdx, 1);
+    }
     visitorHistory.unshift(histEntry);
     if (visitorHistory.length > 5000) visitorHistory.pop();
     saveVisitorHistoryToDisk();
@@ -789,8 +794,14 @@ const getRealtimeAnalytics = async (req, res) => {
       });
     }
 
-    // 3. Compile Recent Visitors (latest 25 real visitors with IP, accurate IST Time and Device Model)
-    const recentVisitors = events.slice(0, 25).map((e) => {
+    // 3. Compile Recent Visitors (Deduplicated strictly by IP: latest visit per unique IP)
+    const recentVisitors = [];
+    const seenRecentIps = new Set();
+    for (const e of events) {
+      const ip = e.ipAddress || '127.0.0.1';
+      if (seenRecentIps.has(ip)) continue;
+      seenRecentIps.add(ip);
+
       const d = new Date(e.createdAt);
       const istTimeStr = d.toLocaleTimeString('en-IN', {
         timeZone: 'Asia/Kolkata',
@@ -802,11 +813,11 @@ const getRealtimeAnalytics = async (req, res) => {
       const loc = e.location || (e.city ? `${e.city}, ${e.country || 'India'}` : `${e.country || 'India'}`);
       const devModel = e.deviceModel || parseDeviceModel(e.userAgent || '', e.metadata?.deviceModel || e.metadata?.device);
 
-      return {
-        id: e._id || `v-${d.getTime()}`,
+      recentVisitors.push({
+        id: e._id || `v-${ip}-${d.getTime()}`,
         time: istTimeStr,
         createdAt: e.createdAt,
-        ipAddress: e.ipAddress || '127.0.0.1',
+        ipAddress: ip,
         location: `${e.countryFlag || '🇮🇳'} ${loc}`,
         city: e.city || '',
         region: e.region || '',
@@ -816,8 +827,9 @@ const getRealtimeAnalytics = async (req, res) => {
         deviceModel: devModel,
         browser: e.browser || 'Unknown',
         page: e.path || '/',
-      };
-    });
+      });
+      if (recentVisitors.length >= 25) break;
+    }
 
     // 4. Compile Live Activity Stream (latest 15 real events)
     const liveActivity = events.slice(0, 15).map((e) => {
@@ -890,25 +902,21 @@ const getRealtimeAnalytics = async (req, res) => {
       }
     }
 
-    // 7. Full YouTube-Style Chronological Visitor History (Every single visit preserved!)
-    const historyList = [];
-    const seenEventKeys = new Set();
+    // 7. Visitor IP Address & Geolocation Registry (Strictly 1 entry per unique IP!)
+    const historyMap = new Map();
 
-    // Include all historical visitor events from visitorHistory
+    // Include all historical visitor events from visitorHistory (keyed strictly by IP)
     visitorHistory.forEach((h) => {
       if (!h || !h.ipAddress) return;
-      const t = h.time || h.timestamp || new Date().toISOString();
-      const key = h.id || `hist-${h.ipAddress}-${t}-${h.page || h.lastPage || '/'}`;
-      if (seenEventKeys.has(key)) return;
-      seenEventKeys.add(key);
-
+      const ip = h.ipAddress.trim();
+      const t = h.time || h.timestamp || h.lastSeen || new Date().toISOString();
       const isOnline =
-        activeSessions.has(h.ipAddress) &&
+        activeSessions.has(ip) &&
         (now - new Date(t).getTime() < 3 * 60 * 1000);
 
-      historyList.push({
-        id: key,
-        ipAddress: h.ipAddress,
+      historyMap.set(ip, {
+        id: `ip-${ip}`,
+        ipAddress: ip,
         location: h.location || `${h.countryFlag || '🇮🇳'} ${h.country || 'India'}`,
         city: h.city || '',
         region: h.region || '',
@@ -929,44 +937,61 @@ const getRealtimeAnalytics = async (req, res) => {
       });
     });
 
-    // Also include all events from memory / database
+    // Also include / update with latest events from memory / database
     events.forEach((ev) => {
       if (!ev || !ev.ipAddress) return;
+      const ip = ev.ipAddress.trim();
       const t = ev.createdAt ? new Date(ev.createdAt).toISOString() : new Date().toISOString();
-      const key = ev._id ? String(ev._id) : (ev.id || `hist-${ev.ipAddress}-${t}-${ev.path || '/'}`);
-      if (seenEventKeys.has(key)) return;
-      seenEventKeys.add(key);
-
       const devM = ev.deviceModel || parseDeviceModel(ev.userAgent || '', ev.metadata?.deviceModel || ev.metadata?.device);
       const isOnline =
-        activeSessions.has(ev.ipAddress) &&
+        activeSessions.has(ip) &&
         (now - new Date(t).getTime() < 3 * 60 * 1000);
 
-      historyList.push({
-        id: key,
-        ipAddress: ev.ipAddress,
-        location: ev.location || `${ev.countryFlag || '🇮🇳'} ${ev.country || 'India'}`,
-        city: ev.city || '',
-        region: ev.region || '',
-        country: ev.country || 'India',
-        countryFlag: ev.countryFlag || '🇮🇳',
-        countryCode: ev.countryCode || 'IN',
-        page: ev.path || '/',
-        lastPage: ev.path || '/',
-        device: ev.deviceType || 'Desktop',
-        deviceModel: devM,
-        browser: ev.browser || 'Unknown',
-        os: ev.os || 'Unknown',
-        time: t,
-        lastSeen: t,
-        timestamp: t,
-        timeFormatted: formatDateTime(t),
-        isOnline,
-      });
+      if (historyMap.has(ip)) {
+        const existing = historyMap.get(ip);
+        const tExisting = new Date(existing.time || existing.timestamp || 0).getTime();
+        const tNew = new Date(t).getTime();
+        if (tNew >= tExisting) {
+          existing.time = t;
+          existing.lastSeen = t;
+          existing.timestamp = t;
+          existing.timeFormatted = formatDateTime(t);
+          existing.page = ev.path || existing.page;
+          existing.lastPage = ev.path || existing.lastPage;
+          if (devM && devM !== 'Desktop PC') existing.deviceModel = devM;
+          if (isOnline !== undefined) existing.isOnline = isOnline;
+        } else if (isOnline) {
+          existing.isOnline = true;
+        }
+      } else {
+        historyMap.set(ip, {
+          id: `ip-${ip}`,
+          ipAddress: ip,
+          location: ev.location || `${ev.countryFlag || '🇮🇳'} ${ev.country || 'India'}`,
+          city: ev.city || '',
+          region: ev.region || '',
+          country: ev.country || 'India',
+          countryFlag: ev.countryFlag || '🇮🇳',
+          countryCode: ev.countryCode || 'IN',
+          page: ev.path || '/',
+          lastPage: ev.path || '/',
+          device: ev.deviceType || 'Desktop',
+          deviceModel: devM,
+          browser: ev.browser || 'Unknown',
+          os: ev.os || 'Unknown',
+          time: t,
+          lastSeen: t,
+          timestamp: t,
+          timeFormatted: formatDateTime(t),
+          isOnline,
+        });
+      }
     });
 
-    // Sort descending by visit time (newest first)
-    historyList.sort((a, b) => new Date(b.time || b.timestamp || 0).getTime() - new Date(a.time || a.timestamp || 0).getTime());
+    // Sort descending by visit time (most recently active IP first)
+    const historyList = Array.from(historyMap.values()).sort(
+      (a, b) => new Date(b.time || b.timestamp || 0).getTime() - new Date(a.time || a.timestamp || 0).getTime()
+    );
 
     const ipLogs = historyList.slice(0, 3000);
 
@@ -1014,18 +1039,32 @@ const syncVault = (req, res) => {
     if (incoming.length > 0) {
       const existingMap = new Map();
       visitorHistory.forEach((h) => {
-        if (h && (h.id || h.ipAddress)) {
-          const k = h.id || `${h.ipAddress}_${h.time || h.timestamp}_${h.page || h.lastPage || '/'}`;
-          existingMap.set(k, h);
+        if (h && h.ipAddress) {
+          const ip = h.ipAddress.trim();
+          existingMap.set(ip, h);
         }
       });
       incoming.forEach((item) => {
         if (!item || !item.ipAddress) return;
-        const k = item.id || `${item.ipAddress}_${item.time || item.timestamp || item.lastSeen}_${item.page || item.lastPage || '/'}`;
-        if (!existingMap.has(k)) {
-          existingMap.set(k, {
+        const ip = item.ipAddress.trim();
+        if (existingMap.has(ip)) {
+          const ex = existingMap.get(ip);
+          const tInc = new Date(item.time || item.timestamp || item.lastSeen || 0).getTime();
+          const tEx = new Date(ex.time || ex.timestamp || ex.lastSeen || 0).getTime();
+          if (tInc >= tEx) {
+            existingMap.set(ip, {
+              ...ex,
+              ...item,
+              id: `ip-${ip}`,
+              ipAddress: ip,
+              time: item.time || ex.time,
+            });
+          }
+        } else {
+          existingMap.set(ip, {
             ...item,
-            id: k,
+            id: `ip-${ip}`,
+            ipAddress: ip,
             time: item.time || item.timestamp || item.lastSeen || new Date().toISOString(),
           });
         }
@@ -1037,7 +1076,7 @@ const syncVault = (req, res) => {
     }
     return res.status(200).json({
       success: true,
-      count: ipRegistry.size,
+      count: visitorHistory.length,
       allTimeTotalVisitors,
     });
   } catch (err) {
