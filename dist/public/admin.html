@@ -114,6 +114,180 @@
     #funny-roast-msg {
       transition: opacity 0.25s ease;
     }
+
+    /* ========================================================================= */
+    /* 3D SCI-FI HUD & ANTI-GRAVITY FLOATING MECHANICS                           */
+    /* ========================================================================= */
+    .hud-stage {
+      perspective: 1400px;
+      perspective-origin: 50% 50%;
+      transform-style: preserve-3d;
+    }
+    .preserve-3d {
+      transform-style: preserve-3d;
+    }
+
+    /* Continuous Asynchronous Anti-Gravity Levitation */
+    @keyframes antiGravCenter {
+      0%, 100% {
+        transform: translateZ(55px) translateY(0px) rotateX(0deg) rotateY(0deg);
+      }
+      25% {
+        transform: translateZ(59px) translateY(-9px) rotateX(1deg) rotateY(-0.7deg);
+      }
+      50% {
+        transform: translateZ(52px) translateY(5px) rotateX(-0.6deg) rotateY(0.5deg);
+      }
+      75% {
+        transform: translateZ(57px) translateY(-5px) rotateX(0.5deg) rotateY(0.6deg);
+      }
+    }
+
+    @keyframes antiGravLeft {
+      0%, 100% {
+        transform: translateZ(28px) translateY(0px) rotateX(0deg) rotateY(0deg);
+      }
+      30% {
+        transform: translateZ(32px) translateY(10px) rotateX(-1.2deg) rotateY(1.3deg);
+      }
+      60% {
+        transform: translateZ(25px) translateY(-8px) rotateX(0.9deg) rotateY(-1deg);
+      }
+      85% {
+        transform: translateZ(30px) translateY(3px) rotateX(-0.4deg) rotateY(0.5deg);
+      }
+    }
+
+    @keyframes antiGravRight {
+      0%, 100% {
+        transform: translateZ(28px) translateY(0px) rotateX(0deg) rotateY(0deg);
+      }
+      35% {
+        transform: translateZ(24px) translateY(-11px) rotateX(1.1deg) rotateY(-1.2deg);
+      }
+      65% {
+        transform: translateZ(32px) translateY(7px) rotateX(-0.9deg) rotateY(0.9deg);
+      }
+      85% {
+        transform: translateZ(27px) translateY(-4px) rotateX(0.5deg) rotateY(-0.5deg);
+      }
+    }
+
+    .float-center {
+      animation: antiGravCenter 6.2s ease-in-out infinite;
+    }
+    .float-left {
+      animation: antiGravLeft 7.8s ease-in-out infinite;
+    }
+    .float-right {
+      animation: antiGravRight 7.1s ease-in-out infinite;
+    }
+
+    /* Cyberpunk Frosted Acrylic Glassmorphism */
+    .cyber-glass-card {
+      background: rgba(2, 23, 27, 0.78);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1.5px solid rgba(0, 245, 212, 0.42);
+      box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.8),
+                  0 0 50px rgba(0, 245, 212, 0.2),
+                  inset 0 0 35px rgba(0, 245, 212, 0.08);
+      position: relative;
+    }
+
+    .cyber-glass-flank {
+      background: rgba(2, 18, 22, 0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(0, 245, 212, 0.28);
+      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.7),
+                  0 0 35px rgba(0, 245, 212, 0.12),
+                  inset 0 0 25px rgba(0, 245, 212, 0.05);
+      position: relative;
+    }
+
+    /* Tactical Corner Brackets */
+    .corner-bracket {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .bracket-tl { top: -2px; left: -2px; border-top: 2px solid #00f5d4; border-left: 2px solid #00f5d4; }
+    .bracket-tr { top: -2px; right: -2px; border-top: 2px solid #00f5d4; border-right: 2px solid #00f5d4; }
+    .bracket-bl { bottom: -2px; left: -2px; border-bottom: 2px solid #00f5d4; border-left: 2px solid #00f5d4; }
+    .bracket-br { bottom: -2px; right: -2px; border-bottom: 2px solid #00f5d4; border-right: 2px solid #00f5d4; }
+
+    /* Rotating Reticle Ring */
+    @keyframes spinReticle {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .reticle-ring {
+      animation: spinReticle 14s linear infinite;
+    }
+
+    /* Typewriter Cursor */
+    @keyframes blinkCursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .terminal-cursor {
+      animation: blinkCursor 0.8s infinite;
+      display: inline-block;
+      width: 6px;
+      height: 13px;
+      background-color: #00f5d4;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+
+    /* High-Intensity Cyber Glow Button */
+    .cyber-glow-btn {
+      background: linear-gradient(135deg, rgba(0, 245, 212, 0.16) 0%, rgba(0, 180, 216, 0.28) 100%);
+      border: 1.5px solid #00f5d4;
+      color: #00f5d4;
+      box-shadow: 0 0 25px rgba(0, 245, 212, 0.4), inset 0 0 15px rgba(0, 245, 212, 0.2);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cyber-glow-btn:hover {
+      background: #00f5d4;
+      color: #011517;
+      box-shadow: 0 0 50px rgba(0, 245, 212, 0.95), 0 0 90px rgba(0, 245, 212, 0.5);
+      transform: translateY(-2px) scale(1.02);
+    }
+    .cyber-glow-btn:active {
+      transform: translateY(1px) scale(0.99);
+    }
+
+    /* Frequency Equalizer Bars */
+    .freq-bars-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 3.5px;
+      height: 48px;
+    }
+    .freq-bar {
+      flex: 1;
+      background: linear-gradient(to top, rgba(0, 143, 130, 0.4) 0%, #00f5d4 100%);
+      border-radius: 2px 2px 0 0;
+      transition: height 0.12s ease-out;
+      min-height: 4px;
+      box-shadow: 0 0 6px rgba(0, 245, 212, 0.3);
+    }
+
+    /* Custom Terminal Scrollbar */
+    .terminal-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .terminal-scroll::-webkit-scrollbar-thumb {
+      background: rgba(0, 245, 212, 0.35);
+      border-radius: 4px;
+    }
+    .terminal-scroll::-webkit-scrollbar-track {
+      background: rgba(1, 21, 23, 0.4);
+    }
   </style>
 </head>
 <body class="bg-[#011517] min-h-screen flex flex-col antialiased">
@@ -126,69 +300,164 @@
   <!-- ========================================================================= -->
   <!-- AUTHENTICATION SCREEN: ZERO-TRUST CYBERNETIC LOGIN TERMINAL               -->
   <!-- ========================================================================= -->
-  <div id="auth-modal" class="fixed inset-0 z-50 bg-[#011517] w-full h-full min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden select-none font-mono transition-all duration-300">
+  <div id="auth-modal" class="fixed inset-0 z-50 bg-[#010c0e] w-full h-full min-h-screen flex flex-col items-center justify-center p-3 sm:p-6 overflow-hidden select-none font-mono transition-all duration-300">
     
+    <!-- Background Canvas for Sci-Fi Space Particles & Ambient Cyber Fog -->
+    <canvas id="bg-deck-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
     <!-- Atmospheric Cyber Glow Backdrop -->
     <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00e5cc]/10 rounded-full blur-[140px]"></div>
-      <div class="absolute -bottom-32 right-10 w-[500px] h-[500px] bg-[#008f82]/15 rounded-full blur-[120px]"></div>
-      <div class="absolute inset-0 bg-[radial-gradient(#00e5cc_1px,transparent_1px)] [background-size:32px_32px] opacity-15"></div>
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#00f5d4]/10 rounded-full blur-[150px]"></div>
+      <div class="absolute -bottom-32 right-10 w-[550px] h-[550px] bg-[#008f82]/15 rounded-full blur-[140px]"></div>
+      <div class="absolute -top-20 left-10 w-[450px] h-[450px] bg-[#00b4d8]/10 rounded-full blur-[130px]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(#00f5d4_1px,transparent_1px)] [background-size:32px_32px] opacity-15"></div>
     </div>
 
-    <!-- Main Cyber Terminal Plate -->
-    <div class="relative z-10 w-full max-w-[440px] mx-auto select-none">
+    <!-- Main 3D Perspective HUD Stage -->
+    <div class="hud-stage relative z-10 w-full max-w-[1340px] mx-auto px-2 sm:px-4 py-4 sm:py-6 flex items-center justify-center">
       
-      <!-- Outer Cybernetic Chassis Container -->
-      <div class="relative bg-[#021a1d] border-2 border-[#008f82] p-5 sm:p-7 pt-9 shadow-[0_0_40px_rgba(0,143,130,0.3)]" style="clip-path: polygon(0 35px, 35px 35px, 35px 0, calc(100% - 60px) 0, 100% 60px, 100% 100%, 0 100%);">
-        
-        <!-- Top Ventilation Louvers (////) -->
-        <div class="absolute top-2.5 left-24 right-28 h-5 overflow-hidden pointer-events-none opacity-40">
-          <div class="w-full h-full" style="background: repeating-linear-gradient(45deg, #00e6c3 0, #00e6c3 5px, transparent 5px, transparent 14px);"></div>
+      <!-- Parallax Deck Wrapper (Tilts with cursor tracking) -->
+      <div id="hud-parallax-deck" class="preserve-3d flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-8 w-full transition-transform duration-100 ease-out" style="transform: rotateX(var(--rotX, 0deg)) rotateY(var(--rotY, 0deg));">
+
+        <!-- ===================================================================== -->
+        <!-- LEFT FLANK: SYSTEM STATUS & TERMINAL LOGS                             -->
+        <!-- ===================================================================== -->
+        <div class="float-left hidden lg:flex flex-col w-[300px] xl:w-[320px] p-5 rounded-2xl cyber-glass-flank select-none">
+          <div class="corner-bracket bracket-tl"></div>
+          <div class="corner-bracket bracket-tr"></div>
+          <div class="corner-bracket bracket-bl"></div>
+          <div class="corner-bracket bracket-br"></div>
+          
+          <!-- Flank Header -->
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span class="text-[11px] font-bold text-cyan-300 tracking-wider">SYSTEM STATUS</span>
+            </div>
+            <span class="text-[9px] text-emerald-400 font-mono tracking-wider">ONLINE</span>
+          </div>
+
+          <!-- Node Status Rows -->
+          <div class="space-y-2 mb-4 text-[11px]">
+            <div class="flex items-center justify-between p-2 rounded bg-[#011417]/80 border border-cyan-500/15">
+              <span class="flex items-center gap-2 text-slate-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>Database</span>
+              </span>
+              <span class="text-emerald-400 font-semibold text-[10px]">Connected</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded bg-[#011417]/80 border border-cyan-500/15">
+              <span class="flex items-center gap-2 text-slate-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                <span>API Server</span>
+              </span>
+              <span class="text-cyan-400 font-semibold text-[10px]">Port 5001</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded bg-[#011417]/80 border border-cyan-500/15">
+              <span class="flex items-center gap-2 text-slate-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>Security</span>
+              </span>
+              <span class="text-emerald-400 font-semibold text-[10px]">Active</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded bg-[#011417]/80 border border-cyan-500/15">
+              <span class="flex items-center gap-2 text-slate-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                <span>Telemetry</span>
+              </span>
+              <span class="text-cyan-400 font-semibold text-[10px]">Streaming</span>
+            </div>
+          </div>
+
+          <!-- Live Terminal Window -->
+          <div class="flex-1 flex flex-col rounded-lg bg-[#010e11] border border-cyan-500/25 overflow-hidden shadow-inner">
+            <div class="flex items-center justify-between px-3 py-1.5 bg-[#02181d] border-b border-cyan-500/20 text-[9px] text-cyan-400/80">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-rose-500/80 inline-block"></span>
+                <span class="w-2 h-2 rounded-full bg-amber-500/80 inline-block"></span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500/80 inline-block"></span>
+                <span class="ml-1 font-medium text-slate-300">server.log</span>
+              </span>
+              <span>LIVE</span>
+            </div>
+            <div id="hud-terminal-feed" class="p-3 font-mono text-[10px] leading-relaxed text-[#00f5d4]/90 h-[170px] overflow-y-auto terminal-scroll flex flex-col space-y-1.5">
+              <div class="text-slate-400">&gt; initializing services...</div>
+              <div class="text-cyan-400/90">&gt; database connected (12ms)</div>
+              <div class="text-emerald-400/90">&gt; api listening on :5001</div>
+              <div class="text-cyan-400/80">&gt; telemetry daemon online</div>
+              <div id="hud-typewriter-line" class="text-cyan-300 flex items-center">
+                <span id="hud-typewriter-text">&gt; awaiting login...</span><span class="terminal-cursor"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flank Footer -->
+          <div class="mt-3 pt-2 border-t border-cyan-500/20 flex items-center justify-between text-[10px] text-slate-400">
+            <span>Status</span>
+            <span class="text-emerald-400 font-medium">All Systems Operational</span>
+          </div>
         </div>
 
-        <!-- Right edge indent notch -->
-        <div class="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-12 bg-[#008f82]"></div>
-        
-        <!-- Recessed Inner Vessel with Luminous Cyan Glow & Tabs -->
-        <div class="relative bg-[#032125] border-2 border-[#00e6c3] p-5 sm:p-7 cyber-card-glow">
-          
-          <!-- Bezel Corner Tabs -->
-          <div class="absolute -top-1 left-8 w-6 h-1.5 bg-[#00e6c3]"></div>
-          <div class="absolute -top-1 right-8 w-6 h-1.5 bg-[#00e6c3]"></div>
-          <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-[#00e6c3]"></div>
-          <div class="absolute -right-1 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-[#00e6c3]"></div>
-          <div class="absolute -bottom-1 left-12 w-8 h-1.5 bg-[#00e6c3]"></div>
+        <!-- ===================================================================== -->
+        <!-- CENTER: FLOATING 3D FROSTED-GLASS AUTHENTICATION CARD                 -->
+        <!-- ===================================================================== -->
+        <div class="float-center w-full max-w-[420px] p-6 sm:p-8 rounded-2xl cyber-glass-card shadow-2xl relative select-none">
+          <div class="corner-bracket bracket-tl"></div>
+          <div class="corner-bracket bracket-tr"></div>
+          <div class="corner-bracket bracket-bl"></div>
+          <div class="corner-bracket bracket-br"></div>
 
-          <!-- Brand & Header -->
-          <div class="text-center mb-6">
-            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-300 font-mono font-bold text-base mx-auto mb-2.5 shadow-[0_0_20px_rgba(0,229,204,0.35)]">
-              AS
+          <!-- Top Monogram Badge with Rotating Reticle Ring -->
+          <div class="flex items-center justify-center gap-3 mb-5">
+            <span class="text-cyan-400 text-2xl font-mono select-none font-bold opacity-80">[</span>
+            <div class="relative w-14 h-14 flex items-center justify-center">
+              <!-- Rotating Reticle Dotted Ring -->
+              <svg class="reticle-ring absolute inset-0 w-full h-full text-cyan-400/60" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="8 6 3 6" />
+              </svg>
+              <!-- Inner Badge -->
+              <div class="w-11 h-11 rounded-full bg-gradient-to-br from-cyan-500/20 to-teal-500/30 border border-cyan-400/60 flex items-center justify-center text-cyan-300 font-mono font-extrabold text-base shadow-[0_0_25px_rgba(0,245,212,0.4)]">
+                AS
+              </div>
             </div>
-            <h1 class="text-base font-bold text-white font-mono tracking-wider uppercase">ANURAG SAHU</h1>
-            <p class="text-[11px] text-cyan-400 font-mono uppercase tracking-widest mt-0.5"></p>
+            <span class="text-cyan-400 text-2xl font-mono select-none font-bold opacity-80">]</span>
+          </div>
+
+          <!-- Header Typography -->
+          <div class="text-center mb-6">
+            <h1 class="text-base font-bold text-white font-mono tracking-wider uppercase">
+              ANURAG SAHU
+            </h1>
+            <p class="text-[11px] text-cyan-400 font-mono tracking-wider mt-1">
+              Admin Control Center
+            </p>
           </div>
 
           <!-- Error Alert Pill -->
-          <div id="auth-error-msg" class="hidden mb-4 p-3 rounded bg-rose-950/80 border border-rose-500/60 flex items-start gap-2.5 text-xs text-rose-300 font-mono shadow-[0_0_15px_rgba(244,63,94,0.35)]">
+          <div id="auth-error-msg" class="hidden mb-4 p-3 rounded-lg bg-rose-950/80 border border-rose-500/60 flex items-start gap-2.5 text-xs text-rose-300 font-mono shadow-[0_0_20px_rgba(244,63,94,0.35)]">
             <i data-lucide="alert-triangle" class="w-4 h-4 shrink-0 text-rose-400 mt-0.5"></i>
-            <span id="auth-error-text">Access Denied: Invalid credentials. Bina pass ke no entry!</span>
+            <span id="auth-error-text">Access Denied: Invalid credentials.</span>
           </div>
 
           <!-- Login Form -->
           <form id="auth-form" class="space-y-4 font-mono text-xs" onsubmit="handleAuthLogin(event)">
-            
             <!-- Username Input Box -->
             <div>
-              <label class="block text-slate-300 font-bold mb-1.5 uppercase text-[10px] tracking-wider text-cyan-300/90">ADMIN USERNAME / ID</label>
-              <div class="w-full flex items-center border-[1.5px] border-[#00e6c3] bg-[#041c20] rounded px-3 py-2.5 shadow-[0_0_10px_rgba(0,230,195,0.15)] focus-within:border-[#00ffcc] focus-within:shadow-[0_0_20px_rgba(0,255,204,0.4)] transition-all">
-                <div class="w-7 flex items-center justify-center text-[#00e6c3] shrink-0">
+              <label class="block font-medium mb-1.5 uppercase text-[10px] tracking-wider text-cyan-300/90">
+                Admin ID
+              </label>
+              <div class="w-full flex items-center border border-cyan-500/40 bg-[#02181d]/90 rounded-lg px-3 py-2.5 shadow-[0_0_12px_rgba(0,245,212,0.12)] focus-within:border-cyan-300 focus-within:shadow-[0_0_22px_rgba(0,245,212,0.4)] transition-all">
+                <div class="w-7 flex items-center justify-center text-[#00f5d4] shrink-0">
                   <i data-lucide="user" class="w-4 h-4 text-cyan-400"></i>
                 </div>
                 <input
                   id="auth-username"
                   type="text"
                   required
-                  placeholder="Enter Admin ID"
+                  placeholder="Enter admin ID"
                   autocomplete="username"
                   autocapitalize="none"
                   autocorrect="off"
@@ -200,16 +469,18 @@
 
             <!-- Password Input Box -->
             <div>
-              <label class="block text-slate-300 font-bold mb-1.5 uppercase text-[10px] tracking-wider text-cyan-300/90">MASTER SECURITY PASSWORD</label>
-              <div class="relative w-full flex items-center border-[1.5px] border-[#00e6c3] bg-[#041c20] rounded px-3 py-2.5 shadow-[0_0_10px_rgba(0,230,195,0.15)] focus-within:border-[#00ffcc] focus-within:shadow-[0_0_20px_rgba(0,255,204,0.4)] transition-all">
-                <div class="w-7 flex items-center justify-center text-[#00e6c3] shrink-0">
+              <label class="block font-medium mb-1.5 uppercase text-[10px] tracking-wider text-cyan-300/90">
+                Password
+              </label>
+              <div class="relative w-full flex items-center border border-cyan-500/40 bg-[#02181d]/90 rounded-lg px-3 py-2.5 shadow-[0_0_12px_rgba(0,245,212,0.12)] focus-within:border-cyan-300 focus-within:shadow-[0_0_22px_rgba(0,245,212,0.4)] transition-all">
+                <div class="w-7 flex items-center justify-center text-[#00f5d4] shrink-0">
                   <i data-lucide="lock" class="w-4 h-4 text-cyan-400"></i>
                 </div>
                 <input
                   id="auth-password"
                   type="password"
                   required
-                  placeholder="Enter Master Password"
+                  placeholder="Enter password"
                   autocomplete="current-password"
                   autocapitalize="none"
                   autocorrect="off"
@@ -220,7 +491,7 @@
                   type="button"
                   id="auth-pwd-eye-btn"
                   onclick="togglePasswordVisibility()"
-                  class="text-[#008f82] hover:text-[#00e6c3] transition-colors p-1 shrink-0 cursor-pointer"
+                  class="text-[#008f82] hover:text-[#00f5d4] transition-colors p-1 shrink-0 cursor-pointer"
                   aria-label="Toggle password visibility"
                 >
                   <i id="auth-pwd-eye-icon" data-lucide="eye" class="w-4 h-4"></i>
@@ -230,14 +501,14 @@
 
             <!-- Options Row -->
             <div class="flex items-center justify-between text-[11px] font-mono pt-1 text-slate-400">
-              <a href="/" class="text-[#008f82] hover:text-[#00e6c3] transition-colors flex items-center gap-1">
-                <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+              <a href="/" class="text-cyan-400/80 hover:text-[#00f5d4] transition-colors flex items-center gap-1.5 group">
+                <i data-lucide="arrow-left" class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1"></i>
                 <span>Live Site</span>
               </a>
               <button
                 type="button"
                 onclick="showForgotPasswordModal()"
-                class="text-[#00e6c3] hover:text-[#00ffcc] hover:underline transition-colors cursor-pointer"
+                class="text-cyan-400/90 hover:text-cyan-300 hover:underline transition-colors cursor-pointer"
               >
                 Forgot Password?
               </button>
@@ -248,24 +519,101 @@
               <button
                 type="submit"
                 id="auth-submit-btn"
-                class="w-full py-3 px-6 border-2 border-[#00e6c3] bg-[#032125] hover:bg-[#00e6c3] hover:text-[#021416] text-[#00e6c3] font-mono font-bold text-xs tracking-widest uppercase transition-all duration-200 shadow-[0_0_15px_rgba(0,230,195,0.3)] hover:shadow-[0_0_35px_rgba(0,230,195,0.85)] active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                class="w-full py-3.5 px-6 rounded-xl cyber-glow-btn font-mono font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2.5 cursor-pointer select-none"
               >
                 <i data-lucide="shield-check" class="w-4 h-4"></i>
-                <span>SIGN IN TO CONTROL CENTER</span>
+                <span>SIGN IN</span>
               </button>
             </div>
-
           </form>
 
           <!-- Security note -->
-          <div class="mt-5 pt-3 border-t border-[#00e6c3]/20 flex items-center justify-between text-[10px] font-mono text-[#008f82]">
-            <span class="flex items-center gap-1">
+          <div class="mt-5 pt-3 border-t border-cyan-500/20 flex items-center justify-between text-[10px] font-mono text-slate-400">
+            <span class="flex items-center gap-1.5 text-cyan-400">
               <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping inline-block"></span>
-              Zero-Trust Guard
+              <span>Encrypted Session</span>
             </span>
-            <span class="text-cyan-400 font-bold"> 🔒</span>
+            <span class="text-cyan-400 font-medium">Secured 🔒</span>
+          </div>
+        </div>
+
+        <!-- ===================================================================== -->
+        <!-- RIGHT FLANK: LIVE METRICS & ACTIVITY MONITOR                          -->
+        <!-- ===================================================================== -->
+        <div class="float-right hidden lg:flex flex-col w-[300px] xl:w-[320px] p-5 rounded-2xl cyber-glass-flank select-none">
+          <div class="corner-bracket bracket-tl"></div>
+          <div class="corner-bracket bracket-tr"></div>
+          <div class="corner-bracket bracket-bl"></div>
+          <div class="corner-bracket bracket-br"></div>
+
+          <!-- Flank Header -->
+          <div class="flex items-center justify-between border-b border-cyan-500/20 pb-3 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
+              </span>
+              <span class="text-[11px] font-bold text-cyan-300 tracking-wider">LIVE METRICS</span>
+            </div>
+            <span class="text-[9px] text-cyan-400 font-mono tracking-wider">REALTIME</span>
           </div>
 
+          <!-- 2x2 Telemetry Metric Grid -->
+          <div class="grid grid-cols-2 gap-2.5 mb-4 text-[10px]">
+            <div class="p-2.5 rounded bg-[#011417]/80 border border-cyan-500/15">
+              <div class="text-slate-400 uppercase text-[9px]">TOTAL VISITS</div>
+              <div class="text-sm font-bold text-[#00f5d4] mt-0.5 font-mono">1,427+</div>
+            </div>
+            <div class="p-2.5 rounded bg-[#011417]/80 border border-cyan-500/15">
+              <div class="text-slate-400 uppercase text-[9px]">LIVE VISITORS</div>
+              <div class="text-sm font-bold text-emerald-400 mt-0.5 font-mono flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>1 Active</span>
+              </div>
+            </div>
+            <div class="p-2.5 rounded bg-[#011417]/80 border border-cyan-500/15">
+              <div class="text-slate-400 uppercase text-[9px]">RESPONSE TIME</div>
+              <div class="text-sm font-bold text-cyan-300 mt-0.5 font-mono">14ms</div>
+            </div>
+            <div class="p-2.5 rounded bg-[#011417]/80 border border-cyan-500/15">
+              <div class="text-slate-400 uppercase text-[9px]">UPTIME</div>
+              <div class="text-sm font-bold text-cyan-300 mt-0.5 font-mono">99.98%</div>
+            </div>
+          </div>
+
+          <!-- Dynamic Activity Monitor Oscilloscope Canvas -->
+          <div class="mb-4 rounded-lg bg-[#010e11] border border-cyan-500/25 p-2.5 shadow-inner">
+            <div class="flex items-center justify-between text-[9px] text-cyan-400/80 mb-1.5 font-mono">
+              <span class="flex items-center gap-1">
+                <i data-lucide="activity" class="w-3 h-3 text-cyan-400"></i>
+                <span>ACTIVITY MONITOR</span>
+              </span>
+              <span>60 FPS</span>
+            </div>
+            <canvas id="hud-sine-canvas" width="280" height="65" class="w-full h-[65px] rounded bg-[#011417]/90 block"></canvas>
+            <div class="flex items-center justify-between text-[8px] text-slate-500 font-mono mt-1 px-1">
+              <span>0s</span>
+              <span>Traffic Waveform</span>
+              <span>30s</span>
+            </div>
+          </div>
+
+          <!-- Vertical Activity Spectrum Bars -->
+          <div class="rounded-lg bg-[#010e11] border border-cyan-500/25 p-2.5">
+            <div class="flex items-center justify-between text-[9px] text-cyan-400/80 mb-2 font-mono">
+              <span>NETWORK ACTIVITY</span>
+              <span class="text-emerald-400">Stable</span>
+            </div>
+            <div id="hud-freq-bars" class="freq-bars-container">
+              <!-- Equalizer bars generated by JS -->
+            </div>
+          </div>
+
+          <!-- Flank Footer -->
+          <div class="mt-3 pt-2 border-t border-cyan-500/20 flex items-center justify-between text-[10px] text-slate-400">
+            <span>Bandwidth</span>
+            <span class="text-cyan-400 font-medium">4.8 MB/s</span>
+          </div>
         </div>
 
       </div>
@@ -2031,6 +2379,237 @@
         toast.classList.add('opacity-0', '-translate-y-2');
         setTimeout(() => toast.remove(), 300);
       }, 3500);
+    }
+
+    /* ========================================================================== */
+    /* 3D SCI-FI HUD ENGINE (PARALLAX, OSCILLOSCOPE, TYPEWRITER, EQUALIZER)       */
+    /* ========================================================================== */
+    let hudAnimFrameId = null;
+    let hudEqualizerTimer = null;
+    let hudTypewriterTimer = null;
+
+    function initSciFiHudEngine() {
+      // 1. Mouse Parallax 3D Engine with Smooth Lerp
+      const deck = document.getElementById('hud-parallax-deck');
+      let targetRotX = 0;
+      let targetRotY = 0;
+      let currentRotX = 0;
+      let currentRotY = 0;
+
+      function onMouseMove(e) {
+        if (typeof isSessionActive !== 'undefined' && isSessionActive) return;
+        const w = window.innerWidth || 1920;
+        const h = window.innerHeight || 1080;
+        const x = (e.clientX / w) - 0.5; // -0.5 to 0.5
+        const y = (e.clientY / h) - 0.5; // -0.5 to 0.5
+
+        // Max tilt +/- 14 degrees
+        targetRotX = -y * 14;
+        targetRotY = x * 14;
+      }
+
+      window.addEventListener('mousemove', onMouseMove, { passive: true });
+
+      // 2. Dynamic Sine-Wave Oscilloscope Canvas
+      const sineCanvas = document.getElementById('hud-sine-canvas');
+      const sineCtx = sineCanvas ? sineCanvas.getContext('2d') : null;
+      let sinePhase = 0;
+
+      function drawOscilloscope() {
+        if (!sineCtx || !sineCanvas) return;
+        const width = sineCanvas.width;
+        const height = sineCanvas.height;
+        const midY = height / 2;
+
+        sineCtx.clearRect(0, 0, width, height);
+
+        // Subtle tech grid lines
+        sineCtx.strokeStyle = 'rgba(0, 245, 212, 0.08)';
+        sineCtx.lineWidth = 1;
+        sineCtx.beginPath();
+        sineCtx.moveTo(0, midY);
+        sineCtx.lineTo(width, midY);
+        sineCtx.moveTo(width / 4, 0);
+        sineCtx.lineTo(width / 4, height);
+        sineCtx.moveTo(width / 2, 0);
+        sineCtx.lineTo(width / 2, height);
+        sineCtx.moveTo((3 * width) / 4, 0);
+        sineCtx.lineTo((3 * width) / 4, height);
+        sineCtx.stroke();
+
+        // Wave 2 (Harmonic cyan wave)
+        sineCtx.beginPath();
+        sineCtx.strokeStyle = 'rgba(0, 180, 216, 0.45)';
+        sineCtx.lineWidth = 1.5;
+        for (let x = 0; x < width; x++) {
+          const y = midY + Math.sin(x * 0.045 - sinePhase * 0.7) * 11;
+          if (x === 0) sineCtx.moveTo(x, y);
+          else sineCtx.lineTo(x, y);
+        }
+        sineCtx.stroke();
+
+        // Wave 1 (Primary luminous cyan wave with bloom)
+        sineCtx.beginPath();
+        sineCtx.strokeStyle = '#00f5d4';
+        sineCtx.lineWidth = 2;
+        sineCtx.shadowBlur = 8;
+        sineCtx.shadowColor = '#00f5d4';
+        for (let x = 0; x < width; x++) {
+          const y = midY + Math.sin(x * 0.038 + sinePhase) * 16;
+          if (x === 0) sineCtx.moveTo(x, y);
+          else sineCtx.lineTo(x, y);
+        }
+        sineCtx.stroke();
+        sineCtx.shadowBlur = 0; // Reset
+
+        sinePhase += 0.045;
+      }
+
+      // 3. Cyber Dust & Particles Background Canvas
+      const bgCanvas = document.getElementById('bg-deck-canvas');
+      const bgCtx = bgCanvas ? bgCanvas.getContext('2d') : null;
+      let particles = [];
+
+      function resizeBgCanvas() {
+        if (!bgCanvas) return;
+        bgCanvas.width = window.innerWidth;
+        bgCanvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resizeBgCanvas);
+      resizeBgCanvas();
+
+      if (bgCanvas) {
+        for (let i = 0; i < 45; i++) {
+          particles.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 1.8 + 0.5,
+            speedY: Math.random() * 0.4 + 0.15,
+            speedX: (Math.random() - 0.5) * 0.2,
+            opacity: Math.random() * 0.6 + 0.2
+          });
+        }
+      }
+
+      function drawBgParticles() {
+        if (!bgCtx || !bgCanvas) return;
+        bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.y -= p.speedY;
+          p.x += p.speedX;
+
+          if (p.y < 0) {
+            p.y = bgCanvas.height;
+            p.x = Math.random() * bgCanvas.width;
+          }
+          if (p.x < 0) p.x = bgCanvas.width;
+          if (p.x > bgCanvas.width) p.x = 0;
+
+          bgCtx.fillStyle = `rgba(0, 245, 212, ${p.opacity})`;
+          bgCtx.beginPath();
+          bgCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          bgCtx.fill();
+        }
+      }
+
+      // 4. Equalizer Bars Initializer
+      const freqContainer = document.getElementById('hud-freq-bars');
+      if (freqContainer && freqContainer.children.length === 0) {
+        for (let i = 0; i < 18; i++) {
+          const bar = document.createElement('div');
+          bar.className = 'freq-bar';
+          bar.style.height = `${Math.floor(Math.random() * 32 + 8)}px`;
+          freqContainer.appendChild(bar);
+        }
+      }
+
+      if (hudEqualizerTimer) clearInterval(hudEqualizerTimer);
+      hudEqualizerTimer = setInterval(() => {
+        if (typeof isSessionActive !== 'undefined' && isSessionActive) return;
+        if (!freqContainer) return;
+        const bars = freqContainer.children;
+        for (let i = 0; i < bars.length; i++) {
+          const h = Math.floor(Math.random() * 38 + 6);
+          bars[i].style.height = `${h}px`;
+        }
+      }, 140);
+
+      // 5. Typewriter Terminal Logs
+      const terminalLogs = [
+        "> checking service health...",
+        "> mongodb connection verified (12ms)",
+        "> express rest api online on port 5001",
+        "> real-time visitor telemetry active",
+        "> 1,427 lifetime visitor sessions synced",
+        "> all system nodes operational",
+        "> awaiting administrator authentication..."
+      ];
+      let logIndex = 0;
+      let charIndex = 0;
+      const typewriterTextEl = document.getElementById('hud-typewriter-text');
+      const terminalFeedEl = document.getElementById('hud-terminal-feed');
+
+      function typeNextLog() {
+        if (typeof isSessionActive !== 'undefined' && isSessionActive) return;
+        if (!typewriterTextEl || !terminalFeedEl) return;
+
+        const targetMessage = terminalLogs[logIndex];
+        if (charIndex <= targetMessage.length) {
+          typewriterTextEl.textContent = targetMessage.substring(0, charIndex);
+          charIndex++;
+          hudTypewriterTimer = setTimeout(typeNextLog, 45);
+        } else {
+          setTimeout(() => {
+            if (typeof isSessionActive !== 'undefined' && isSessionActive) return;
+            const newHistoryLine = document.createElement('div');
+            newHistoryLine.className = 'text-cyan-400/80';
+            newHistoryLine.textContent = targetMessage;
+            
+            const lineContainer = document.getElementById('hud-typewriter-line');
+            if (lineContainer && terminalFeedEl.contains(lineContainer)) {
+              terminalFeedEl.insertBefore(newHistoryLine, lineContainer);
+            }
+            while (terminalFeedEl.children.length > 7) {
+              terminalFeedEl.removeChild(terminalFeedEl.children[0]);
+            }
+            terminalFeedEl.scrollTop = terminalFeedEl.scrollHeight;
+
+            logIndex = (logIndex + 1) % terminalLogs.length;
+            charIndex = 0;
+            typeNextLog();
+          }, 1800);
+        }
+      }
+      typeNextLog();
+
+      // Main Loop
+      function mainHudLoop() {
+        if (typeof isSessionActive === 'undefined' || !isSessionActive) {
+          // Lerp parallax
+          currentRotX += (targetRotX - currentRotX) * 0.08;
+          currentRotY += (targetRotY - currentRotY) * 0.08;
+          if (deck) {
+            deck.style.setProperty('--rotX', `${currentRotX.toFixed(2)}deg`);
+            deck.style.setProperty('--rotY', `${currentRotY.toFixed(2)}deg`);
+          }
+
+          drawOscilloscope();
+          drawBgParticles();
+        }
+        hudAnimFrameId = requestAnimationFrame(mainHudLoop);
+      }
+
+      if (hudAnimFrameId) cancelAnimationFrame(hudAnimFrameId);
+      hudAnimFrameId = requestAnimationFrame(mainHudLoop);
+    }
+
+    // Initialize HUD engine when DOM loads
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSciFiHudEngine);
+    } else {
+      initSciFiHudEngine();
     }
   </script>
 
