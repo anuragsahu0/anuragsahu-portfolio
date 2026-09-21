@@ -973,10 +973,9 @@ async function initCmsIntegration() {
         }
       }
 
-      if (hero.availabilityBadge) {
-        const typewriter = document.getElementById('red-typewriter-text');
-        if (typewriter) typewriter.textContent = hero.availabilityBadge;
-      }
+      // Header pill is locked to 'Dream | Grow | Lead' per user instruction
+      const typewriter = document.getElementById('red-typewriter-text');
+      if (typewriter) typewriter.textContent = 'Dream | Grow | Lead';
 
       const primaryCta = document.querySelector('.hero-actions a.btn-primary');
       if (primaryCta) {

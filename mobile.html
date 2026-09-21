@@ -395,7 +395,7 @@
           <!-- Status Pill with clean margin -->
           <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-amber-500/15 border border-amber-500/45 text-amber-400 font-mono text-xs font-black tracking-wider shadow-sm mb-3">
             <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
-            <span>AVAILABLE FOR SUMMER 2026 INTERNSHIPS</span>
+            <span id="m-status-pill">Dream | Grow | Lead</span>
           </div>
 
           <!-- Hero Main Title with generous vertical gap -->
@@ -1068,10 +1068,8 @@
         }
 
         // 3. Hero & Availability
-        if (site.hero && site.hero.availabilityBadge) {
-          const el = document.getElementById('m-status-pill');
-          if (el) el.textContent = site.hero.availabilityBadge;
-        }
+        const el = document.getElementById('m-status-pill');
+        if (el) el.textContent = 'Dream | Grow | Lead';
       }
 
       // Fast cache apply (0ms)

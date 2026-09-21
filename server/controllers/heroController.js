@@ -14,7 +14,7 @@ const DEFAULT_HERO = {
   secondaryCtaLabel: 'Download Resume',
   secondaryCtaUrl: '/assets/resume.pdf',
   profileImage: '/assets/anurag-portrait-sm.webp',
-  availabilityBadge: 'OPEN TO INTERNSHIP OPPORTUNITIES',
+  availabilityBadge: 'Dream | Grow | Lead',
   supportingText: 'B.Tech CSE (AI & ML) • 2022–2026',
   isVisible: true,
 };
