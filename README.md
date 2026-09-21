@@ -6,7 +6,7 @@
 [![ESLint](https://img.shields.io/badge/ESLint-8.57.0-4b32c3.svg)](https://eslint.org/)
 [![Prettier](https://img.shields.io/badge/Prettier-3.2.5-pink.svg)](https://prettier.io/)
 
-A world-class, production-ready frontend architecture built for the **ANTI GRAVITY** web application. Designed from first principles to showcase high-performance systems engineering, computer vision & machine learning projects, and weightless visual aesthetic.
+A world-class, production-ready frontend architecture built for the web application. Designed from first principles to showcase high-performance systems engineering, computer vision & machine learning projects, and weightless visual aesthetic.
 
 ---
 
