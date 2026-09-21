@@ -1,4 +1,4 @@
-# ⟁ Anti Gravity Portfolio — Enterprise Foundation
+# Portfolio — Enterprise Foundation
 
 [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.1.6-purple.svg)](https://vitejs.dev/)
