@@ -392,9 +392,8 @@
     </nav>
 
     <div class="hud-actions font-mono">
-      <div id="red-typewriter-pill" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 20px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.35); color: #ef4444; font-size: 0.82rem; font-weight: 700; margin-left: 12px; margin-right: 0; white-space: nowrap;">
-        <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
-        <span id="red-typewriter-text" style="letter-spacing: 0.5px; display: inline-block;">Dream | Grow | Lead</span>
+      <div id="red-typewriter-pill" style="display: inline-flex; align-items: center; margin-left: 12px; margin-right: 0; white-space: nowrap;">
+        <span id="red-typewriter-text" style="color: var(--color-text-muted); font-size: var(--font-size-sm); letter-spacing: 0.5px; font-weight: 500;">Dream | Grow | Lead</span>
       </div>
     </div>
 
@@ -446,7 +445,7 @@
         <!-- LEFT COLUMN: Authentic Brand Pitch & Actions -->
         <div class="hero-left-column" style="display: flex; flex-direction: column; gap: 20px;">
 
-          <div class="hero-tagline font-mono" style="font-size: var(--font-size-sm); color: var(--color-muted-text); text-transform: none;">
+          <div class="hero-tagline font-mono" style="font-size: var(--font-size-sm); color: var(--color-muted-text); text-transform: none; margin-bottom: 14px;">
             <span style="color: var(--color-starlight-white); font-weight: 700;">Anurag Sahu</span>
             <span style="color: var(--color-nebula-cyan); font-weight: 700;">•</span>
             <span>B.Tech CSE (AI & ML) 2nd Year</span>
@@ -518,8 +517,8 @@
                 <span>LinkedIn</span>
               </a>
               <button onclick="copyEmail()" class="btn-secondary" style="padding: 9px 6px; justify-content: center; border-radius: var(--radius-md); font-size: var(--font-size-xs); display: inline-flex; align-items: center; gap: 6px;" aria-label="Copy Direct Email Address">
-                <i data-lucide="mail" style="width: 15px;" aria-hidden="true"></i>
-                <span>Gmail</span>
+                <i data-lucide="copy" style="width: 14px;" aria-hidden="true"></i>
+                <span>Copy Email</span>
               </button>
             </div>
 
@@ -561,10 +560,10 @@
           height: auto;
           z-index: 0;
           pointer-events: none;
-          opacity: 0.85;
+          opacity: 0.28;
           transform: none;
           transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.1s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.1s;
-          filter: drop-shadow(0 0 20px rgba(251,191,36,0.18));
+          filter: drop-shadow(0 0 10px rgba(251,191,36,0.08));
         "
       />
 
@@ -584,10 +583,10 @@
           height: auto;
           z-index: 0;
           pointer-events: none;
-          opacity: 0.85;
+          opacity: 0.28;
           transform: none;
           transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.25s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.25s;
-          filter: drop-shadow(0 0 15px rgba(251,191,36,0.12));
+          filter: drop-shadow(0 0 10px rgba(251,191,36,0.08));
         "
       />
 
@@ -607,10 +606,10 @@
           height: auto;
           z-index: 0;
           pointer-events: none;
-          opacity: 0.85;
+          opacity: 0.28;
           transform: none;
           transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.15s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.15s;
-          filter: drop-shadow(0 0 20px rgba(251,191,36,0.18));
+          filter: drop-shadow(0 0 10px rgba(251,191,36,0.08));
         "
       />
 
@@ -630,10 +629,10 @@
           height: auto;
           z-index: 0;
           pointer-events: none;
-          opacity: 0.85;
+          opacity: 0.28;
           transform: none;
           transition: opacity 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.3s, transform 0.9s cubic-bezier(0.25,0.1,0.25,1) 0.3s;
-          filter: drop-shadow(0 0 15px rgba(251,191,36,0.12));
+          filter: drop-shadow(0 0 10px rgba(251,191,36,0.08));
         "
       />
 
@@ -693,7 +692,7 @@
         </div>
 
                   <!-- Anurag Sahu Academic Credentials Card -->
-          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: -20px; font-family: var(--font-mono); font-size: 0.76rem;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: -20px; font-family: var(--font-mono); font-size: var(--font-size-sm);">
             <span class="tag-mini" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);">🎓 B.Tech CSE (AI & ML) Sophomore</span>
             <span class="tag-mini" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);">🏛️ Maharana Pratap Institute</span>
             <span class="tag-mini" style="background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); color: #10b981; font-weight: 700;">🚀 Open to Summer 2026 Internships</span>
@@ -747,12 +746,12 @@
 
       // ── 1. IntersectionObserver: fade-in corner images + heading + CTA ──
       const fadeTargets = [
-        { el: document.getElementById('about-deco-tl'), show: true },
-        { el: document.getElementById('about-deco-bl'), show: true },
-        { el: document.getElementById('about-deco-tr'), show: true },
-        { el: document.getElementById('about-deco-br'), show: true },
-        { el: document.getElementById('about-heading'),  show: true },
-        { el: document.getElementById('about-cta'),      show: true },
+        { el: document.getElementById('about-deco-tl'), opacity: '0.28' },
+        { el: document.getElementById('about-deco-bl'), opacity: '0.28' },
+        { el: document.getElementById('about-deco-tr'), opacity: '0.28' },
+        { el: document.getElementById('about-deco-br'), opacity: '0.28' },
+        { el: document.getElementById('about-heading'), opacity: '1' },
+        { el: document.getElementById('about-cta'), opacity: '1' },
       ];
 
       const sectionEl = document.getElementById('aboutme');
@@ -760,9 +759,9 @@
       const sectionObs = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            fadeTargets.forEach(({ el }) => {
+            fadeTargets.forEach(({ el, opacity }) => {
               if (!el) return;
-              el.style.opacity = '1';
+              el.style.opacity = opacity || '1';
               el.style.transform = 'translateX(0) translateY(0)';
             });
             sectionObs.disconnect();
@@ -848,7 +847,7 @@
       </div>
 
       <div class="glass-panel glass-spotlight" style="padding: 32px;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+        <div class="skills-flex-grid">
           
           <!-- 3D Flip Card 1: Frontend Web -->
           <div class="flip-card" tabindex="0" role="button" aria-expanded="false" aria-label="Frontend Web Card, click to flip" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped'); this.setAttribute('aria-expanded', this.querySelector('.flip-card-inner').classList.contains('flipped'));">
@@ -856,22 +855,22 @@
               <div class="flip-card-front" style="border: 1px solid rgba(6,182,212,0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(6,182,212,0.1);">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                   <i data-lucide="layout" style="width: 30px; height: 30px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
-                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.4); color: var(--color-nebula-cyan); font-size: 0.72rem; font-weight: 700;">TAP TO FLIP 🔄</span>
+                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.4); color: var(--color-nebula-cyan); font-size: var(--font-size-xs); font-weight: 700;">TAP TO FLIP 🔄</span>
                 </div>
-                <div>
-                  <h3 class="font-display" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Frontend Web</h3>
-                  <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0; line-height: 1.45;">React, HTML5, CSS3, Tailwind, JavaScript ES6+</p>
+                <div class="flip-card-text-block">
+                  <h3 class="font-display" style="font-size: var(--font-size-md); font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Frontend Web</h3>
+                  <p style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin: 0; line-height: 1.45;">React, HTML5, CSS3, Tailwind, JavaScript ES6+</p>
                 </div>
               </div>
               <div class="flip-card-back" style="border: 1px solid rgba(6,182,212,0.7); box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 25px rgba(6,182,212,0.2);">
                 <h3 class="font-display" style="font-size: 0.95rem; font-weight: 700; color: var(--color-nebula-cyan); margin: 0 0 8px 0;">Frontend Tech Stack</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem;">
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">React 18</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">JavaScript ES6+</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">TailwindCSS</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">CSS Glassmorphism</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: var(--font-size-xs);">
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">React 18</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">JavaScript ES6+</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">TailwindCSS</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">CSS Glassmorphism</span>
                 </div>
-                <span class="font-mono" style="font-size: 0.7rem; color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
+                <span class="font-mono" style="font-size: var(--font-size-xs); color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
               </div>
             </div>
           </div>
@@ -882,22 +881,22 @@
               <div class="flip-card-front" style="border: 1px solid rgba(139,92,246,0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(139,92,246,0.1);">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                   <i data-lucide="server" style="width: 30px; height: 30px; color: var(--color-quantum-violet);" aria-hidden="true"></i>
-                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.4); color: var(--color-quantum-violet); font-size: 0.72rem; font-weight: 700;">TAP TO FLIP 🔄</span>
+                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.4); color: var(--color-quantum-violet); font-size: var(--font-size-xs); font-weight: 700;">TAP TO FLIP 🔄</span>
                 </div>
-                <div>
-                  <h3 class="font-display" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Backend & APIs</h3>
-                  <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0; line-height: 1.45;">Node.js, Express.js, REST Architecture, JWT</p>
+                <div class="flip-card-text-block">
+                  <h3 class="font-display" style="font-size: var(--font-size-md); font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Backend & APIs</h3>
+                  <p style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin: 0; line-height: 1.45;">Node.js, Express.js, REST Architecture, JWT</p>
                 </div>
               </div>
               <div class="flip-card-back" style="border: 1px solid rgba(139,92,246,0.7); box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 25px rgba(139,92,246,0.2);">
                 <h3 class="font-display" style="font-size: 0.95rem; font-weight: 700; color: var(--color-quantum-violet); margin: 0 0 8px 0;">Backend Architecture</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem;">
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Node.js</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Express REST API</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">JWT Auth</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Nodemailer</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: var(--font-size-xs);">
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Node.js</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Express REST API</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">JWT Auth</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Nodemailer</span>
                 </div>
-                <span class="font-mono" style="font-size: 0.7rem; color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
+                <span class="font-mono" style="font-size: var(--font-size-xs); color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
               </div>
             </div>
           </div>
@@ -908,22 +907,22 @@
               <div class="flip-card-front" style="border: 1px solid rgba(16,185,129,0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(16,185,129,0.1);">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                   <i data-lucide="cpu" style="width: 30px; height: 30px; color: #10b981;" aria-hidden="true"></i>
-                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #10b981; font-size: 0.72rem; font-weight: 700;">TAP TO FLIP 🔄</span>
+                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #10b981; font-size: var(--font-size-xs); font-weight: 700;">TAP TO FLIP 🔄</span>
                 </div>
-                <div>
-                  <h3 class="font-display" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">AI & ML</h3>
-                  <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0; line-height: 1.45;">Python, NumPy, Pandas, Scikit-Learn</p>
+                <div class="flip-card-text-block">
+                  <h3 class="font-display" style="font-size: var(--font-size-md); font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">AI & ML</h3>
+                  <p style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin: 0; line-height: 1.45;">Python, NumPy, Pandas, Scikit-Learn</p>
                 </div>
               </div>
               <div class="flip-card-back" style="border: 1px solid rgba(16,185,129,0.7); box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 25px rgba(16,185,129,0.2);">
                 <h3 class="font-display" style="font-size: 0.95rem; font-weight: 700; color: #10b981; margin: 0 0 8px 0;">AI & Machine Learning</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem;">
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Python 3.12</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Pandas & NumPy</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Scikit-Learn</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Model Training</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: var(--font-size-xs);">
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Python 3.12</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Pandas & NumPy</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Scikit-Learn</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Model Training</span>
                 </div>
-                <span class="font-mono" style="font-size: 0.7rem; color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
+                <span class="font-mono" style="font-size: var(--font-size-xs); color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
               </div>
             </div>
           </div>
@@ -934,22 +933,22 @@
               <div class="flip-card-front" style="border: 1px solid rgba(245,158,11,0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(245,158,11,0.1);">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                   <i data-lucide="database" style="width: 30px; height: 30px; color: #f59e0b;" aria-hidden="true"></i>
-                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.4); color: #f59e0b; font-size: 0.72rem; font-weight: 700;">TAP TO FLIP 🔄</span>
+                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.4); color: #f59e0b; font-size: var(--font-size-xs); font-weight: 700;">TAP TO FLIP 🔄</span>
                 </div>
-                <div>
-                  <h3 class="font-display" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Databases</h3>
-                  <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0; line-height: 1.45;">MongoDB, Mongoose, PostgreSQL</p>
+                <div class="flip-card-text-block">
+                  <h3 class="font-display" style="font-size: var(--font-size-md); font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Databases</h3>
+                  <p style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin: 0; line-height: 1.45;">MongoDB, Mongoose, PostgreSQL</p>
                 </div>
               </div>
               <div class="flip-card-back" style="border: 1px solid rgba(245,158,11,0.7); box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 25px rgba(245,158,11,0.2);">
                 <h3 class="font-display" style="font-size: 0.95rem; font-weight: 700; color: #f59e0b; margin: 0 0 8px 0;">Database Engineering</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem;">
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">MongoDB Atlas</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Mongoose ODM</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">PostgreSQL</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Data Modeling</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: var(--font-size-xs);">
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">MongoDB Atlas</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Mongoose ODM</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">PostgreSQL</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Data Modeling</span>
                 </div>
-                <span class="font-mono" style="font-size: 0.7rem; color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
+                <span class="font-mono" style="font-size: var(--font-size-xs); color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
               </div>
             </div>
           </div>
@@ -960,22 +959,22 @@
               <div class="flip-card-front" style="border: 1px solid rgba(239,68,68,0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(239,68,68,0.1);">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                   <i data-lucide="smartphone" style="width: 30px; height: 30px; color: #ef4444;" aria-hidden="true"></i>
-                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: #ef4444; font-size: 0.72rem; font-weight: 700;">TAP TO FLIP 🔄</span>
+                  <span class="font-mono" style="padding: 4px 10px; border-radius: 9999px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: #ef4444; font-size: var(--font-size-xs); font-weight: 700;">TAP TO FLIP 🔄</span>
                 </div>
-                <div>
-                  <h3 class="font-display" style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Mobile Apps</h3>
-                  <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0; line-height: 1.45;">Flutter Framework, Dart Language, Cross-Platform Android/iOS UI</p>
+                <div class="flip-card-text-block">
+                  <h3 class="font-display" style="font-size: var(--font-size-md); font-weight: 700; color: #ffffff; margin: 0 0 4px 0;">Mobile Apps</h3>
+                  <p style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin: 0; line-height: 1.45;">Flutter Framework, Dart Language, Cross-Platform Android/iOS UI</p>
                 </div>
               </div>
               <div class="flip-card-back" style="border: 1px solid rgba(239,68,68,0.7); box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 25px rgba(239,68,68,0.2);">
                 <h3 class="font-display" style="font-size: 0.95rem; font-weight: 700; color: #ef4444; margin: 0 0 8px 0;">Mobile App Engine</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem;">
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Flutter Framework</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Dart Language</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Cross-Platform UI</span>
-                  <span style="padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Firebase Integration</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: var(--font-size-xs);">
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Flutter Framework</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Dart Language</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Cross-Platform UI</span>
+                  <span style="padding: 4px 8px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #ffffff;">Firebase Integration</span>
                 </div>
-                <span class="font-mono" style="font-size: 0.7rem; color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
+                <span class="font-mono" style="font-size: var(--font-size-xs); color: var(--color-text-muted); padding-top: 8px;">Tap again to flip back</span>
               </div>
             </div>
           </div>
@@ -993,36 +992,35 @@
         </p>
       </div>
 
-      <div class="glass-panel glass-spotlight" style="padding: 32px;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+      <div class="glass-panel glass-spotlight" style="padding: 20px 24px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
           
           <!-- LeetCode Card -->
-          <a href="https://leetcode.com/u/anuragsahu0/" id="leetcode-link-card" target="_blank" rel="noopener noreferrer" class="glass-panel" style="padding: 24px; display: flex; align-items: center; gap: 16px; border-color: rgba(255,161,22,0.4); background: rgba(15,23,42,0.6); text-decoration: none; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;">
-            <div style="width: 54px; height: 54px; border-radius: 16px; background: rgba(255,161,22,0.12); border: 1px solid rgba(255,161,22,0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 15px rgba(255,161,22,0.25);">
-              <i data-lucide="code-2" style="width: 28px; height: 28px; color: #ffa116;" aria-hidden="true"></i>
+          <a href="https://leetcode.com/u/anuragsahu0/" id="leetcode-link-card" target="_blank" rel="noopener noreferrer" class="glass-panel" style="padding: 16px 20px; border-radius: var(--radius-lg); display: flex; align-items: center; gap: 14px; border-color: rgba(255,161,22,0.4); background: rgba(15,23,42,0.6); text-decoration: none; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;">
+            <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: rgba(255,161,22,0.12); border: 1px solid rgba(255,161,22,0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 12px rgba(255,161,22,0.2);">
+              <i data-lucide="code-2" style="width: 22px; height: 22px; color: #ffa116;" aria-hidden="true"></i>
             </div>
             <div>
-              <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #ffa116; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Problem Solving</div>
-              <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; color: var(--color-starlight-white); margin: 2px 0 4px 0;">LeetCode</h3>
-              <span class="font-mono" style="font-size: 0.78rem; color: var(--color-muted-text); display: flex; align-items: center; gap: 4px;">
+              <div style="font-family: var(--font-mono); font-size: var(--font-size-xs); color: #ffa116; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Problem Solving</div>
+              <h3 style="font-family: var(--font-display); font-size: var(--font-size-base); font-weight: 800; color: var(--color-starlight-white); margin: 2px 0 4px 0;">LeetCode</h3>
+              <span class="font-mono" style="font-size: var(--font-size-xs); color: var(--color-muted-text); display: flex; align-items: center; gap: 4px;">
                 <span>View Profile</span>
-                <i data-lucide="external-link" style="width: 14px;" aria-hidden="true"></i>
+                <i data-lucide="external-link" style="width: 13px;" aria-hidden="true"></i>
               </span>
             </div>
           </a>
 
-
           <!-- GeeksforGeeks Card -->
-          <a href="https://www.geeksforgeeks.org/profile/shivasal83s" id="gfg-link-card" target="_blank" rel="noopener noreferrer" class="glass-panel" style="padding: 24px; display: flex; align-items: center; gap: 16px; border-color: rgba(47,141,70,0.4); background: rgba(15,23,42,0.6); text-decoration: none; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;">
-            <div style="width: 54px; height: 54px; border-radius: 16px; background: rgba(47,141,70,0.12); border: 1px solid rgba(47,141,70,0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 15px rgba(47,141,70,0.25);">
-              <i data-lucide="award" style="width: 28px; height: 28px; color: #2f8d46;" aria-hidden="true"></i>
+          <a href="https://www.geeksforgeeks.org/profile/shivasal83s" id="gfg-link-card" target="_blank" rel="noopener noreferrer" class="glass-panel" style="padding: 16px 20px; border-radius: var(--radius-lg); display: flex; align-items: center; gap: 14px; border-color: rgba(47,141,70,0.4); background: rgba(15,23,42,0.6); text-decoration: none; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;">
+            <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: rgba(47,141,70,0.12); border: 1px solid rgba(47,141,70,0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 12px rgba(47,141,70,0.2);">
+              <i data-lucide="award" style="width: 22px; height: 22px; color: #2f8d46;" aria-hidden="true"></i>
             </div>
             <div>
-              <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #2f8d46; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">DSA & Core CS</div>
-              <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; color: var(--color-starlight-white); margin: 2px 0 4px 0;">GeeksforGeeks</h3>
-              <span class="font-mono" style="font-size: 0.78rem; color: var(--color-muted-text); display: flex; align-items: center; gap: 4px;">
+              <div style="font-family: var(--font-mono); font-size: var(--font-size-xs); color: #2f8d46; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">DSA & Core CS</div>
+              <h3 style="font-family: var(--font-display); font-size: var(--font-size-base); font-weight: 800; color: var(--color-starlight-white); margin: 2px 0 4px 0;">GeeksforGeeks</h3>
+              <span class="font-mono" style="font-size: var(--font-size-xs); color: var(--color-muted-text); display: flex; align-items: center; gap: 4px;">
                 <span>View Profile</span>
-                <i data-lucide="external-link" style="width: 14px;" aria-hidden="true"></i>
+                <i data-lucide="external-link" style="width: 13px;" aria-hidden="true"></i>
               </span>
             </div>
           </a>
@@ -1041,8 +1039,8 @@
 
         <!-- Simplified Project Category Filter Buttons (All Builds & Enterprise) -->
         <div class="project-filters" style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
-          <button class="filter-btn active" data-filter="all">All Builds</button>
-          <button class="filter-btn" data-filter="enterprise">Enterprise</button>
+          <button class="filter-btn active" data-filter="all" aria-pressed="true">All Builds</button>
+          <button class="filter-btn" data-filter="enterprise" aria-pressed="false">Enterprise</button>
         </div>
       </div>
 
@@ -1050,7 +1048,7 @@
       <div class="glass-panel glass-spotlight" style="padding: 32px; margin-bottom: 24px; cursor: pointer; transition: all 0.3s ease;" onclick="window.open('https://anuragsahu.com/AI-FINANCE-CONTROLLER', '_blank')">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;" class="font-mono">
           <div>
-            <span style="color: var(--color-nebula-cyan); font-weight: 700; font-size: 0.8rem;">PROJECT 01 • AUTONOMOUS AI & FINTECH</span>
+            <span style="color: var(--color-nebula-cyan); font-weight: 700; font-size: 0.8rem;">Project 01 • Autonomous AI & FinTech</span>
             <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px; flex-wrap: wrap;">
               <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--color-starlight-white); margin: 0;">
                 AI Finance Controller
@@ -1072,7 +1070,6 @@
         </div>
         <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;" onclick="event.stopPropagation()">
           <a href="https://anuragsahu.com/AI-FINANCE-CONTROLLER" target="_blank" rel="noopener noreferrer" class="btn-primary" style="font-size: var(--font-size-xs); padding: 8px 16px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;" aria-label="Launch AI Finance Controller">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             <span>🚀 Launch Live App</span>
           </a>
           <a href="https://github.com/anuragsahu0/ai-finance-controller" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: var(--font-size-xs); padding: 8px 16px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;" aria-label="View AI Finance Controller Source Code on GitHub">
@@ -1086,7 +1083,7 @@
       <div class="glass-panel glass-spotlight" style="padding: 32px; margin-bottom: 24px;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;" class="font-mono">
           <div>
-            <span style="color: #f59e0b; font-weight: 700; font-size: 0.8rem;">PROJECT 02 • ENTERPRISE SYSTEM</span>
+            <span style="color: #f59e0b; font-weight: 700; font-size: 0.8rem;">Project 02 • Enterprise System</span>
             <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--color-starlight-white); margin-top: 4px;">
               Restaurant Management System
             </h3>
@@ -1103,13 +1100,17 @@
           <div>• Real-Time Kitchen Order Display (KDS) via WebSockets</div>
           <div>• Inventory Stock Tracking & Digital Invoice Billing Generation</div>
         </div>
+        <div style="margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: var(--font-size-xs); color: var(--color-text-muted); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 4px 10px; border-radius: var(--radius-sm);">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #f59e0b;"></span>
+          <span>Architecture &amp; System Spec in Progress</span>
+        </div>
       </div>
 
       <!-- Project 03: Smart College ERP -->
       <div class="glass-panel glass-spotlight" style="padding: 32px; margin-bottom: 24px;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;" class="font-mono">
           <div>
-            <span style="color: #f59e0b; font-weight: 700; font-size: 0.8rem;">PROJECT 03 • ACADEMIC ERP</span>
+            <span style="color: #f59e0b; font-weight: 700; font-size: 0.8rem;">Project 03 • Academic ERP</span>
             <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--color-starlight-white); margin-top: 4px;">
               Smart College ERP
             </h3>
@@ -1125,6 +1126,10 @@
           <div>• Multi-Role Student, Faculty & Admin Portal (RBAC)</div>
           <div>• Attendance Tracking & Automated Percentage Calculation</div>
           <div>• Online Examination Result Publishing & Digital Fee Gateway</div>
+        </div>
+        <div style="margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: var(--font-size-xs); color: var(--color-text-muted); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 4px 10px; border-radius: var(--radius-sm);">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #f59e0b;"></span>
+          <span>Architecture &amp; System Spec in Progress</span>
         </div>
       </div>
 
@@ -1148,25 +1153,36 @@
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px;">
         <!-- Left Candidate Snapshot Card with Sparkling Connect Buttons -->
-        <div class="glass-panel glass-spotlight" style="padding: 32px;">
-          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
-            <div style="width: 64px; height: 75px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.4); padding: 2px; overflow: hidden; flex-shrink: 0;">
-              <picture>
-                <source srcSet="assets/anurag-portrait-sm.webp" type="image/webp">
-                <img src="assets/anurag-portrait-sm.jpg" alt="Professional portrait of Anurag Sahu." width="64" height="75" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
-              </picture>
+        <div class="glass-panel glass-spotlight" style="padding: 32px; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
+              <div style="width: 64px; height: 75px; border-radius: 12px; border: 1px solid rgba(6,182,212,0.4); padding: 2px; overflow: hidden; flex-shrink: 0;">
+                <picture>
+                  <source srcSet="assets/anurag-portrait-sm.webp" type="image/webp">
+                  <img src="assets/anurag-portrait-sm.jpg" alt="Professional portrait of Anurag Sahu." width="64" height="75" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                </picture>
+              </div>
+              <div>
+                <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--color-starlight-white);">Anurag Sahu</h3>
+                <p class="font-mono" style="font-size: 0.8rem; color: var(--color-nebula-cyan);">Full-Stack & AI/ML Developer</p>
+              </div>
             </div>
-            <div>
-              <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--color-starlight-white);">Anurag Sahu</h3>
-              <p class="font-mono" style="font-size: 0.8rem; color: var(--color-nebula-cyan);">Full-Stack & AI/ML Developer</p>
+
+            <!-- Candidate Availability & Status Summary (Issue 15) -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md); padding: 14px 16px; margin: 16px 0; font-family: var(--font-mono); font-size: var(--font-size-xs); color: var(--color-text-muted); display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px; color: var(--color-text-light);">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 8px #10b981;"></span>
+                <strong style="color: #ffffff;">Available for Work &amp; Internships</strong>
+              </div>
+              <div>📍 Based in Uttar Pradesh, India (IST UTC+5:30)</div>
+              <div>⚡ Fast Response within 24 Hours</div>
             </div>
           </div>
 
-          <!-- SPARKLING ACTION BUTTONS: GitHub, LinkedIn, Email -->
+          <!-- ACTION BUTTONS: GitHub, LinkedIn, Email (Issue 16, 26) -->
           <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;" class="font-mono">
-            <div style="font-size: 0.75rem; color: var(--color-nebula-cyan); font-weight: 700; display: flex; align-items: center; gap: 6px;">
-              <i data-lucide="sparkles" style="width: 14px; color: var(--color-nebula-cyan);" aria-hidden="true"></i>
-              <span>DIRECT SPARKLING CONNECT</span>
+            <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;">
+              <span>Quick Connect</span>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
@@ -1180,15 +1196,15 @@
                 <span>LinkedIn</span>
               </a>
 
-              <button onclick="copyEmail()" class="btn-secondary" style="padding: 10px; justify-content: center; font-size: var(--font-size-xs); display: inline-flex; align-items: center; gap: 6px;" aria-label="Copy Direct Email Address">
+              <a href="mailto:shivasahu0612@gmail.com" onclick="copyEmail(event)" class="btn-secondary" style="padding: 10px; justify-content: center; font-size: var(--font-size-xs); display: inline-flex; align-items: center; gap: 6px; text-decoration: none;" aria-label="Send direct email to shivasahu0612@gmail.com">
                 <i data-lucide="mail" style="width: 14px;" aria-hidden="true"></i>
                 <span>Email</span>
-              </button>
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- Right Backend-Ready Contact Form -->
+        <!-- Right Backend-Ready Contact Form (Issue 27) -->
         <div class="glass-panel glass-spotlight" style="padding: 32px;">
           <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--color-starlight-white); margin-bottom: 20px;">
             Send Direct Message
@@ -1197,17 +1213,17 @@
           <form id="contact-form" style="display: flex; flex-direction: column; gap: 16px; font-family: var(--font-mono); font-size: 0.8rem;">
             <div>
               <label for="contact-fullname" style="color: var(--color-starlight-white); font-weight: 700;">FULL NAME *</label>
-              <input id="contact-fullname" type="text" required placeholder="e.g. Sarah Jenkins" style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--color-starlight-white); font-family: inherit; margin-top: 4px;">
+              <input id="contact-fullname" type="text" required placeholder="e.g. Sarah Jenkins" style="width: 100%; padding: 12px 14px; margin-top: 6px;">
             </div>
 
             <div>
               <label for="contact-email" style="color: var(--color-starlight-white); font-weight: 700;">WORK EMAIL *</label>
-              <input id="contact-email" type="email" required placeholder="e.g. sarah@company.com" style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--color-starlight-white); font-family: inherit; margin-top: 4px;">
+              <input id="contact-email" type="email" required placeholder="e.g. sarah@company.com" style="width: 100%; padding: 12px 14px; margin-top: 6px;">
             </div>
 
             <div>
               <label for="contact-msg" style="color: var(--color-starlight-white); font-weight: 700;">MESSAGE *</label>
-              <textarea id="contact-msg" rows="4" required placeholder="Hi Anurag, we reviewed your portfolio..." style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--color-starlight-white); font-family: inherit; margin-top: 4px; resize: none;"></textarea>
+              <textarea id="contact-msg" rows="4" required placeholder="Hi Anurag, we reviewed your portfolio..." style="width: 100%; padding: 12px 14px; margin-top: 6px; resize: none;"></textarea>
             </div>
 
             <button id="contact-submit-btn" type="submit" class="btn-primary reel-btn" style="justify-content: center;" aria-label="Send Direct Message">
@@ -1223,6 +1239,53 @@
 
   <!-- TOAST NOTIFICATION -->
   <div id="toast" role="status" aria-live="polite">✓ COPIED TO CLIPBOARD</div>
+
+  <!-- BULLETPROOF CLIPBOARD & TOAST ENGINE -->
+  <script>
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimeout);
+      window.__toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    function fallbackCopyText(text) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      textArea.style.top = '0';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {}
+      document.body.removeChild(textArea);
+    }
+
+    function copyEmail(e) {
+      const email = 'shivasahu0612@gmail.com';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).catch(() => {
+          fallbackCopyText(email);
+        });
+      } else {
+        fallbackCopyText(email);
+      }
+      showToast('✓ EMAIL COPIED: ' + email);
+      if (window.sendTelemetry) {
+        try { window.sendTelemetry('email_copied', { email }); } catch (err) {}
+      }
+    }
+
+    window.copyEmail = copyEmail;
+    window.showToast = showToast;
+  </script>
 
   <!-- SLEEK GLASSMORPHIC SUCCESS CONFIRMATION MODAL -->
   <div id="contact-success-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" style="position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);">
@@ -1247,13 +1310,20 @@
   </div>
 
   <!-- FOOTER -->
-  <footer>
+  <footer style="position: relative; z-index: 50;">
     <div class="container footer-content">
       <div>
         <span>&copy; 2026 Anurag Sahu. All rights reserved.</span>
       </div>
-      <div>
-        <a href="mailto:shivasahu0612@gmail.com" class="font-mono" style="color: var(--color-nebula-cyan); text-decoration: underline;" aria-label="Send direct email to shivasahu0612@gmail.com">shivasahu0612@gmail.com</a>
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <a href="mailto:shivasahu0612@gmail.com" onclick="copyEmail(event)" class="font-mono" style="color: var(--color-royal-gold); text-decoration: underline; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" aria-label="Send direct email to shivasahu0612@gmail.com">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <span>shivasahu0612@gmail.com</span>
+        </a>
+        <button type="button" onclick="copyEmail(event)" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 6px; padding: 4px 10px; color: var(--color-text-light); font-size: 11px; font-family: var(--font-mono); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s ease;" title="Copy to clipboard" aria-label="Copy email address to clipboard">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span>Copy</span>
+        </button>
       </div>
     </div>
   </footer>

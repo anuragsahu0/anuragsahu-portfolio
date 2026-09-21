@@ -7,29 +7,29 @@ import { SITE_CONFIG } from '@/constants/config';
 
 export const ROADMAP_PROJECTS = [
   {
-    id: 'portfolio',
+    id: 'ai-finance-controller',
     number: '01',
-    name: 'Portfolio',
-    subtitle: 'Production-ready personal platform & developer telemetry dashboard.',
-    status: 'Working',
-    statusVariant: 'cyan', // 'cyan' | 'amber' | 'emerald' | 'purple'
+    name: 'AI Finance Controller',
+    subtitle: 'Autonomous enterprise financial operations platform & Finance Copilot.',
+    status: 'Completed',
+    statusVariant: 'emerald',
     statusSymbol: '🟢',
-    progress: 85,
-    progressLabel: 'Working • 85% Completed',
+    progress: 100,
+    progressLabel: 'Completed • Operational',
     lastUpdated: 'Updated Q1 2026',
-    description: 'Building a premium production-ready portfolio with React 18, Node.js, Express backend API, modern glassmorphism design system, and recruiter-focused 30s fast-track experience.',
+    description: 'Autonomous enterprise financial operations platform with multi-source ingestion, deterministic multi-way reconciliation engine, GST/VAT tax intelligence, statistical anomaly detection 2.0 (+178% surge detection), controlled settlement automation with Four-Eyes authorization, and Finance Copilot.',
     currentFocus: [
-      'Nodemailer Contact Form Integration',
-      'Telemetry Admin Dashboard & Real-Time Analytics',
-      'Vercel & Docker Multi-Platform Public Deployment'
+      'Multi-Source Ingestion & Deterministic Reconciliation Engine',
+      'Tax Matching & Statistical Anomaly Baselines (+178% Surge Detection)',
+      'Controlled Settlement Engine with Four-Eyes Authorization Gate'
     ],
     plannedModules: [
-      'Interactive WebGL Anti-Gravity Particle Canvas',
-      'Centralized Candidate Data Store (Anurag Sahu)',
-      'Product-Grade Case Study Modals & Metrics'
+      'Finance Copilot 2.0 with Specialized Grounded Agents & 7-Day Forecasting',
+      'Automated Bank Statement & Ledger Reconciliation Feed',
+      'Real-Time Anomaly Alert Webhooks & Audit Exports'
     ],
-    technologies: ['React 18', 'Node.js', 'Express', 'Tailwind CSS', 'Framer Motion', 'MongoDB'],
-    category: 'Full-Stack Web & Telemetry'
+    technologies: ['FastAPI', 'Python', 'Next.js 14', 'PostgreSQL', 'Docker', 'Tailwind CSS'],
+    category: 'Autonomous AI & FinTech'
   },
   {
     id: 'meoww-racing-game',

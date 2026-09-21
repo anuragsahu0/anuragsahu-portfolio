@@ -399,16 +399,44 @@ function showToast(msg) {
   if (!toast) return;
   toast.textContent = msg;
   toast.classList.add('show');
-  setTimeout(() => {
+  clearTimeout(window.__toastTimeout);
+  window.__toastTimeout = setTimeout(() => {
     toast.classList.remove('show');
   }, 2500);
 }
 
-function copyEmail() {
-  navigator.clipboard.writeText('shivasahu0612@gmail.com');
-  showToast('✓ EMAIL COPIED: shivasahu0612@gmail.com');
-  sendTelemetry('email_copied', { email: 'shivasahu0612@gmail.com' });
+function fallbackCopyText(text) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.style.position = 'fixed';
+  textArea.style.left = '-9999px';
+  textArea.style.top = '0';
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  try {
+    document.execCommand('copy');
+  } catch (err) {}
+  document.body.removeChild(textArea);
 }
+
+function copyEmail(e) {
+  const email = 'shivasahu0612@gmail.com';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(email).catch(() => {
+      fallbackCopyText(email);
+    });
+  } else {
+    fallbackCopyText(email);
+  }
+  showToast('✓ EMAIL COPIED: ' + email);
+  try {
+    sendTelemetry('email_copied', { email });
+  } catch (err) {}
+}
+
+window.copyEmail = copyEmail;
+window.showToast = showToast;
 
 
 async function syncProjectStatuses() {

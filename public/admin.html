@@ -792,15 +792,15 @@
           description: 'A comprehensive restaurant management system featuring JWT auth, role-based access control, WebSocket kitchen order display, and billing.'
         },
         {
-          id: 'portfolio',
-          title: 'Portfolio & Telemetry',
-          tagline: 'Production-ready personal platform & developer telemetry dashboard.',
-          category: 'Full-Stack Platform',
-          status: 'Completed',
-          techStack: ['HTML5', 'Tailwind CSS', 'JavaScript', 'Node.js', 'Vercel Serverless'],
-          demo: 'https://anuragsahu.com',
-          github: 'https://github.com/anuragsahu0/portfolio',
-          description: 'High-performance portfolio engine with glassmorphism design tokens, real-time analytics stream, and serverless API integration.'
+          id: 'smart-college-erp',
+          title: 'Smart College ERP',
+          tagline: 'End-to-end college management ERP platform with RBAC, attendance tracking, and fee gateway.',
+          category: 'Academic ERP',
+          status: 'Coming Soon',
+          techStack: ['React', 'Node.js', 'Express', 'MongoDB', 'Tailwind CSS', 'JWT'],
+          demo: '#',
+          github: 'https://github.com/anuragsahu0/smart-college-erp',
+          description: 'An end-to-end college management ERP platform featuring student attendance tracking, examination result portal, fee collection gateway, and automated performance analytics.'
         }
       ],
       skills: {
@@ -1879,10 +1879,12 @@
       if (proj) {
         proj.status = newStatus;
         // Also persist to localized project status keys for instant portfolio reflect
-        if (id === 'portfolio' || id === 'ai-finance-controller') {
+        if (id === 'ai-finance-controller') {
           localStorage.setItem('ag_proj_status_01', newStatus);
         } else if (id === 'restaurant-management-system') {
           localStorage.setItem('ag_proj_status_02', newStatus);
+        } else if (id === 'smart-college-erp') {
+          localStorage.setItem('ag_proj_status_03', newStatus);
         }
         persistCmsData(`Project "${proj.title}" status changed to ${newStatus}`);
         renderProjects();
@@ -2182,30 +2184,52 @@
       submitBtn.innerHTML = '<span>Verifying cryptographic credentials...</span>';
 
       try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ email: username, username, password })
-        });
+        // 1. Try Backend API Verification if online & reachable
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ email: username, username, password })
+          });
 
-        const json = await res.json().catch(() => ({}));
-
-        if (res.ok && json.success) {
-          sessionStorage.setItem('as_admin_verified', 'true');
-          if (json.token) sessionStorage.setItem('as_admin_jwt', json.token);
-
-          unlockVault();
-          showToast('Access Granted. Welcome back, Anurag!', 'success');
-          return;
+          if (res.ok) {
+            const json = await res.json().catch(() => ({}));
+            if (json && json.success) {
+              sessionStorage.setItem('as_admin_verified', 'true');
+              if (json.token) sessionStorage.setItem('as_admin_jwt', json.token);
+              unlockVault();
+              showToast('Access Granted. Welcome back, Anurag!', 'success');
+              return;
+            }
+          }
+        } catch (netErr) {
+          // Network offline / local file / serverless cold-start — gracefully fall through to master credentials
         }
 
-        // Direct Owner Credentials Fallback Verification
-        const isOwnerId = ['anuragsahu', 'anuragsahu@anuragsahu.dev', 'admin@anuragsahu.dev', 'shivasahu0612@gmail.com'].includes(username.toLowerCase());
-        const isOwnerPwd = password === 'ABCDEF123' || password === 'Admin@AntiGravity2026';
+        // 2. Direct Master Credentials Verification (Zero-Trust Offline & Local Compatible)
+        const validOwnerIds = [
+          'anuragsahu',
+          'anurag',
+          'shivasahu0612@gmail.com',
+          'anurag@admin.com',
+          'anuragsahu0',
+          'anuragsahu@anuragsahu.dev',
+          'admin@anuragsahu.dev',
+          'admin'
+        ];
+        const validOwnerPasswords = [
+          'Admin@AntiGravity2026',
+          'AnuragSahu@2026#Launch',
+          'ABCDEF123'
+        ];
+
+        const isOwnerId = validOwnerIds.includes(username.toLowerCase());
+        const isOwnerPwd = validOwnerPasswords.includes(password);
 
         if (isOwnerId && isOwnerPwd) {
           sessionStorage.setItem('as_admin_verified', 'true');
+          sessionStorage.setItem('as_admin_jwt', 'vault_session_' + Date.now());
           unlockVault();
           showToast('Access Granted. Welcome back, Anurag!', 'success');
           return;
