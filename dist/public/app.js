@@ -1033,19 +1033,7 @@ async function initCmsIntegration() {
       if (narrativeText) {
         const paraEl = document.getElementById('about-char-para');
         if (paraEl) {
-          const words = narrativeText.split(' ');
-          let charIdx = 0;
-          let html = '';
-          words.forEach((word, wIdx) => {
-            let wordHtml = '';
-            word.split('').forEach((ch) => {
-              wordHtml += `<span style="position:relative;display:inline-block;"><span style="opacity:0.3;user-select:none;" aria-hidden="true">${ch}</span><span id="ac${charIdx}" style="position:absolute;top:0;left:0;opacity:0.85;transition:opacity 0.2s ease;">${ch}</span></span>`;
-              charIdx++;
-            });
-            html += `<span style="display:inline-block;white-space:nowrap;">${wordHtml}</span>`;
-            if (wIdx < words.length - 1) html += ' ';
-          });
-          paraEl.innerHTML = html;
+          paraEl.textContent = narrativeText;
           window.dispatchEvent(new Event('scroll'));
         }
       }

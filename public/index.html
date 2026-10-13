@@ -393,7 +393,7 @@
 
     <div class="hud-actions font-mono">
       <div id="red-typewriter-pill" style="display: inline-flex; align-items: center; margin-left: 12px; margin-right: 0; white-space: nowrap;">
-        <span id="red-typewriter-text" style="color: var(--color-text-muted); font-size: var(--font-size-sm); letter-spacing: 0.5px; font-weight: 500;">Dream | Grow | Lead</span>
+        <span id="red-typewriter-text" style="color: #cbd5e1; font-size: var(--font-size-sm); letter-spacing: 0.5px; font-weight: 500;" aria-live="polite">Dream | Grow | Lead</span>
       </div>
     </div>
 
@@ -456,7 +456,7 @@
           </h1>
 
           <p class="hero-subtitle">
-            Hi, I'm <strong style="color: var(--color-starlight-white);">Anurag Sahu</strong> — a Computer Science sophomore specializing in AI & ML. I build clean, performant full-stack web applications and explore practical machine learning models.
+            Hi, I'm <strong style="color: var(--color-starlight-white);">Anurag Sahu</strong> — a Computer Science student focused on AI and web development. I build fast, clean web apps and practical machine learning projects.
           </p>
 
           <div class="hero-actions">
@@ -673,7 +673,7 @@
             "
           >About me</h2>
 
-          <!-- Scroll-driven Character-by-Character Paragraph -->
+          <!-- Accessible Scroll-driven Text Reveal Paragraph -->
           <p
             id="about-char-para"
             style="
@@ -686,8 +686,12 @@
               font-size: clamp(1rem, 2vw, 1.35rem);
               margin: 0;
               word-break: break-word;
+              background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF var(--about-reveal, 0%), rgba(215, 226, 234, 0.45) var(--about-reveal, 0%), rgba(215, 226, 234, 0.45) 100%);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
             "
-          ></p>
+          >Computer Science student focused on AI and web development. I build fast, modern web apps and practical machine learning tools. Passionate about clean code, good design, and building helpful software. Let's create something great together!</p>
 
         </div>
 
@@ -775,61 +779,23 @@
       const paraEl = document.getElementById('about-char-para');
       if (!paraEl) return;
 
-      const TEXT = "Computer Science sophomore specializing in AI & ML. I build modern full-stack web applications, scalable backend systems, and explore practical machine learning models. Passionate about clean architecture, algorithms, and crafting seamless digital experiences. Let's build something incredible together!";
+      const TEXT = "Computer Science student focused on AI and web development. I build fast, modern web apps and practical machine learning tools. Passionate about clean code, good design, and building helpful software. Let's create something great together!";
+      if (!paraEl.textContent.trim()) {
+        paraEl.textContent = TEXT;
+      }
 
-      // Build word & character spans so words never split mid-word across lines
-      const words = TEXT.split(' ');
-      let charIndex = 0;
-      let html = '';
-
-      words.forEach((word, wIdx) => {
-        let wordHtml = '';
-        const chars = word.split('');
-        chars.forEach((ch) => {
-          wordHtml += `<span style="position:relative;display:inline-block;">` +
-                        `<span style="opacity:0.3;user-select:none;" aria-hidden="true">${ch}</span>` +
-                        `<span id="ac${charIndex}" style="position:absolute;top:0;left:0;opacity:0.85;transition:opacity 0.2s ease;">${ch}</span>` +
-                      `</span>`;
-          charIndex++;
-        });
-        html += `<span style="display:inline-block;white-space:nowrap;">${wordHtml}</span>`;
-        if (wIdx < words.length - 1) {
-          html += ' ';
-        }
-      });
-      paraEl.innerHTML = html;
-
-      // ── Scroll handler: map section scroll progress to per-char opacity ──
+      // ── Scroll handler: map section scroll progress to smooth gradient reveal ──
       function updateCharReveal() {
         if (!sectionEl || !paraEl) return;
         const rect = sectionEl.getBoundingClientRect();
         const winH = window.innerHeight;
 
-        // scrollYProgress: 0 when section top hits 0.8 * winH, 1 when section bottom hits 0.2 * winH
         const sectionH = rect.height;
-        const startScroll = winH * 0.8;   // rect.top value when progress=0
-        const endScroll   = winH * 0.2 - sectionH;  // rect.top value when progress=1
+        const startScroll = winH * 0.8;
+        const endScroll   = winH * 0.2 - sectionH;
         const progress    = Math.max(0, Math.min(1, (startScroll - rect.top) / (startScroll - endScroll)));
 
-        const spans = paraEl.querySelectorAll('[id^="ac"]');
-        const count = spans.length;
-        if (!count) return;
-
-        spans.forEach((span, index) => {
-          if (!span) return;
-          const charProgress = index / count;
-          const start = Math.max(0, charProgress - 0.1);
-          const end   = Math.min(1, charProgress + 0.05);
-          let opacity;
-          if (progress <= start) {
-            opacity = 0.85;
-          } else if (progress >= end) {
-            opacity = 1;
-          } else {
-            opacity = 0.85 + ((progress - start) / (end - start)) * 0.15;
-          }
-          span.style.opacity = opacity.toFixed(3);
-        });
+        paraEl.style.setProperty('--about-reveal', `${(progress * 100).toFixed(1)}%`);
       }
 
       window.addEventListener('scroll', updateCharReveal, { passive: true });
@@ -988,7 +954,7 @@
       <div class="section-header">
         <h2 class="section-title hero-heading">My Coding Profiles</h2>
         <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
-          Track my continuous problem solving, competitive programming, and algorithmic data structures progression across global coding platforms.
+          Track my daily problem-solving practice, contest ratings, and data structures progress across major coding platforms.
         </p>
       </div>
 
@@ -1034,7 +1000,7 @@
       <div class="section-header">
         <h2 class="section-title hero-heading">Projects Showcase</h2>
         <p style="color: var(--color-muted-text); max-width: 650px; margin: 0 auto; font-size: 0.95rem;">
-          Explore the active development status of current builds, planned architecture modules, and upcoming system milestones in my engineering pipeline.
+          Explore what I am building right now, planned features, and upcoming project milestones.
         </p>
 
         <!-- Simplified Project Category Filter Buttons (All Builds & Enterprise) -->
@@ -1060,7 +1026,7 @@
           </span>
         </div>
         <p style="color: var(--color-muted-text); font-size: 0.9rem; margin-bottom: 16px;">
-          Autonomous enterprise financial operations platform with multi-source ingestion, deterministic multi-way reconciliation engine, GST/VAT tax intelligence, statistical anomaly detection 2.0 (+178% surge detection), controlled settlement automation with Four-Eyes authorization, and Finance Copilot.
+          An enterprise finance platform that automates invoice matching and tax tracking. It prevents accounting errors and spots fraud with secure approval workflows.
         </p>
         <div style="font-family: var(--font-mono); font-size: var(--font-size-xs); color: var(--color-starlight-white); display: flex; flex-direction: column; gap: 6px;">
           <div>• Multi-Source Ingestion & Deterministic Reconciliation Engine</div>
@@ -1093,7 +1059,7 @@
           </span>
         </div>
         <p style="color: var(--color-muted-text); font-size: 0.9rem; margin-bottom: 16px;">
-          A complete multi-tenant restaurant management platform with authentication, real-time kitchen order display (KDS), inventory control, billing, and analytics.
+          A complete platform for running restaurant operations. It tracks kitchen orders in real time, manages inventory stock, and generates digital bills.
         </p>
         <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-muted-text); display: flex; flex-direction: column; gap: 6px;">
           <div>• JWT Authentication & Multi-Role User Access Control</div>
@@ -1120,7 +1086,7 @@
           </span>
         </div>
         <p style="color: var(--color-muted-text); font-size: 0.9rem; margin-bottom: 16px;">
-          An end-to-end college management ERP platform featuring student attendance tracking, examination result portal, fee collection gateway, and automated performance analytics.
+          A unified web portal for students and faculty. It tracks class attendance, publishes exam grades, and handles online fee payments.
         </p>
         <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-muted-text); display: flex; flex-direction: column; gap: 6px;">
           <div>• Multi-Role Student, Faculty & Admin Portal (RBAC)</div>

@@ -26,7 +26,7 @@
   --color-text-white: #ffffff;
   --color-text-light: #D7E2EA;
   --color-text-muted: #94a3b8;
-  --color-text-dim: #64748b;
+  --color-text-dim: #94a3b8;
   --color-royal-gold: #fbbf24;
   --color-deep-gold: #d97706;
   --color-pale-gold: #fef3c7;
@@ -210,9 +210,9 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 9999px;
   font-family: var(--font-kanit);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: clamp(0.78rem, 1.2vw, 0.92rem);
+  text-transform: none;
+  letter-spacing: 0.04em;
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
   color: #ffffff !important;
   text-decoration: none;
   background: linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%);
@@ -270,6 +270,7 @@ h1, h2, h3, h4, h5, h6 {
    4. REEL GLASSMORPHIC CARDS & PANELS
    ============================================================================== */
 .glass-panel {
+  background-color: #121212;
   background: var(--color-card-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -290,9 +291,11 @@ h1, h2, h3, h4, h5, h6 {
   transition: left 0.7s ease;
   pointer-events: none;
   z-index: 0;
+  display: none;
 }
 
 .glass-panel:hover::before {
+  display: block;
   left: 180%;
 }
 
@@ -344,6 +347,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   padding: 10px clamp(1cm, 3.5vw, 48px);
   border-radius: 9999px;
+  background-color: #0c0c0c;
   background: rgba(12, 12, 12, 0.82);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
@@ -737,8 +741,11 @@ input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
   padding: 2px 0;
 }
 
+input::placeholder,
+textarea::placeholder,
 .terminal-input::placeholder {
   color: var(--color-text-dim);
+  opacity: 1;
 }
 
 /* ==============================================================
@@ -1219,8 +1226,8 @@ footer {
     justify-content: center !important;
   }
   .tag-mini {
-    font-size: 0.68rem !important;
-    padding: 4px 8px !important;
+    font-size: 0.8125rem !important;
+    padding: 6px 10px !important;
     white-space: nowrap !important;
   }
   #about-deco-tl, #about-deco-tr,
