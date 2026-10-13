@@ -716,7 +716,26 @@ function initContactForm() {
       localStorage.setItem('anuragsahu_contact_messages', JSON.stringify(existingMsgs));
     } catch (e) {}
 
-    // Real-Time Backend API Delivery
+    // 2. Direct Cloud Email Delivery (FormSubmit relay directly to shivasahu0612@gmail.com)
+    let emailRelaySent = false;
+    try {
+      const fd = new FormData();
+      fd.append('name', fullName);
+      fd.append('email', email);
+      fd.append('subject', `📩 NEW DIRECT MESSAGE from ${fullName}`);
+      fd.append('message', `You received a new inquiry on your portfolio website!\n\nSENDER NAME: ${fullName}\nSENDER EMAIL: ${email}\n\nMESSAGE CONTENT:\n"${message}"\n\nTimestamp: ${new Date().toLocaleString()}`);
+      fd.append('_replyto', email);
+      fd.append('_autoresponse', `Dear ${fullName},\n\nThank you for contacting us!\n\nYour message has been successfully received by Team Anurag Sahu.\n\nTeam Anurag Sahu will contact you within 24-48 hours at ${email}.\n\nBest regards,\nTeam Anurag Sahu\nhttps://anuragsahu.com`);
+      fd.append('_template', 'table');
+      fd.append('_captcha', 'false');
+
+      fetch('https://formsubmit.co/ajax/shivasahu0612@gmail.com', {
+        method: 'POST',
+        body: fd
+      }).then(r => { if (r.ok) emailRelaySent = true; }).catch(() => {});
+    } catch (e) {}
+
+    // 3. Real-Time Backend API Delivery
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -733,9 +752,9 @@ function initContactForm() {
 
       const json = await res.json().catch(() => null);
 
-      if (res.ok) {
+      if (res.ok || emailRelaySent) {
         sendTelemetry('contact_submission', { sender: fullName, email });
-        showToast('✓ Message Received! Check your email inbox for confirmation.');
+        showToast('✓ Message Received! Dispatched to Anurag Sahu.');
         showSuccessModal(fullName, email);
         contactForm.reset();
       } else {
@@ -744,7 +763,13 @@ function initContactForm() {
         showToast(errorMsg);
       }
     } catch (err) {
-      showToast('Network error. Please check your connection and try again.');
+      if (emailRelaySent) {
+        showToast('✓ Message Received! Dispatched to Anurag Sahu.');
+        showSuccessModal(fullName, email);
+        contactForm.reset();
+      } else {
+        showToast('Network error. Please check your connection and try again.');
+      }
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;
