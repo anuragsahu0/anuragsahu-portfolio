@@ -488,27 +488,30 @@ const trackEvent = async (req, res) => {
       // Continue safely without failing response
     }
 
-    // ── Telegram Real-Time Visitor Alert (Fire-and-forget, deduplicated) ──
+    // ── Telegram Real-Time Visitor Alert (Awaited with 1.5s timeout for guaranteed serverless delivery) ──
     if (normalizedType === 'page_view') {
       try {
-        notifyVisitorArrival({
-          ipAddress: clientIp,
-          country: countryInfo.country,
-          countryFlag: countryInfo.flag,
-          countryCode: countryInfo.code,
-          city: city || '',
-          region: region || '',
-          device: parsedUA.deviceType,
-          deviceModel: detectedDeviceModel,
-          browser: parsedUA.browser,
-          os: parsedUA.os,
-          referrer: cleanReferrer,
-          page: rawPath,
-          screen: metadata?.screen || '',
-          network: metadata?.connection || '',
-          metadata,
-          isBot: parsedUA.isBot,
-        });
+        await Promise.race([
+          notifyVisitorArrival({
+            ipAddress: clientIp,
+            country: countryInfo.country,
+            countryFlag: countryInfo.flag,
+            countryCode: countryInfo.code,
+            city: city || '',
+            region: region || '',
+            device: parsedUA.deviceType,
+            deviceModel: detectedDeviceModel,
+            browser: parsedUA.browser,
+            os: parsedUA.os,
+            referrer: cleanReferrer,
+            page: rawPath,
+            screen: metadata?.screen || '',
+            network: metadata?.connection || '',
+            metadata,
+            isBot: parsedUA.isBot,
+          }),
+          new Promise((resolve) => setTimeout(resolve, 1500)),
+        ]);
       } catch (tgErr) {
         // Safe fail — never block visitor response
       }
