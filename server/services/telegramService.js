@@ -232,15 +232,19 @@ function notifyContactSubmission(contact) {
     `⚡ <i>Direct Inquiries • anuragsahu.com</i>`
   ].join('\n');
 
+  const cleanReplySubject = encodeURIComponent(`Re: ${subject || 'Portfolio Inquiry'}`);
+  const cleanReplyEmail = encodeURIComponent(email);
+  const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${cleanReplyEmail}&su=${cleanReplySubject}`;
+
   const replyMarkup = {
     inline_keyboard: [
       [
         {
-          text: `✉️ Reply to ${escapeTgHtml(name).slice(0, 20)}`,
-          url: `mailto:${encodeURIComponent(email)}?subject=Re:%20${encodeURIComponent(subject)}`
-        }
-      ]
-    ]
+          text: `✉️ Reply via Gmail to ${escapeTgHtml(name).slice(0, 16)}`,
+          url: gmailComposeUrl,
+        },
+      ],
+    ],
   };
 
   return sendTelegramMessage(message, { replyMarkup }).catch((err) => {
