@@ -743,6 +743,8 @@ function initContactForm() {
 
     // 3. Real-Time Backend API Delivery
     try {
+      const devInfo = typeof detectVisitorDevice === 'function' ? detectVisitorDevice() : {};
+      const geo = typeof getClientGeoHint === 'function' ? getClientGeoHint() : {};
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -753,6 +755,12 @@ function initContactForm() {
           company: 'Direct Inquiry',
           subject: `📩 Portfolio Inquiry from ${fullName}`,
           message,
+          metadata: {
+            ...geo,
+            device: devInfo.label || 'Desktop PC',
+            deviceModel: devInfo.deviceModel || 'Desktop PC',
+            browser: devInfo.browser || '',
+          }
         }),
       });
 

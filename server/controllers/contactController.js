@@ -8,6 +8,7 @@ const {
 } = require('../services/emailService');
 const { sendSuccess, sendError } = require('../utils/apiResponse');
 const { logActivity } = require('./adminController');
+const { notifyContactSubmission } = require('../services/telegramService');
 
 // Memory fallback for offline test / serverless zero-DB modes
 const FALLBACK_MESSAGES = [
@@ -190,9 +191,67 @@ const handleContactForm = async (req, res, next) => {
         email: cleanEmail,
         subject: resolvedSubject,
       }).catch(() => {});
+
+      // 6. Real-Time Instant Telegram Alert to Anurag Sahu
+      try {
+        const rawIp =
+          req.headers['x-forwarded-for'] ||
+          req.headers['x-real-ip'] ||
+          req.headers['cf-connecting-ip'] ||
+          req.socket?.remoteAddress ||
+          req.ip ||
+          '127.0.0.1';
+        let clientIp = typeof rawIp === 'string' ? rawIp.split(',')[0].trim() : '127.0.0.1';
+        if (clientIp.startsWith('::ffff:')) clientIp = clientIp.replace('::ffff:', '');
+
+        const city = req.headers['x-vercel-ip-city']
+          ? decodeURIComponent(req.headers['x-vercel-ip-city'])
+          : (req.body?.metadata?.city || '');
+        const region = req.headers['x-vercel-ip-country-region'] || (req.body?.metadata?.region || '');
+        const countryCode = (
+          req.headers['x-vercel-ip-country'] ||
+          req.headers['cf-ipcountry'] ||
+          req.body?.metadata?.countryCode ||
+          'IN'
+        ).toUpperCase();
+        const country = countryCode === 'IN' ? 'India' : (req.body?.metadata?.country || countryCode);
+        const countryFlag = countryCode === 'IN' ? '🇮🇳' : (req.body?.metadata?.flag || '🌐');
+
+        const userAgent = req.headers['user-agent'] || '';
+        let detectedDevice = req.body?.metadata?.deviceModel || req.body?.metadata?.device || '';
+        if (!detectedDevice) {
+          if (/iPhone/i.test(userAgent)) detectedDevice = 'Apple iPhone';
+          else if (/iPad/i.test(userAgent)) detectedDevice = 'Apple iPad';
+          else if (/Macintosh/i.test(userAgent)) detectedDevice = 'MacBook / Mac';
+          else if (/Android/i.test(userAgent)) detectedDevice = 'Android Smartphone';
+          else if (/Windows/i.test(userAgent)) detectedDevice = 'Windows PC';
+          else detectedDevice = 'Web Visitor';
+        }
+
+        await Promise.race([
+          notifyContactSubmission({
+            fullName: resolvedName,
+            email: cleanEmail,
+            company: contactDoc.company,
+            subject: resolvedSubject,
+            message: cleanMessage,
+            ipAddress: clientIp,
+            city,
+            region,
+            country,
+            countryFlag,
+            deviceModel: detectedDevice,
+            device: detectedDevice,
+            browser: req.body?.metadata?.browser || '',
+          }),
+          new Promise((r) => setTimeout(r, 1500)),
+        ]);
+      } catch (tgErr) {
+        console.warn('[handleContactForm] Telegram dispatch warning:', tgErr.message);
+      }
     }
 
-    // 6. Log activity
+    // 7. Log activity
     try {
       await logActivity(
         'CONTACT_MESSAGE_RECEIVED',

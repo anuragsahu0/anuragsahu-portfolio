@@ -929,6 +929,7 @@
 
         // 3. Primary Express Backend Dispatch (/api/contact)
         try {
+          const devModel = typeof getMobileModel === 'function' ? getMobileModel() : 'Mobile Client';
           fetch('/api/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -937,7 +938,11 @@
               email: email,
               company: 'Mobile Direct Contact',
               subject: `📩 Mobile Inquiry from ${name}`,
-              message: msg
+              message: msg,
+              metadata: {
+                device: devModel,
+                deviceModel: devModel,
+              }
             })
           }).catch(() => {});
         } catch (e) {}

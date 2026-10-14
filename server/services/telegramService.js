@@ -41,21 +41,37 @@ function escapeTgHtml(str) {
 /**
  * Dispatches a message via Telegram Bot API
  */
-async function sendTelegramMessage(text, customToken = null, customChatId = null) {
-  const token = customToken || process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = customChatId || process.env.TELEGRAM_CHAT_ID;
+async function sendTelegramMessage(text, options = null) {
+  let token = process.env.TELEGRAM_BOT_TOKEN;
+  let chatId = process.env.TELEGRAM_CHAT_ID;
+  let replyMarkup = null;
+
+  if (typeof options === 'string') {
+    token = options || token;
+    if (arguments.length > 2 && arguments[2]) chatId = arguments[2];
+  } else if (options && typeof options === 'object') {
+    if (options.token) token = options.token;
+    if (options.chatId) chatId = options.chatId;
+    if (options.replyMarkup) replyMarkup = options.replyMarkup;
+  }
 
   if (!token || !chatId) {
     console.log('[TelegramService] Bot Token or Chat ID not configured. Telemetry skipped.');
     return { success: false, reason: 'NOT_CONFIGURED' };
   }
 
-  const payload = JSON.stringify({
+  const payloadObj = {
     chat_id: chatId,
     text,
     parse_mode: 'HTML',
     disable_web_page_preview: true,
-  });
+  };
+
+  if (replyMarkup) {
+    payloadObj.reply_markup = replyMarkup;
+  }
+
+  const payload = JSON.stringify(payloadObj);
 
   return new Promise((resolve) => {
     const req = https.request(
@@ -164,7 +180,76 @@ function notifyVisitorArrival(visitor) {
   });
 }
 
+/**
+ * Format and send Contact Form submission alert to Telegram
+ */
+function notifyContactSubmission(contact) {
+  if (!contact) return;
+
+  const name = contact.fullName || contact.name || 'Anonymous Visitor';
+  const email = contact.email || 'No email provided';
+  const company = contact.company ? contact.company : 'Direct Message';
+  const subject = contact.subject || 'Portfolio Inquiry';
+  const messageBody = contact.message || '(Empty message)';
+  const ip = contact.ipAddress || 'Unknown IP';
+
+  const flag = contact.countryFlag || '🌐';
+  const country = contact.country || 'India';
+  const city = contact.city ? `${contact.city}, ` : '';
+  const region = contact.region ? `${contact.region}, ` : '';
+  const fullLocation = `${flag} ${city}${region}${country}`.trim();
+
+  const device = contact.deviceModel || contact.device || 'Web Browser';
+  const browser = contact.browser || '';
+
+  // Format IST Timestamp
+  const istTime = new Date().toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+
+  const message = [
+    `📬 <b>NEW DIRECT MESSAGE RECEIVED!</b>`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `👤 <b>From:</b> <b>${escapeTgHtml(name)}</b>`,
+    `📧 <b>Email:</b> <code>${escapeTgHtml(email)}</code>`,
+    `🏢 <b>Company / Topic:</b> <code>${escapeTgHtml(company)}</code>`,
+    `📝 <b>Subject:</b> <code>${escapeTgHtml(subject)}</code>`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `💬 <b>Message Content:</b>\n<i>"${escapeTgHtml(messageBody)}"</i>`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `📍 <b>Location:</b> <b>${escapeTgHtml(fullLocation)}</b>`,
+    `🌐 <b>IP Address:</b> <code>${escapeTgHtml(ip)}</code>`,
+    `📱 <b>Device:</b> <code>${escapeTgHtml(device)}${browser ? ` • ${escapeTgHtml(browser)}` : ''}</code>`,
+    `⏰ <b>Received (IST):</b> <code>${escapeTgHtml(istTime)}</code>`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `⚡ <i>Direct Inquiries • anuragsahu.com</i>`
+  ].join('\n');
+
+  const replyMarkup = {
+    inline_keyboard: [
+      [
+        {
+          text: `✉️ Reply to ${escapeTgHtml(name).slice(0, 20)}`,
+          url: `mailto:${encodeURIComponent(email)}?subject=Re:%20${encodeURIComponent(subject)}`
+        }
+      ]
+    ]
+  };
+
+  return sendTelegramMessage(message, { replyMarkup }).catch((err) => {
+    console.warn('[TelegramService] Contact dispatch warning:', err.message);
+  });
+}
+
 module.exports = {
   notifyVisitorArrival,
+  notifyContactSubmission,
   sendTelegramMessage,
 };
