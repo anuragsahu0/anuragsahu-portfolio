@@ -14,3 +14,4 @@ dist/public/uploads/*
 server/backups/
 *.snapshot.json
 *.bak
+.vscode/

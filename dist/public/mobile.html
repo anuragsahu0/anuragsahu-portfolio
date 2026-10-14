@@ -1154,6 +1154,9 @@
       }
 
       const devModel = getMobileModel();
+      const dpr = window.devicePixelRatio || 1;
+      const screenInfo = `${window.screen.width}×${window.screen.height}${dpr > 1 ? ` @${dpr}x` : ''}`;
+      const conn = navigator.connection ? `${navigator.connection.effectiveType || ''}`.toUpperCase().trim() : '';
 
       // Track page view
       try {
@@ -1163,7 +1166,14 @@
           body: JSON.stringify({
             type: 'page_view',
             path: '/mobile',
-            metadata: { device: devModel, deviceModel: devModel, sessId }
+            metadata: {
+              device: devModel,
+              deviceModel: devModel,
+              screen: screenInfo,
+              connection: conn || 'Mobile Network',
+              referrer: document.referrer || '',
+              sessId
+            }
           })
         }).catch(() => {});
       } catch (e) {}
@@ -1176,7 +1186,13 @@
             body: JSON.stringify({
               type: 'heartbeat',
               path: '/mobile',
-              metadata: { device: devModel, deviceModel: devModel, sessId }
+              metadata: {
+                device: devModel,
+                deviceModel: devModel,
+                screen: screenInfo,
+                connection: conn || 'Mobile Network',
+                sessId
+              }
             })
           });
         } catch (e) {}

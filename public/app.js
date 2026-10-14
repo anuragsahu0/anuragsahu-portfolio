@@ -213,6 +213,10 @@ function sendTelemetry(type, metadata = {}) {
     const geo = getClientGeoHint();
     const devInfo = detectVisitorDevice();
 
+    const dpr = window.devicePixelRatio || 1;
+    const screenInfo = `${window.screen.width}×${window.screen.height}${dpr > 1 ? ` @${dpr}x` : ''}`;
+    const conn = navigator.connection ? `${navigator.connection.effectiveType || ''}`.toUpperCase().trim() : '';
+
     fetch('/api/analytics/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -225,6 +229,8 @@ function sendTelemetry(type, metadata = {}) {
           device: devInfo.label,
           deviceModel: devInfo.deviceModel,
           browser: devInfo.browser,
+          screen: screenInfo,
+          connection: conn || 'WiFi / Mobile',
           referrer: document.referrer || '',
         }
       })

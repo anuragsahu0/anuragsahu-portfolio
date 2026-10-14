@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const Analytics = require('../models/Analytics');
+const { notifyVisitorArrival } = require('../services/telegramService');
 
 // In-memory store for offline mode & real-time telemetry (capped at 1000 items)
 const memoryEvents = [];
@@ -485,6 +486,32 @@ const trackEvent = async (req, res) => {
       }
     } catch (dbErr) {
       // Continue safely without failing response
+    }
+
+    // ── Telegram Real-Time Visitor Alert (Fire-and-forget, deduplicated) ──
+    if (normalizedType === 'page_view') {
+      try {
+        notifyVisitorArrival({
+          ipAddress: clientIp,
+          country: countryInfo.country,
+          countryFlag: countryInfo.flag,
+          countryCode: countryInfo.code,
+          city: city || '',
+          region: region || '',
+          device: parsedUA.deviceType,
+          deviceModel: detectedDeviceModel,
+          browser: parsedUA.browser,
+          os: parsedUA.os,
+          referrer: cleanReferrer,
+          page: rawPath,
+          screen: metadata?.screen || '',
+          network: metadata?.connection || '',
+          metadata,
+          isBot: parsedUA.isBot,
+        });
+      } catch (tgErr) {
+        // Safe fail — never block visitor response
+      }
     }
 
     return res.status(201).json({
