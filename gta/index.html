@@ -1,7 +1,15 @@
 <!doctype html>
 <html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GTA V WebAssembly Engine</title>
+<link rel="preload" href="/b/8b0b5899ed/game.wasm" as="fetch" type="application/wasm" crossorigin="anonymous">
+<link rel="preload" href="/b/8b0b5899ed/loader.js" as="script" crossorigin="anonymous">
+<link rel="preload" href="/b/8b0b5899ed/game.js" as="script" crossorigin="anonymous">
+<link rel="preload" href="/b/8b0b5899ed/wgpu_worker.js" as="script" crossorigin="anonymous">
+<link rel="preload" href="/b/8b0b5899ed/io_worker.js" as="script" crossorigin="anonymous">
+<link rel="preload" href="/b/8b0b5899ed/shaders/index.json" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="/b/8b0b5899ed/title/chalet.woff" as="font" type="font/woff" crossorigin="anonymous">
 <style>
 	html, body { margin: 0; height: 100%; background: #000; color: #ccc; font: 12px monospace; overflow: hidden; }
 	#canvas { display: block; position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; background: #000; transform: translateZ(0); will-change: transform; image-rendering: auto; }
@@ -651,7 +659,7 @@ let stopTitle = () => {};
 // 2 = Sandbox Mode on the GTA V map (free roam at a random spot with every weapon), 3 = Sandbox Mode on env_test. It can change until the engine takes it
 // (where it reads -level, about 62 % into the load; it waits there if nothing was chosen, and the page then pulses the key caps); after that only the chosen
 // item stays. ?mode=story|sandbox chooses up front (with &map=env_test for Sandbox Mode on env_test).
-let startMode = q.get('mode') === 'story' ? 1 : q.get('mode') === 'sandbox' ? (q.get('map') === 'env_test' ? 3 : 2) : 0;
+let startMode = q.get('mode') === 'story' ? 1 : q.get('mode') === 'sandbox' ? (q.get('map') === 'env_test' ? 3 : 2) : 1;		// Default to Story Mode (1) so engine never pauses at 62% waiting for keypress
 let startModeWord = null, startCommitted = false, pickingMap = false, waitingChoice = false;		// waitingChoice: the engine waits for the choice
 const ACTS = {		// button: text, key cap, key codes
 	back: ['Back', 'Backspace', ['Backspace']],
@@ -760,14 +768,14 @@ showModes();
 		if (worldBase >= 0 && !ready) target = Math.max(target, 72 + 26 * Math.min(1, (dataBytes - worldBase) / WORLD_BYTES));
 		const cap = ready ? 100 : Math.min(99, target + 6);
 		const goal = ready ? 100 : (shown < target ? target : cap);
-		shown += (goal - shown) * (goal === target || ready ? 0.12 : 0.004);
+		shown += (goal - shown) * (ready ? 0.5 : (goal === target ? 0.16 : 0.008));
 		if (dirty) {		// the newest line only
 			dirty = false;
 			consoleEl.textContent = lastLine;
 		}
 		fill.style.width = shown.toFixed(1) + '%';
 		pct.textContent = Math.round(shown) + '%';
-		if (ready && shown > 99.5) { loading.classList.add('done'); setTimeout(() => { loading.remove(); stopTitle(); }, 1000); loadingGone = true; clearInterval(progressTimer); }		// once: the page does no loading-screen work during play
+		if (ready && shown > 98.5) { loading.classList.add('done'); setTimeout(() => { loading.remove(); stopTitle(); }, 400); loadingGone = true; clearInterval(progressTimer); }		// once: the page does no loading-screen work during play
 	}, 50);
 }
 const hud = document.getElementById('hud');

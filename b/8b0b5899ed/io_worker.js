@@ -255,7 +255,7 @@ function batchFetch(runsIn, compressed, wanted) {
 // Lanes: the host answers a Range request (Apache) at a few hundred KB/s per stream whatever the link is, and the speed grows with the number of streams (measured from here:
 // 6 in flight 3.4 MB/s, 32 3.6, 64 7.1, 128 14.1 MB/s): the boot set (~580 MB) is fetched as ranges, RUN_LANES at a time. Compressible small files still go through the host's
 // PHP (compressed batches), few at a time: PHP answers about 16 requests at once.
-const RUN_LANES = 32, BATCH_LANES = 4, RUN_GAP = 64;		// RUN_GAP: blocks; two ranges of a file closer than this are fetched as one (the bytes between are read next to them)
+const RUN_LANES = 96, BATCH_LANES = 12, RUN_GAP = 128;		// RUN_GAP: blocks; two ranges of a file closer than this are fetched as one (the bytes between are read next to them)
 async function prefetch(name) {
 	let set;
 	try { const r = await fetchRetry(base + name, { cache: 'no-store' }); if (!r.ok) return; set = await r.json(); } catch (e) { return; }

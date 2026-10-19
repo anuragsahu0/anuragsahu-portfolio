@@ -1308,7 +1308,7 @@ const shadersByHash = new Map();		// DXBC hash -> shader object (createShader)
 let shadersReady = 0;		// shader objects whose sources are here (browser: fetched): unready recipes are retried when this grows
 let aheadMade = 0, aheadUsed = 0, aheadInFlight = 0;
 let aheadList = [], aheadPos = 0, aheadLater = [], aheadReadyAtPass = -1;
-const AHEAD_MAX = isNode ? 1 : Math.max(2, Math.min(8, (self.navigator.hardwareConcurrency || 4) - 1));		// compiles in flight at once (the GPU process compiles them on its threads)
+const AHEAD_MAX = isNode ? 1 : Math.max(4, Math.min(16, (self.navigator.hardwareConcurrency || 4) * 2));		// compiles in flight at once (the GPU process compiles them on its threads)
 function pipelineRecipe(vsObj, psObj, layout, strides, topoIdx, stripFmt, blendState, dss, rs, rtInfo, dsFormat, roDepth, roStencil) {
 	return {
 		vs: vsObj.hash, ps: psObj ? psObj.hash : '',
@@ -1343,11 +1343,12 @@ function compileAhead(rc, key) {
 	else compileSync(c, desc, vbReq);
 	return 'done';
 }
-// Runs while the worker is idle and at every present: at most ~3 ms per call; a pass over the list ends when it is empty or the unready ones wait for new shaders.
+// Runs while the worker is idle and at every present: at most ~3 ms per call (16 ms during loading); a pass over the list ends when it is empty or the unready ones wait for new shaders.
 function aheadStep() {
 	if (aheadPos >= aheadList.length && !aheadLater.length) return;
 	const t0 = performance.now();
-	while (aheadInFlight < AHEAD_MAX && performance.now() - t0 < 3) {
+	const maxSlice = worldSent ? 4 : 16;
+	while (aheadInFlight < AHEAD_MAX && performance.now() - t0 < maxSlice) {
 		if (aheadPos >= aheadList.length) {
 			if (!aheadLater.length || aheadReadyAtPass === shadersReady) break;
 			aheadReadyAtPass = shadersReady; aheadList = aheadLater; aheadLater = []; aheadPos = 0;
@@ -2731,7 +2732,7 @@ async function present(id) {
 		if (!worldSent && (worldSince || d > 300)) {
 			if (!worldSince) { worldSince = now; worldSkips0 = pendingSkips; }
 			if (pendingSkips !== skipsAtPresent) worldClean = 0; else if (!worldClean) worldClean = now;
-			if ((worldClean && now - worldClean >= 1500) || now - worldSince >= 60000) {
+			if ((worldClean && now - worldClean >= 250) || now - worldSince >= 6000) {
 				worldSent = true;
 				logLine('world shown: title screen held ' + ((now - worldSince) / 1000).toFixed(1) + ' s for compiling pipelines (' + (pendingSkips - worldSkips0) + ' draws skipped meanwhile, ' + pipelinesPending + ' still compiling); compiled ahead ' + aheadMade + ', used ' + aheadUsed + ', compiled when first drawn ' + pipeCreates + '; shader variants for the inter-stage limit: ' + remapVariants[0] + ' vertex, ' + remapVariants[1] + ' pixel');
 				if (!isNode) progressChannel.postMessage({ pct: 100, label: 'Ready', world: true });
