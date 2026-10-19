@@ -848,6 +848,46 @@ window.closeSuccessModal = function() {
   }, 150);
 };
 
+window.openGtaModal = function() {
+  const modal = document.getElementById('gta-re-modal');
+  const card = document.getElementById('gta-re-modal-card');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    if (card) {
+      card.style.transform = 'scale(0.95)';
+      card.style.opacity = '0';
+      setTimeout(() => {
+        card.style.transform = 'scale(1)';
+        card.style.opacity = '1';
+      }, 10);
+    }
+  }
+};
+
+window.closeGtaModal = function() {
+  const modal = document.getElementById('gta-re-modal');
+  const card = document.getElementById('gta-re-modal-card');
+  if (card) {
+    card.style.transform = 'scale(0.95)';
+    card.style.opacity = '0';
+  }
+  setTimeout(() => {
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.add('hidden');
+    }
+    document.body.style.overflow = '';
+  }, 150);
+};
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (typeof window.closeGtaModal === 'function') window.closeGtaModal();
+  }
+});
+
 /* -------------------------------------------------------------------------- */
 /* Phase 8 — Live CMS & Website Integration Engine                            */
 /* Admin → Database → Public Read API (/api/public/site) → Public DOM        */

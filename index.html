@@ -387,6 +387,7 @@
         <li><a href="#skills">Lab</a></li>
         <li><a href="#coding-profiles">Coding</a></li>
         <li><a href="#roadmap">Projects</a></li>
+        <li><a href="#reverse-engineering">Reverse Tools</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
@@ -425,6 +426,10 @@
     </a>
     <a href="#roadmap" class="mobile-nav-link" onclick="closeMobileDropdown()">
       <span>Projects</span>
+      <span class="mobile-nav-dot"></span>
+    </a>
+    <a href="#reverse-engineering" class="mobile-nav-link" onclick="closeMobileDropdown()">
+      <span>Reverse Engineer Tools</span>
       <span class="mobile-nav-dot"></span>
     </a>
     <a href="#contact" class="mobile-nav-link" onclick="closeMobileDropdown()">
@@ -1108,6 +1113,115 @@
       </div>
     </section>
 
+    <!-- REVERSE ENGINEER TOOLS SECTION -->
+    <section id="reverse-engineering" aria-label="Reverse Engineer Tools Section">
+      <div class="section-header">
+        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 999px; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); color: var(--color-nebula-cyan); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; margin-bottom: 12px;">
+          <span>⚙️ LOW-LEVEL RESEARCH & SYSTEMS SECURITY</span>
+        </div>
+        <h2 class="section-title hero-heading">Reverse Engineer Tools</h2>
+        <p style="color: var(--color-muted-text); max-width: 680px; margin: 0 auto; font-size: 0.95rem;">
+          Low-level binary exploration, native engine hooking, memory structure dissection, and disassembler research across complex systems.
+        </p>
+
+        <!-- Category Tags -->
+        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 20px;" class="font-mono">
+          <span style="padding: 6px 14px; border-radius: 20px; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.4); color: var(--color-nebula-cyan); font-size: 0.75rem; font-weight: 700;">
+            x64 Binary Forensics
+          </span>
+          <span style="padding: 6px 14px; border-radius: 20px; background: rgba(139, 92, 246, 0.12); border: 1px solid rgba(139, 92, 246, 0.4); color: #a78bfa; font-size: 0.75rem; font-weight: 700;">
+            Memory Hooking & Detours
+          </span>
+          <span style="padding: 6px 14px; border-radius: 20px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; font-size: 0.75rem; font-weight: 700;">
+            Script VM Bytecode
+          </span>
+        </div>
+      </div>
+
+      <!-- Item 01: GTA V Reverse Engineer -->
+      <div class="glass-panel glass-spotlight" style="padding: 32px; margin-bottom: 24px; transition: all 0.3s ease; position: relative; overflow: hidden;">
+        <!-- Top Cyberpunk Accent Line -->
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #06b6d4, #8b5cf6, transparent);"></div>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; flex-wrap: wrap; gap: 12px;" class="font-mono">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span style="color: var(--color-nebula-cyan); font-weight: 800; font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase;">
+                TOOL 01 • RAGE ARCHITECTURE
+              </span>
+              <span style="padding: 2px 8px; border-radius: 6px; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); color: #a78bfa; font-size: 0.7rem; font-weight: 700;">
+                x64 Native Engine
+              </span>
+            </div>
+            <h3 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--color-starlight-white); margin-top: 6px; margin-bottom: 0;">
+              GTA V Reverse Engineer
+            </h3>
+          </div>
+          <span style="padding: 5px 14px; border-radius: 20px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.4); color: #10b981; font-size: 0.75rem; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
+            <span>Status: Active Research</span>
+          </span>
+        </div>
+
+        <p style="color: var(--color-muted-text); font-size: 0.95rem; line-height: 1.6; margin-bottom: 18px;">
+          Comprehensive reverse engineering and internal runtime exploration of Rockstar Games' 64-bit RAGE engine (GTA5.exe). Focuses on native function invoker resolution, memory signature scanning (AOB), Virtual Method Table (VMT) detours, entity pools mapping, and DirectX 11 rendering pipeline hooking.
+        </p>
+
+        <!-- Technical Telemetry Badges Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px;" class="font-mono">
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06); padding: 12px 14px; border-radius: 12px;">
+            <div style="font-size: 0.7rem; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 4px;">Target Architecture</div>
+            <div style="font-size: 0.85rem; color: #fff; font-weight: 700;">Rockstar Advanced Game Engine (x64)</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06); padding: 12px 14px; border-radius: 12px;">
+            <div style="font-size: 0.7rem; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 4px;">Analysis Toolkit</div>
+            <div style="font-size: 0.85rem; color: var(--color-nebula-cyan); font-weight: 700;">x64dbg • IDA Pro • Cheat Engine • ReClass</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06); padding: 12px 14px; border-radius: 12px;">
+            <div style="font-size: 0.7rem; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 4px;">Hooking Methodology</div>
+            <div style="font-size: 0.85rem; color: #a78bfa; font-weight: 700;">MinHook Detours • VMT • Pattern SigScanning</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06); padding: 12px 14px; border-radius: 12px;">
+            <div style="font-size: 0.7rem; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 4px;">Script Runtime</div>
+            <div style="font-size: 0.85rem; color: #34d399; font-weight: 700;">Native Script VM (.ysc Bytecode Stack)</div>
+          </div>
+        </div>
+
+        <!-- Low-Level Architectural Modules -->
+        <div style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-starlight-white); display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 16px; border-radius: 12px;">
+          <div style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="color: var(--color-nebula-cyan);">⚡</span>
+            <span><strong>Native Crossmap Invoker:</strong> Dynamic resolution of 64-bit native function hashes across game versions without hardcoding relative pointers.</span>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="color: var(--color-nebula-cyan);">⚡</span>
+            <span><strong>AOB SigScanning & Offsets Extraction:</strong> Automated pattern scanning to locate base addresses for <code>WorldPtr</code>, <code>CPed</code>, <code>CNavigation</code>, camera matrices, and entity pools.</span>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="color: var(--color-nebula-cyan);">⚡</span>
+            <span><strong>DirectX 11 SwapChain Hook:</strong> Intercepting <code>IDXGISwapChain::Present</code> to render custom in-game telemetry analytics and interactive HUD overlay.</span>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 8px;">
+            <span style="color: var(--color-nebula-cyan);">⚡</span>
+            <span><strong>Script VM Disassembler:</strong> Dissecting compiled <code>.ysc</code> binary scripts to inspect global variables, function tables, and execution context threads.</span>
+          </div>
+        </div>
+
+        <!-- Interactive Action Buttons -->
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <a href="/gta" target="_blank" class="btn-primary" style="font-size: var(--font-size-xs); padding: 10px 20px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; background: linear-gradient(135deg, #10b981, #06b6d4); color: #000; font-weight: 800; border-radius: 9999px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);" aria-label="Play GTA V in Browser">
+            <span>🎮 Play GTA V in Browser (WebGPU)</span>
+          </a>
+          <button onclick="openGtaModal()" class="btn-secondary" style="font-size: var(--font-size-xs); padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2);" aria-label="Open GTA V Reverse Engineer Technical Architecture Modal">
+            <span>🔬 View Engine Architecture</span>
+          </button>
+          <a href="#contact" class="btn-secondary" style="font-size: var(--font-size-xs); padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);" aria-label="Discuss Low-Level Systems">
+            <span>💬 Discuss Systems Research</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- CONTACT MISSION CONTROL SECTION -->
     <section id="contact" aria-label="Contact Section" style="padding-bottom: 60px;">
       <div class="section-header">
@@ -1274,6 +1388,154 @@
       </button>
     </div>
   </div>
+
+  <!-- GTA V REVERSE ENGINEER TECHNICAL ARCHITECTURE BLUEPRINT MODAL -->
+  <div id="gta-re-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md" style="position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,0.88); backdrop-filter: blur(14px);" onclick="if(event.target === this) closeGtaModal()">
+    <div id="gta-re-modal-card" style="background: rgba(10, 12, 18, 0.96); padding: 32px; border-radius: 24px; max-width: 860px; width: 100%; max-height: 88vh; overflow-y: auto; border: 1px solid rgba(6, 182, 212, 0.35); box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(6, 182, 212, 0.15); transition: all 0.25s ease;" class="font-mono">
+      <!-- Modal Top Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 16px;">
+        <div>
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 999px; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.35); color: var(--color-nebula-cyan); font-size: 0.72rem; font-weight: 700; margin-bottom: 8px;">
+            <span>🔬 ENGINE RESEARCH BLUEPRINT • RAGE x64</span>
+          </div>
+          <h3 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: #ffffff; margin: 0; line-height: 1.2;">
+            GTA V Reverse Engineering Architecture
+          </h3>
+          <p style="color: var(--color-muted-text); font-size: 0.85rem; margin-top: 6px; margin-bottom: 0;">
+            Deep-dive technical breakdown of runtime hooks, memory structure offsets, crossmaps, and Direct3D 11 rendering pipeline.
+          </p>
+        </div>
+        <button onclick="closeGtaModal()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.2)'; this.style.color='#ef4444';" onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';" aria-label="Close GTA V Modal">
+          ✕
+        </button>
+      </div>
+
+      <!-- Architecture Pipeline Diagram -->
+      <div style="margin-bottom: 24px;">
+        <h4 style="color: var(--color-nebula-cyan); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+          <span>⚡</span> 1. Execution & Hooking Pipeline Flow
+        </h4>
+        <div style="background: rgba(0,0,0,0.6); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 14px; padding: 18px; font-size: 0.78rem; line-height: 1.7; color: #e2e8f0; overflow-x: auto;">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="padding: 10px 14px; background: rgba(255,255,255,0.03); border-left: 3px solid #06b6d4; border-radius: 4px;">
+              <strong style="color: #38bdf8;">[1] GTA5.exe Process Initialization:</strong> Game binary maps into 64-bit virtual memory space. RAGE initializes main engine threads, script virtual machine (SVM), and Direct3D 11 swapchain device.
+            </div>
+            <div style="padding: 10px 14px; background: rgba(255,255,255,0.03); border-left: 3px solid #8b5cf6; border-radius: 4px;">
+              <strong style="color: #a78bfa;">[2] Memory Pattern SigScanning (AOB):</strong> Custom scanner scans memory pages for unique assembly byte signatures to dynamically locate <code>WorldPtr</code>, <code>EntityPool</code>, and <code>scrThreadContext</code> without fixed offsets.
+            </div>
+            <div style="padding: 10px 14px; background: rgba(255,255,255,0.03); border-left: 3px solid #10b981; border-radius: 4px;">
+              <strong style="color: #34d399;">[3] Native Invoker & Crossmap Resolution:</strong> Traverses game native registration tables. Decodes obfuscated native 64-bit hashes using crossmap address tables and injects arguments via <code>scrNativeCallContext</code>.
+            </div>
+            <div style="padding: 10px 14px; background: rgba(255,255,255,0.03); border-left: 3px solid #f59e0b; border-radius: 4px;">
+              <strong style="color: #fbbf24;">[4] DirectX 11 Present Hook (ImGui HUD):</strong> Hooks <code>IDXGISwapChain::Present</code> (VTable index 8) using MinHook. Synchronizes with GPU frame intervals to render live performance telemetry and entity visualizer overlays.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Memory Offsets & Code Demonstration -->
+      <div style="margin-bottom: 24px;">
+        <h4 style="color: var(--color-nebula-cyan); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+          <span>⚡</span> 2. RAGE Memory Structures & Offset Traversal (C++)
+        </h4>
+        <div style="background: #05070c; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 18px; font-size: 0.75rem; line-height: 1.6; color: #94a3b8; overflow-x: auto;">
+<pre style="margin: 0; font-family: 'JetBrains Mono', 'Fira Code', monospace;"><code style="color: #e2e8f0;"><span style="color: #64748b;">// 1. Dynamic Pattern Scan to locate World Pointer</span>
+<span style="color: #f43f5e;">uintptr_t</span> dwWorld = Memory::PatternScan(<span style="color: #38bdf8;">"48 8B 05 ? ? ? ? 45 ? ? ? ? 48 8B 48 08"</span>);
+<span style="color: #f43f5e;">uintptr_t</span> pWorld  = *reinterpret_cast&lt;<span style="color: #f43f5e;">uintptr_t</span>*&gt;(dwWorld + *reinterpret_cast&lt;<span style="color: #f43f5e;">int32_t</span>*&gt;(dwWorld + <span style="color: #fbbf24;">3</span>) + <span style="color: #fbbf24;">7</span>);
+
+<span style="color: #64748b;">// 2. Traversal through Player Entity Struct</span>
+<span style="color: #f43f5e;">CPed</span>* pLocalPlayer = *reinterpret_cast&lt;<span style="color: #f43f5e;">CPed</span>**&gt;(pWorld + <span style="color: #fbbf24;">0x08</span>);
+<span style="color: #f43f5e;">CNavigation</span>* pNav  = pLocalPlayer-&gt;<span style="color: #38bdf8;">m_pNavigation</span>; <span style="color: #64748b;">// Offset 0x30</span>
+<span style="color: #f43f5e;">Vector3</span> playerCoords = pNav-&gt;<span style="color: #38bdf8;">m_vPosition</span>;         <span style="color: #64748b;">// Offset 0x50</span>
+
+<span style="color: #64748b;">// 3. Vehicle & Physics Component Inspection</span>
+<span style="color: #f43f5e;">CVehicle</span>* pVehicle = pLocalPlayer-&gt;<span style="color: #38bdf8;">m_pVehicle</span>;    <span style="color: #64748b;">// Offset 0xD10</span>
+<span style="color: #f43f5e;">float</span> engineHealth = pVehicle-&gt;<span style="color: #38bdf8;">m_fEngineHealth</span>;   <span style="color: #64748b;">// Offset 0x280</span></code></pre>
+        </div>
+      </div>
+
+      <!-- Core Research Highlights & Capabilities -->
+      <div style="margin-bottom: 24px;">
+        <h4 style="color: var(--color-nebula-cyan); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+          <span>⚡</span> 3. Key Findings & Engineering Takeaways
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 14px; border-radius: 12px;">
+            <div style="color: #38bdf8; font-weight: 700; font-size: 0.82rem; margin-bottom: 4px;">Dynamic Hash Translation</div>
+            <p style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.5;">Automated translation pipeline across 40+ game builds using compiled AST crossmaps.</p>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 14px; border-radius: 12px;">
+            <div style="color: #a78bfa; font-weight: 700; font-size: 0.82rem; margin-bottom: 4px;">Zero FPS Impact Hooking</div>
+            <p style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.5;">Detour hooks executed within sub-microsecond latency without causing frame drops or visual jitter.</p>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 14px; border-radius: 12px;">
+            <div style="color: #34d399; font-weight: 700; font-size: 0.82rem; margin-bottom: 4px;">Script VM Stack Parser</div>
+            <p style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.5;">Decompiled .ysc binary files to inspect mission logic, global states, and thread scheduling.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; flex-wrap: wrap; gap: 12px;">
+        <span style="font-size: 0.75rem; color: var(--color-text-muted);">
+          🔬 Anti-Gravity Systems Security & Reverse Engineering Lab
+        </span>
+        <div style="display: flex; gap: 10px;">
+          <a href="/gta" target="_blank" style="padding: 10px 22px; border-radius: 12px; background: linear-gradient(135deg, #10b981, #06b6d4); color: #000; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+            🎮 Launch GTA V (WebGPU)
+          </a>
+          <button onclick="closeGtaModal()" style="padding: 10px 24px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); color: #ffffff; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(6, 182, 212, 0.2)'; this.style.borderColor='#06b6d4';" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.borderColor='rgba(255,255,255,0.18)';">
+            Close Blueprint
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openGtaModal() {
+      const modal = document.getElementById('gta-re-modal');
+      const card = document.getElementById('gta-re-modal-card');
+      if (modal) {
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        if (card) {
+          card.style.transform = 'scale(0.95)';
+          card.style.opacity = '0';
+          setTimeout(() => {
+            card.style.transform = 'scale(1)';
+            card.style.opacity = '1';
+          }, 10);
+        }
+      }
+    }
+
+    function closeGtaModal() {
+      const modal = document.getElementById('gta-re-modal');
+      const card = document.getElementById('gta-re-modal-card');
+      if (card) {
+        card.style.transform = 'scale(0.95)';
+        card.style.opacity = '0';
+      }
+      setTimeout(() => {
+        if (modal) {
+          modal.style.display = 'none';
+          modal.classList.add('hidden');
+        }
+        document.body.style.overflow = '';
+      }, 150);
+    }
+
+    window.openGtaModal = openGtaModal;
+    window.closeGtaModal = closeGtaModal;
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeGtaModal();
+      }
+    });
+  </script>
 
   <!-- FOOTER -->
   <footer style="position: relative; z-index: 50;">

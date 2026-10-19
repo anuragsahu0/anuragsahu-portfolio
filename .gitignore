@@ -11,6 +11,9 @@ public/uploads/*
 !public/uploads/.gitkeep
 dist/public/uploads/*
 !dist/public/uploads/.gitkeep
+dist/b/
+dist/data/
+dist/gta/
 server/backups/
 *.snapshot.json
 *.bak

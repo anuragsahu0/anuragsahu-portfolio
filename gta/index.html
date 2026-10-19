@@ -1,0 +1,1906 @@
+<!doctype html>
+<html>
+<meta charset="utf-8">
+<title>GTA V WebAssembly Engine</title>
+<style>
+	html, body { margin: 0; height: 100%; background: #000; color: #ccc; font: 12px monospace; overflow: hidden; }
+	#canvas { display: block; position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; background: #000; transform: translateZ(0); will-change: transform; image-rendering: auto; }
+	/* title screen: the game's loading screen (LOADINGSCREEN_STARTUP) on its 1280x720 stage, scaled to the window; see the script below */
+	@font-face { font-family: 'Chalet'; src: url('/b/8b0b5899ed/title/chalet.woff') format('woff'); }
+	#loading { position: fixed; inset: 0; background: #000; overflow: hidden; transition: opacity .8s; z-index: 5; }
+	#loading.done { opacity: 0; pointer-events: none; }
+	#ls-stage { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; overflow: hidden; font: 12px Chalet, sans-serif; color: #fff; }
+	#ls-screens { position: absolute; inset: 0; }
+	.ls-screen { position: absolute; inset: 0; }
+	/* one camera per layer, so layers composite in display-list order like Scaleform (no depth test): 640 / tan(55 deg / 2) = 1229, Scaleform's default 3D camera
+	   at the stage centre (moved against the screen's slide, see the script) */
+	.ls-cam { position: absolute; inset: 0; perspective: 1229px; perspective-origin: 640px 360px; }
+	.ls-layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; background-size: 100% 100%; }
+	#ls-logo { position: absolute; left: 95px; top: 492.5px; width: 186px; height: 186px; }
+	#ls-bars { position: absolute; right: 96px; top: 642px; display: flex; gap: 3px; }
+	.ls-bar { height: 24px; padding: 0 6px; display: flex; align-items: center; background: rgba(0, 0, 0, .706); border-radius: 2.4px; white-space: nowrap; }
+	#modes { gap: 8px; }
+	#modes button { display: flex; align-items: center; height: 24px; padding: 0; border: 0; background: none; color: #fff; font: 12px Chalet, sans-serif; cursor: pointer; }
+	#modes button:disabled { cursor: default; }
+	#modes button[hidden] { display: none; }
+	#modes.ask button:not(:disabled) .ls-key { animation: ls-ask 1.2s ease-in-out infinite; }
+	@keyframes ls-ask { 50% { opacity: .35; } }
+	.ls-key { margin-left: 4px; min-width: 12px; height: 15px; padding: 0 4px; line-height: 16px; border-radius: 2px; background: #fff; color: #000; font-size: 10px; text-transform: uppercase; }
+	.ls-spin { flex: none; width: 22px; height: 22px; margin-left: 2px; background: url('/b/8b0b5899ed/title/spinner.png') center / 24px 24px no-repeat; animation: ls-spin 2s steps(60) infinite; }
+	@keyframes ls-spin { from { transform: rotate(0deg) scaleX(-1); } to { transform: rotate(-360deg) scaleX(-1); } }
+	#label { text-shadow: .85px .85px 1px rgba(0, 0, 0, .45); }
+	#pct { margin-left: 15px; font-variant-numeric: tabular-nums; }
+	/* kept for now: the port's progress bar along the bottom edge, the newest log line centred above it and the data downloaded above that */
+	#ls-log { position: absolute; left: 8px; right: 8px; bottom: 6px; display: flex; flex-direction: column; align-items: center; font: 10px/1.35 Consolas, monospace; color: rgba(190, 190, 190, .75); text-shadow: 0 0 2px #000, 1px 1px 1px #000; white-space: pre; pointer-events: none; }
+	#console { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+	#data { color: #6a9; }
+	#bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255, 255, 255, .08); }
+	#fill { height: 100%; width: 0; background: #7cc576; }
+	#hud { position: fixed; left: 8px; bottom: 8px; max-width: 60vw; white-space: pre-wrap; opacity: .8; pointer-events: none; }
+	#fps { position: fixed; left: 8px; top: 6px; display: none; color: #0f0; font: bold 18px/1.2 Consolas, monospace; font-variant-numeric: tabular-nums; text-shadow: 1px 1px 2px #000, 0 0 3px #000; pointer-events: none; z-index: 10; }
+
+	/* --- Fiveplay Enhanced Controls & HUD --- */
+	#five-hud { position: fixed; top: 8px; right: 10px; display: flex; align-items: center; gap: 8px; z-index: 20; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 11px; opacity: 0.85; transition: opacity .2s; }
+	#five-hud:hover { opacity: 1; }
+	.hud-btn { background: rgba(20, 22, 28, 0.85); border: 1px solid rgba(255, 255, 255, 0.18); color: #e4e4e7; padding: 5px 9px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; backdrop-filter: blur(8px); transition: all .15s ease; user-select: none; }
+	.hud-btn:hover { background: rgba(45, 50, 62, 0.95); border-color: rgba(255, 255, 255, 0.35); color: #fff; transform: translateY(-1px); }
+	.hud-btn:active { transform: translateY(0); }
+	.hud-pill { background: rgba(20, 22, 28, 0.85); border: 1px solid rgba(255, 255, 255, 0.15); color: #a1a1aa; padding: 5px 9px; border-radius: 6px; display: flex; align-items: center; gap: 5px; font-size: 11px; backdrop-filter: blur(8px); user-select: none; }
+	.hud-volume-wrap { display: flex; align-items: center; gap: 6px; background: rgba(20, 22, 28, 0.85); border: 1px solid rgba(255, 255, 255, 0.18); padding: 3px 9px; border-radius: 6px; backdrop-filter: blur(8px); }
+	.hud-volume-wrap input[type="range"] { width: 65px; height: 4px; accent-color: #38bdf8; cursor: pointer; }
+	.hud-volume-label { font-size: 10px; color: #cbd5e1; min-width: 28px; text-align: right; }
+
+	/* Modals */
+	.modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; z-index: 100; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+	.modal-backdrop.open { display: flex; }
+	.modal-box { background: #12141a; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; width: 540px; max-width: 92vw; max-height: 88vh; overflow-y: auto; color: #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.8); padding: 22px 26px; }
+	.modal-box h2 { margin: 0 0 16px 0; font-size: 18px; color: #fff; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; }
+	.modal-close { background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; padding: 0 4px; line-height: 1; }
+	.modal-close:hover { color: #fff; }
+	.settings-group { margin-bottom: 16px; }
+	.settings-group label { display: block; font-size: 12px; font-weight: 600; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+	.settings-group select, .settings-group input[type="text"] { width: 100%; background: #1e222d; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; color: #f1f5f9; padding: 8px 10px; font-size: 13px; outline: none; box-sizing: border-box; }
+	.settings-group select:focus, .settings-group input[type="text"]:focus { border-color: #38bdf8; }
+	.settings-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+	.settings-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
+	.btn-primary { background: #0284c7; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; }
+	.btn-primary:hover { background: #0369a1; }
+	.btn-secondary { background: #334155; color: #e2e8f0; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+	.btn-secondary:hover { background: #475569; }
+	.btn-danger { background: #dc2626; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+	.btn-danger:hover { background: #b91c1c; }
+	.saves-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+	.saves-table th, .saves-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+	.saves-table th { color: #94a3b8; font-weight: 600; }
+	.saves-table tr:hover td { background: rgba(255, 255, 255, 0.03); }
+	.controls-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 6px; }
+	.controls-table td { padding: 4px 6px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+	.controls-table .key-badge { background: #27272a; padding: 2px 6px; border-radius: 3px; border: 1px solid #3f3f46; font-family: monospace; color: #38bdf8; }
+
+	/* Toast Notification */
+	.hud-toast { position: fixed; top: 48px; left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(15, 23, 42, 0.95); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 8px 18px; border-radius: 8px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 13px; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.7); backdrop-filter: blur(8px); pointer-events: none; opacity: 0; transition: all .25s ease; z-index: 1000; }
+	.hud-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+	/* Cheats Grid & Buttons */
+	.cheat-section { margin-bottom: 14px; }
+	.cheat-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #38bdf8; letter-spacing: 0.5px; margin-bottom: 6px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 3px; }
+	.cheat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+	.cheat-btn { background: #1e222d; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 6px; padding: 7px 10px; color: #e2e8f0; font-size: 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; text-align: left; transition: all .15s ease; }
+	.cheat-btn:hover { background: #282e3d; border-color: #38bdf8; transform: translateY(-1px); }
+	.cheat-btn .cheat-code { font-family: monospace; font-size: 10px; color: #94a3b8; }
+	.cheat-btn .cheat-name { font-weight: 600; color: #fff; }
+
+	/* Radio Widget */
+	.radio-track-name { background: #181a20; padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); font-family: monospace; font-size: 12px; color: #38bdf8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 12px; text-align: center; }
+	.radio-ctrl-bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
+	.radio-ctrl-btn { background: #1e222d; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; font-size: 16px; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: all .15s; }
+	.radio-ctrl-btn:hover { background: #334155; border-color: #38bdf8; }
+</style>
+</head>
+<body>
+<canvas id="canvas" width="800" height="600" tabindex="-1"></canvas>
+<div id="hud"></div>
+<div id="loading"><div id="ls-stage"><div id="ls-screens"></div><img id="ls-logo" src="/b/8b0b5899ed/title/logo.png" alt=""><div id="ls-bars"><div id="modes" class="ls-bar"><button data-act="back"></button><button data-act="map5"></button><button data-act="map6"></button><button data-act="sandbox"></button><button data-act="story"></button></div><div class="ls-bar"><span id="label">Starting...</span><span id="pct">0%</span><i class="ls-spin"></i></div></div></div><div id="ls-log"><div id="data"></div><div id="console"></div></div><div id="bar"><div id="fill"></div></div></div>
+<div id="fps"></div>
+<div id="hud-toast" class="hud-toast"></div>
+
+<!-- Top Floating HUD -->
+<div id="five-hud">
+	<button id="hud-eco-btn" class="hud-btn" style="color:#4ade80; border-color:rgba(74,222,128,0.3);" title="Current Optimization Profile: Click to change">⚡ Eco: ON</button>
+	<button id="hud-cheats-btn" class="hud-btn" style="color:#f59e0b; border-color:rgba(245,158,11,0.3);" title="GTA V Trainer & Cheat Codes">🧰 Cheats</button>
+	<button id="hud-radio-btn" class="hud-btn" title="Custom Radio & MP3 Player">📻 Radio</button>
+	<button id="hud-shot-btn" class="hud-btn" title="Take Snapmatic Screenshot (F8)">📸 Snap</button>
+	<button id="hud-fps-btn" class="hud-btn" title="Toggle FPS Counter (=)">📊 FPS</button>
+	<div class="hud-volume-wrap" title="Master Audio Volume">
+		<span>🔊</span>
+		<input type="range" id="vol-slider" min="0" max="150" value="100">
+		<span id="vol-label" class="hud-volume-label">100%</span>
+	</div>
+	<div id="gp-badge" class="hud-pill" title="Gamepad status">🎮 <span id="gp-text">No Gamepad</span></div>
+	<button id="btn-saves" class="hud-btn" title="Save Manager (Backup & Restore)">💾 Saves</button>
+	<button id="btn-settings" class="hud-btn" title="Graphics & Game Settings">⚙️ Settings</button>
+	<button id="btn-fullscreen" class="hud-btn" title="Toggle Fullscreen">⛶</button>
+</div>
+
+<!-- Settings Modal -->
+<div id="modal-settings" class="modal-backdrop">
+	<div class="modal-box">
+		<h2>
+			<span>⚙️ Game & Performance Settings</span>
+			<button class="modal-close" data-close="modal-settings">&times;</button>
+		</h2>
+		
+		<div class="settings-group">
+			<label>⚡ Performance & Optimization Preset</label>
+			<select id="preset-select">
+				<option value="custom">Custom Configuration</option>
+				<option value="eco">⚡ Ultra Eco / Low-End PC (30 FPS, 540p/720p, 2 Cores, Min Heat & RAM)</option>
+				<option value="perf" selected>🚀 Performance (60 FPS, 720p, Optimized Textures, 2 Cores - Smooth 60 FPS)</option>
+				<option value="balanced">⚖️ Balanced (60 FPS, Native 1080p, Standard Quality)</option>
+				<option value="ultra">💎 Ultra Quality (High Res Scale, Shadows On, Uncapped FPS - High End)</option>
+			</select>
+		</div>
+
+		<div class="settings-row">
+			<div class="settings-group">
+				<label>Resolution Scale</label>
+				<select id="setting-scale">
+					<option value="0.5">50% (540p - Ultra Fast / Low Load)</option>
+					<option value="0.75" selected>75% (720p - Best Performance / Recommended)</option>
+					<option value="0.85">85% (900p - Crisp & Smooth)</option>
+					<option value="1">100% (Native 1080p Display)</option>
+					<option value="1.25">125% (Sharp / 1440p)</option>
+					<option value="1.5">150% (2K / Crisp)</option>
+					<option value="2">200% (4K Ultra)</option>
+				</select>
+			</div>
+			<div class="settings-group">
+				<label>Target FPS / Power Mode</label>
+				<select id="setting-fps">
+					<option value="60" selected>60 FPS (V-Sync Standard)</option>
+					<option value="30">30 FPS (Eco / Battery Saver / Zero Fan Noise)</option>
+					<option value="0">Uncapped (Max Monitor Hz)</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="settings-row">
+			<div class="settings-group">
+				<label>HiDPI / Retina Clamp</label>
+				<select id="setting-retina">
+					<option value="0" selected>Off (1.0x - Saves 75% GPU Load on Mac/4K)</option>
+					<option value="1">On (Native HiDPI / 2x Multiplier - Heavy)</option>
+				</select>
+			</div>
+			<div class="settings-group">
+				<label>CPU Threads / Cores</label>
+				<select id="setting-cores">
+					<option value="2" selected>2 Cores (54 Threads - Fast, Cool & Light)</option>
+					<option value="3">3 Cores (Balanced)</option>
+					<option value="4">4 Cores (116 Threads - Heavy)</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="settings-row">
+			<div class="settings-group">
+				<label>Memory & Texture Profile</label>
+				<select id="setting-low">
+					<option value="1" selected>Optimized (Quarter Textures, 500MB VRAM)</option>
+					<option value="0">High Quality (Full 4K Textures, 1.2GB+ VRAM)</option>
+				</select>
+			</div>
+			<div class="settings-group">
+				<label>Shadows Quality</label>
+				<select id="setting-shadows">
+					<option value="0" selected>Off / Minimal (Cuts 33% GPU Draw Calls)</option>
+					<option value="1">Force Shadows Enabled</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="settings-row">
+			<div class="settings-group">
+				<label>Game Launch Mode</label>
+				<select id="setting-mode">
+					<option value="story" selected>Story Mode (Campaign)</option>
+					<option value="sandbox">Sandbox: GTA V Map (Freeroam)</option>
+					<option value="map6">Sandbox: GTA VI Map (Env Test)</option>
+				</select>
+			</div>
+			<div class="settings-group">
+				<label>Save Auto-Load</label>
+				<select id="setting-newgame">
+					<option value="0" selected>Continue Newest Save</option>
+					<option value="1">Start New Game (Prologue)</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="settings-row">
+			<div class="settings-group">
+				<label>Mouse Sensitivity (<span id="mouse-sens-val">1.0x</span>)</label>
+				<input type="range" id="setting-mouse-sens" min="20" max="300" value="100" style="width:100%; height:6px; accent-color:#38bdf8; cursor:pointer;">
+			</div>
+			<div class="settings-group">
+				<label>Gamepad Look Speed (<span id="gp-sens-val">1.0x</span>)</label>
+				<input type="range" id="setting-gp-sens" min="20" max="300" value="100" style="width:100%; height:6px; accent-color:#38bdf8; cursor:pointer;">
+			</div>
+		</div>
+
+		<div class="settings-row">
+			<div class="settings-group">
+				<label>Invert Y-Axis (Camera)</label>
+				<select id="setting-invert-y">
+					<option value="0" selected>Normal (Standard)</option>
+					<option value="1">Inverted (Flight Sim)</option>
+				</select>
+			</div>
+			<div class="settings-group">
+				<label>⚡ Dynamic Res Auto-Scaler</label>
+				<select id="setting-dyn-res">
+					<option value="1" selected>Enabled (Auto-drops scale if FPS &lt; 28)</option>
+					<option value="0">Disabled (Fixed Scale)</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="settings-group">
+			<label>🎮 Controls Overview</label>
+			<div style="background:#181a20; padding:10px; border-radius:6px; max-height:140px; overflow-y:auto;">
+				<table class="controls-table">
+					<tr><td><span class="key-badge">W / A / S / D</span> or <span class="key-badge">Left Stick</span></td><td>Move / Steer</td></tr>
+					<tr><td><span class="key-badge">Mouse</span> or <span class="key-badge">Right Stick</span></td><td>Look / Aim Camera</td></tr>
+					<tr><td><span class="key-badge">Left Click</span> or <span class="key-badge">RT (R2)</span></td><td>Shoot / Attack / Accelerate</td></tr>
+					<tr><td><span class="key-badge">Right Click</span> or <span class="key-badge">LT (L2)</span></td><td>Aim Weapon</td></tr>
+					<tr><td><span class="key-badge">Shift</span> or <span class="key-badge">A (Cross)</span></td><td>Sprint / Handbrake</td></tr>
+					<tr><td><span class="key-badge">Space</span> or <span class="key-badge">X (Square)</span></td><td>Jump / Climb</td></tr>
+					<tr><td><span class="key-badge">F</span> or <span class="key-badge">Y (Triangle)</span></td><td>Enter / Exit Vehicle</td></tr>
+					<tr><td><span class="key-badge">Tab</span> or <span class="key-badge">LB (L1)</span></td><td>Weapon Wheel</td></tr>
+					<tr><td><span class="key-badge">Q</span> or <span class="key-badge">RB (R1)</span></td><td>Take Cover</td></tr>
+					<tr><td><span class="key-badge">V</span> or <span class="key-badge">Select</span></td><td>Change Camera View</td></tr>
+					<tr><td><span class="key-badge">~</span> (Tilde)</td><td>In-Game Cheat Console</td></tr>
+					<tr><td><span class="key-badge">F8</span></td><td>Take Snapmatic Screenshot</td></tr>
+					<tr><td><span class="key-badge">Esc</span> or <span class="key-badge">Start</span></td><td>Pause Menu / Release Mouse</td></tr>
+				</table>
+			</div>
+		</div>
+
+		<div class="settings-actions">
+			<button class="btn-secondary modal-close" data-close="modal-settings">Cancel</button>
+			<button id="btn-apply-settings" class="btn-primary">🚀 Apply & Reload</button>
+		</div>
+	</div>
+</div>
+
+<!-- Saves Manager Modal -->
+<div id="modal-saves" class="modal-backdrop">
+	<div class="modal-box">
+		<h2>
+			<span>💾 Save Game Backup & Restore</span>
+			<button class="modal-close" data-close="modal-saves">&times;</button>
+		</h2>
+		<p style="font-size:12px; color:#94a3b8; margin:0 0 14px 0;">
+			Savegames are stored directly in your browser's IndexedDB (<code>gta5-userdata</code>). You can backup your progress to a JSON file or restore previous saves anytime.
+		</p>
+
+		<div style="display:flex; gap:10px; margin-bottom:16px;">
+			<button id="btn-export-saves" class="btn-primary">📥 Export Backup (.json)</button>
+			<button id="btn-import-saves-trigger" class="btn-secondary">📤 Import Backup File</button>
+			<input type="file" id="input-import-saves" accept=".json" style="display:none;">
+			<button id="btn-refresh-saves" class="btn-secondary">🔄 Refresh</button>
+		</div>
+
+		<div style="background:#181a20; border-radius:6px; border:1px solid rgba(255,255,255,0.08); overflow:hidden;">
+			<table class="saves-table">
+				<thead>
+					<tr>
+						<th>Save File</th>
+						<th>Size</th>
+						<th>Last Modified</th>
+					</tr>
+				</thead>
+				<tbody id="saves-tbody">
+					<tr><td colspan="3" style="text-align:center; color:#64748b; padding:16px;">Loading save files...</td></tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="settings-actions" style="justify-content:space-between;">
+			<button id="btn-clear-saves" class="btn-danger">🗑️ Delete All Saves</button>
+			<button class="btn-secondary modal-close" data-close="modal-saves">Close</button>
+		</div>
+	</div>
+</div>
+
+<!-- GTA V Trainer & Cheats Menu -->
+<div id="modal-cheats" class="modal-backdrop">
+	<div class="modal-box" style="width: 640px;">
+		<h2>
+			<span>🧰 GTA V Trainer & Cheats Menu</span>
+			<button class="modal-close" data-close="modal-cheats">&times;</button>
+		</h2>
+		<p style="font-size:12px; color:#94a3b8; margin:0 0 14px 0;">
+			Click any cheat button to activate instantly in game! (Or press <code>~</code> key to open in-game console).
+		</p>
+
+		<div style="max-height:62vh; overflow-y:auto; padding-right:6px;">
+			<!-- Player & Health -->
+			<div class="cheat-section">
+				<div class="cheat-section-title">🛡️ Player, Health & Abilities</div>
+				<div class="cheat-grid">
+					<button class="cheat-btn" data-cheat="PAINKILLER" data-name="God Mode (Invincible 5m)">
+						<span class="cheat-name">🛡️ God Mode (5m)</span>
+						<span class="cheat-code">PAINKILLER</span>
+					</button>
+					<button class="cheat-btn" data-cheat="TURTLE" data-name="Max Health & Armor">
+						<span class="cheat-name">🩸 Max Health & Armor</span>
+						<span class="cheat-code">TURTLE</span>
+					</button>
+					<button class="cheat-btn" data-cheat="HOPTOIT" data-name="Super Jump">
+						<span class="cheat-name">🦘 Super Jump</span>
+						<span class="cheat-code">HOPTOIT</span>
+					</button>
+					<button class="cheat-btn" data-cheat="CATCHME" data-name="Fast Run">
+						<span class="cheat-name">⚡ Fast Run</span>
+						<span class="cheat-code">CATCHME</span>
+					</button>
+					<button class="cheat-btn" data-cheat="GOTGILLS" data-name="Fast Swim">
+						<span class="cheat-name">🏊 Fast Swim</span>
+						<span class="cheat-code">GOTGILLS</span>
+					</button>
+					<button class="cheat-btn" data-cheat="SKYDIVE" data-name="Give Parachute">
+						<span class="cheat-name">🪂 Parachute</span>
+						<span class="cheat-code">SKYDIVE</span>
+					</button>
+				</div>
+			</div>
+
+			<!-- Weapons & Combat -->
+			<div class="cheat-section">
+				<div class="cheat-section-title">🔫 Weapons & Combat</div>
+				<div class="cheat-grid">
+					<button class="cheat-btn" data-cheat="TOOLUP" data-name="All Weapons & Max Ammo">
+						<span class="cheat-name">🔫 All Weapons + Ammo</span>
+						<span class="cheat-code">TOOLUP</span>
+					</button>
+					<button class="cheat-btn" data-cheat="HOTHANDS" data-name="Explosive Melee">
+						<span class="cheat-name">💥 Explosive Melee</span>
+						<span class="cheat-code">HOTHANDS</span>
+					</button>
+					<button class="cheat-btn" data-cheat="HIGHEX" data-name="Bang Bang (Explosive Bullets)">
+						<span class="cheat-name">💣 Explosive Bullets</span>
+						<span class="cheat-code">HIGHEX</span>
+					</button>
+					<button class="cheat-btn" data-cheat="INCENDIARY" data-name="Flaming Bullets">
+						<span class="cheat-name">🔥 Flaming Bullets</span>
+						<span class="cheat-code">INCENDIARY</span>
+					</button>
+					<button class="cheat-btn" data-cheat="DEADEYE" data-name="Slow Motion Aim">
+						<span class="cheat-name">⏱️ Slow Motion Aim</span>
+						<span class="cheat-code">DEADEYE</span>
+					</button>
+				</div>
+			</div>
+
+			<!-- Wanted Level -->
+			<div class="cheat-section">
+				<div class="cheat-section-title">⭐ Wanted Level & Police</div>
+				<div class="cheat-grid">
+					<button class="cheat-btn" data-cheat="LAWYERUP" data-name="Clear Wanted Level">
+						<span class="cheat-name" style="color:#4ade80;">⭐ Clear Wanted (0 Stars)</span>
+						<span class="cheat-code">LAWYERUP</span>
+					</button>
+					<button class="cheat-btn" data-cheat="FUGITIVE" data-name="Raise Wanted Level">
+						<span class="cheat-name" style="color:#ef4444;">🚨 Raise Wanted (+1 Star)</span>
+						<span class="cheat-code">FUGITIVE</span>
+					</button>
+				</div>
+			</div>
+
+			<!-- Vehicle Spawner -->
+			<div class="cheat-section">
+				<div class="cheat-section-title">🚗 Vehicle Spawner</div>
+				<div class="cheat-grid">
+					<button class="cheat-btn" data-cheat="BUZZOFF" data-name="Buzzard Attack Chopper">
+						<span class="cheat-name">🚁 Buzzard Chopper</span>
+						<span class="cheat-code">BUZZOFF</span>
+					</button>
+					<button class="cheat-btn" data-cheat="RAPIDGT" data-name="Rapid GT Sports Car">
+						<span class="cheat-name">🏎️ Rapid GT</span>
+						<span class="cheat-code">RAPIDGT</span>
+					</button>
+					<button class="cheat-btn" data-cheat="COMET" data-name="Comet Sports Car">
+						<span class="cheat-name">🚗 Comet</span>
+						<span class="cheat-code">COMET</span>
+					</button>
+					<button class="cheat-btn" data-cheat="ROCKET" data-name="PCJ-600 Motorcycle">
+						<span class="cheat-name">🏍️ PCJ-600 Superbike</span>
+						<span class="cheat-code">ROCKET</span>
+					</button>
+					<button class="cheat-btn" data-cheat="OFFROAD" data-name="Sanchez Dirt Bike">
+						<span class="cheat-name">🚲 Sanchez Dirt Bike</span>
+						<span class="cheat-code">OFFROAD</span>
+					</button>
+					<button class="cheat-btn" data-cheat="BARNSTORM" data-name="Stunt Plane">
+						<span class="cheat-name">✈️ Stunt Plane</span>
+						<span class="cheat-code">BARNSTORM</span>
+					</button>
+					<button class="cheat-btn" data-cheat="HOLEIN1" data-name="Caddy Golf Cart">
+						<span class="cheat-name">⛳ Caddy Golf Cart</span>
+						<span class="cheat-code">HOLEIN1</span>
+					</button>
+					<button class="cheat-btn" data-cheat="TRASHED" data-name="Trashmaster Truck">
+						<span class="cheat-name">🗑️ Trashmaster</span>
+						<span class="cheat-code">TRASHED</span>
+					</button>
+				</div>
+			</div>
+
+			<!-- World & Environment -->
+			<div class="cheat-section">
+				<div class="cheat-section-title">🌤️ World & Environment</div>
+				<div class="cheat-grid">
+					<button class="cheat-btn" data-cheat="MAKEITRAIN" data-name="Change Weather">
+						<span class="cheat-name">🌤️ Change Weather</span>
+						<span class="cheat-code">MAKEITRAIN</span>
+					</button>
+					<button class="cheat-btn" data-cheat="FLOATER" data-name="Moon Gravity">
+						<span class="cheat-name">🌙 Moon Gravity</span>
+						<span class="cheat-code">FLOATER</span>
+					</button>
+					<button class="cheat-btn" data-cheat="SNOWDAY" data-name="Slippery Drift Cars">
+						<span class="cheat-name">🏎️ Slippery Drifting</span>
+						<span class="cheat-code">SNOWDAY</span>
+					</button>
+					<button class="cheat-btn" data-cheat="SLOWMO" data-name="Slow Motion World">
+						<span class="cheat-name">⏳ Slow Motion World</span>
+						<span class="cheat-code">SLOWMO</span>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="settings-actions">
+			<button class="btn-secondary modal-close" data-close="modal-cheats">Close</button>
+		</div>
+	</div>
+</div>
+
+<!-- Custom Radio & MP3 Music Player Modal -->
+<div id="modal-radio" class="modal-backdrop">
+	<div class="modal-box" style="width: 440px;">
+		<h2>
+			<span>📻 Los Santos Radio & MP3 Player</span>
+			<button class="modal-close" data-close="modal-radio">&times;</button>
+		</h2>
+		<p style="font-size:12px; color:#94a3b8; margin:0 0 12px 0;">
+			Play custom songs while cruising around Los Santos! Load MP3s from your computer.
+		</p>
+
+		<div id="radio-track-title" class="radio-track-name">No track loaded (Load MP3s below)</div>
+
+		<div class="radio-ctrl-bar">
+			<button id="radio-prev-btn" class="radio-ctrl-btn" title="Previous Track">⏮️</button>
+			<button id="radio-play-btn" class="radio-ctrl-btn" title="Play / Pause" style="padding:6px 20px; font-size:18px;">▶️</button>
+			<button id="radio-next-btn" class="radio-ctrl-btn" title="Next Track">⏭️</button>
+		</div>
+
+		<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; font-size:12px;">
+			<span>Music Volume:</span>
+			<input type="range" id="radio-volume" min="0" max="100" value="80" style="width:180px; accent-color:#38bdf8; cursor:pointer;">
+			<span id="radio-vol-label">80%</span>
+		</div>
+
+		<div style="display:flex; gap:10px;">
+			<button id="btn-load-mp3" class="btn-primary" style="flex:1;">📁 Load MP3 Files from PC</button>
+			<input type="file" id="radio-file-input" accept="audio/*" multiple style="display:none;">
+			<button id="btn-load-ambient" class="btn-secondary">🎶 Synthwave Radio</button>
+		</div>
+
+		<div id="radio-playlist" style="margin-top:12px; max-height:110px; overflow-y:auto; background:#181a20; border-radius:6px; padding:6px; font-size:11px; color:#94a3b8;">
+			Playlist is empty. Click "Load MP3 Files" to add songs!
+		</div>
+
+		<div class="settings-actions">
+			<button class="btn-secondary modal-close" data-close="modal-radio">Close</button>
+		</div>
+	</div>
+</div>
+
+<script type="module">
+// Page of the browser build. The engine runs in a dedicated worker (loader.js: its "main thread", where the static constructors and
+// main() run and which may block); the page only owns the canvas, which is transferred to that worker and on to the GPU worker.
+// Query string: ?args=-flag1,-flag2=value (added to the engine command line), ?shot=N (screenshot of every N-th present to the dev server).
+const q = new URLSearchParams(location.search);
+// URL prefix of everything this page loads (loader, workers, engine, shaders, title art): empty on the dev server; on the PHP host (phase3/host/index.php) it puts the page's own
+// text `/b/8b0b5899ed` through str_replace to `/b/<build id>`, so those files are cached for ever under URLs that change when the build does.
+const BASE = '/b/8b0b5899ed'.charAt(0) === '_' ? '' : '/b/8b0b5899ed';
+// ?log=1: the page, the engine threads and the workers send their log lines to the dev server (browser.log, browser_<ip>.log); off by default: the player's upload
+// bandwidth and this thread's time. The loading screen's own log line and the browser console do not depend on it.
+const remoteLog = q.get('log') === '1';
+const postLog = (text) => { if (remoteLog) fetch('/log', { method: 'POST', body: text }).catch(() => {}); };
+// Crash reports from the engine threads (prejs.js __crash, loader.js onAbort/onExit): shown in the bottom-left line with a hint when it looks like memory, and posted to the host's log
+// only with ?log=1 (at most 3 per page, ~10 KB each; they were always posted until 2026-10-06, when 10,000 visitors a day made 5,500 posts and a log file per visitor). A normal exit does not report.
+{
+	let posted = 0;
+	new BroadcastChannel('game-crash').onmessage = (ev) => {
+		const m = ev.data;
+		const memory = /memory|OOM|Aborted\(|RangeError|grow/i.test(m.text);
+		const dev = ' deviceMemory ' + (navigator.deviceMemory || '?') + ' GB, cores ' + navigator.hardwareConcurrency;
+		if (remoteLog && posted++ < 3) fetch('/log', { method: 'POST', body: '[page] CRASH (' + m.kind + ', ' + m.thread + ' thread, wasm heap ' + m.heap + ' MB,' + dev + ', ' + location.search + '): ' + m.text + '\n' + m.tail.join('\n') + '\n' }).catch(() => {});
+		const el = document.getElementById('hud');
+		if (el) { el.textContent = 'The game stopped (' + m.kind + '): ' + m.text.split('\n')[0].slice(0, 200) + (memory ? ' - this looks like a lack of memory: close other tabs and reload.' : ' - reload the page.'); el.style.color = '#f96'; }
+	};
+}
+// ---- title screen: the game's own loading screen, LOADINGSCREEN_STARTUP (scaleform_frontend.rpf), redone in HTML ----------------------------------------
+// Ported from its ActionScript (com.rockstargames.gtav.loadingScreens.LOADINGSCREEN_STARTUP, decompiled with JPEXS FFDec) as it plays while the game loads
+// (CTX_GAMELOAD). On the 1280x720 stage (scaled to the window, black outside 16:9): the built-in beach screen and the 17 loadingscreen<N> art screens in one of
+// the movie's six random orders; each is a background panel tilted in 3D (Scaleform's camera: 55 degree field of view around the stage centre, pivot at the
+// layer's top-left; Scaleform's +Z points away from the viewer, CSS's towards it, hence the negated angles) and foreground cut-outs. Every 14 s the next screen
+// slides in (0.85 s, cubic in-out, from alternating sides) and the old one out; a screen's layers tween linearly to their end values over 42 s. The GTA V logo
+// sits bottom left and the instructional button bar bottom right at the boot-time safe zone (7.5 %, CHudTools::GetFakeLoadingScreenSafeZone).
+// Art, logo, spinner and the font ($Font2 = Chalet London 1960) are the game's (phase3/make_title.py, served at /b/8b0b5899ed/title/).
+let stopTitle = () => {};
+{
+	const stage = document.getElementById('ls-stage'), holder = document.getElementById('ls-screens');
+	const fit = () => {
+		const s = Math.min(innerWidth / 1280, innerHeight / 720);
+		stage.style.transform = 'translate(' + (innerWidth - 1280 * s) / 2 + 'px,' + (innerHeight - 720 * s) / 2 + 'px) scale(' + s + ')';
+	};
+	fit();
+	addEventListener('resize', fit);
+	const L = (tex, w, h, x, y, yr, to) => ({ tex, w, h, x, y, yr, to });
+	const BG = (n, yr, to, x = 98) => L('ls' + n + '_background', 1024, 512, x, 95, yr, to);
+	const FG = (n, name, w, h, x, y, toX, yr = 0) => L('ls' + n + '_' + name, w, h, x, y, yr, { x: toX });
+	const SCREENS = [		// the movie's loadingScreens array: setup (size, position, _yrotation) and tweenTo of every layer, bottom to top
+		[L('beach_bg', 1024, 512, 98, 95, 20, { yr: -6, xr: 5 }), L('beach_fg', 343, 629, 480, 95, 0, { x: 720 })],
+		null,		// loadingscreen_builtin1 (Frisk): its symbols are not in this build's movie, and no order uses it
+		[BG(0, 7, { yr: -7 }), FG(0, 'foreground', 299, 599, 360, 140, 560, 7)],
+		[BG(1, 6, { yr: -12 }), FG(1, 'foreground', 503, 206, 300, 465, 480), FG(1, 'foreground_franklin', 368, 588, 440, 140, 745)],
+		[BG(2, 7, { yr: -5, xr: 5 }), FG(2, 'foreground', 311, 558, 745, 200, 450), FG(2, 'foreground_chop', 320, 512, 640, 260, 310)],
+		[BG(3, 12, { yr: -4 }, 110), FG(3, 'foreground', 412, 609, 440, 120, 730)],		// its foreground_car is an "isInFla" layer missing from the movie: the game shows no car
+		[BG(4, 7, { yr: -4, xr: 5 }), FG(4, 'foreground', 251, 643, 400, 85, 250)],
+		[BG(5, 7, { yr: -6 }), FG(5, 'foreground', 389, 640, 450, 95, 700)],
+		[BG(6, 7, { yr: 0, xr: 5 }), FG(6, 'foreground', 367, 603, 410, 115, 800)],
+		[BG(7, 6, { yr: -6, xr: 5 }), FG(7, 'foreground', 311, 625, 860, 95, 520)],
+		[BG(8, 7, { yr: -5, xr: 5 }), FG(8, 'foreground', 492, 497, 400, 190, 660)],
+		[BG(9, 7, { yr: -3, xr: 5 }), FG(9, 'foreground', 331, 675, 220, 50, 140)],
+		[BG(10, 6, { yr: -5, xr: 5 }), FG(10, 'foreground', 352, 682, 545, 65, 485)],
+		[BG(11, 7, { yr: -3, xr: 5 }), FG(11, 'foreground', 344, 669, 309, 51, 424)],
+		[BG(12, 6, { yr: -4 }), FG(12, 'foreground_michael', 462, 677, 345, 42, 220)],
+		[BG(13, 5, { yr: -6, xr: 5 }), FG(13, 'foreground', 399, 681, 430, 39, 250)],
+		[BG(14, 6, { yr: -2, xr: 5 }), FG(14, 'foreground', 392, 631, 650, 95, 850)],
+		[BG(15, 6, { yr: -3, xr: 5 }), FG(15, 'foreground', 385, 642, 404, 78, 261)],
+		[BG(16, 6, { yr: -3, xr: 5 }), FG(16, 'foreground', 300, 600, 300, 150, 400)],
+	];
+	const ORDERS = [[0, 16, 18, 3, 12, 2, 17, 10, 9, 8, 15, 6, 11, 14, 4, 7, 13], [0, 4, 6, 17, 11, 16, 18, 7, 9, 15, 3, 14, 10, 13, 2, 8, 12],
+		[0, 7, 16, 14, 13, 3, 10, 2, 15, 18, 8, 9, 4, 17, 12, 6, 11], [0, 8, 18, 9, 13, 4, 11, 14, 7, 17, 6, 12, 3, 16, 2, 15, 10],
+		[0, 11, 12, 7, 18, 14, 9, 13, 4, 2, 15, 11, 8, 16, 6, 3, 17], [0, 10, 16, 2, 13, 17, 8, 9, 18, 3, 12, 6, 7, 4, 14, 15, 10]];
+	const order = ORDERS[Math.floor(Math.random() * ORDERS.length)];
+	const cubicInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(2 - 2 * t, 3) / 2);		// TweenStar Cubic.easeInOut
+	// the screen's horizontal position; its layers' cameras stay at the stage centre (Scaleform's camera does not move with the clip)
+	const slide = (s, x) => {
+		s.el.style.transform = 'translateX(' + x + 'px)';
+		for (const c of s.cams) c.style.perspectiveOrigin = (640 - x) + 'px 360px';
+	};
+	const place = (l, x, yr, xr) => { l.el.style.transform = 'translate3d(' + x + 'px,' + l.y + 'px,0) rotateY(' + -yr + 'deg) rotateX(' + -xr + 'deg)'; };
+	// a screen's images, decoded before it may show (the movie waits for its texture dictionary the same way)
+	const prepare = (i) => {
+		const layers = SCREENS[order[i]].map((d) => ({ ...d, img: Object.assign(new Image(), { src: '/b/8b0b5899ed/title/art/' + d.tex + '.webp' }) }));
+		return Promise.all(layers.map((l) => l.img.decode().catch(() => {}))).then(() => layers);
+	};
+	let active = null, leaving = null, index = 0, alt = -1, timer = 0, raf = 0, stopped = false;
+	const show = (defs) => {
+		const now = performance.now();
+		alt = alt <= 0 ? 1 : -1;		// updateScreenIndex: the side alternates
+		const el = document.createElement('div');
+		el.className = 'ls-screen';
+		const cams = [];
+		const s = { el, slideFrom: alt * 1280, start: now, settled: 0, cams, layers: defs.map((d) => {
+			const cam = document.createElement('div'), e = document.createElement('div');
+			cam.className = 'ls-cam';
+			e.className = 'ls-layer';
+			e.style.width = d.w + 'px'; e.style.height = d.h + 'px';
+			e.style.backgroundImage = 'url(' + d.img.src + ')';
+			cam.appendChild(e);
+			el.appendChild(cam);
+			cams.push(cam);
+			return { el: e, y: d.y, x0: d.x, yr0: d.yr, xr0: 0, x1: d.to.x ?? d.x, yr1: d.to.yr ?? d.yr, xr1: d.to.xr ?? 0 };
+		}) };
+		for (const l of s.layers) place(l, l.x0, l.yr0, l.xr0);
+		slide(s, s.slideFrom);
+		holder.appendChild(el);		// above the screen that leaves
+		if (leaving) leaving.el.remove();
+		leaving = active;
+		if (leaving) { leaving.slideFrom = 0; leaving.slideTo = -alt * 1280; leaving.start = now; }
+		active = s;
+		s.slideTo = 0;
+	};
+	const tick = (now) => {
+		for (const s of [leaving, active]) {
+			if (!s) continue;
+			const p = Math.min(1, (now - s.start) / 850);
+			if (p < 1 || !s.slid) { slide(s, s.slideFrom + (s.slideTo - s.slideFrom) * cubicInOut(p)); s.slid = p === 1; }
+			if (s === active && p === 1 && !s.settled) s.settled = now;		// loadscreenIsSettled: the layers start their 42 s tweens
+			if (s.settled) {
+				const q = Math.min(1, (now - s.settled) / 42000);
+				for (const l of s.layers) place(l, l.x0 + (l.x1 - l.x0) * q, l.yr0 + (l.yr1 - l.yr0) * q, l.xr0 + (l.xr1 - l.xr0) * q);
+			}
+			if (s === leaving && p === 1) { s.el.remove(); leaving = null; }
+		}
+		if (!stopped) raf = requestAnimationFrame(tick);
+	};
+	let next = prepare(0);
+	const cycle = () => next.then((defs) => {
+		if (stopped) return;
+		show(defs);
+		index = (index + 1) % order.length;
+		next = prepare(index);
+		timer = setTimeout(cycle, 14000);		// timerDuration
+	});
+	timer = setTimeout(cycle, 500);
+	raf = requestAnimationFrame(tick);
+	stopTitle = () => { stopped = true; clearTimeout(timer); cancelAnimationFrame(raf); };
+}
+// ---- start choice: Story Mode / Sandbox Mode, and Sandbox Mode's map, in the title screen's button bar ---------------------------------------------------------
+// The game's own loading-time choice (CLoadingScreens::RefreshButtonLayout: "Loading Story Mode" with a spinner, "Online" as a button) with Sandbox Mode in the
+// Online slot. Buttons are laid out like updateButtonLayout: the spinner item rightmost; on PC the icons are key caps (a click works too). Enter = Story Mode;
+// Space = Sandbox Mode, which asks for the map: 5 = the GTA V map, 6 = "GTA VI Map" (the env_test level), Backspace = back. The choice goes into the engine's
+// input block (WasmInputBlock.startMode, wasm/platform/input/browser_input_wasm.cpp): 1 = Story Mode (the release startup: a new game from the Prologue),
+// 2 = Sandbox Mode on the GTA V map (free roam at a random spot with every weapon), 3 = Sandbox Mode on env_test. It can change until the engine takes it
+// (where it reads -level, about 62 % into the load; it waits there if nothing was chosen, and the page then pulses the key caps); after that only the chosen
+// item stays. ?mode=story|sandbox chooses up front (with &map=env_test for Sandbox Mode on env_test).
+let startMode = q.get('mode') === 'story' ? 1 : q.get('mode') === 'sandbox' ? (q.get('map') === 'env_test' ? 3 : 2) : 0;
+let startModeWord = null, startCommitted = false, pickingMap = false, waitingChoice = false;		// waitingChoice: the engine waits for the choice
+const ACTS = {		// button: text, key cap, key codes
+	back: ['Back', 'Backspace', ['Backspace']],
+	map5: ['GTA V Map', '5', ['Digit5', 'Numpad5']],
+	map6: ['GTA VI Map', '6', ['Digit6', 'Numpad6']],
+	sandbox: ['Sandbox Mode', 'Space', ['Space']],
+	story: ['Story Mode', 'Enter', ['Enter', 'NumpadEnter']],
+};
+const LOADING = { 1: 'Loading Story Mode', 2: 'Loading Sandbox Mode: GTA V Map', 3: 'Loading Sandbox Mode: GTA VI Map' };
+const modesEl = document.getElementById('modes'), modeButtons = [...modesEl.querySelectorAll('button')];
+const isMode = (act) => act === 'story' || act === 'sandbox';
+const showModes = () => {
+	for (const b of modeButtons) {
+		const act = b.dataset.act, loading = !pickingMap && (act === 'story' ? startMode === 1 : act === 'sandbox' && startMode >= 2);
+		const text = document.createElement('span'), icon = document.createElement(loading ? 'i' : 'span');
+		text.textContent = loading ? LOADING[startMode] : ACTS[act][0];
+		icon.className = loading ? 'ls-spin' : 'ls-key';
+		icon.textContent = loading ? '' : ACTS[act][1];
+		b.replaceChildren(text, icon);
+		b.style.order = loading ? 1 : 0;
+		b.disabled = startCommitted;
+		b.hidden = startCommitted ? !loading : pickingMap === isMode(act);		// the modes, or the map choice with Back
+		b.classList.toggle('chosen', loading);
+	}
+	if (startMode) modesEl.classList.remove('ask');
+	if (waitingChoice && !startMode) document.getElementById('label').textContent = pickingMap ? 'Choose a map to continue' : 'Choose Story Mode or Sandbox Mode to continue';
+};
+const choose = (m) => {
+	pickingMap = false;
+	if (m !== startMode) {
+		startMode = m;
+		if (startModeWord) Atomics.store(startModeWord, 0, m);
+		postLog('[page] start mode: ' + ({ 1: 'story', 2: 'sandbox', 3: 'sandbox on env_test' })[m]);
+	}
+	showModes();
+};
+const act = (a) => {
+	if (startCommitted) return;
+	if (a === 'story') choose(1);
+	else if (a === 'map5') choose(2);
+	else if (a === 'map6') choose(3);
+	else { pickingMap = a === 'sandbox'; showModes(); }		// Sandbox Mode (or its loading item: change the map) asks for the map; Back closes that
+};
+modesEl.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b && !b.hidden) act(b.dataset.act); });
+addEventListener('keydown', (e) => {
+	if (startCommitted || e.ctrlKey || e.altKey || e.metaKey || !document.getElementById('loading')) return;
+	const b = modeButtons.find((x) => !x.hidden && ACTS[x.dataset.act][2].includes(e.code));
+	if (!b) return;
+	act(b.dataset.act);
+	e.preventDefault(); e.stopImmediatePropagation();
+}, { capture: true });
+showModes();
+// ---- loading progress: the engine (prejs.js, loader.js) and the GPU worker publish {pct, label} on a BroadcastChannel ------------------
+{
+	const loading = document.getElementById('loading'), fill = document.getElementById('fill'), label = document.getElementById('label'), pct = document.getElementById('pct');
+	let target = 0, shown = 0, ready = false, dirty = false, loadingGone = false;
+	let dataBytes = 0, worldBase = -1;
+	const samples = [];
+	let lastLine = '';
+	const consoleEl = document.getElementById('console');
+	const bc = new BroadcastChannel('game-progress');
+	let lastActivity = performance.now(), stallLogged = 0, lastLabel = '';
+	bc.onmessage = (ev) => {
+		const m = ev.data;
+		lastActivity = performance.now();
+		if (m.dl) {		// bytes of game data fetched by an engine thread since its last report
+			dataBytes += m.dl;
+			samples.push([performance.now(), m.dl]);
+			return;
+		}
+		if (m.lines) {
+			if (loadingGone || !m.lines.length) return;		// the log line above the progress bar is gone: no DOM work for it during play
+			lastLine = m.lines[m.lines.length - 1];
+			dirty = true;
+			return;
+		}
+		if (m.gpuLost) { hud.textContent = 'The graphics device was lost (' + m.gpuLost + '): the screen will stay black. Reload the page.'; hud.style.color = '#f66'; return; }
+		if (m.error) { label.textContent = m.error; label.style.color = '#e66'; return; }
+		if (m.pct > target) { target = m.pct; if (m.label) { lastLabel = m.label; if (!waitingChoice) label.textContent = m.label; } if (m.pct >= 72 && worldBase < 0) worldBase = dataBytes; }
+		if (m.choice && !startMode) { waitingChoice = true; modesEl.classList.add('ask'); showModes(); }		// the engine waits for the choice: showModes asks for it in the label
+		if (m.commit) { startCommitted = true; pickingMap = false; if (m.mode) startMode = m.mode; showModes(); }		// the engine took the choice
+		if (m.compiling !== undefined && !waitingChoice) { label.textContent = lastLabel = 'Preparing shaders'; target = Math.max(target, 99); }		// the world is up; the GPU worker holds it until its pipelines are compiled
+		if (m.world) { ready = true; hud.textContent = 'click the game to capture the mouse (Esc releases it, Shift+P switches keyboard mode, = shows FPS)'; setTimeout(() => { hud.textContent = ''; }, 15000); }
+	};
+	// Between reports the bar creeps forward (at most 6 points past the last report) so a long stage does not look frozen.
+	const dataEl = document.getElementById('data');
+	const WORLD_BYTES = 1.2e9;		// game data the world needs after the scripts start (measured: about 1.2-1.4 GB the first time)
+	// Stall watchdog: nothing (no log line, no data, no progress) from any engine thread for 30 s while loading. A tab that ran out of memory dies ("Aw, Snap!") and cannot say so,
+	// but one that is thrashing or deadlocked can: show it, and leave a timestamped line in the server log for diagnosis.
+	setInterval(() => {
+		if (ready) return;
+		if (waitingChoice) { if (!startMode) { lastActivity = performance.now(); return; } waitingChoice = false; label.textContent = lastLabel; }
+		const quiet = (performance.now() - lastActivity) / 1000;
+		if (quiet > 30) {
+			label.textContent = 'No progress for ' + (quiet | 0) + ' s' + (lastLabel ? ' (last step: ' + lastLabel + ')' : '') + ': the device may be out of memory. Close other tabs, or reload.';
+			label.style.color = '#e96';
+			if (quiet - stallLogged > 30) { stallLogged = quiet; postLog('[page] STALL: no progress for ' + (quiet | 0) + ' s, last step "' + lastLabel + '", shown ' + shown.toFixed(0) + '%'); }
+		} else if (stallLogged) { stallLogged = 0; label.style.color = ''; }
+	}, 2000);
+	const progressTimer = setInterval(() => {
+		const now = performance.now();
+		while (samples.length && now - samples[0][0] > 3000) samples.shift();
+		const speed = samples.reduce((a, x) => a + x[1], 0) / 3;
+		if (dataBytes) dataEl.textContent = 'Game data: ' + (dataBytes / 1048576 | 0) + ' MB' + (speed > 1e4 ? ' (' + (speed / 1048576).toFixed(1) + ' MB/s)' : '');
+		// from the scripts stage on, progress also follows the data that arrives (72 -> 98 %)
+		if (worldBase >= 0 && !ready) target = Math.max(target, 72 + 26 * Math.min(1, (dataBytes - worldBase) / WORLD_BYTES));
+		const cap = ready ? 100 : Math.min(99, target + 6);
+		const goal = ready ? 100 : (shown < target ? target : cap);
+		shown += (goal - shown) * (goal === target || ready ? 0.12 : 0.004);
+		if (dirty) {		// the newest line only
+			dirty = false;
+			consoleEl.textContent = lastLine;
+		}
+		fill.style.width = shown.toFixed(1) + '%';
+		pct.textContent = Math.round(shown) + '%';
+		if (ready && shown > 99.5) { loading.classList.add('done'); setTimeout(() => { loading.remove(); stopTitle(); }, 1000); loadingGone = true; clearInterval(progressTimer); }		// once: the page does no loading-screen work during play
+	}, 50);
+}
+const hud = document.getElementById('hud');
+// FPS counter, top left: off by default, the = key toggles it. The GPU worker counts presented frames and posts the rate twice a second on 'game-fps'. The key does not reach
+// the game (capture phase on window, before the input handlers; this build has debug key bindings).
+{
+	const el = document.getElementById('fps');
+	let on = false;
+	new BroadcastChannel('game-fps').onmessage = (ev) => { if (on) el.textContent = Math.round(ev.data.fps) + ' FPS'; };
+	const isToggle = (e) => e.code === 'Equal' && !e.ctrlKey && !e.altKey && !e.metaKey;
+	addEventListener('keydown', (e) => {
+		if (!isToggle(e)) return;
+		e.stopImmediatePropagation(); e.preventDefault();
+		if (e.repeat) return;
+		on = !on;
+		el.style.display = on ? 'block' : 'none';
+		if (on) el.textContent = '-- FPS';
+	}, { capture: true });
+	addEventListener('keyup', (e) => { if (isToggle(e)) { e.stopImmediatePropagation(); e.preventDefault(); } }, { capture: true });
+}
+const canvas = document.getElementById('canvas');
+// With ?log=1, log lines of the engine threads and the GPU worker arrive here (prejs.js / wgpu_worker.js post them on 'game-log' without blocking) and go to the dev server
+// in order, one POST at a time with whatever queued up meanwhile.
+if (remoteLog) {
+	const queue = [];
+	let sending = false;
+	const pump = async () => {
+		if (sending || !queue.length) return;
+		sending = true;
+		const body = queue.splice(0).join('\n');
+		try { await fetch('/log', { method: 'POST', body, keepalive: body.length < 60000 }); } catch (e) { /* server gone */ }
+		sending = false;
+		pump();
+	};
+	new BroadcastChannel('game-log').onmessage = (ev) => { queue.push(ev.data); if (queue.length > 20000) queue.splice(0, queue.length - 20000); pump(); };
+}
+// Release the io worker's exclusive storage handles as soon as this page goes away (a quick reload would otherwise find them locked and run without the store).
+addEventListener('pagehide', () => { try { new BroadcastChannel('game-io').postMessage('close'); } catch (e) {} });
+// Earlier versions cached the game data with a service worker (sw.js) and the Cache API: remove both, the io worker keeps its own store (io_worker.js).
+async function dropOldCache() {
+	try {
+		// SW unregister removed for Monetag push worker
+		if (window.caches) for (const k of await caches.keys()) if (k.startsWith('gamedata')) await caches.delete(k);
+	} catch (e) { console.warn('could not remove the old cache: ' + e); }
+}
+let lowMemory = false;		// set below (module scope: the ?mem readout further down also needs it)
+let startSize = [1280, 720], wantSize = null;		// set below (module scope: installInput uses them)
+if (!crossOriginIsolated) { document.getElementById('label').textContent = 'not cross-origin isolated: open the page over https (or localhost); the server sends COOP/COEP'; document.getElementById('label').style.color = '#e66'; }
+else {
+	const offscreen = canvas.transferControlToOffscreen();
+	await dropOldCache();
+	// Low-memory profile (?low=1 forces it, ?low=0 forbids it; default: navigator.deviceMemory <= 4, which browsers report as 4 for 4 GB and less):
+	// every engine thread is a Web Worker of ~20 MB and the engine sizes its thread count from the core count, so pretend to have 2 cores (54 threads
+	// instead of 80-116); quarter the texture memory (texture quality 0 = top mip skipped on the GPU), no network stack, and the minimum ped/vehicle
+	// variety, city density, LOD and quality settings: measured in a Node run at the world, GPU memory 1.16 GB -> 0.5 GB and streamed assets 1.38 GB -> 0.95 GB.
+	// Shadows off (-shadowQuality=-1, engine level 0 below the menu's lowest; SettingsManager.cpp, wasm): the cascade shadow pass was a third of all draws (Node, 1366x600:
+	// 600-900 of 1,300-2,900 per frame), and a 4-core Chromebook spent ~110 us per draw. ?shadows=1 keeps them at the lowest level.
+	const lowParam = q.get('low');
+	const isChromebook = q.get('mode') === 'chromebook';
+	// ULTRA-OPTIMIZATION: Default to high-performance low-memory profile unless explicitly requested with ?low=0
+	lowMemory = lowParam === '1' || isChromebook || (lowParam !== '0');
+	const LOW_ARGS = ['-textureQuality=0', '-pedVariety=0', '-vehicleVariety=0', '-shadowQuality=' + (q.get('shadows') === '1' ? 0 : -1), '-reflectionQuality=0', '-particleQuality=0',
+		'-grassQuality=0', '-cityDensity=0', '-lodScale=0', '-pedLodBias=0', '-vehicleLodBias=0'];
+	// Smart CPU Core Limiter: 2 cores by default reduces thread count from 116 to 54 workers, saving >1GB RAM and huge CPU overhead
+	const cores = +(q.get('cores') || 0) || (lowMemory ? 2 : Math.min(3, navigator.hardwareConcurrency || 2));
+	if (lowMemory) hud.textContent = '⚡ Low-overhead optimized profile active (minimal CPU/GPU load).';
+postLog('[page env] ' + JSON.stringify({ deviceMemory: navigator.deviceMemory, cores: navigator.hardwareConcurrency, usingCores: cores, low: lowMemory, isolated: crossOriginIsolated, ua: navigator.userAgent.slice(0, 120), screen: screen.width + 'x' + screen.height + '@' + devicePixelRatio }));
+// Back buffer = the browser window in device pixels. Smart scaling & Retina clamp to prevent GPU thermal throttling.
+wantSize = () => {
+	if (q.get('mode') === 'chromebook') return [910, 570];
+	const forced = /^(\d+)x(\d+)$/.exec(q.get('res') || '');
+	if (forced) return [+forced[1], +forced[2]];
+	// Default scale: 0.75 in lowMemory mode, 1.0 in standard mode
+	const sc = Math.max(0.25, Math.min(2, +(q.get('scale') || (lowMemory ? 0.75 : 1))));
+	// Clamp devicePixelRatio to 1.0 (unless ?retina=1 is explicitly passed) so Retina/4K displays don't render 4x pixel overhead
+	const dpr = q.get('retina') === '1' ? devicePixelRatio : Math.min(1.0, devicePixelRatio || 1);
+	let w = innerWidth * dpr * sc, h = innerHeight * dpr * sc;
+	const cap = lowMemory ? [1920, 1080] : [2560, 1440], k = Math.min(1, cap[0] / w, cap[1] / h);
+	w *= k; h *= k;
+	return [Math.max(320, Math.round(w / 2) * 2), Math.max(240, Math.round(h / 2) * 2)];
+};
+startSize = wantSize();
+// Script and replay channels: ~87 % of all log lines in play (the scripts print leaderboard and status lines every few frames). Below warning they are off: formatting, the
+// log transport and the dev server's log file cost the main thread for nothing. ?verbose=1 keeps everything.
+const LOG_ARGS = q.get('verbose') ? [] : ['-Script_all=warning', '-replay_all=warning'];
+// -fastscriptcore: the script interpreter's production core (scrThread::Run static). Without it this build runs the debugging core, which looks up two breakpoint tables
+// for every script instruction (scrThread::Run was ~8 % of the main thread).
+const ENGINE_ARGS = ['-fastscriptcore'];
+// Chrome on Windows rounds every wait with a timeout (Atomics.wait: the engine's sleeps, its 1 ms event waits, the frame limiter, the yields of its spin loops) up to the OS
+// timer tick, 15.6 ms, unless the renderer process has a timer below 16 ms pending, which switches the process to a fine tick (measured: a 1 ms wait takes 15.5 ms; with
+// this timer 2.1 ms, a 4 ms wait 5.0 ms). The game has no such timer, so every short sleep cost a whole tick: the limiter held a 60 fps cap to 37 fps and the visibility
+// wait added 15 ms to a frame. An empty callback; nothing else on this thread runs while the game plays.
+setInterval(() => {}, 1);
+const worker = new Worker(BASE + '/loader.js');
+	worker.onmessage = (ev) => {
+		if (ev.data.hud) hud.textContent = ev.data.hud;
+		if (ev.data.input) installInput(ev.data.input.memory, ev.data.input.block);
+		if (ev.data.audio) { audioPending = ev.data.audio; tryStartAudio(); }
+	};
+	worker.onerror = (e) => { hud.textContent = 'worker error: ' + e.message; };
+	worker.postMessage({
+		canvas: offscreen,
+		base: BASE,
+		args: ['-rootdir=/game/', ...(q.get('nogpu') ? [] : ['-wgpu']), '-nodisplaycalibration', '-noSocialClub', '-pc:nosocialclub', ...(q.get('newgame') === '1' ? ['-noautoload'] : []), '-nonetwork', '-output', '-width=' + startSize[0], '-height=' + startSize[1], '-forceResolution', ...LOG_ARGS, ...ENGINE_ARGS, '-frameLimit=' + (q.get('fps') === '30' ? 2 : q.get('fps') === '0' ? 0 : 1),		// the game's own limiter: VSync 2 (its default) = 30 fps; 1 = 60 fps; ?fps=0 uncapped (diagnostics). Story Mode continues from the newest savegame (the engine skips that for Sandbox Mode); ?newgame=1 (-noautoload) starts it from the Prologue instead
+		 ...(cores <= 2 ? ['-numCores=' + cores] : []), ...(lowMemory ? LOW_ARGS : []), ...(q.get('args') || '').split(',').filter(Boolean)],
+		shotEvery: +(q.get('shot') || 0),
+		shotRt: q.get('shotrt') === '1',		// ?shotrt=1 (with ?shot=N): every render target of one frame after the world is shown to the dev server's shots/ (wgpu_worker.js)
+		noHints: q.get('nohints') === '1',		// ?nohints=1: do not fetch the streamer's queued reads ahead (io_worker.js drainHints; diagnostics)
+		noPack: q.get('nopack') === '1',		// ?nopack=1: fetch shaders one by one, not from the shader packs (wgpu_worker.js; diagnostics)
+		gpuLimits: q.get('limits') || '',		// ?limits=maxSampledTexturesPerShaderStage:16,... : request a smaller GPU device than the adapter offers (reproduces a weaker device's limits; wgpu_worker.js)
+		keepThreads: (q.get('keep') || '').split(',').reduce((m, g) => m | ({ replay: 1, net: 2, bink: 4, idle: 8 }[g] || 0), 0),		// ?keep=replay,net,bink,idle: start those thread groups (diagnostics)
+		cores,
+		noStore: !!(q.get('nocache') || q.get('nosw')),
+		fullConsole: !!q.get('console'),
+		remoteLog,		// ?log=1 (above): loader.js passes it on to the engine threads and the GPU and io workers
+		trace: !!q.get('trace'),		// ?trace=1: log every engine file request (io_worker.js)
+		slots: +(q.get('slots') || 2),		// ?slots=2: smooth frames in flight for WebGPU queue without stalls
+		syncPipelines: !!q.get('syncpipelines'),		// ?syncpipelines=1: the GPU worker compiles pipelines synchronously (no draws skipped while one compiles)
+		record: !!q.get('record'),		// ?record=1: log the boot read set (io_worker.js), for record_bootset.py
+		lowMemory,
+	}, [offscreen]);
+}
+
+// ?mem=1 (diagnostics, needs ?log=1): performance.measureUserAgentSpecificMemory() every 15 s (needs cross-origin isolation), posted to the dev server's log.
+if (remoteLog && (q.get('mem') || lowMemory) && performance.measureUserAgentSpecificMemory) {		// with ?log=1 on by default in the low-memory profile: the last reading before a crash/stall is in the log
+	const report = async () => {
+		try {
+			const r = await performance.measureUserAgentSpecificMemory();
+			const rows = r.breakdown.filter((b) => b.bytes > 1e6).map((b) => (b.bytes / 1048576 | 0) + ' MB ' + (b.types || []).join('+') + ' ' + (b.attribution || []).map((a) => (a.url || '').split('/').pop() + '/' + (a.scope || '')).join(','));
+			postLog('[page mem] total ' + (r.bytes / 1048576 | 0) + ' MB; ' + rows.join(' | '));
+		} catch (e) { postLog('[page mem] failed: ' + e); }
+		setTimeout(report, 15000);
+	};
+	setTimeout(report, 15000);
+}
+
+// ---- audio: the engine mixer writes into a ring in shared memory (platform/audio/browser_audio_wasm.cpp); an AudioWorklet plays it -------------------
+// Browsers only allow audio after a user gesture: the context is created on the first click/key press.
+let audioPending = null, audioGesture = false, audioStarted = false;
+let masterGainNode = null, audioCtx = null;
+function setMasterVolume(val) {
+	const vol = Math.max(0, Math.min(2.0, Number(val)));
+	localStorage.setItem('gtav_master_volume', String(vol));
+	if (masterGainNode && audioCtx) {
+		masterGainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+	}
+	const slider = document.getElementById('vol-slider');
+	const label = document.getElementById('vol-label');
+	if (slider && Number(slider.value) !== Math.round(vol * 100)) slider.value = Math.round(vol * 100);
+	if (label) label.textContent = Math.round(vol * 100) + '%';
+}
+window.setMasterVolume = setMasterVolume;
+
+function tryStartAudio() {
+	if (!audioPending || !audioGesture || audioStarted) return;
+	audioStarted = true;
+	(async () => {
+		try {
+			const ctx = new AudioContext({ sampleRate: 48000, latencyHint: 'interactive' });
+			audioCtx = ctx;
+			await ctx.audioWorklet.addModule(BASE + '/audio-worklet.js');
+			const node = new AudioWorkletNode(ctx, 'game-audio', { numberOfInputs: 0, numberOfOutputs: 1, outputChannelCount: [2], processorOptions: audioPending });
+			const gain = ctx.createGain();
+			masterGainNode = gain;
+			const initialVol = parseFloat(localStorage.getItem('gtav_master_volume') ?? '1.0');
+			gain.gain.setValueAtTime(initialVol, ctx.currentTime);
+			node.connect(gain);
+			gain.connect(ctx.destination);
+			await ctx.resume();
+			addEventListener('pointerdown', () => ctx.resume());
+			addEventListener('keydown', () => ctx.resume());
+			if (q.get('mem')) {		// diagnostics: ring state every 5 s
+				const hdr = new Int32Array(audioPending.memory.buffer, audioPending.ring, 8);
+				setInterval(() => postLog('[page audio] state ' + ctx.state + ', frames written ' + (hdr[0] >>> 0) + ', read ' + (hdr[1] >>> 0) + ', fill ' + (((hdr[0] - hdr[1]) >>> 0)) + ', worklet calls ' + (hdr[3] >>> 0) + ', peak ' + (Atomics.exchange(hdr, 4, 0) / 1e6).toFixed(3)), 5000);
+			}
+			postLog('[page] audio started: ' + ctx.sampleRate + ' Hz, base latency ' + ctx.baseLatency);
+		} catch (e) { audioStarted = false; postLog('[page] audio failed: ' + e); }
+	})();
+}
+for (const type of ['pointerdown', 'keydown']) addEventListener(type, () => { audioGesture = true; tryStartAudio(); }, { capture: true });
+
+// ---- input: DOM events -> the engine's input block in shared memory (platform/input/browser_input_wasm.cpp) ------------------------
+// Layout of WasmInputBlock: 256 key bytes, then int32 words: mouseX, mouseY, dX, dY, dZ, buttons, focus, locked, textHead, textTail, text[64] (uint16).
+const VK = {
+	Backspace: 0x08, Tab: 0x09, Enter: 0x0D, NumpadEnter: 0xFD, Pause: 0x13, CapsLock: 0x14, Escape: 0x1B, Space: 0x20, PageUp: 0x21, PageDown: 0x22,
+	End: 0x23, Home: 0x24, ArrowLeft: 0x25, ArrowUp: 0x26, ArrowRight: 0x27, ArrowDown: 0x28, PrintScreen: 0x2C, Insert: 0x2D, Delete: 0x2E,
+	MetaLeft: 0x5B, MetaRight: 0x5C, ContextMenu: 0x5D, NumpadMultiply: 0x6A, NumpadAdd: 0x6B, NumpadSubtract: 0x6D, NumpadDecimal: 0x6E, NumpadDivide: 0x6F,
+	NumLock: 0x90, ScrollLock: 0x91, ShiftLeft: 0xA0, ShiftRight: 0xA1, ControlLeft: 0xA2, ControlRight: 0xA3, AltLeft: 0xA4, AltRight: 0xA5,
+	Semicolon: 0xBA, Equal: 0xBB, Comma: 0xBC, Minus: 0xBD, Period: 0xBE, Slash: 0xBF, Backquote: 0xC0, BracketLeft: 0xDB, Backslash: 0xDC, BracketRight: 0xDD,
+	Quote: 0xDE, IntlBackslash: 0xE2,
+};
+for (let i = 0; i < 10; i++) { VK['Digit' + i] = 0x30 + i; VK['Numpad' + i] = 0x60 + i; }
+for (let i = 0; i < 26; i++) VK['Key' + String.fromCharCode(65 + i)] = 0x41 + i;
+for (let i = 1; i <= 24; i++) VK['F' + i] = 0x6F + i;
+
+// ?dbg=1: draw isolation for hunting rendering artifacts. The GPU worker runs only the first N draws of each frame (N in the input block, -1 = all) and
+// reports the pipeline of the last one it ran. Find the smallest N at which the artifact appears: that draw paints it. F1/F2: N -1/+1, F3/F4: N -25/+25,
+// F5: back to all draws, F6: write the current draw to the server log (the log is what to send).
+function installDebugPanel(memory, block) {
+	const dbg = new Int32Array(memory.buffer, block + 424, 2);
+	const panel = document.createElement('div');
+	panel.style.cssText = 'position:fixed;left:0;top:0;right:0;background:#000c;color:#8f8;font:12px monospace;padding:4px 8px;z-index:9;white-space:pre-wrap;pointer-events:none';
+	document.body.appendChild(panel);
+	let last = '', total = 0;
+	new BroadcastChannel('game-debug').onmessage = (ev) => { last = ev.data.last; total = ev.data.total; render(); };
+	const render = () => { const n = Atomics.load(dbg, 0); panel.textContent = 'DRAW ISOLATION  limit ' + (n < 0 ? 'off (all)' : n) + ' of ' + total + ' draws/frame   [F1 -1  F2 +1  F3 -25  F4 +25  F5 all  F6 log]\nlast draw run: ' + (last || '-'); };
+	addEventListener('keydown', (e) => {
+		const step = { F1: -1, F2: 1, F3: -25, F4: 25 }[e.code];
+		if (step !== undefined) {
+			const n = Atomics.load(dbg, 0);
+			Atomics.store(dbg, 0, Math.max(0, Math.min(total, (n < 0 ? total : n) + step)));
+			e.preventDefault(); render();
+		} else if (e.code === 'F5' && !e.ctrlKey) { Atomics.store(dbg, 0, -1); e.preventDefault(); render(); }
+		else if (e.code === 'F6') { postLog('[debug draw] limit ' + Atomics.load(dbg, 0) + ' of ' + total + ' | ' + last); e.preventDefault(); }
+	}, { capture: true });
+	render();
+}
+
+function installInput(memory, block) {
+	if (q.get('dbg')) installDebugPanel(memory, block);
+	const keys = new Uint8Array(memory.buffer, block, 256);
+	const w = new Int32Array(memory.buffer, block + 256, 10);
+	const U16 = new Uint16Array(memory.buffer, block + 256 + 40, 64);
+	const MX = 0, MY = 1, DX = 2, DY = 3, DZ = 4, BTN = 5, FOCUS = 6, LOCKED = 7, HEAD = 8, TAIL = 9;
+	let W = startSize[0], H = startSize[1];		// back buffer size in device pixels (mouse clamping); updated when the window is resized
+	const ext = new Int32Array(memory.buffer, block + 424, 4);		// dbgDrawLimit, dbgFrameDraws, winW, winH
+	startModeWord = new Int32Array(memory.buffer, block + 440, 1);		// startMode (the start menu above)
+	if (startMode) Atomics.store(startModeWord, 0, startMode);
+	Atomics.store(ext, 2, W); Atomics.store(ext, 3, H);
+	window.__inputBlock = { keys, w, U16, HEAD, TAIL, ext, VK };
+	if (!q.get('fixed')) {
+		let timer = 0;
+		addEventListener('resize', () => {
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				const [w, h] = wantSize();
+				if (w === W && h === H) return;
+				W = w; H = h;
+				Atomics.store(ext, 2, w); Atomics.store(ext, 3, h);
+				trace('window resized: back buffer ' + w + 'x' + h);
+			}, 150);
+		});
+	}
+	Atomics.store(w, FOCUS, document.hasFocus() ? 1 : 0);
+	Atomics.store(w, MX, W >> 1);
+	Atomics.store(w, MY, H >> 1);
+
+	// Input tracing: the first events the page sees and where they go (POST /log), so a session that loses its keyboard says at which stage
+	let traced = 0;
+	const trace = (msg) => { if (traced < 80) { traced++; postLog('[page input] ' + msg); } };
+	const passThrough = (e) => e.code === 'F12' || e.code === 'F11' || (e.ctrlKey && e.shiftKey && (e.code === 'KeyI' || e.code === 'KeyJ')) || e.code === 'F5';
+	// Aircraft and submarine pitch and roll are on the numpad in the game (8/2/4/6, target select 7/9), which many keyboards lack. The numpad keys are bound to nothing else, so I/K (pitch), J/L (roll)
+	// and U/O (target left/right) press the same keys for the engine; the real numpad keeps working.
+	const FLY_ALIAS = { KeyI: 'Numpad8', KeyK: 'Numpad2', KeyJ: 'Numpad4', KeyL: 'Numpad6', KeyU: 'Numpad7', KeyO: 'Numpad9' };
+	const held = new Set();
+	const syncFlyAlias = () => { for (const [src, target] of Object.entries(FLY_ALIAS)) Atomics.store(keys, VK[target], held.has(src) || held.has(target) ? 0x80 : 0); };
+	addEventListener('keydown', (e) => {
+		if (passThrough(e)) return;
+		e.preventDefault();
+		const vk = VK[e.code];
+		if (!e.repeat) trace('keydown ' + e.code + ' vk=' + (vk || 'UNMAPPED') + ' hasFocus=' + document.hasFocus() + ' engineFocus=' + Atomics.load(w, FOCUS));
+		if (vk) Atomics.store(keys, vk, 0x80);
+		held.add(e.code); syncFlyAlias();
+		if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+			const head = Atomics.load(w, HEAD);
+			if (((head - Atomics.load(w, TAIL)) >>> 0) < 64) { U16[head & 63] = e.key.charCodeAt(0); Atomics.store(w, HEAD, (head + 1) | 0); }
+		} else if (e.code === 'Backspace' || e.code === 'Enter') {
+			const head = Atomics.load(w, HEAD);
+			if (((head - Atomics.load(w, TAIL)) >>> 0) < 64) { U16[head & 63] = e.code === 'Enter' ? 13 : 8; Atomics.store(w, HEAD, (head + 1) | 0); }
+		}
+	});
+	addEventListener('keyup', (e) => {
+		if (passThrough(e)) return;
+		e.preventDefault();
+		const vk = VK[e.code];
+		if (vk) Atomics.store(keys, vk, 0);
+		held.delete(e.code); syncFlyAlias();
+	});
+	const releaseAll = () => { held.clear(); for (let i = 0; i < 256; i++) Atomics.store(keys, i, 0); Atomics.store(w, BTN, 0); };
+	addEventListener('focus', () => { trace('window focus'); Atomics.store(w, FOCUS, 1); });
+	addEventListener('blur', () => { trace('window blur (all keys released)'); Atomics.store(w, FOCUS, 0); releaseAll(); });
+
+	const locked = () => document.pointerLockElement === canvas;
+	canvas.addEventListener('mousedown', (e) => {
+		if (!locked()) { canvas.requestPointerLock({ unadjustedMovement: true }).catch(() => canvas.requestPointerLock()); }
+		Atomics.or(w, BTN, 1 << [0, 2, 1, 3, 4][e.button]);
+		e.preventDefault();
+	});
+	addEventListener('mouseup', (e) => { Atomics.and(w, BTN, ~(1 << [0, 2, 1, 3, 4][e.button])); });
+	addEventListener('contextmenu', (e) => e.preventDefault());
+	document.addEventListener('pointerlockchange', () => { trace('pointer lock ' + (locked() ? 'on' : 'off')); Atomics.store(w, LOCKED, locked() ? 1 : 0); });
+	addEventListener('mousemove', (e) => {
+		const r = canvas.getBoundingClientRect();
+		const ms = window.__mouseSensitivity || 1.0;
+		const invY = window.__invertY ? -1 : 1;
+		if (locked()) {
+			Atomics.add(w, DX, Math.round(e.movementX * ms));
+			Atomics.add(w, DY, Math.round(e.movementY * ms * invY));
+			const x = Math.max(0, Math.min(W - 1, Atomics.load(w, MX) + Math.round(e.movementX * ms)));
+			const y = Math.max(0, Math.min(H - 1, Atomics.load(w, MY) + Math.round(e.movementY * ms * invY)));
+			Atomics.store(w, MX, x);
+			Atomics.store(w, MY, y);
+		} else {
+			const x = Math.max(0, Math.min(W - 1, Math.round((e.clientX - r.left) * W / r.width)));
+			const y = Math.max(0, Math.min(H - 1, Math.round((e.clientY - r.top) * H / r.height)));
+			Atomics.add(w, DX, x - Atomics.load(w, MX));
+			Atomics.add(w, DY, y - Atomics.load(w, MY));
+			Atomics.store(w, MX, x);
+			Atomics.store(w, MY, y);
+		}
+	});
+	// Notches from the real scroll distance: Chrome reports ~100 px per notch on Windows (pixel mode), 3 lines in line mode; fractions (trackpads, smooth
+	// scrolling) accumulate. The engine consumes one notch per frame (browser_input_wasm.cpp), so a long scroll keeps scrolling for a few frames.
+	let wheelAccum = 0;
+	addEventListener('wheel', (e) => {
+		e.preventDefault();
+		wheelAccum += -e.deltaY / (e.deltaMode === 0 ? 100 : e.deltaMode === 1 ? 3 : 1);
+		const n = Math.trunc(wheelAccum);
+		if (n) { wheelAccum -= n; Atomics.add(w, DZ, n); }
+	}, { passive: false });
+
+	// ---- Gamepad Support (Xbox, PlayStation, Standard Controller) ----
+	const gpText = document.getElementById('gp-text');
+	const gpBadge = document.getElementById('gp-badge');
+	const gpPressedKeys = new Set();
+	let gpMouseBits = 0;
+	let lastGpConnected = false;
+
+	function pollGamepad() {
+		const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+		let gp = null;
+		for (let i = 0; i < gamepads.length; i++) {
+			if (gamepads[i] && gamepads[i].connected) { gp = gamepads[i]; break; }
+		}
+
+		if (gp && !lastGpConnected) {
+			lastGpConnected = true;
+			if (gpText) gpText.textContent = (gp.id.length > 18 ? gp.id.slice(0, 16) + '...' : gp.id);
+			if (gpBadge) { gpBadge.style.color = '#38bdf8'; gpBadge.style.borderColor = 'rgba(56, 189, 248, 0.4)'; }
+		} else if (!gp && lastGpConnected) {
+			lastGpConnected = false;
+			if (gpText) gpText.textContent = 'No Gamepad';
+			if (gpBadge) { gpBadge.style.color = '#a1a1aa'; gpBadge.style.borderColor = 'rgba(255, 255, 255, 0.15)'; }
+		}
+
+		if (gp) {
+			const deadzone = (v, th = 0.18) => Math.abs(v) < th ? 0 : (v - Math.sign(v) * th) / (1 - th);
+			const newKeys = new Set();
+			let newMouseBits = 0;
+
+			// Left Stick: Movement (WASD)
+			const lx = deadzone(gp.axes[0] || 0);
+			const ly = deadzone(gp.axes[1] || 0);
+			if (ly < -0.2) newKeys.add(VK.KeyW);
+			if (ly > 0.2) newKeys.add(VK.KeyS);
+			if (lx < -0.2) newKeys.add(VK.KeyA);
+			if (lx > 0.2) newKeys.add(VK.KeyD);
+
+			// Right Stick: Camera Look (DX, DY)
+			const rx = deadzone(gp.axes[2] || 0);
+			const ry = deadzone(gp.axes[3] || 0);
+			const gs = window.__gamepadSensitivity || 1.0;
+			const invY = window.__invertY ? -1 : 1;
+			const lookSensitivity = 16 * gs;
+			if (Math.abs(rx) > 0.02) Atomics.add(w, DX, Math.round(rx * lookSensitivity));
+			if (Math.abs(ry) > 0.02) Atomics.add(w, DY, Math.round(ry * lookSensitivity * invY));
+
+			// Triggers: LT (Aim / Right Mouse), RT (Shoot / Attack / Left Mouse)
+			const lt = gp.buttons[6] ? (gp.buttons[6].value ?? (gp.buttons[6].pressed ? 1 : 0)) : 0;
+			const rt = gp.buttons[7] ? (gp.buttons[7].value ?? (gp.buttons[7].pressed ? 1 : 0)) : 0;
+			if (lt > 0.3) newMouseBits |= (1 << 1); // Right Click (Aim)
+			if (rt > 0.3) newMouseBits |= (1 << 0); // Left Click (Shoot / Attack / Gas)
+
+			// Face & D-Pad Buttons
+			const btn = (i) => gp.buttons[i] && gp.buttons[i].pressed;
+			if (btn(0)) newKeys.add(VK.ShiftLeft); // A: Sprint / Handbrake
+			if (btn(1)) newKeys.add(VK.KeyR);      // B: Reload / Melee
+			if (btn(2)) newKeys.add(VK.Space);     // X: Jump / Climb
+			if (btn(3)) newKeys.add(VK.KeyF);      // Y: Enter / Exit vehicle
+			if (btn(4)) newKeys.add(VK.Tab);       // LB: Weapon wheel
+			if (btn(5)) newKeys.add(VK.KeyQ);      // RB: Take cover
+			if (btn(8)) newKeys.add(VK.KeyV);      // Select/Share: Change Camera
+			if (btn(9)) newKeys.add(VK.Escape);    // Start: Pause / Menu
+			if (btn(10)) newKeys.add(VK.CapsLock); // L3: Stealth / Horn
+			if (btn(11)) newKeys.add(VK.KeyC);     // R3: Look behind
+			if (btn(12)) newKeys.add(VK.ArrowUp);  // D-Pad Up: Phone
+			if (btn(13)) newKeys.add(VK.ArrowDown);// D-Pad Down: Special / Switch
+			if (btn(14)) newKeys.add(VK.ArrowLeft);// D-Pad Left: Radio Prev
+			if (btn(15)) newKeys.add(VK.ArrowRight);// D-Pad Right: Headlights / Next
+
+			// Apply new pressed keys
+			for (const vk of newKeys) {
+				if (!gpPressedKeys.has(vk)) {
+					Atomics.store(keys, vk, 0x80);
+					gpPressedKeys.add(vk);
+				}
+			}
+			// Release keys no longer pressed by gamepad
+			for (const vk of gpPressedKeys) {
+				if (!newKeys.has(vk)) {
+					const codeName = Object.keys(VK).find(k => VK[k] === vk);
+					if (!codeName || !held.has(codeName)) Atomics.store(keys, vk, 0);
+					gpPressedKeys.delete(vk);
+				}
+			}
+
+			// Mouse buttons from triggers
+			const addedMouse = newMouseBits & ~gpMouseBits;
+			const removedMouse = gpMouseBits & ~newMouseBits;
+			if (addedMouse) Atomics.or(w, BTN, addedMouse);
+			if (removedMouse) Atomics.and(w, BTN, ~removedMouse);
+			gpMouseBits = newMouseBits;
+		} else if (gpPressedKeys.size > 0 || gpMouseBits > 0) {
+			for (const vk of gpPressedKeys) {
+				const codeName = Object.keys(VK).find(k => VK[k] === vk);
+				if (!codeName || !held.has(codeName)) Atomics.store(keys, vk, 0);
+			}
+			gpPressedKeys.clear();
+			if (gpMouseBits > 0) {
+				Atomics.and(w, BTN, ~gpMouseBits);
+				gpMouseBits = 0;
+			}
+		}
+
+		requestAnimationFrame(pollGamepad);
+	}
+	requestAnimationFrame(pollGamepad);
+}
+
+// ---- UI, Volume, Fullscreen & Save Manager Logic ----
+const initialVol = parseFloat(localStorage.getItem('gtav_master_volume') ?? '1.0');
+const volSlider = document.getElementById('vol-slider');
+const volLabel = document.getElementById('vol-label');
+if (volSlider && volLabel) {
+	volSlider.value = Math.round(initialVol * 100);
+	volLabel.textContent = Math.round(initialVol * 100) + '%';
+	volSlider.addEventListener('input', (e) => {
+		setMasterVolume(e.target.value / 100);
+	});
+}
+
+// Fullscreen Toggle
+const btnFullscreen = document.getElementById('btn-fullscreen');
+if (btnFullscreen) {
+	btnFullscreen.addEventListener('click', (e) => {
+		e.stopPropagation();
+		if (!document.fullscreenElement) {
+			document.documentElement.requestFullscreen().catch(() => {});
+		} else {
+			document.exitFullscreen().catch(() => {});
+		}
+	});
+}
+
+// FPS Toggle Button in HUD
+const btnHudFps = document.getElementById('hud-fps-btn');
+if (btnHudFps) {
+	btnHudFps.addEventListener('click', (e) => {
+		e.stopPropagation();
+		const fpsEl = document.getElementById('fps');
+		if (fpsEl) {
+			const isVisible = fpsEl.style.display === 'block';
+			fpsEl.style.display = isVisible ? 'none' : 'block';
+			if (!isVisible) fpsEl.textContent = '-- FPS';
+		}
+	});
+}
+
+// Prevent click events in HUD / Modals from bubbling to canvas pointer lock
+for (const el of [document.getElementById('five-hud'), document.getElementById('modal-settings'), document.getElementById('modal-saves'), document.getElementById('modal-cheats'), document.getElementById('modal-radio')]) {
+	if (el) el.addEventListener('mousedown', (e) => e.stopPropagation());
+}
+
+// ---- Toast Notification Helper ----
+function showToast(msg, duration = 3000) {
+	const t = document.getElementById('hud-toast');
+	if (!t) return;
+	t.textContent = msg;
+	t.classList.add('show');
+	clearTimeout(t._timer);
+	t._timer = setTimeout(() => t.classList.remove('show'), duration);
+}
+window.showToast = showToast;
+
+// ---- In-Game Cheats / Trainer Injection ----
+window.injectCheat = function(code, name) {
+	if (!window.__inputBlock) {
+		showToast('⚠️ Wait until loading completes and the world appears!');
+		return;
+	}
+	const { keys, w, U16, HEAD, TAIL } = window.__inputBlock;
+	const chars = code.toUpperCase().split('');
+
+	// 1. Send ~ (Backquote) to open cheat console
+	const tildeVk = 0xC0; // VK.Backquote
+	Atomics.store(keys, tildeVk, 0x80);
+	setTimeout(() => Atomics.store(keys, tildeVk, 0), 40);
+
+	let delay = 90;
+	for (const ch of chars) {
+		setTimeout(() => {
+			const vk = (window.__inputBlock.VK && window.__inputBlock.VK['Key' + ch]) || ch.charCodeAt(0);
+			if (vk) {
+				Atomics.store(keys, vk, 0x80);
+				setTimeout(() => Atomics.store(keys, vk, 0), 25);
+			}
+			const head = Atomics.load(w, HEAD);
+			if (((head - Atomics.load(w, TAIL)) >>> 0) < 64) {
+				U16[head & 63] = ch.charCodeAt(0);
+				Atomics.store(w, HEAD, (head + 1) | 0);
+			}
+		}, delay);
+		delay += 40;
+	}
+
+	setTimeout(() => {
+		const enterVk = 0x0D; // VK.Enter
+		Atomics.store(keys, enterVk, 0x80);
+		setTimeout(() => Atomics.store(keys, enterVk, 0), 40);
+		const head = Atomics.load(w, HEAD);
+		if (((head - Atomics.load(w, TAIL)) >>> 0) < 64) {
+			U16[head & 63] = 13;
+			Atomics.store(w, HEAD, (head + 1) | 0);
+		}
+	}, delay + 60);
+
+	showToast('✨ Cheat Activated: ' + (name || code));
+};
+
+// Cheats Modal Buttons
+const btnHudCheats = document.getElementById('hud-cheats-btn');
+if (btnHudCheats) {
+	btnHudCheats.addEventListener('click', (e) => {
+		e.stopPropagation();
+		openModal('modal-cheats');
+	});
+}
+for (const btn of document.querySelectorAll('.cheat-btn')) {
+	btn.addEventListener('click', (e) => {
+		e.stopPropagation();
+		const cheat = btn.getAttribute('data-cheat');
+		const name = btn.getAttribute('data-name');
+		if (cheat) window.injectCheat(cheat, name);
+	});
+}
+
+// ---- Snapmatic Screenshot Capture ----
+const shotBC = new BroadcastChannel('game-screenshot');
+shotBC.onmessage = (ev) => {
+	if (ev.data && ev.data.done) {
+		const { w, h, pixels } = ev.data;
+		try {
+			const c = document.createElement('canvas');
+			c.width = w; c.height = h;
+			const ctx = c.getContext('2d');
+			const imgData = ctx.createImageData(w, h);
+			imgData.data.set(pixels);
+			ctx.putImageData(imgData, 0, 0);
+			c.toBlob((blob) => {
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+				a.download = `GTAV_Snapmatic_${ts}.png`;
+				document.body.appendChild(a);
+				a.click();
+				setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 1000);
+				showToast('📸 Snapmatic Saved to Downloads!');
+			}, 'image/png');
+		} catch (err) {
+			showToast('❌ Screenshot export failed: ' + err);
+		}
+	}
+};
+
+function triggerScreenshot() {
+	showToast('📸 Capturing Snapmatic...');
+	shotBC.postMessage({ capture: true });
+}
+const hudShotBtn = document.getElementById('hud-shot-btn');
+if (hudShotBtn) {
+	hudShotBtn.addEventListener('click', (e) => {
+		e.stopPropagation();
+		triggerScreenshot();
+	});
+}
+addEventListener('keydown', (e) => {
+	if (e.code === 'F8') {
+		e.preventDefault();
+		triggerScreenshot();
+	}
+});
+
+// ---- Mouse & Gamepad Sensitivity Controls ----
+window.__mouseSensitivity = parseFloat(localStorage.getItem('gtav_mouse_sens') || '1.0');
+window.__gamepadSensitivity = parseFloat(localStorage.getItem('gtav_gp_sens') || '1.0');
+window.__invertY = localStorage.getItem('gtav_invert_y') === '1';
+
+const inputMouseSens = document.getElementById('setting-mouse-sens');
+const labelMouseSens = document.getElementById('mouse-sens-val');
+if (inputMouseSens && labelMouseSens) {
+	inputMouseSens.value = Math.round(window.__mouseSensitivity * 100);
+	labelMouseSens.textContent = (window.__mouseSensitivity).toFixed(1) + 'x';
+	inputMouseSens.addEventListener('input', (e) => {
+		const val = e.target.value / 100;
+		window.__mouseSensitivity = val;
+		labelMouseSens.textContent = val.toFixed(1) + 'x';
+		localStorage.setItem('gtav_mouse_sens', String(val));
+	});
+}
+
+const inputGpSens = document.getElementById('setting-gp-sens');
+const labelGpSens = document.getElementById('gp-sens-val');
+if (inputGpSens && labelGpSens) {
+	inputGpSens.value = Math.round(window.__gamepadSensitivity * 100);
+	labelGpSens.textContent = (window.__gamepadSensitivity).toFixed(1) + 'x';
+	inputGpSens.addEventListener('input', (e) => {
+		const val = e.target.value / 100;
+		window.__gamepadSensitivity = val;
+		labelGpSens.textContent = val.toFixed(1) + 'x';
+		localStorage.setItem('gtav_gp_sens', String(val));
+	});
+}
+
+const selectInvertY = document.getElementById('setting-invert-y');
+if (selectInvertY) {
+	selectInvertY.value = window.__invertY ? '1' : '0';
+	selectInvertY.addEventListener('change', () => {
+		window.__invertY = selectInvertY.value === '1';
+		localStorage.setItem('gtav_invert_y', selectInvertY.value);
+	});
+}
+
+// ---- Dynamic Resolution Auto-Scaler ----
+let dynResEnabled = localStorage.getItem('gtav_dyn_res') !== '0';
+const selectDynRes = document.getElementById('setting-dyn-res');
+if (selectDynRes) {
+	selectDynRes.value = dynResEnabled ? '1' : '0';
+	selectDynRes.addEventListener('change', () => {
+		dynResEnabled = selectDynRes.value === '1';
+		localStorage.setItem('gtav_dyn_res', selectDynRes.value);
+		showToast('⚡ Dynamic Resolution: ' + (dynResEnabled ? 'Enabled' : 'Disabled'));
+	});
+}
+
+let dynLowFpsStreak = 0;
+let dynHighFpsStreak = 0;
+let baseScale = +(q.get('scale') || (lowMemory ? 0.75 : 1));
+let currentDynScale = baseScale;
+
+function applyDynamicScale(sc) {
+	if (!window.__inputBlock) return;
+	const dpr = q.get('retina') === '1' ? devicePixelRatio : Math.min(1.0, devicePixelRatio || 1);
+	let w = innerWidth * dpr * sc, h = innerHeight * dpr * sc;
+	const cap = lowMemory ? [1920, 1080] : [2560, 1440], k = Math.min(1, cap[0] / w, cap[1] / h);
+	w = Math.max(320, Math.round((w * k) / 2) * 2);
+	h = Math.max(240, Math.round((h * k) / 2) * 2);
+	const { ext } = window.__inputBlock;
+	Atomics.store(ext, 2, w);
+	Atomics.store(ext, 3, h);
+}
+
+// Hook into existing game-fps channel
+new BroadcastChannel('game-fps').onmessage = (ev) => {
+	const fps = ev.data.fps;
+	const fpsEl = document.getElementById('fps');
+	if (fpsEl && fpsEl.style.display === 'block') {
+		fpsEl.textContent = Math.round(fps) + ' FPS';
+	}
+	if (!dynResEnabled || !window.__inputBlock) return;
+
+	if (fps < 28) {
+		dynLowFpsStreak++;
+		dynHighFpsStreak = 0;
+		if (dynLowFpsStreak >= 4 && currentDynScale > 0.45) {
+			dynLowFpsStreak = 0;
+			currentDynScale = Math.max(0.4, Number((currentDynScale - 0.15).toFixed(2)));
+			applyDynamicScale(currentDynScale);
+			showToast(`⚡ Dynamic Res: Scaled to ${Math.round(currentDynScale * 100)}% for smooth 30+ FPS`);
+		}
+	} else if (fps > 55) {
+		dynHighFpsStreak++;
+		dynLowFpsStreak = 0;
+		if (dynHighFpsStreak >= 6 && currentDynScale < baseScale) {
+			dynHighFpsStreak = 0;
+			currentDynScale = Math.min(baseScale, Number((currentDynScale + 0.1).toFixed(2)));
+			applyDynamicScale(currentDynScale);
+		}
+	} else {
+		dynLowFpsStreak = Math.max(0, dynLowFpsStreak - 1);
+		dynHighFpsStreak = Math.max(0, dynHighFpsStreak - 1);
+	}
+};
+
+// ---- Custom Radio & MP3 Music Player ----
+const radioAudio = new Audio();
+let radioPlaylist = [];
+let radioIdx = 0;
+let isRadioPlaying = false;
+
+const hudRadioBtn = document.getElementById('hud-radio-btn');
+const radioTrackTitle = document.getElementById('radio-track-title');
+const radioPlayBtn = document.getElementById('radio-play-btn');
+const radioPrevBtn = document.getElementById('radio-prev-btn');
+const radioNextBtn = document.getElementById('radio-next-btn');
+const radioVolume = document.getElementById('radio-volume');
+const radioVolLabel = document.getElementById('radio-vol-label');
+const btnLoadMp3 = document.getElementById('btn-load-mp3');
+const radioFileInput = document.getElementById('radio-file-input');
+const btnLoadAmbient = document.getElementById('btn-load-ambient');
+const radioPlaylistContainer = document.getElementById('radio-playlist');
+
+if (hudRadioBtn) {
+	hudRadioBtn.addEventListener('click', (e) => {
+		e.stopPropagation();
+		openModal('modal-radio');
+	});
+}
+
+function updateRadioUI() {
+	if (radioPlaylist.length > 0) {
+		const track = radioPlaylist[radioIdx];
+		if (radioTrackTitle) radioTrackTitle.textContent = (isRadioPlaying ? '▶️ ' : '⏸️ ') + track.name;
+		if (hudRadioBtn) hudRadioBtn.textContent = '📻 ' + (track.name.length > 12 ? track.name.slice(0, 10) + '..' : track.name);
+	} else {
+		if (radioTrackTitle) radioTrackTitle.textContent = 'No track loaded (Load MP3s below)';
+		if (hudRadioBtn) hudRadioBtn.textContent = '📻 Radio';
+	}
+	if (radioPlayBtn) radioPlayBtn.textContent = isRadioPlaying ? '⏸️' : '▶️';
+}
+
+function playRadioTrack(i) {
+	if (!radioPlaylist.length) return;
+	radioIdx = (i + radioPlaylist.length) % radioPlaylist.length;
+	const track = radioPlaylist[radioIdx];
+	radioAudio.src = track.url;
+	radioAudio.volume = (radioVolume ? radioVolume.value : 80) / 100;
+	radioAudio.play().then(() => {
+		isRadioPlaying = true;
+		updateRadioUI();
+		showToast('📻 Now Playing: ' + track.name);
+	}).catch(() => {});
+}
+
+radioAudio.addEventListener('ended', () => {
+	playRadioTrack(radioIdx + 1);
+});
+
+if (radioPlayBtn) {
+	radioPlayBtn.addEventListener('click', (e) => {
+		e.stopPropagation();
+		if (!radioPlaylist.length) {
+			if (radioFileInput) radioFileInput.click();
+			return;
+		}
+		if (isRadioPlaying) {
+			radioAudio.pause();
+			isRadioPlaying = false;
+		} else {
+			radioAudio.play().then(() => isRadioPlaying = true).catch(() => {});
+		}
+		updateRadioUI();
+	});
+}
+
+if (radioPrevBtn) radioPrevBtn.addEventListener('click', (e) => { e.stopPropagation(); playRadioTrack(radioIdx - 1); });
+if (radioNextBtn) radioNextBtn.addEventListener('click', (e) => { e.stopPropagation(); playRadioTrack(radioIdx + 1); });
+
+if (radioVolume && radioVolLabel) {
+	radioVolume.addEventListener('input', (e) => {
+		radioAudio.volume = e.target.value / 100;
+		radioVolLabel.textContent = e.target.value + '%';
+	});
+}
+
+if (btnLoadMp3 && radioFileInput) {
+	btnLoadMp3.addEventListener('click', (e) => { e.stopPropagation(); radioFileInput.click(); });
+	radioFileInput.addEventListener('change', (e) => {
+		const files = Array.from(e.target.files);
+		if (!files.length) return;
+		for (const f of files) {
+			radioPlaylist.push({
+				name: f.name.replace(/\.[^/.]+$/, ''),
+				url: URL.createObjectURL(f)
+			});
+		}
+		renderRadioPlaylist();
+		playRadioTrack(radioPlaylist.length - files.length);
+	});
+}
+
+if (btnLoadAmbient) {
+	btnLoadAmbient.addEventListener('click', (e) => {
+		e.stopPropagation();
+		radioPlaylist.push({
+			name: 'Synthwave Night Ride',
+			url: 'https://stream.zeno.fm/f3wvbbqmdg8uv'
+		});
+		renderRadioPlaylist();
+		playRadioTrack(radioPlaylist.length - 1);
+	});
+}
+
+function renderRadioPlaylist() {
+	if (!radioPlaylistContainer) return;
+	radioPlaylistContainer.innerHTML = radioPlaylist.map((t, idx) => `
+		<div style="padding:4px 8px; cursor:pointer; border-radius:4px; ${idx === radioIdx ? 'color:#38bdf8; font-weight:bold; background:rgba(56,189,248,0.1);' : ''}" onclick="window.__playRadioTrack(${idx})">
+			${idx + 1}. ${t.name}
+		</div>
+	`).join('');
+}
+window.__playRadioTrack = playRadioTrack;
+
+// Modal open / close helpers
+function openModal(id) {
+	if (document.pointerLockElement) document.exitPointerLock();
+	const m = document.getElementById(id);
+	if (m) m.classList.add('open');
+}
+function closeModal(id) {
+	const m = document.getElementById(id);
+	if (m) m.classList.remove('open');
+}
+
+for (const btn of document.querySelectorAll('.modal-close')) {
+	btn.addEventListener('click', (e) => {
+		e.stopPropagation();
+		const targetId = btn.getAttribute('data-close');
+		if (targetId) closeModal(targetId);
+	});
+}
+
+for (const modal of document.querySelectorAll('.modal-backdrop')) {
+	modal.addEventListener('click', (e) => {
+		if (e.target === modal) modal.classList.remove('open');
+	});
+}
+
+// Settings Modal Setup
+const btnSettings = document.getElementById('btn-settings');
+const hudEcoBtn = document.getElementById('hud-eco-btn');
+const settingScale = document.getElementById('setting-scale');
+const settingFps = document.getElementById('setting-fps');
+const settingRetina = document.getElementById('setting-retina');
+const settingCores = document.getElementById('setting-cores');
+const settingLow = document.getElementById('setting-low');
+const settingShadows = document.getElementById('setting-shadows');
+const settingMode = document.getElementById('setting-mode');
+const settingNewgame = document.getElementById('setting-newgame');
+const presetSelect = document.getElementById('preset-select');
+const btnApplySettings = document.getElementById('btn-apply-settings');
+
+if (hudEcoBtn) {
+	if (lowMemory) {
+		hudEcoBtn.textContent = '⚡ Eco: ON';
+		hudEcoBtn.style.color = '#4ade80';
+		hudEcoBtn.style.borderColor = 'rgba(74, 222, 128, 0.4)';
+	} else {
+		hudEcoBtn.textContent = '⚡ Eco: OFF';
+		hudEcoBtn.style.color = '#fbbf24';
+		hudEcoBtn.style.borderColor = 'rgba(251, 191, 36, 0.4)';
+	}
+	hudEcoBtn.addEventListener('click', (e) => {
+		e.stopPropagation();
+		openModal('modal-settings');
+	});
+}
+
+if (btnSettings) {
+	btnSettings.addEventListener('click', (e) => {
+		e.stopPropagation();
+		const curScale = q.get('scale') || (lowMemory ? '0.75' : '1');
+		const curFps = q.get('fps') !== null ? q.get('fps') : '60';
+		const curRetina = q.get('retina') === '1' ? '1' : '0';
+		const curCores = q.get('cores') || (lowMemory ? '2' : '2');
+		const curLow = q.get('low') !== null ? q.get('low') : '1';
+		const curShadows = q.get('shadows') === '1' ? '1' : '0';
+		const curMode = q.get('mode') || (startMode === 2 ? 'sandbox' : startMode === 3 ? 'map6' : 'story');
+		const curNewgame = q.get('newgame') === '1' ? '1' : '0';
+
+		if (settingScale) settingScale.value = curScale;
+		if (settingFps) settingFps.value = curFps;
+		if (settingRetina) settingRetina.value = curRetina;
+		if (settingCores) settingCores.value = curCores;
+		if (settingLow) settingLow.value = curLow;
+		if (settingShadows) settingShadows.value = curShadows;
+		if (settingMode) settingMode.value = curMode;
+		if (settingNewgame) settingNewgame.value = curNewgame;
+
+		openModal('modal-settings');
+	});
+}
+
+if (presetSelect) {
+	presetSelect.addEventListener('change', () => {
+		const val = presetSelect.value;
+		if (val === 'eco') {
+			settingScale.value = '0.5';
+			settingFps.value = '30';
+			settingLow.value = '1';
+			settingShadows.value = '0';
+			settingRetina.value = '0';
+			settingCores.value = '2';
+		} else if (val === 'perf') {
+			settingScale.value = '0.75';
+			settingFps.value = '60';
+			settingLow.value = '1';
+			settingShadows.value = '0';
+			settingRetina.value = '0';
+			settingCores.value = '2';
+		} else if (val === 'balanced') {
+			settingScale.value = '1';
+			settingFps.value = '60';
+			settingLow.value = '1';
+			settingShadows.value = '0';
+			settingRetina.value = '0';
+			settingCores.value = '2';
+		} else if (val === 'ultra') {
+			settingScale.value = '1.25';
+			settingFps.value = '0';
+			settingLow.value = '0';
+			settingShadows.value = '1';
+			settingRetina.value = '1';
+			settingCores.value = '4';
+		}
+	});
+}
+
+if (btnApplySettings) {
+	btnApplySettings.addEventListener('click', (e) => {
+		e.stopPropagation();
+		const newParams = new URLSearchParams(location.search);
+		if (settingScale.value !== '0.75') newParams.set('scale', settingScale.value); else newParams.delete('scale');
+		if (settingFps.value !== '60') newParams.set('fps', settingFps.value); else newParams.delete('fps');
+		if (settingRetina.value === '1') newParams.set('retina', '1'); else newParams.delete('retina');
+		if (settingCores.value !== '2') newParams.set('cores', settingCores.value); else newParams.delete('cores');
+		if (settingLow.value !== '1') newParams.set('low', settingLow.value); else newParams.delete('low');
+		if (settingShadows.value === '1') newParams.set('shadows', '1'); else newParams.delete('shadows');
+		if (settingMode.value !== 'story') newParams.set('mode', settingMode.value); else newParams.delete('mode');
+		if (settingNewgame.value === '1') newParams.set('newgame', '1'); else newParams.delete('newgame');
+
+		location.search = newParams.toString();
+	});
+}
+
+// ---- IndexedDB Save Game Backup & Restore ----
+function openUserdataDB() {
+	return new Promise((resolve, reject) => {
+		const r = indexedDB.open('gta5-userdata', 1);
+		r.onupgradeneeded = () => r.result.createObjectStore('files');
+		r.onsuccess = () => resolve(r.result);
+		r.onerror = () => reject(r.error);
+	});
+}
+
+function u8ToBase64(u8) {
+	let binary = '';
+	const len = u8.byteLength;
+	for (let i = 0; i < len; i += 8192) {
+		binary += String.fromCharCode.apply(null, u8.subarray(i, Math.min(i + 8192, len)));
+	}
+	return btoa(binary);
+}
+
+function base64ToU8(b64) {
+	const binary = atob(b64);
+	const len = binary.length;
+	const u8 = new Uint8Array(len);
+	for (let i = 0; i < len; i++) {
+		u8[i] = binary.charCodeAt(i);
+	}
+	return u8;
+}
+
+async function refreshSavesList() {
+	const tbody = document.getElementById('saves-tbody');
+	if (!tbody) return;
+	tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#64748b; padding:16px;">Scanning saved data...</td></tr>';
+	try {
+		const db = await openUserdataDB();
+		const tx = db.transaction('files', 'readonly');
+		const store = tx.objectStore('files');
+		const req = store.openCursor();
+		const files = [];
+		req.onsuccess = (e) => {
+			const cursor = e.target.result;
+			if (cursor) {
+				const rec = cursor.value;
+				const bytes = rec && rec.data ? (rec.data.byteLength || rec.data.length || 0) : 0;
+				const date = rec && rec.mtime ? new Date(rec.mtime).toLocaleString() : 'Unknown';
+				files.push({ path: cursor.key, size: bytes, date });
+				cursor.continue();
+			} else {
+				if (files.length === 0) {
+					tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#64748b; padding:16px;">No save games found in IndexedDB yet. Progress will appear here once saved in-game.</td></tr>';
+				} else {
+					tbody.innerHTML = files.map(f => `
+						<tr>
+							<td style="font-family:monospace; color:#38bdf8;">${f.path}</td>
+							<td>${(f.size / 1024).toFixed(1)} KB</td>
+							<td style="color:#94a3b8;">${f.date}</td>
+						</tr>
+					`).join('');
+				}
+			}
+		};
+		req.onerror = () => {
+			tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#ef4444; padding:16px;">Failed to read IndexedDB: ' + req.error + '</td></tr>';
+		};
+	} catch (err) {
+		tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#ef4444; padding:16px;">Error opening saves database: ' + err + '</td></tr>';
+	}
+}
+
+async function exportAllSaves() {
+	try {
+		const db = await openUserdataDB();
+		const tx = db.transaction('files', 'readonly');
+		const store = tx.objectStore('files');
+		const req = store.openCursor();
+		const files = [];
+		req.onsuccess = (e) => {
+			const cursor = e.target.result;
+			if (cursor) {
+				const rec = cursor.value;
+				if (rec && rec.data) {
+					const u8 = rec.data instanceof Uint8Array ? rec.data : new Uint8Array(rec.data);
+					files.push({
+						path: cursor.key,
+						mtime: rec.mtime || Date.now(),
+						dataB64: u8ToBase64(u8)
+					});
+				}
+				cursor.continue();
+			} else {
+				if (files.length === 0) {
+					alert('No save files found to export! Play the game and save progress first.');
+					return;
+				}
+				const payload = {
+					app: 'GTA V Web',
+					version: 1,
+					exportedAt: new Date().toISOString(),
+					count: files.length,
+					files
+				};
+				const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = `gtav_saves_backup_${new Date().toISOString().slice(0, 10)}.json`;
+				document.body.appendChild(a);
+				a.click();
+				setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 1000);
+			}
+		};
+	} catch (err) {
+		alert('Export failed: ' + err);
+	}
+}
+
+async function importSaves(file) {
+	if (!file) return;
+	const text = await file.text();
+	try {
+		const parsed = JSON.parse(text);
+		if (!parsed || !Array.isArray(parsed.files)) {
+			alert('Invalid backup format! File must contain a files array.');
+			return;
+		}
+		const db = await openUserdataDB();
+		const tx = db.transaction('files', 'readwrite');
+		const store = tx.objectStore('files');
+		for (const f of parsed.files) {
+			if (f.path && f.dataB64) {
+				const u8 = base64ToU8(f.dataB64);
+				store.put({ data: u8, mtime: f.mtime || Date.now() }, f.path);
+			}
+		}
+		tx.oncomplete = () => {
+			alert(`Successfully restored ${parsed.files.length} save files! The game will now reload to load the restored saves.`);
+			location.reload();
+		};
+		tx.onerror = () => alert('Failed to write saves to IndexedDB: ' + tx.error);
+	} catch (err) {
+		alert('Error importing saves: ' + err);
+	}
+}
+
+async function clearAllSaves() {
+	if (!confirm('Are you sure you want to delete ALL GTA V save games? This action cannot be undone!')) return;
+	try {
+		const db = await openUserdataDB();
+		const tx = db.transaction('files', 'readwrite');
+		const store = tx.objectStore('files');
+		const req = store.clear();
+		req.onsuccess = () => {
+			alert('All save games have been cleared.');
+			refreshSavesList();
+		};
+		req.onerror = () => alert('Failed to clear saves: ' + req.error);
+	} catch (err) {
+		alert('Error clearing saves: ' + err);
+	}
+}
+
+// Saves Button Hooks
+const btnSaves = document.getElementById('btn-saves');
+if (btnSaves) {
+	btnSaves.addEventListener('click', (e) => {
+		e.stopPropagation();
+		openModal('modal-saves');
+		refreshSavesList();
+	});
+}
+
+const btnExportSaves = document.getElementById('btn-export-saves');
+if (btnExportSaves) btnExportSaves.addEventListener('click', (e) => { e.stopPropagation(); exportAllSaves(); });
+
+const btnImportTrigger = document.getElementById('btn-import-saves-trigger');
+const inputImportSaves = document.getElementById('input-import-saves');
+if (btnImportTrigger && inputImportSaves) {
+	btnImportTrigger.addEventListener('click', (e) => { e.stopPropagation(); inputImportSaves.click(); });
+	inputImportSaves.addEventListener('change', (e) => {
+		if (e.target.files && e.target.files[0]) importSaves(e.target.files[0]);
+	});
+}
+
+const btnRefreshSaves = document.getElementById('btn-refresh-saves');
+if (btnRefreshSaves) btnRefreshSaves.addEventListener('click', (e) => { e.stopPropagation(); refreshSavesList(); });
+
+const btnClearSaves = document.getElementById('btn-clear-saves');
+if (btnClearSaves) btnClearSaves.addEventListener('click', (e) => { e.stopPropagation(); clearAllSaves(); });
+</script>
+</body>
+</html>
