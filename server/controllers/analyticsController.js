@@ -1,8 +1,94 @@
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
 const Analytics = require('../models/Analytics');
-const { notifyVisitorArrival } = require('../services/telegramService');
+const { notifyVisitorArrival, notifyGpsLocationArrival } = require('../services/telegramService');
+
+// In-memory cache for IP lookup & VPN results (ip -> { data, timestamp })
+const ipGeoCache = new Map();
+const GEO_CACHE_TTL = 15 * 60 * 1000; // 15 mins
+
+/**
+ * Robust IP Geolocation & Anti-VPN Intelligence Check
+ * Detects commercial VPNs, proxies, hosting datacenter IPs, and timezone mismatches.
+ * On localhost/private IP, automatically inspects outbound public IP.
+ */
+async function checkVpnAndGeo(ip, clientTimezone = '') {
+  const isLocalIp = !ip || ip === '127.0.0.1' || ip === '::1' || ip.startsWith('192.168.') || ip.startsWith('10.');
+  // If local, query without IP to test against actual outbound internet connection of the machine
+  const targetQuery = isLocalIp ? '' : ip;
+
+  const cachedKey = `${targetQuery || 'local_egress'}_${clientTimezone || 'default'}`;
+  const cached = ipGeoCache.get(cachedKey);
+  if (cached && Date.now() - cached.timestamp < GEO_CACHE_TTL) {
+    return cached.data;
+  }
+
+  return new Promise((resolve) => {
+    const req = http.get(
+      `http://ip-api.com/json/${targetQuery}?fields=status,message,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,proxy,hosting,query`,
+      { timeout: 3000 },
+      (res) => {
+        let body = '';
+        res.on('data', (c) => (body += c));
+        res.on('end', () => {
+          try {
+            const data = JSON.parse(body);
+            if (data.status === 'success') {
+              const ispLower = `${data.isp || ''} ${data.org || ''} ${data.as || ''}`.toLowerCase();
+              const isKnownHostingAsn = /m247|datacamp|ovh|digitalocean|linode|vultr|amazon|aws|cloudflare|warp|mullvad|nord|surfshark|expressvpn|proton|choopa|leaseweb|hetzner|ipvanish|private internet|cyberghost|windscribe|tunnelbear|fastly|akamai/i.test(ispLower);
+
+              let isVpn = Boolean(data.proxy || data.hosting || isKnownHostingAsn);
+              let vpnReason = '';
+              if (data.proxy) vpnReason = 'Proxy / Commercial VPN Service detected';
+              else if (data.hosting || isKnownHostingAsn) vpnReason = 'Datacenter / Commercial Hosting Route detected';
+
+              // Timezone mismatch check (e.g. Device in Asia/Kolkata but IP in America/New_York)
+              if (clientTimezone && data.timezone) {
+                const tz1 = clientTimezone.toLowerCase();
+                const tz2 = data.timezone.toLowerCase();
+                const tzRegion1 = tz1.split('/')[0];
+                const tzRegion2 = tz2.split('/')[0];
+                if (tzRegion1 && tzRegion2 && tzRegion1 !== tzRegion2) {
+                  isVpn = true;
+                  vpnReason = vpnReason
+                    ? `${vpnReason} • Timezone Mismatch (Device: ${clientTimezone} vs IP: ${data.timezone})`
+                    : `Timezone Mismatch (Device: ${clientTimezone} vs IP: ${data.timezone})`;
+                }
+              }
+
+              const result = {
+                isVpn,
+                vpnReason,
+                isp: data.isp || data.org || data.as || 'Direct Broadband ISP',
+                city: data.city || '',
+                district: data.district || '',
+                region: data.regionName || data.region || '',
+                country: data.country || 'India',
+                countryCode: data.countryCode || 'IN',
+                zip: data.zip || '',
+                lat: data.lat || 0,
+                lon: data.lon || 0,
+                timezone: data.timezone || '',
+                query: data.query || ip || '127.0.0.1',
+              };
+              ipGeoCache.set(cachedKey, { data: result, timestamp: Date.now() });
+              return resolve(result);
+            }
+          } catch (e) {}
+          resolve({ isVpn: false, vpnReason: '', isp: 'Direct Broadband ISP', country: 'India', countryCode: 'IN' });
+        });
+      }
+    );
+
+    req.on('error', () => resolve({ isVpn: false, vpnReason: '', isp: 'Direct Broadband ISP', country: 'India', countryCode: 'IN' }));
+    req.on('timeout', () => {
+      req.destroy();
+      resolve({ isVpn: false, vpnReason: '', isp: 'Direct Broadband ISP', country: 'India', countryCode: 'IN' });
+    });
+  });
+}
 
 // In-memory store for offline mode & real-time telemetry (capped at 1000 items)
 const memoryEvents = [];
@@ -315,6 +401,50 @@ const trackEvent = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Event type is required.' });
     }
 
+    // 0. Handle High-Precision GPS Landmark Updates
+    if (type === 'gps_location_detected' || type === 'gps_location_update') {
+      const gps = metadata || {};
+      const dev = detectedDeviceModel || metadata?.deviceModel || 'Mobile Device';
+
+      // Update IP registry entry with exact GPS landmark
+      const existing = ipRegistry.get(clientIp);
+      if (existing) {
+        if (gps.landmark) existing.landmark = gps.landmark;
+        if (gps.road) existing.road = gps.road;
+        if (gps.displayName) existing.displayName = gps.displayName;
+        if (gps.accuracy) existing.gpsAccuracy = gps.accuracy;
+        if (gps.mapsUrl) existing.mapsUrl = gps.mapsUrl;
+        saveIpRegistryToDisk();
+      }
+
+      // Dispatch high-precision GPS notification to Telegram
+      try {
+        await Promise.race([
+          notifyGpsLocationArrival({
+            ipAddress: clientIp,
+            landmark: gps.landmark || 'Nearby Street Landmark',
+            road: gps.road || gps.street || '',
+            area: gps.area || gps.suburb || gps.colony || '',
+            district: gps.district || gps.city || '',
+            city: gps.city || '',
+            state: gps.state || '',
+            postcode: gps.postcode || '',
+            accuracy: gps.accuracy || 10,
+            mapsUrl: gps.mapsUrl,
+            latitude: gps.latitude || gps.lat,
+            longitude: gps.longitude || gps.lon,
+            deviceModel: dev,
+            device: dev,
+          }),
+          new Promise((resolve) => setTimeout(resolve, 1500)),
+        ]);
+      } catch (tgErr) {
+        console.warn('[trackEvent] GPS alert error:', tgErr.message);
+      }
+
+      return res.status(200).json({ success: true, processed: 'gps_update' });
+    }
+
     // Normalize event type
     let normalizedType = type;
     if (type === 'resume_click') normalizedType = 'resume_download';
@@ -488,17 +618,31 @@ const trackEvent = async (req, res) => {
       // Continue safely without failing response
     }
 
+    // Check VPN & ISP details asynchronously with fast timeout
+    let geoResult = null;
+    try {
+      geoResult = await Promise.race([
+        checkVpnAndGeo(clientIp, metadata?.timeZone || ''),
+        new Promise((r) => setTimeout(() => r(null), 1500)),
+      ]);
+    } catch (e) {}
+
     // ── Telegram Real-Time Visitor Alert (Awaited with 1.5s timeout for guaranteed serverless delivery) ──
     if (normalizedType === 'page_view') {
       try {
         await Promise.race([
           notifyVisitorArrival({
             ipAddress: clientIp,
-            country: countryInfo.country,
+            country: geoResult?.country || countryInfo.country,
             countryFlag: countryInfo.flag,
-            countryCode: countryInfo.code,
-            city: city || '',
-            region: region || '',
+            countryCode: geoResult?.countryCode || countryInfo.code,
+            city: geoResult?.city || city || '',
+            region: geoResult?.region || region || '',
+            isp: geoResult?.isp || '',
+            isVpn: geoResult?.isVpn || false,
+            vpnReason: geoResult?.vpnReason || '',
+            lat: geoResult?.lat || 0,
+            lon: geoResult?.lon || 0,
             device: parsedUA.deviceType,
             deviceModel: detectedDeviceModel,
             browser: parsedUA.browser,
@@ -507,6 +651,7 @@ const trackEvent = async (req, res) => {
             page: rawPath,
             screen: metadata?.screen || '',
             network: metadata?.connection || '',
+            gps: metadata?.hasGps ? metadata : null,
             metadata,
             isBot: parsedUA.isBot,
           }),
@@ -521,6 +666,12 @@ const trackEvent = async (req, res) => {
       success: true,
       activeUsersCount: getActiveSessionsCount(),
       allTimeTotalVisitors,
+      isVpn: geoResult?.isVpn || false,
+      vpnReason: geoResult?.vpnReason || '',
+      clientIp,
+      isp: geoResult?.isp || '',
+      city: geoResult?.city || city || '',
+      country: geoResult?.country || countryInfo.country,
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -1134,10 +1285,211 @@ const clearIpLogs = (req, res) => {
   return res.status(200).json({ success: true, message: 'IP registry logs cleared.' });
 };
 
+const checkVpnEndpoint = async (req, res) => {
+  try {
+    const rawIp =
+      req.headers['x-forwarded-for'] ||
+      req.headers['x-real-ip'] ||
+      req.headers['cf-connecting-ip'] ||
+      req.socket?.remoteAddress ||
+      req.ip ||
+      '127.0.0.1';
+    let clientIp = typeof rawIp === 'string' ? rawIp.split(',')[0].trim() : '127.0.0.1';
+    if (clientIp.startsWith('::ffff:')) clientIp = clientIp.replace('::ffff:', '');
+    const clientTz = req.query.tz || req.body?.timeZone || '';
+    const geo = await checkVpnAndGeo(clientIp, clientTz);
+    return res.status(200).json({
+      success: true,
+      ip: clientIp,
+      isVpn: geo.isVpn,
+      vpnReason: geo.vpnReason,
+      isp: geo.isp,
+      city: geo.city,
+      country: geo.country,
+    });
+  } catch (err) {
+    return res.status(200).json({ success: true, isVpn: false, ip: '127.0.0.1' });
+  }
+};
+
+/**
+ * Robust Server-Side Reverse Geocoding (Bypasses Browser Nominatim CORS limitations)
+ * POST /api/analytics/reverse-geocode
+ */
+const reverseGeocodeEndpoint = async (req, res) => {
+  try {
+    const lat = req.body?.lat || req.body?.latitude || req.query.lat;
+    const lon = req.body?.lon || req.body?.longitude || req.query.lon;
+    const accuracy = Math.round(Number(req.body?.accuracy || req.query.accuracy || 10));
+    const deviceModel = req.body?.deviceModel || req.body?.device || req.query.deviceModel || 'Visitor Device';
+
+    if (!lat || !lon) {
+      return res.status(400).json({ success: false, message: 'Latitude and Longitude are required.' });
+    }
+
+    const rawIp =
+      req.headers['x-forwarded-for'] ||
+      req.headers['x-real-ip'] ||
+      req.headers['cf-connecting-ip'] ||
+      req.socket?.remoteAddress ||
+      req.ip ||
+      '127.0.0.1';
+    let clientIp = typeof rawIp === 'string' ? rawIp.split(',')[0].trim() : '127.0.0.1';
+    if (clientIp.startsWith('::ffff:')) clientIp = clientIp.replace('::ffff:', '');
+
+    const https = require('https');
+
+    // 1. Primary: OpenStreetMap Nominatim
+    let resolved = null;
+    try {
+      resolved = await new Promise((resolve) => {
+        const options = {
+          hostname: 'nominatim.openstreetmap.org',
+          path: `/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&addressdetails=1`,
+          headers: {
+            'User-Agent': 'AnuragSahuPortfolio/2.0 (contact@anuragsahu.com)',
+            'Accept': 'application/json',
+          },
+          timeout: 4000,
+        };
+        const r = https.get(options, (resp) => {
+          let buf = '';
+          resp.on('data', (c) => (buf += c));
+          resp.on('end', () => {
+            try {
+              const j = JSON.parse(buf);
+              if (j && j.address) {
+                const a = j.address;
+                const landmark =
+                  a.amenity || a.building || a.shop || a.tourism || a.leisure || a.office || a.historic || a.place || '';
+                const road = a.road || a.pedestrian || a.footway || '';
+                const area = a.suburb || a.neighbourhood || a.residential || a.city_district || '';
+                const city = a.city || a.town || a.village || a.county || '';
+                const district = a.state_district || a.county || city;
+                const state = a.state || '';
+                const postcode = a.postcode || '';
+                resolve({
+                  landmark,
+                  road,
+                  street: road,
+                  area,
+                  city,
+                  district,
+                  state,
+                  postcode,
+                  displayName: j.display_name,
+                });
+              } else {
+                resolve(null);
+              }
+            } catch (e) {
+              resolve(null);
+            }
+          });
+        });
+        r.on('error', () => resolve(null));
+        r.on('timeout', () => {
+          r.destroy();
+          resolve(null);
+        });
+      });
+    } catch (e) {}
+
+    // 2. Fallback: BigDataCloud Reverse Geocode
+    if (!resolved) {
+      try {
+        resolved = await new Promise((resolve) => {
+          const r = https.get(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`,
+            { timeout: 3500 },
+            (resp) => {
+              let buf = '';
+              resp.on('data', (c) => (buf += c));
+              resp.on('end', () => {
+                try {
+                  const bdc = JSON.parse(buf);
+                  if (bdc) {
+                    resolve({
+                      landmark: bdc.locality || bdc.city || 'Nearby Landmark',
+                      road: bdc.plusCode || '',
+                      street: bdc.plusCode || '',
+                      area: bdc.locality || '',
+                      city: bdc.city || '',
+                      district: bdc.principalSubdivision || '',
+                      state: bdc.principalSubdivision || '',
+                      postcode: bdc.postcode || '',
+                      displayName: `${bdc.locality || bdc.city}, ${bdc.principalSubdivision}, ${bdc.countryName}`,
+                    });
+                  } else {
+                    resolve(null);
+                  }
+                } catch (e) {
+                  resolve(null);
+                }
+              });
+            }
+          );
+          r.on('error', () => resolve(null));
+          r.on('timeout', () => {
+            r.destroy();
+            resolve(null);
+          });
+        });
+      } catch (e) {}
+    }
+
+    const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+    const gpsData = {
+      hasGps: true,
+      latitude: Number(lat),
+      longitude: Number(lon),
+      accuracy,
+      landmark: resolved?.landmark || 'Detected Location',
+      road: resolved?.road || '',
+      street: resolved?.street || resolved?.road || '',
+      area: resolved?.area || '',
+      city: resolved?.city || '',
+      district: resolved?.district || resolved?.city || '',
+      state: resolved?.state || '',
+      postcode: resolved?.postcode || '',
+      displayName: resolved?.displayName || '',
+      mapsUrl,
+      ipAddress: clientIp,
+      deviceModel,
+    };
+
+    // Update IP registry
+    const existing = ipRegistry.get(clientIp);
+    if (existing) {
+      existing.landmark = gpsData.landmark;
+      existing.road = gpsData.road;
+      existing.displayName = gpsData.displayName;
+      existing.gpsAccuracy = accuracy;
+      existing.mapsUrl = mapsUrl;
+      saveIpRegistryToDisk();
+    }
+
+    // Trigger instant Telegram alert for high-accuracy GPS pinpoint
+    try {
+      notifyGpsLocationArrival(gpsData);
+    } catch (e) {}
+
+    return res.status(200).json({
+      success: true,
+      ...gpsData,
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 const getAnalyticsSummary = getAdminAnalytics;
 
 module.exports = {
   trackEvent,
+  checkVpnAndGeo,
+  checkVpnEndpoint,
+  reverseGeocodeEndpoint,
   getAdminAnalytics,
   getAnalyticsSummary,
   getRealtimeAnalytics,

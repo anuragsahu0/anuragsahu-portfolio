@@ -1140,7 +1140,7 @@
             <span>🎮 Play GTA V in Browser (WebGPU)</span>
           </a>
           <button onclick="openGtaModal()" class="btn-secondary" style="font-size: var(--font-size-xs); padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;" aria-label="View GTA V Architecture">
-            <span>🔬 View Architecture</span>
+            <span>🔬 View Architecture (Postmortem Dekho)</span>
           </button>
         </div>
       </div>
@@ -1313,6 +1313,42 @@
     </div>
   </div>
 
+  <!-- CYBERPUNK HUD VPN / PROXY WARNING MODAL -->
+  <div id="vpn-warning-modal" class="fixed inset-0 z-[10001] hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md" style="position: fixed; inset: 0; z-index: 10001; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,0.88); backdrop-filter: blur(14px);">
+    <div style="background: rgba(14, 10, 4, 0.96); padding: 28px; border-radius: 24px; max-width: 420px; width: 100%; text-align: center; border: 1px solid rgba(245, 158, 11, 0.5); box-shadow: 0 25px 60px rgba(0,0,0,0.95), 0 0 35px rgba(245, 158, 11, 0.25);" class="font-mono">
+      <div style="width: 58px; height: 58px; margin: 0 auto 14px auto; border-radius: 50%; background: rgba(245, 158, 11, 0.15); border: 2px solid #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 26px;">
+        🛡️
+      </div>
+
+      <div style="margin-bottom: 10px;">
+        <span style="font-size: 10px; color: #f59e0b; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); padding: 3px 10px; border-radius: 999px; display: inline-block; margin-bottom: 8px;">
+          ● SECURITY SHIELD PROTOCOL
+        </span>
+        <h3 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: #ffffff; margin: 0;">
+          VPN / Proxy Detected
+        </h3>
+      </div>
+
+      <p style="font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.6; font-family: Inter, sans-serif; background: rgba(0,0,0,0.4); padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px;">
+        Aapki secure aur smooth interactive browsing ke liye, <strong style="color: #fbbf24;">kripya apna VPN disconnect (remove) karein</strong> taaki WebGL aur low-latency features seamlessly chal sakein.
+      </p>
+
+      <div style="background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 12px; padding: 10px 14px; margin-bottom: 20px; font-size: 11px; text-align: left; color: #e2e8f0; display: flex; flex-direction: column; gap: 4px;">
+        <div>📡 <strong>Detected IP:</strong> <code id="vpn-modal-ip" style="color: #fbbf24;">Proxy Route</code></div>
+        <div>🔍 <strong>Security Reason:</strong> <span id="vpn-modal-reason" style="color: #cbd5e1;">Active VPN / Proxy Tunnel</span></div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button onclick="window.location.reload()" style="flex: 1; padding: 12px 0; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 800; font-size: 12px; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
+          🔄 Reload Page
+        </button>
+        <button onclick="dismissVpnModal()" style="padding: 12px 16px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); color: #fff; font-size: 12px; cursor: pointer;">
+          Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- GTA V REVERSE ENGINEER TECHNICAL ARCHITECTURE BLUEPRINT MODAL -->
   <div id="gta-re-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md" style="position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,0.88); backdrop-filter: blur(14px);" onclick="if(event.target === this) closeGtaModal()">
     <div id="gta-re-modal-card" style="background: rgba(10, 12, 18, 0.96); padding: 32px; border-radius: 24px; max-width: 860px; width: 100%; max-height: 88vh; overflow-y: auto; border: 1px solid rgba(6, 182, 212, 0.35); box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(6, 182, 212, 0.15); transition: all 0.25s ease;" class="font-mono">
@@ -1320,13 +1356,13 @@
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 16px;">
         <div>
           <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 999px; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.35); color: var(--color-nebula-cyan); font-size: 0.72rem; font-weight: 700; margin-bottom: 8px;">
-            <span>🔬 ENGINE RESEARCH BLUEPRINT • RAGE x64</span>
+            <span>🔬 RAGE ENGINE x64 • RAW SYSTEM POSTMORTEM &amp; GOD-MODE OVERRIDE</span>
           </div>
           <h3 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: #ffffff; margin: 0; line-height: 1.2;">
-            GTA V Reverse Engineering Architecture
+            GTA V Engine Ka Full Postmortem 💀
           </h3>
           <p style="color: var(--color-muted-text); font-size: 0.85rem; margin-top: 6px; margin-bottom: 0;">
-            Deep-dive technical breakdown of runtime hooks, memory structure offsets, crossmaps, and Direct3D 11 rendering pipeline.
+            Rockstar Games ne 10 saal aur hazaron engineers laga kar ye engine banaya tha. Humne binary khol ke ek-ek assembly opcode aur memory pointer ka kacha chittha bahar nikal diya!
           </p>
         </div>
         <button onclick="closeGtaModal()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.2)'; this.style.color='#ef4444';" onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';" aria-label="Close GTA V Modal">
@@ -1337,21 +1373,21 @@
       <!-- Architecture Pipeline Diagram -->
       <div style="margin-bottom: 24px;">
         <h4 style="color: var(--color-nebula-cyan); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-          <span>⚡</span> 1. Execution & Hooking Pipeline Flow
+          <span>⚡</span> 1. The Attack Pipeline: Game Memory Ko Hijack Karne Ka Khel
         </h4>
         <div style="background: rgba(0,0,0,0.6); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 14px; padding: 18px; font-size: 0.78rem; line-height: 1.7; color: #e2e8f0; overflow-x: auto;">
           <div style="display: flex; flex-direction: column; gap: 10px;">
             <div style="padding: 10px 14px; background: rgba(255,255,255,0.03); border-left: 3px solid #06b6d4; border-radius: 4px;">
-              <strong style="color: #38bdf8;">[1] GTA5.exe Process Initialization:</strong> Game binary maps into 64-bit virtual memory space. RAGE initializes main engine threads, script virtual machine (SVM), and Direct3D 11 swapchain device.
+              <strong style="color: #38bdf8;">[1] GTA5.exe Process Injection &amp; Entry:</strong> Jaise hi game 64-bit virtual memory space me load hota hai, hum direct memory address space me ghus jaate hain. Rockstar ke main engine threads, Script Virtual Machine aur Direct3D SwapChain ko initialize hote hi capture kar liya.
             </div>
             <div style="padding: 10px 14px; background: rgba(255,255,255,0.03); border-left: 3px solid #8b5cf6; border-radius: 4px;">
-              <strong style="color: #a78bfa;">[2] Memory Pattern SigScanning (AOB):</strong> Custom scanner scans memory pages for unique assembly byte signatures to dynamically locate <code>WorldPtr</code>, <code>EntityPool</code>, and <code>scrThreadContext</code> without fixed offsets.
+              <strong style="color: #a78bfa;">[2] Memory Pattern SigScanning (AOB) — Bina Address Jane Pointer Pakadna:</strong> Rockstar har game update me hardcoded memory addresses badalta hai taaki koi pakad na sake, par hamara custom AOB signature scanner hex opcodes scan karke <code>WorldPtr</code>, <code>EntityPool</code> aur camera matrices ko 2 microsecond me dhoondh nikalta hai. Update aate rahenge, hum bypass karte rahenge.
             </div>
             <div style="padding: 10px 14px; background: rgba(255,255,255,0.03); border-left: 3px solid #10b981; border-radius: 4px;">
-              <strong style="color: #34d399;">[3] Native Invoker & Crossmap Resolution:</strong> Traverses game native registration tables. Decodes obfuscated native 64-bit hashes using crossmap address tables and injects arguments via <code>scrNativeCallContext</code>.
+              <strong style="color: #34d399;">[3] Native Invoker &amp; Hash Traversal (Remote Control):</strong> Rockstar ne apne native functions ko 64-bit encrypted hashes me chhipaya tha. Humne unki crossmap address table decode karke <code>scrNativeCallContext</code> me arguments inject kar diye — ab game ke internal god-functions seedha hamare ishare pe chalte hain!
             </div>
             <div style="padding: 10px 14px; background: rgba(255,255,255,0.03); border-left: 3px solid #f59e0b; border-radius: 4px;">
-              <strong style="color: #fbbf24;">[4] DirectX 11 Present Hook (ImGui HUD):</strong> Hooks <code>IDXGISwapChain::Present</code> (VTable index 8) using MinHook. Synchronizes with GPU frame intervals to render live performance telemetry and entity visualizer overlays.
+              <strong style="color: #fbbf24;">[4] DirectX 11 Present Hook — Screen Pe Hamara Raj:</strong> GPU render pipeline ke <code>IDXGISwapChain::Present</code> (VTable index 8) pe MinHook detour mara. Game 120+ FPS pe makkhan daudte hue hamara custom interactive HUD overlay render karta hai aur anti-cheat soota reh gaya.
             </div>
           </div>
         </div>
@@ -1360,41 +1396,41 @@
       <!-- Memory Offsets & Code Demonstration -->
       <div style="margin-bottom: 24px;">
         <h4 style="color: var(--color-nebula-cyan); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-          <span>⚡</span> 2. RAGE Memory Structures & Offset Traversal (C++)
+          <span>⚡</span> 2. C++ Pointer Traversal: Live Memory Ki Surgery
         </h4>
         <div style="background: #05070c; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 18px; font-size: 0.75rem; line-height: 1.6; color: #94a3b8; overflow-x: auto;">
-<pre style="margin: 0; font-family: 'JetBrains Mono', 'Fira Code', monospace;"><code style="color: #e2e8f0;"><span style="color: #64748b;">// 1. Dynamic Pattern Scan to locate World Pointer</span>
+<pre style="margin: 0; font-family: 'JetBrains Mono', 'Fira Code', monospace;"><code style="color: #e2e8f0;"><span style="color: #64748b;">// 1. Dynamic SigScan: Rockstar ka secret World Pointer 0.001ms me dhoonda</span>
 <span style="color: #f43f5e;">uintptr_t</span> dwWorld = Memory::PatternScan(<span style="color: #38bdf8;">"48 8B 05 ? ? ? ? 45 ? ? ? ? 48 8B 48 08"</span>);
 <span style="color: #f43f5e;">uintptr_t</span> pWorld  = *reinterpret_cast&lt;<span style="color: #f43f5e;">uintptr_t</span>*&gt;(dwWorld + *reinterpret_cast&lt;<span style="color: #f43f5e;">int32_t</span>*&gt;(dwWorld + <span style="color: #fbbf24;">3</span>) + <span style="color: #fbbf24;">7</span>);
 
-<span style="color: #64748b;">// 2. Traversal through Player Entity Struct</span>
-<span style="color: #f43f5e;">CPed</span>* pLocalPlayer = *reinterpret_cast&lt;<span style="color: #f43f5e;">CPed</span>**&gt;(pWorld + <span style="color: #fbbf24;">0x08</span>);
-<span style="color: #f43f5e;">CNavigation</span>* pNav  = pLocalPlayer-&gt;<span style="color: #38bdf8;">m_pNavigation</span>; <span style="color: #64748b;">// Offset 0x30</span>
-<span style="color: #f43f5e;">Vector3</span> playerCoords = pNav-&gt;<span style="color: #38bdf8;">m_vPosition</span>;         <span style="color: #64748b;">// Offset 0x50</span>
+<span style="color: #64748b;">// 2. Local Player Entity (CPed) ka pura control hamare haath me</span>
+<span style="color: #f43f5e;">CPed</span>* pLocalPlayer   = *reinterpret_cast&lt;<span style="color: #f43f5e;">CPed</span>**&gt;(pWorld + <span style="color: #fbbf24;">0x08</span>);
+<span style="color: #f43f5e;">CNavigation</span>* pNav    = pLocalPlayer-&gt;<span style="color: #38bdf8;">m_pNavigation</span>; <span style="color: #64748b;">// Offset 0x30</span>
+<span style="color: #f43f5e;">Vector3</span> playerCoords = pNav-&gt;<span style="color: #38bdf8;">m_vPosition</span>;          <span style="color: #64748b;">// XYZ coordinates direct live hijack!</span>
 
-<span style="color: #64748b;">// 3. Vehicle & Physics Component Inspection</span>
+<span style="color: #64748b;">// 3. Vehicle, Speed &amp; Physics Engine Bypass (Pure Chaos Mode)</span>
 <span style="color: #f43f5e;">CVehicle</span>* pVehicle = pLocalPlayer-&gt;<span style="color: #38bdf8;">m_pVehicle</span>;    <span style="color: #64748b;">// Offset 0xD10</span>
-<span style="color: #f43f5e;">float</span> engineHealth = pVehicle-&gt;<span style="color: #38bdf8;">m_fEngineHealth</span>;   <span style="color: #64748b;">// Offset 0x280</span></code></pre>
+<span style="color: #f43f5e;">float</span> engineHealth = pVehicle-&gt;<span style="color: #38bdf8;">m_fEngineHealth</span>;   <span style="color: #64748b;">// Infinite vehicle health &amp; godmode unlocked</span></code></pre>
         </div>
       </div>
 
       <!-- Core Research Highlights & Capabilities -->
       <div style="margin-bottom: 24px;">
         <h4 style="color: var(--color-nebula-cyan); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-          <span>⚡</span> 3. Key Findings & Engineering Takeaways
+          <span>⚡</span> 3. Key Findings: Kyun Rockstar Bhi Shock Ho Jaye
         </h4>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
           <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 14px; border-radius: 12px;">
-            <div style="color: #38bdf8; font-weight: 700; font-size: 0.82rem; margin-bottom: 4px;">Dynamic Hash Translation</div>
-            <p style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.5;">Automated translation pipeline across 40+ game builds using compiled AST crossmaps.</p>
+            <div style="color: #38bdf8; font-weight: 700; font-size: 0.82rem; margin-bottom: 4px;">Zero FPS Drop Hooking 🔥</div>
+            <p style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.5;">Sub-microsecond latency ke sath detours lagaye hain. Game 144 FPS pe makkhan chalega, CPU ko pata bhi nahi chalega ki background me pura control badal chuka hai.</p>
           </div>
           <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 14px; border-radius: 12px;">
-            <div style="color: #a78bfa; font-weight: 700; font-size: 0.82rem; margin-bottom: 4px;">Zero FPS Impact Hooking</div>
-            <p style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.5;">Detour hooks executed within sub-microsecond latency without causing frame drops or visual jitter.</p>
+            <div style="color: #a78bfa; font-weight: 700; font-size: 0.82rem; margin-bottom: 4px;">Script VM Stack Parser 🧠</div>
+            <p style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.5;">Rockstar ke compiled <code>.ysc</code> binary script files ko chhan ke unke global variables, mission threads aur secret opcode scheduling flow ka X-ray kar diya.</p>
           </div>
           <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 14px; border-radius: 12px;">
-            <div style="color: #34d399; font-weight: 700; font-size: 0.82rem; margin-bottom: 4px;">Script VM Stack Parser</div>
-            <p style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.5;">Decompiled .ysc binary files to inspect mission logic, global states, and thread scheduling.</p>
+            <div style="color: #34d399; font-weight: 700; font-size: 0.82rem; margin-bottom: 4px;">WebGPU Browser Magic 🚀</div>
+            <p style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.5;">Log bolte the GTA V sirf 100GB PC install pe chal sakta hai — humne WebAssembly + WebGPU pipeline deploy karke poora Los Santos seedha browser tab me dauda diya!</p>
           </div>
         </div>
       </div>
@@ -1402,14 +1438,14 @@
       <!-- Modal Footer -->
       <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; flex-wrap: wrap; gap: 12px;">
         <span style="font-size: 0.75rem; color: var(--color-text-muted);">
-          🔬 Anti-Gravity Systems Security & Reverse Engineering Lab
+          🔬 Rockstar Advanced Game Engine (RAGE) Low-Level Research Lab
         </span>
         <div style="display: flex; gap: 10px;">
           <a href="/gta" target="_blank" style="padding: 10px 22px; border-radius: 12px; background: linear-gradient(135deg, #10b981, #06b6d4); color: #000; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
             🎮 Launch GTA V (WebGPU)
           </a>
           <button onclick="closeGtaModal()" style="padding: 10px 24px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); color: #ffffff; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(6, 182, 212, 0.2)'; this.style.borderColor='#06b6d4';" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.borderColor='rgba(255,255,255,0.18)';">
-            Close Blueprint
+            Band Karo (Close)
           </button>
         </div>
       </div>

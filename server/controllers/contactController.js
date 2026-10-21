@@ -9,6 +9,7 @@ const {
 const { sendSuccess, sendError } = require('../utils/apiResponse');
 const { logActivity } = require('./adminController');
 const { notifyContactSubmission } = require('../services/telegramService');
+const { checkVpnAndGeo } = require('./analyticsController');
 
 // Memory fallback for offline test / serverless zero-DB modes
 const FALLBACK_MESSAGES = [
@@ -204,17 +205,27 @@ const handleContactForm = async (req, res, next) => {
         let clientIp = typeof rawIp === 'string' ? rawIp.split(',')[0].trim() : '127.0.0.1';
         if (clientIp.startsWith('::ffff:')) clientIp = clientIp.replace('::ffff:', '');
 
+        // Check VPN & ISP
+        let geoResult = null;
+        try {
+          geoResult = await Promise.race([
+            checkVpnAndGeo(clientIp, req.body?.metadata?.timeZone || ''),
+            new Promise((r) => setTimeout(() => r(null), 1500)),
+          ]);
+        } catch (e) {}
+
         const city = req.headers['x-vercel-ip-city']
           ? decodeURIComponent(req.headers['x-vercel-ip-city'])
-          : (req.body?.metadata?.city || '');
-        const region = req.headers['x-vercel-ip-country-region'] || (req.body?.metadata?.region || '');
+          : (geoResult?.city || req.body?.metadata?.city || '');
+        const region = req.headers['x-vercel-ip-country-region'] || (geoResult?.region || req.body?.metadata?.region || '');
         const countryCode = (
           req.headers['x-vercel-ip-country'] ||
           req.headers['cf-ipcountry'] ||
+          geoResult?.countryCode ||
           req.body?.metadata?.countryCode ||
           'IN'
         ).toUpperCase();
-        const country = countryCode === 'IN' ? 'India' : (req.body?.metadata?.country || countryCode);
+        const country = countryCode === 'IN' ? 'India' : (geoResult?.country || req.body?.metadata?.country || countryCode);
         const countryFlag = countryCode === 'IN' ? '🇮🇳' : (req.body?.metadata?.flag || '🌐');
 
         const userAgent = req.headers['user-agent'] || '';
@@ -228,6 +239,8 @@ const handleContactForm = async (req, res, next) => {
           else detectedDevice = 'Web Visitor';
         }
 
+        const gpsData = req.body?.metadata?.gpsLocation || (req.body?.metadata?.hasGps ? req.body.metadata : null);
+
         await Promise.race([
           notifyContactSubmission({
             fullName: resolvedName,
@@ -240,9 +253,15 @@ const handleContactForm = async (req, res, next) => {
             region,
             country,
             countryFlag,
+            isp: geoResult?.isp || '',
+            isVpn: geoResult?.isVpn || false,
+            vpnReason: geoResult?.vpnReason || '',
             deviceModel: detectedDevice,
             device: detectedDevice,
             browser: req.body?.metadata?.browser || '',
+            gpuRenderer: req.body?.metadata?.gpuRenderer || '',
+            gps: gpsData,
+            metadata: req.body?.metadata || {},
           }),
           new Promise((r) => setTimeout(r, 1500)),
         ]);
